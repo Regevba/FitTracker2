@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "feature": "ai-user-feedback-loop",
+  "title": "ai user feedback loop",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9",
+  "started_at": "2026-06-01T16:24:49Z",
+  "updated_at": "2026-06-01T17:15:25Z",
+  "events": [
+    {
+      "timestamp": "2026-06-01T16:24:49Z",
+      "event_type": "phase_transition",
+      "phase": "research",
+      "summary": "C5 Phase 0 (Research) opened \u2014 11-section research.md authored covering: problem framing (UI-024 deferred wire + RecommendationMemory storage layer already shipped but never wired into views), three closures (A wire RecommendationMemory as @StateObject env-object; B reinforcement loop in AIOrchestrator with confidence-tier-only adjustment + per-signal-per-segment + 5-outcome quorum; C Settings \u2192 AI Feedback surface with breakdown + clear-all + opt-out toggle), new dismiss-reason picker (5 enum values + free-text), 5 success metrics (T1/T2/T3 tagged), 3 kill criteria, dependencies (all shipped), scope NOT (cohort + time-decay + signal-generation + push-routing + transparency UX deferred), C5 vs C2 vs C4 distinction table, Phase E compliance. Awaiting operator approval before Phase 1 (PRD).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-01T16:32:45Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Phase 0 (Research) approved in PR #572. Phase 1 (PRD) authored at docs/product/prd/ai-user-feedback-loop.md. FROZEN constants: acceptanceUpgradeThreshold=0.70, dismissalSuppressionThreshold=3, quorumCount=5, confidenceTierOnly mode. 3 new analytics events screen-prefixed home_. 5 success metrics T1/T2/T3 tagged. 4 kill criteria. 6 open questions resolved. Phase E compliant (no new gates).",
+      "artifacts": [
+        "docs/product/prd/ai-user-feedback-loop.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-01T16:38:41Z",
+      "event_type": "phase_transition",
+      "phase": "tasks_phase",
+      "summary": "Phase 1 (PRD) approved (operator: 'continue'). Phase 2 (Tasks) authored at .claude/features/ai-user-feedback-loop/tasks.md \u2014 12 discrete tasks T1-T12 with dependency graph + LoC estimates ~870 total (470 production + 400 tests). 10 new test files = 21 tests targeting >=90% coverage on new files. Phase 4 landing order: 7 standalone-buildable commits (T1+T3+T11 infra > T2+T4 plumbing > T5 orchestrator > T6 UI-024 close > T7+T8 picker > T9+T10 settings > final verify-local). Phase E compliant.",
+      "artifacts": [
+        ".claude/features/ai-user-feedback-loop/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-01T17:15:25Z",
+      "event_type": "phase_transition",
+      "phase": "testing",
+      "summary": "T12 test suite landed: 4 new test files (RecommendationMemoryWindow + RecommendationFeedbackController + AIOrchestratorReinforcementHelpers + AIRecommendationWithConfidence), 14 tests all PASSED on iPhone 17 Simulator (101s test runtime). make ui-audit P0=0 maintained. Schema check 82/82 pass. Case study at docs/case-studies/ai-user-feedback-loop-case-study.md with full T1/T2/T3 tier-tagged metrics. State advanced through implementation -> testing. Awaiting operator merge approval on PR #572.",
+      "artifacts": [
+        "docs/case-studies/ai-user-feedback-loop-case-study.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

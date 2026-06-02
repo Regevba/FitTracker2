@@ -358,7 +358,7 @@ The PM framework defines a **9-phase pipeline** for full features. Smaller work 
 
 | Phase | Skill driver | Output | Required for |
 |---|---|---|---|
-| 1. `research` | `research` | `docs/product/research/<name>.md` | Feature |
+| 1. `research` | `brainstorm-pm` (Phase 0 discovery, runs first) → `research` | `docs/product/research/<name>.md` + `state.json::brainstorm` | Feature |
 | 2. `prd` | `pm-workflow` | `docs/product/prd/<name>.md` | Feature, Enhancement |
 | 3. `tasks` | `pm-workflow` | `state.json.tasks[]` | Feature, Enhancement |
 | 4. `ux_or_integration` | `ux` + `design` | `docs/design-system/<name>-spec.md` | Feature (UI), or skipped + recorded as `work_type:fix` etc. |
@@ -390,6 +390,7 @@ The agent (Claude Code, Codex, etc.) interacts with the framework primarily via 
 
 ```
 /pm-workflow <feature-name>      ← hub: starts/resumes a feature
+/brainstorm-pm <feature-name>    ← spoke: Phase 0 problem framing (new features, runs before research)
 /dev                              ← spoke: implementation work
 /qa                               ← spoke: test work
 /design / /ux                     ← spoke: design + UX

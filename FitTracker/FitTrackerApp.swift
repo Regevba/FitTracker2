@@ -65,6 +65,9 @@ struct FitTrackerApp: App {
     // C2 + C4 alert stores — UI mirrors for the two new observer-driven banners.
     @StateObject private var readinessAwareAlertStore = ReadinessAwareAlertStore()
     @StateObject private var trendAlertStore          = TrendAlertStore()
+    // C5 ai-user-feedback-loop — RecommendationMemory facade, promoted from
+    // per-AIOrchestrator-instance to env-object to close audit UI-024.
+    @StateObject private var feedbackController       = RecommendationFeedbackController()
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
     @State private var showBiometricActivation = false
@@ -321,6 +324,14 @@ struct FitTrackerApp: App {
                             aiOrchestrator.goalMode = { [weak dataStore] in
                                 dataStore?.userPreferences.nutritionGoalMode ?? .fatLoss
                             }
+                            // C5 ai-user-feedback-loop — late-inject the reinforcement-loop wires.
+                            // Couldn't pass these into the @StateObject closure since self wasn't
+                            // available there. Same pattern as goalMode late-injection above.
+                            aiOrchestrator.setFeedbackHooks(
+                                memory: feedbackController.memory,
+                                settings: settings,
+                                analytics: analytics
+                            )
                             // Ensure ReminderScheduler is initialised — actual trigger
                             // evaluation happens in MainScreenView when data is available.
                             _ = ReminderScheduler.shared
@@ -456,6 +467,7 @@ struct FitTrackerApp: App {
                 .environmentObject(reminderPreferences)
                 .environmentObject(readinessAwareAlertStore)
                 .environmentObject(trendAlertStore)
+                .environmentObject(feedbackController)
         } else if (!hasCompletedOnboarding || isForcedOnboardingModeEnabled), !isScreenReviewModeEnabled {
             // First launch or sign-in smoke override — onboarding includes auth at step 5.
             OnboardingView {
@@ -497,6 +509,7 @@ struct FitTrackerApp: App {
                     .environmentObject(analytics)
                     .environmentObject(readinessAwareAlertStore)
                     .environmentObject(trendAlertStore)
+                    .environmentObject(feedbackController)
             }
         }
     }

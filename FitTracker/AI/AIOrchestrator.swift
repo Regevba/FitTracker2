@@ -38,16 +38,32 @@ public final class AIOrchestrator: ObservableObject {
     /// Adapters used in the last build — retained for validation.
     private var lastAdapters: [any AIInputAdapter] = []
 
+    // C5 ai-user-feedback-loop reinforcement-loop wires. All optional so
+    // existing test paths that construct AIOrchestrator without the trio
+    // continue to work (memory == nil short-circuits the loop). Mutable so
+    // FitTrackerApp can late-inject the env-objects-resolved values after
+    // the @StateObject closure has returned, same pattern as `goalMode`
+    // late-injection at line ~324.
+    private var feedbackMemory: RecommendationMemory?
+    private var feedbackSettings: AppSettings?
+    private var analytics: AnalyticsService?
+
     init(
         engineClient: some AIEngineClientProtocol,
         foundationModel: some FoundationModelProtocol,
         snapshot: @escaping @Sendable () -> LocalUserSnapshot,
-        goalMode: @escaping @Sendable () -> NutritionGoalMode
+        goalMode: @escaping @Sendable () -> NutritionGoalMode,
+        feedbackMemory: RecommendationMemory? = nil,
+        feedbackSettings: AppSettings? = nil,
+        analytics: AnalyticsService? = nil
     ) {
         self.engineClient    = engineClient
         self.foundationModel = foundationModel
         self.snapshot        = snapshot
         self.goalMode        = goalMode
+        self.feedbackMemory   = feedbackMemory
+        self.feedbackSettings = feedbackSettings
+        self.analytics        = analytics
     }
 
     // ─────────────────────────────────────────────────────
@@ -119,7 +135,15 @@ public final class AIOrchestrator: ObservableObject {
             finalRecommendation = baseRecommendation
         }
 
-        latestRecommendations[segment] = finalRecommendation
+        // C5 ai-user-feedback-loop reinforcement-loop block — apply per-segment
+        // confidence-tier adjustment from RecommendationMemory before publishing.
+        // Gated on AppSettings.aiFeedbackLoopEnabled (default ON).
+        let publishedRecommendation = applyReinforcementLoop(
+            recommendation: finalRecommendation,
+            segment: segment
+        )
+
+        latestRecommendations[segment] = publishedRecommendation
 
         // Validate and attach goal context.
         // Audit AI-011: if `setAdapters` hasn't been called yet (e.g., a test
@@ -132,12 +156,68 @@ public final class AIOrchestrator: ObservableObject {
             lastAdapters = Self.bootstrapEmptyAdapters()
         }
         let validated = ValidatedRecommendation.validate(
-            recommendation: finalRecommendation,
+            recommendation: publishedRecommendation,
             snapshot: userSnapshot,
             adapters: lastAdapters,
             goalProfile: goalProfile
         )
         validatedRecommendations[segment] = validated
+    }
+
+    // MARK: - C5 reinforcement loop
+
+    /// Apply per-signal-per-segment confidence-tier adjustment based on user feedback history.
+    /// - Suppresses (downgrades) when >=3 dismissals within 30 days for a signal in this segment.
+    /// - Boosts (upgrades) when acceptanceRate > 0.70 with >=5 outcomes in this segment.
+    /// - No-op when feedbackMemory/feedbackSettings missing OR user disabled the loop.
+    private func applyReinforcementLoop(
+        recommendation: AIRecommendation,
+        segment: AISegment
+    ) -> AIRecommendation {
+        guard let memory = feedbackMemory,
+              feedbackSettings?.aiFeedbackLoopEnabled ?? true
+        else {
+            return recommendation
+        }
+        let dismissed = memory.frequentlyDismissedSignals(for: segment)
+        let touched = recommendation.signals.filter { dismissed.contains($0) }
+        if !touched.isEmpty {
+            analytics?.logHomeAiFeedbackSignalSuppressed(
+                segment: segment.rawValue,
+                signal: touched[0],
+                dismissalCount: dismissed.count
+            )
+            return recommendation.withConfidence(Self.downgradeConfidence(recommendation.confidence))
+        }
+        if let rate = memory.acceptanceRate(for: segment), rate > 0.70 {
+            let outcomeCount = memory.outcomes(for: segment).filter { $0.action != .ignored }.count
+            analytics?.logHomeAiFeedbackSegmentBoosted(
+                segment: segment.rawValue,
+                acceptanceRate: Int(rate * 100),
+                outcomeCount: outcomeCount
+            )
+            return recommendation.withConfidence(Self.upgradeConfidence(recommendation.confidence))
+        }
+        return recommendation
+    }
+
+    /// Maps current confidence to one tier lower (high→medium, medium→low, low→suppressed-but-still-shown).
+    /// Tier thresholds match ValidatedRecommendation.ConfidenceLevel — values land mid-band.
+    static func downgradeConfidence(_ current: Double) -> Double {
+        switch current {
+        case 0.7...:     return 0.5   // high → medium
+        case 0.4..<0.7:  return 0.3   // medium → low
+        default:         return max(0.0, current - 0.1) // low → lower, capped at 0
+        }
+    }
+
+    /// Maps current confidence to one tier higher (low→medium, medium→high, high stays).
+    static func upgradeConfidence(_ current: Double) -> Double {
+        switch current {
+        case ..<0.4:     return 0.5   // low → medium
+        case 0.4..<0.7:  return 0.75  // medium → high
+        default:         return current // high stays high
+        }
     }
 
     /// Build a default-state adapter list for the AI-011 bootstrap path.
@@ -184,6 +264,18 @@ public final class AIOrchestrator: ObservableObject {
     /// Update the adapters list (called by AISnapshotBuilder after building).
     func setAdapters(_ adapters: [any AIInputAdapter]) {
         lastAdapters = adapters
+    }
+
+    /// Late-injection of the C5 reinforcement-loop wires (memory, settings, analytics).
+    /// Called by FitTrackerApp once the @StateObject env-objects have resolved.
+    func setFeedbackHooks(
+        memory: RecommendationMemory?,
+        settings: AppSettings?,
+        analytics: AnalyticsService?
+    ) {
+        self.feedbackMemory = memory
+        self.feedbackSettings = settings
+        self.analytics = analytics
     }
 
     // ─────────────────────────────────────────────────────

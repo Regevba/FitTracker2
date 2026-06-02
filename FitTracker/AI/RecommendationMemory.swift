@@ -79,10 +79,22 @@ final class RecommendationMemory: @unchecked Sendable {
     }
 
     /// Signals that were frequently dismissed — candidates for suppression or reframing.
-    func frequentlyDismissedSignals(for segment: AISegment, threshold: Int = 3) -> [String] {
+    /// C5 (2026-06-01) — `within` filters to the last N seconds of dismissals so users can
+    /// "rehabilitate" suppressed signals over time. Defaults to 30 days; injectable `now`
+    /// keeps tests deterministic.
+    func frequentlyDismissedSignals(
+        for segment: AISegment,
+        threshold: Int = 3,
+        within window: TimeInterval = 30 * 24 * 60 * 60,
+        now: Date = Date()
+    ) -> [String] {
         lock.lock()
         defer { lock.unlock() }
-        let dismissed = outcomes.filter { $0.segment == segment.rawValue && $0.action == .dismissed }
+        let dismissed = outcomes.filter {
+            $0.segment == segment.rawValue
+            && $0.action == .dismissed
+            && now.timeIntervalSince($0.timestamp) <= window
+        }
         var signalCounts: [String: Int] = [:]
         for outcome in dismissed {
             for signal in outcome.signals {
