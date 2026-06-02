@@ -101,7 +101,7 @@ Locked-design memory: `project_case_study_presentation_locked.md`. Visual-aid ca
 
 Two repositories, four commits each:
 
-**fitme-story `preview/case-study-presentation`** (squash-merged via PR #8 as commit `ed72514`):
+**fitme-story `preview/case-study-presentation`** (squash-merged via [fitme-story#8] as commit `ed72514`):
 
 - `9c8fba7` — production chrome (`alt-a-chrome/{VisualAidResolver,index}.tsx`) + Standard / Light / Flagship template wiring
 - `af6bc75` — backfill 6 milestone case studies
@@ -141,7 +141,7 @@ The lesson is small but worth writing down: when the rule is "every case study m
 
 **The branch-name collision.** The FitTracker2 branch `feature/case-study-presentation` had a second life as the temporary name for an unrelated dashboard schema-drift fix that landed earlier the same day (commit `a53d10b` locally, `de1770b` on origin's `fix/dashboard-feature-key-v7-7`). When the case-study work resumed on the same branch name, the local repository pointed at the dashboard fix while origin pointed at the catalog. The collision surfaced at branch-checkout time, not at commit time, and was resolved by force-tracking origin and discarding the stale local pointer. The dashboard-fix commit is preserved on its proper branch.
 
-**The CI billing block.** When FitTracker2 PR #146 opened, both `Build and Test` and `integrity` checks were marked failed. The cause was not the content — both jobs were rejected at queue time with the message "recent account payments have failed or your spending limit needs to be increased". The PR was merged via admin override after fitme-story PR #8 landed clean. The 72h integrity cycle continues to run as a belt for anything the gate would have caught. This is the second time in two weeks that an environmental block (last time it was a remote-cache Vercel issue) presented as a CI failure; checking the run-level annotation before reading the diff stays cheap.
+**The CI billing block.** When FitTracker2 PR #146 opened, both `Build and Test` and `integrity` checks were marked failed. The cause was not the content — both jobs were rejected at queue time with the message "recent account payments have failed or your spending limit needs to be increased". The PR was merged via admin override after [fitme-story#8] landed clean. The 72h integrity cycle continues to run as a belt for anything the gate would have caught. This is the second time in two weeks that an environmental block (last time it was a remote-cache Vercel issue) presented as a CI failure; checking the run-level annotation before reading the diff stays cheap.
 
 ## 6. What stays the same
 
@@ -174,7 +174,7 @@ The rollout did not change the framework version (v7.7 stays v7.7). It did three
 - **Visual-aid catalog:** [`docs/design-system/case-study-visual-aid-catalog.md`](../design-system/case-study-visual-aid-catalog.md)
 - **Alt-A worked-example template:** [`docs/case-studies/templates/alternative-a-v7-5-example.md`](templates/alternative-a-v7-5-example.md)
 - **Alt-B reference template:** [`docs/case-studies/templates/alternative-b-v7-5-example.md`](templates/alternative-b-v7-5-example.md)
-- **fitme-story PR #8** (squash-merged as `ed72514`)
+- **[fitme-story#8]** (squash-merged as `ed72514`)
 - **FitTracker2 PR #146** (squash-merged as `f58ee01`)
 - **State.json:** [`.claude/features/case-study-presentation/state.json`](../../.claude/features/case-study-presentation/state.json)
 - **Predecessor:** [`framework-v7-7-validity-closure-case-study.md`](framework-v7-7-validity-closure-case-study.md)
