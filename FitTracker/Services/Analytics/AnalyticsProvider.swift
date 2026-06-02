@@ -276,6 +276,16 @@ enum AnalyticsEvent {
     /// User taps "Clear feedback history" in Settings → AI Feedback
     static let homeAiFeedbackHistoryCleared    = "home_ai_feedback_history_cleared"
 
+    // ── D1: Adaptive Intelligence (screen-prefixed: home_) ──
+    /// AIOrchestrator un-suppresses a previously-suppressed signal due to last-7d acceptance trend
+    static let homeAiFeedbackSignalUnsuppressedByTrend     = "home_ai_feedback_signal_unsuppressed_by_trend"
+    /// User taps a suppressed-signal row in Settings → AI Feedback → SuppressedSignalDetailScreen
+    static let homeAiFeedbackSuppressedDetailOpened        = "home_ai_feedback_suppressed_detail_opened"
+    /// User confirms "Un-suppress this signal" on the detail screen
+    static let homeAiFeedbackSignalManuallyUnsuppressed    = "home_ai_feedback_signal_manually_unsuppressed"
+    /// User confirms "Blacklist permanently" on the detail screen
+    static let homeAiFeedbackSignalBlacklistedPermanently  = "home_ai_feedback_signal_blacklisted_permanently"
+
     // ── C3: Exercise Library (screen-prefixed: training_) ──
     /// User opens the Exercise Library sheet
     static let trainingExerciseLibraryOpened   = "training_exercise_library_opened"
@@ -500,6 +510,12 @@ enum AnalyticsParam {
     static let acceptanceRate          = "acceptance_rate"           // int 0..100 — rounded percentage acceptance rate
     static let outcomeCount            = "outcome_count"             // int — sample size at boost-evaluation time
     static let totalOutcomesCleared    = "total_outcomes_cleared"    // int — count of outcomes wiped via Settings → Clear feedback history
+
+    // D1 Adaptive Intelligence parameters
+    // (signal + segment + dismissalCount already declared in C5 block above)
+    static let priorDismissalCount   = "prior_dismissal_count"   // int >= 3 — dismissal count BEFORE the trend-unsuppress fired
+    static let daysSinceLastDismiss  = "days_since_last_dismiss" // int — days from most recent dismissal to the unsuppress event
+    static let viaTrend              = "via_trend"               // bool — true when manual un-suppress hit the trend criterion too
 
     // C3 Exercise Library parameters
     static let dimension       = "dimension"        // string — muscle/equipment/category (which chip dimension was tapped)

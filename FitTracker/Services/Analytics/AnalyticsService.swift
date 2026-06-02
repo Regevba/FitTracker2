@@ -710,6 +710,62 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - D1 Adaptive Intelligence Events
+
+    /// AIOrchestrator un-suppresses a previously-suppressed signal due to last-7d acceptance trend
+    func logHomeAiFeedbackSignalUnsuppressedByTrend(
+        segment: String,
+        signal: String,
+        priorDismissalCount: Int,
+        daysSinceLastDismiss: Int
+    ) {
+        logEvent(AnalyticsEvent.homeAiFeedbackSignalUnsuppressedByTrend, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.signal: signal,
+            AnalyticsParam.priorDismissalCount: priorDismissalCount,
+            AnalyticsParam.daysSinceLastDismiss: daysSinceLastDismiss,
+        ])
+    }
+
+    /// User taps a suppressed-signal row in Settings → AI Feedback (pushes SuppressedSignalDetailScreen)
+    func logHomeAiFeedbackSuppressedDetailOpened(
+        segment: String,
+        signal: String,
+        dismissalCount: Int
+    ) {
+        logEvent(AnalyticsEvent.homeAiFeedbackSuppressedDetailOpened, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.signal: signal,
+            AnalyticsParam.dismissalCount: dismissalCount,
+        ])
+    }
+
+    /// User confirms "Un-suppress this signal" on the detail screen
+    func logHomeAiFeedbackSignalManuallyUnsuppressed(
+        segment: String,
+        signal: String,
+        viaTrend: Bool
+    ) {
+        logEvent(AnalyticsEvent.homeAiFeedbackSignalManuallyUnsuppressed, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.signal: signal,
+            AnalyticsParam.viaTrend: viaTrend,
+        ])
+    }
+
+    /// User confirms "Blacklist permanently" on the detail screen
+    func logHomeAiFeedbackSignalBlacklistedPermanently(
+        segment: String,
+        signal: String,
+        dismissalCount: Int
+    ) {
+        logEvent(AnalyticsEvent.homeAiFeedbackSignalBlacklistedPermanently, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.signal: signal,
+            AnalyticsParam.dismissalCount: dismissalCount,
+        ])
+    }
+
     // MARK: - C3 Exercise Library Events
 
     /// User opens the Exercise Library sheet (Training tab toolbar or Settings row)
