@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T17:26:23Z",
-  "updated_at": "2026-06-02T13:04:03Z",
+  "updated_at": "2026-06-02T16:19:15Z",
   "events": [
     {
       "timestamp": "2026-06-01T17:26:23Z",
@@ -41,6 +41,19 @@
       "summary": "Phase 1 PRD approved (operator marked PR #573 ready + 'continue'). Phase 2 Tasks at .claude/features/exercise-search-filter/tasks.md \u2014 10 discrete tasks T1-T10 with dependency graph + LoC estimates ~875 total. 7-commit Phase 4 landing order: T1+T2 infra > T3+T4 row+detail > T5 sheet > T6+T7 entry > T9 tests > T10 case-study. ~3-4h estimated. Out-of-scope guards 5 explicit. Phase E compliant.",
       "artifacts": [
         ".claude/features/exercise-search-filter/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-02T16:19:15Z",
+      "event_type": "phase_transition",
+      "phase": "testing",
+      "summary": "T9 test suite landed: 2 new test files (ExerciseLibraryFilterTests + AnalyticsTrainingExerciseEventsTests), 7 tests all PASSED on iPhone 17 Simulator. T9.C + T9.D view-mode tests deferred to follow-up (ViewInspector infra not in project). T10: case study at docs/case-studies/exercise-search-filter-case-study.md with full T1/T2/T3 tier-tagged metrics + 7-section frozen-PRD recap + 6-commit lifecycle table. Backlog L347 + RICE row 8.0 struck through in same commit (drift-pattern rule). State advanced through implementation -> testing. ~1068 LoC actual (PRD est ~600, tasks.md est 875). Awaiting operator merge approval on PR #573.",
+      "artifacts": [
+        "docs/case-studies/exercise-search-filter-case-study.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",
