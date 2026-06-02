@@ -234,6 +234,10 @@
 		C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */; };
 		C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */; };
 		C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */; };
+		281EBC6538174BECA448D026 /* AnalyticsAdaptiveIntelligenceEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D6CC01D5504DF09C5CD24C /* AnalyticsAdaptiveIntelligenceEventsTests.swift */; };
+		08E9DB205B0E467D8ACAB801 /* RecommendationMemoryD1FieldsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EF87AAE9D7412CAAF675D0 /* RecommendationMemoryD1FieldsTests.swift */; };
+		0EB0EB32E19F4D4D858C67A1 /* AcceptanceTrendDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB4FC17B5FB4AA79207AA00 /* AcceptanceTrendDetectorTests.swift */; };
+		D41ACF788705460F8EE16E40 /* AIOrchestratorTrendUnsuppressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFDB52F103461E9E314FAD /* AIOrchestratorTrendUnsuppressTests.swift */; };
 		C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */; };
 		C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */; };
 		C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */; };
@@ -540,6 +544,10 @@
 		C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryWindowTests.swift; sourceTree = "<group>"; };
 		C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationFeedbackControllerTests.swift; sourceTree = "<group>"; };
 		C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorReinforcementHelpersTests.swift; sourceTree = "<group>"; };
+		41D6CC01D5504DF09C5CD24C /* AnalyticsAdaptiveIntelligenceEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsAdaptiveIntelligenceEventsTests.swift; sourceTree = "<group>"; };
+		E3EF87AAE9D7412CAAF675D0 /* RecommendationMemoryD1FieldsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryD1FieldsTests.swift; sourceTree = "<group>"; };
+		3EB4FC17B5FB4AA79207AA00 /* AcceptanceTrendDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTrendDetectorTests.swift; sourceTree = "<group>"; };
+		6DBFDB52F103461E9E314FAD /* AIOrchestratorTrendUnsuppressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorTrendUnsuppressTests.swift; sourceTree = "<group>"; };
 		C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationWithConfidenceTests.swift; sourceTree = "<group>"; };
 		C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilterTests.swift; sourceTree = "<group>"; };
 		C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingExerciseEventsTests.swift; sourceTree = "<group>"; };
@@ -939,6 +947,10 @@
 				C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */,
 				C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */,
 				C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */,
+				41D6CC01D5504DF09C5CD24C /* AnalyticsAdaptiveIntelligenceEventsTests.swift */,
+				E3EF87AAE9D7412CAAF675D0 /* RecommendationMemoryD1FieldsTests.swift */,
+				3EB4FC17B5FB4AA79207AA00 /* AcceptanceTrendDetectorTests.swift */,
+				6DBFDB52F103461E9E314FAD /* AIOrchestratorTrendUnsuppressTests.swift */,
 				C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */,
 				C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */,
 				C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */,
@@ -1714,6 +1726,10 @@
 				C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */,
 				C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */,
 				C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */,
+				281EBC6538174BECA448D026 /* AnalyticsAdaptiveIntelligenceEventsTests.swift in Sources */,
+				08E9DB205B0E467D8ACAB801 /* RecommendationMemoryD1FieldsTests.swift in Sources */,
+				0EB0EB32E19F4D4D858C67A1 /* AcceptanceTrendDetectorTests.swift in Sources */,
+				D41ACF788705460F8EE16E40 /* AIOrchestratorTrendUnsuppressTests.swift in Sources */,
 				C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */,
 				C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */,
 				C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */,
