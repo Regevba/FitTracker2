@@ -148,4 +148,58 @@ Phase 1–2: #82, #170, #171, #264, #265, #268. Phase 2-bis: #306 (spec), #313 (
 
 **Recommended sequence:** (1) refresh impl worktree → (2) record Sub-exp 2 PASS into synthesis + state.json + bootout backup job + finalize snapshot → (3) Sub-exp 3 ceremony (smoke → lock → bootstrap → Fire 0) → (4) after Sub-exp 3 closes, fresh-lock + launch 1B v2 early → (5) Block C synthesis closure once all three verdicts are in.
 
-**Program risk:** low. Both closed sub-exps passed decisively; Sub-exp 3 is the only remaining empirical unknown, and its smoke test already points PASS. The main operational risk is the documented SanDisk SSD disconnect (could interrupt a live collector) — mitigated by the off-SSD backup job + /tmp logging.
+**Program risk:** low. Both closed sub-exps passed decisively; Sub-exp 3 is the only remaining empirical unknown, and its smoke test already points PASS. The main operational risk is a host/SSD interruption of a live collector — mitigated by the off-SSD backup job + /tmp logging. (`/Volumes/DevSSD` is a Crucial X10 Pro `CT1000X10PROSSD9` since the 2026-05-19 migration; the historical SanDisk Extreme disconnect bug no longer applies.)
+
+---
+
+## §8.1 Live status (2026-06-02) — Sub-exp 3 + 1B v2 ACTIVATED in parallel
+
+Both remaining sub-exps launched in parallel, each in a **dedicated isolated worktree off main**:
+
+| | Sub-exp 3 | Sub-exp 1B v2 |
+|---|---|---|
+| Worktree / branch | `FitTracker2-hadf-phase2bis-subexp3` / `exp/hadf-subexp3` | `FitTracker2-hadf-phase2bis-subexp1b` / `exp/hadf-subexp1b` |
+| Prereg lock | `…subexp3-locked-2026-06-02` (sha 521f0f45) | `…subexp1b-locked-2026-06-02` (sha 653b3f17) |
+| Endpoints | bedrock (us. inference profile) + anthropic + openai | anthropic + google (2-endpoint; mistral/vercel **deferred** per v1 429 lesson) |
+| Fire 0 | 150/150 ok | 100/100 ok |
+| Schedule (local IDT) | 05/11/15/19/23 | 02/08/13/17/21 |
+
+**Spacing:** interleaved to a **2h minimum gap** (no co-fires — both call anthropic-direct haiku; simultaneous would contaminate TTFT). **Pre-lock §4 probe caught two real bugs:** missing `boto3` + bare Bedrock model-id non-invocable (→ `us.` inference profile). **Backup:** `hadf-snapshot.sh` rewritten to source per-worktree; manual 52-file snapshot at `~/Documents/FitTracker2-backups/2026-06-02-hadf-subexp3-launch-plus-1b-prep`. **Verdicts ~2026-06-05.**
+
+---
+
+## §9 Activation extrapolation — can HADF be "fully activated" as a live framework? (assuming 1B + 3 PASS)
+
+**Honest verdict: NO to "fully activated dispatch"; YES to a staged activation beginning with the sensing layer.** The four sub-exps validate the **sensing layer** (can we *detect* the substrate from streaming latency?). A live *dispatch* framework also needs the **acting layer** (does *routing on* that signal improve a real outcome?) — and **no experiment to date measures the acting layer.** Distinguishability ≠ actionability.
+
+**What the data proves [T1]:** the HADF signal is real, provider-general (Sub-exp 1, silhouette 0.7003), cloud-vs-local separable (Sub-exp 2, KS p≪0.01), routing-layer discriminating (Sub-exp 3 — falsification survived), and short-term stable (Sub-exp 1B).
+
+**Gaps to full dispatch activation:**
+1. **Decision value unmeasured [T3]** — no experiment tests whether acting on the signal improves cost/latency/quality/reliability vs. a baseline. Load-bearing gap.
+2. **Distribution-level ≠ single-shot [T1→T3 leap]** — verdicts use n=hundreds/endpoint; live routing decides from 1–few samples, where heavy tails (Sub-exp 2: anthropic TPS std ≈ 951) make per-call classification noisy. Online accuracy unknown.
+3. **Drift over months, not days [T3]** — 1B validates a ~3-day window; production providers rebalance/refresh/update silently. Needs continuous recalibration.
+4. **Coverage narrow [T1]** — ~6 endpoints / 3–4 providers validated; full dispatch implies the long tail.
+5. **Overhead unquantified [T3]** — fingerprinting costs calls + latency; per-request budget uncharacterized.
+
+---
+
+## §10 HADF Phase 3 — staged activation + next testing phase (defined 2026-06-02)
+
+### Phase 3A — ACTIVATE NOW (sensing / observability layer; T1-backed, no acting-layer claim)
+Incorporate HADF into the live framework as a **passive detection layer** — uses only what the experiments prove:
+- **Backend attestation** — fingerprint which substrate served a request (cloud vs local; which provider / routing layer).
+- **Routing-change / drift alerts** — flag when a known endpoint's live signature departs from its locked baseline (operationalizes Sub-exp 1B's drift check as a standing monitor).
+- **Provider-claim verification** — detect silent model/region/hardware swaps behind a stable model id (operationalizes the Sub-exp 3 capability).
+- **Surface:** read locked sub-exp signatures as reference distributions; render in a control-room HADF panel (`/control-room/framework` or new route).
+
+### Phase 3B — NEXT TESTING PHASE (gates the acting layer; pre-registered, kill-criteria)
+- **RQ4 — Decision value (primary):** does signature-aware routing beat a naive/round-robin baseline on a pre-registered outcome (p95 latency, cost-per-success, or task quality) by a pre-registered margin? **Kill if ≤ baseline.**
+- **RQ5 — Single-shot classifier eval:** online substrate-classification accuracy from 1–few samples (not distribution KS). Pre-register an accuracy floor.
+- **RQ6 — Long-horizon drift:** standing drift monitor over weeks/months; characterize recalibration cadence.
+- **Coverage expansion:** per-endpoint validation gate before any new provider/model joins the routing pool.
+
+### Gate between 3A → full activation
+Full *dispatch* activation requires **RQ4 PASS** (acting layer proven). Until then only Phase 3A (sensing) ships to production — ship what's proven (sensing), gate what's inferred (dispatch) behind a falsifiable experiment, consistent with the program's pre-registration/kill-criteria discipline.
+
+### Status
+Phase 2-bis closes when Sub-exp 3 + 1B verdicts land (~2026-06-05) + Block C synthesis. **Phase 3 is defined here; not yet scaffolded** — 3A needs a build spec + the RQ4 experiment needs a pre-registration (design pass + operator confirmation before any lock).
