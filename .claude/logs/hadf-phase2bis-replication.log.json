@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.8.3",
   "started_at": "2026-05-12T07:22:43Z",
-  "updated_at": "2026-05-28T13:48:23Z",
+  "updated_at": "2026-06-02T03:38:53Z",
   "events": [
     {
       "timestamp": "2026-05-12T07:22:43Z",
@@ -53,6 +53,19 @@
       },
       "actor": "agent",
       "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-02T00:00:00Z",
+      "event_type": "sub_experiment_closed",
+      "phase": "tasks_phase",
+      "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
+      "artifacts": [
+        ".claude/shared/hadf/phase2bis-subexp2-verdict.json"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-8",
+      "status": "done",
       "recording_mode": "contemporaneous"
     }
   ]
