@@ -241,6 +241,49 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 
 **Open** as enhancement on the eventual `test-coverage` feature.
 
+## 2026-06-01 session operator-action queue
+
+Consolidated from the 2026-06-01 session (14 PRs shipped across FT2 + fitme-story). All items below are **deferred** to operator-paced execution — they're shipped/documented but require human action in an external surface (GA4 console, Google Rich Results, App Store Connect, AWS, Mac restart, etc.). Surfaced daily by `scripts/daily-integrity-checkpoint.py` when ≤14d from due date OR flagged as ongoing.
+
+### Operator-action queue table
+
+| ID | Domain | Action | Effort | Due / gated-on | Source |
+|---|---|---|---|---|---|
+| OP-2026-06-01-01 | Analytics | Mark 5 primary conversion events in GA4 Admin (`sign_up`, `tutorial_complete`, `workout_complete`, `home_action_completed`, `nutrition_meal_logged`) | ~5 min × 5 | Anytime | [`docs/setup/ga4-funnels-and-conversions-runbook.md`](../../docs/setup/ga4-funnels-and-conversions-runbook.md) §Phase A |
+| OP-2026-06-01-02 | Analytics | Mark 3 secondary conversion events after primary stabilizes (`training_session_completed`, `import_plan_activated`, `dashboard_blocker_acknowledged`) | ~5 min × 3 | T+7d after OP-01 | Same runbook §Phase A |
+| OP-2026-06-01-03 | Analytics | Wire 3 ready funnels in GA4 Explore (F1 Activation, F2 Drop-off, F5 UCC TTC) | ~30 min total | Anytime | Same runbook §Phase B |
+| OP-2026-06-01-04 | Analytics | Build Looker Studio dashboards from F1+F2+F5 funnel data | ~1h | After OP-03 | Same runbook §Phase C |
+| OP-2026-06-01-05 | Analytics | Verify 8 new `home_readiness_alert_*` + `home_trend_alert_*` events fire in GA4 (re-run B2) | ~10 min | T+3d after next TestFlight build | Same runbook §Phase D |
+| OP-2026-06-01-06 | Analytics | Wire F3 Smart Reminders engagement funnel | ~10 min | After OP-05 confirms events | Same runbook §F3 |
+| OP-2026-06-01-07 | Analytics | Wire F4 Web→App conversion funnel | ~10 min | Deferred to App Store launch | Same runbook §F4 |
+| OP-2026-06-01-08 | SEO/Web | Run production Lighthouse scorecard: `gh workflow run lighthouse-ci.yml -f target=production --repo Regevba/fitme-story` | ~5 min | Anytime | fitme-story PR #164 |
+| OP-2026-06-01-09 | SEO/Web | Run Google Rich Results test against production for WebSite + Organization + BlogPosting + BreadcrumbList JSON-LD ([rich-results test](https://search.google.com/test/rich-results), paste `https://fitme-story.vercel.app` + a case-study URL) | ~10 min | Anytime | fitme-story PR #163 |
+| OP-2026-06-01-10 | iOS | TestFlight build cut + push (delivers C2 + C4 instrumentation to ~35 testers) | ~30 min | Anytime; gates OP-05 | C2 PR #560 + C4 PR #564 |
+| OP-2026-06-01-11 | iOS | L352 simulator walkthrough (Dark Mode + selection-state contrast) | ~50 min | Anytime; previously deferred | session memory `project_session_2026_05_31_tier_carryover_plan.md` |
+| OP-2026-06-01-12 | iOS | L353 Phase 1 simulator verification (`@ScaledMetric` at AX5 Dynamic Type) | ~10 min | Anytime; previously deferred | Same memory |
+| OP-2026-06-01-13 | iOS | L353 audit-doc revision + Phases 3-4 docs | ~30-60 min | Anytime; previously deferred | Same memory |
+| OP-2026-06-01-14 | HADF | AWS Bedrock model access approval (form already submitted) | (Amazon side) | Awaiting; gates HADF Sub-exp 3 | session memory `project_hadf_subexp3_aws_setup.md` |
+| OP-2026-06-01-15 | HADF | Mac restart to fix W28 CoreSim env-flake | ~5 min | Gated on HADF Sub-exp 2 closure (dispatch state doesn't survive reboot) | `.claude/integrity/observed-patterns.md` W28 |
+| OP-2026-06-01-16 | HADF | Sub-exp 1B v2 launchd bootstrap | ~10 min | **2026-06-10** | session memory `project_session_2026_05_30_31_hadf_subexp_lifecycle.md` |
+| OP-2026-06-01-17 | Framework | Phase E exit verification — confirm 0 regressions, then build v7.9.1 candidates docket | ~30 min | **~2026-06-04** | v7.9 promotion calendar |
+| OP-2026-06-01-18 | Framework | Section 99 case study synthesis for `framework-v7-9-promotion` — compare 2026-05-12 pre-snapshot vs 2026-05-28 post-snapshot | ~1h | After OP-17 | B2 closure note above |
+| OP-2026-06-01-19 | Analytics | Daily GA4 anomaly check (recurring) | ~5 min/day | Daily, ongoing | This file §B3 |
+| OP-2026-06-02-01 | iOS / Framework | C5 T+14d acceptance-rate regression check — verify `home_ai_feedback_submitted` events per WAU has not declined vs 2026-05-31 → 2026-06-01 baseline of 0.03 events per tester; verify Settings → AI Feedback opt-out rate ≤ 20% via GA4 (`home_ai_feedback_history_cleared` proxy) | ~15 min | **2026-06-15** | C5 PRD §"Kill criteria" + [`ai-user-feedback-loop-case-study.md`](../../docs/case-studies/ai-user-feedback-loop-case-study.md) |
+| OP-2026-06-02-02 | iOS / Framework | C5 T+30d primary metric review — `home_ai_feedback_submitted` events per WAU ≥ 0.10 target check + acceptance rate ≥ 0.6 in ≥ 2 segments check (T1 instrumented via on-device `RecommendationMemory.acceptanceRate(for:)` aggregated post-launch via existing measurement-adoption pipeline) | ~30 min | **2026-07-02** | Same |
+| OP-2026-06-02-03 | Infra / Dev-Env | Style-dictionary v3 → v5 proper migration PR — rewrite `sd.config.js` for v5 API (`new StyleDictionary()` constructor + instance `.registerTransform()`), verify identical token output via `diff` of regenerated `DesignTokens.swift`, then re-bump dep. Dependabot will re-propose the 3→5 bump on auto-cadence; mark closed-via-revert and hold any future auto-bump PRs without manual review | ~1-2h | Anytime (deferred from #577 incident 2026-06-02) | #577 broke main `make tokens` post-merge; reverted via #579 |
+| OP-2026-06-02-04 | Infra / Repo Hygiene | Dependabot major-bump policy review — major-version bumps (semver `version-update:semver-major`) should require manual review + local `make tokens-check` verification before merge. Current default-allow let #577 land + break main for ~30 min before revert. Add `.github/dependabot.yml` rule to flag-not-block on `update-type: version-update:semver-major` OR enforce via branch protection requiring an additional review | ~30 min | Anytime (low priority but recurring risk) | Same #577 incident |
+
+### Notes
+
+- **Critical-path order:** OP-15 (Mac restart) blocks resuming local `xcodebuild` work, but is gated on Sub-exp 2 closure. Until then, swiftc-parse + CI-only validation works (today's session proved the pattern across 14 PRs).
+- **OP-10 unblocks OP-05/06:** the TestFlight build is the only thing standing between C2/C4 events being in GA4 and the funnel-completeness check.
+- **OP-08 + OP-09 are independent + can run anytime:** they validate work already on production. Surfaces real SEO scorecard + rich-result eligibility.
+- **OP-17 + OP-18 calendar-anchored:** Phase E exit ~2026-06-04 opens the v7.9.1 build window. Don't start v7.9.1 candidates before exit verification.
+
+### Status decay
+
+When an item closes, strike through the row + add `**Closed YYYY-MM-DD** via <action>`. Don't delete — preserves the audit trail of operator-paced work shipped vs deferred.
+
 ## How this file gets updated
 
 - **Adding an item:** drop a row in the right table + a short section. Keep the doc under 200 lines.
