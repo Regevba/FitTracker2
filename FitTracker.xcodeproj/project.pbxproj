@@ -262,6 +262,8 @@
 		SV100000000000000000AA01 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SV200000000000000000AA01 /* StatsView.swift */; };
 		TA100000000000000000001 /* TrainingAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TA200000000000000000001 /* TrainingAnalyticsTests.swift */; };
 		TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA01 /* TrainingPlanView.swift */; };
+		C3ELRW100000000000UI01 /* ExerciseLibraryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELRW200000000000UI01 /* ExerciseLibraryRow.swift */; };
+		C3ELDV100000000000UI02 /* ExerciseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELDV200000000000UI02 /* ExerciseDetailView.swift */; };
 		TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA02 /* ExerciseRowView.swift */; };
 		TP100000000000000000AA03 /* SetRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA03 /* SetRowView.swift */; };
 		TP100000000000000000AA04 /* RestTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA04 /* RestTimerView.swift */; };
@@ -579,6 +581,8 @@
 		SV200000000000000000AA01 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		TA200000000000000000001 /* TrainingAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingAnalyticsTests.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA01 /* TrainingPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPlanView.swift; sourceTree = "<group>"; };
+		C3ELRW200000000000UI01 /* ExerciseLibraryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryRow.swift; sourceTree = "<group>"; };
+		C3ELDV200000000000UI02 /* ExerciseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseDetailView.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA02 /* ExerciseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRowView.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA03 /* SetRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRowView.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA04 /* RestTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerView.swift; sourceTree = "<group>"; };
@@ -1320,6 +1324,8 @@
 				TP200000000000000000AA04 /* RestTimerView.swift */,
 				TP200000000000000000AA05 /* SessionCompletionSheet.swift */,
 				TP200000000000000000AA06 /* FocusModeView.swift */,
+				C3ELRW200000000000UI01 /* ExerciseLibraryRow.swift */,
+				C3ELDV200000000000UI02 /* ExerciseDetailView.swift */,
 			);
 			path = v2;
 			sourceTree = "<group>";
@@ -1537,6 +1543,8 @@
 				NV100000000000000000AA04 /* ProgressBar.swift in Sources */,
 				NV100000000000000000AA05 /* HapticFeedback.swift in Sources */,
 				TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */,
+				C3ELRW100000000000UI01 /* ExerciseLibraryRow.swift in Sources */,
+				C3ELDV100000000000UI02 /* ExerciseDetailView.swift in Sources */,
 				TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */,
 				TP100000000000000000AA03 /* SetRowView.swift in Sources */,
 				TP100000000000000000AA04 /* RestTimerView.swift in Sources */,
