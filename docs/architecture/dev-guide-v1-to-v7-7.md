@@ -90,7 +90,7 @@ Cross-cutting terms used throughout this guide and in commit messages, PR descri
 | **Phase E** | A post-promotion validation soak (typically 14 days) where no new gates ship and the operator watches `gate-coverage.jsonl` for unexpected `failure` rows. v7.9 Phase E ran 2026-05-21 → 2026-06-04. |
 | **state.json** | Per-feature canonical contract at `.claude/features/<name>/state.json`. The single source of truth for that feature's lifecycle. See §5. |
 | **`/pm-workflow`** | The agent command that creates state.json, drives phase transitions, dispatches the right skill per phase. The 1 command you run most. |
-| **Observed Patterns Catalog** | [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) (v7.8.5). The canonical manifest of gate-firing patterns — 23 gate patterns + 26 workflow (W1–W26). When a gate fires, consult it FIRST (§10.5). `make observed-patterns`. |
+| **Observed Patterns Catalog** | [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) (v7.8.5). The canonical manifest of gate-firing patterns — 23 gate patterns + 28 workflow (W1–W28). When a gate fires, consult it FIRST (§10.5). `make observed-patterns`. |
 | **`make preflight`** | The unified pre-work aggregator (v7.8.6). `make preflight WORK_TYPE=<feature\|enhancement\|fix\|chore>` runs every pre-work check (ssh-agent, PR-cache freshness, branch isolation, integrity findings, drift-vs-anchor, doc-debt, adoption, W20 freshness) into `preflight-cache.json`. Mandatory Phase 0.0 step (§10.6). |
 | **`state_owner`** | Required top-level state.json enum (`{ft2, fitme-story}`, v7.8.3) declaring which repo holds the canonical state file. Enforced by the `STATE_OWNER_*` gates. |
 | **snapshot-phase / integrity-diff** | `make snapshot-phase` (v7.8.3) writes a per-phase off-SSD backup; `make integrity-diff` (v7.8.6) diffs current platform state vs the 2026-05-14 baseline anchor. |
@@ -581,7 +581,7 @@ Defined in `.github/workflows/framework-status-weekly.yml` (v7.6 Phase 2c). Cron
 
 When a gate fires, the finding alone does not tell you whether it is a real problem or an expected artifact (a squash-merge leaving no branch attribution, an empty PR cache, a heuristic over-trigger, etc.). The **Observed Patterns Catalog** at [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) is the canonical manifest of every recognized fire-pattern. Each entry carries a **trigger**, a **why-expected** classification (by-design / cleanup-artifact / silent-pass-then-fixed / heuristic-FP / schema-drift), a **distinguishing-real-signal** rule, and a **silence path**.
 
-- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 26 workflow/operational patterns (Section 2, `W1`–`W26`).
+- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 28 workflow/operational patterns (Section 2, `W1`–`W28`).
 - **CLI:** `make observed-patterns`.
 - **Preflight-loaded** by `/pm-workflow` and referenced by all spoke skills.
 - **Operator obligation (mandatory):** when any framework gate or advisory fires, the FIRST step is to consult this catalog. Apply the documented remediation if the pattern matches; investigate only if novel; and **append a new entry** to the catalog before the feature that surfaced the novel pattern is closed. The catalog is append-only-by-default.
