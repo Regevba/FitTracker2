@@ -16,10 +16,10 @@
     },
     {
       "provider": "aws-bedrock",
-      "endpoint": "anthropic.claude-haiku-4-5-PLACEHOLDER-v1:0",
+      "endpoint": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
       "api_kind": "bedrock",
       "role": "routing-test RIGHT side — same model id (semantically) as Anthropic-direct LEFT, served via AWS Bedrock instead. If signatures distinguishable at signature_delta_ratio > 2.0 the HADF dispatch claim survives; if indistinguishable (< 1.0) the claim is REFUTED on this metric.",
-      "operator_verification_required": "Confirm the exact dated Bedrock model id before lock. Run: `aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION` and identify the active claude-haiku-4-5 entry. The PLACEHOLDER suffix above is a placeholder — replace with the operator-verified dated form (typically YYYYMMDD-v1:0). Update BOTH this prereg AND scripts/hadf-phase2bis-collect.py ENDPOINTS['subexp3'] before the ceremony lock."
+      "operator_verification_resolved": "RESOLVED 2026-06-02 via §4 pre-lock smoke probe. The bare on-demand model id `anthropic.claude-haiku-4-5-20251001-v1:0` (which `list-foundation-models` reports ACTIVE) is NOT invocable via ConverseStream — Bedrock returns `ValidationException: on-demand throughput isn't supported, use an inference profile`. Resolved to the US cross-region SYSTEM_DEFINED inference profile `us.anthropic.claude-haiku-4-5-20251001-v1:0` (verified ACTIVE via `aws bedrock list-inference-profiles`; live probe returned ttft≈1.95s cold-start / tps≈58 / real tokens). The `us.` profile (not `global.`) is chosen to region-lock serving and minimize cross-geo routing variance, keeping the Bedrock-vs-Anthropic-direct latency comparison fair."
     }
   ],
   "per_call_controls": {
@@ -94,7 +94,7 @@
     "anchor_drift_max_sigma_for_pass": 4.0
   },
   "harness_hardening_proof": {
-    "env_local_sha256_at_deploy": "TBD — computed at lock time via shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+    "env_local_sha256_at_deploy": "5b379e825c5414d10ee88a23c5975968d6480a96803b0f57451810d3caedb44a",
     "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A — soak window scaffolding — establishes worktree-local venv pattern (Fix #1) via scripts/hadf-phase2bis-collect.sh preflight Check A (venv binary executable). Carries forward for Sub-exp 3 unchanged.",
     "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp3-deliberate-break.log",
     "state_owner_at_creation": "ft2"
@@ -112,15 +112,15 @@
     },
     {
       "provider": "aws-bedrock",
-      "endpoint": "anthropic.claude-haiku-4-5-PLACEHOLDER-v1:0",
+      "endpoint": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
       "api_kind": "bedrock",
-      "operator_action_required_before_lock": "Resolve exact dated model id via: aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION. Update PLACEHOLDER in both this prereg AND ENDPOINTS['subexp3'] in collect.py before running lock-prereg.sh."
+      "operator_action_resolved_2026_06_02": "Resolved to the US cross-region inference profile (NOT the bare on-demand id, which Bedrock rejects for ConverseStream). Verified via `aws bedrock list-inference-profiles` + live probe. See endpoints[].operator_verification_resolved above for full rationale."
     }
   ],
   "operator_prerequisites": {
-    "aws_credentials_configured": "TBD — operator confirms `aws sts get-caller-identity` returns successfully + AWS_REGION env var set in .env.local",
-    "bedrock_model_access_granted": "TBD — operator confirms Anthropic Claude model access has been requested + APPROVED at https://console.aws.amazon.com/bedrock/home#/modelaccess (one-time per AWS account; approval can take minutes to hours; START THIS REQUEST NOW given Sub-exp 3 launch ETA ~2026-06-02)",
-    "bedrock_model_id_verified": "TBD — operator runs `aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION` and updates BOTH this prereg's bedrock endpoint string AND ENDPOINTS['subexp3'] in collect.py with the exact dated model id",
+    "aws_credentials_configured": "CONFIRMED 2026-06-02: `aws sts get-caller-identity` returns IAM user arn:aws:iam::988661375201:user/hadf-bedrock.; AWS_REGION=us-east-1 set in .env.local.",
+    "bedrock_model_access_granted": "CONFIRMED 2026-06-02: Anthropic Claude model access APPROVED; `aws bedrock list-foundation-models --by-provider anthropic` shows anthropic.claude-haiku-4-5-20251001-v1:0 status=ACTIVE.",
+    "bedrock_model_id_verified": "CONFIRMED 2026-06-02 via §4 live probe: resolved to US cross-region inference profile us.anthropic.claude-haiku-4-5-20251001-v1:0 (the bare on-demand id is NOT invocable via ConverseStream). Verified via `aws bedrock list-inference-profiles` + real call (ttft≈1.95s/tps≈58). Both this prereg's endpoint string AND ENDPOINTS['subexp3'] in collect.py updated.",
     "anchor_drift_baseline_in_hand": "Sub-exp 1A's anchor data preserved at ~/Documents/FitTracker2-backups/2026-05-26-hadf-sub-exp-1a-raw-data/ — required for anchor_drift_subexp1a trip-wire computation"
   }
 }

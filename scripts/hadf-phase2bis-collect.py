@@ -76,13 +76,14 @@ ENDPOINTS = {
         # dispatch premise fails.
         # - openai/gpt-4o-mini = anchor carried from Sub-exp 1A (cross-window drift check)
         # - anthropic/claude-haiku-4-5-20251001 = anchor carried from Sub-exp 1A + routing-test LEFT side
-        # - aws-bedrock/anthropic.claude-haiku-4-5-PLACEHOLDER-v1:0 = routing-test RIGHT side
-        #   OPERATOR MUST resolve the exact dated Bedrock model id before ceremony:
-        #     aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION
-        #   then update both this ENDPOINTS entry AND the locked prereg's endpoint string.
+        # - aws-bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0 = routing-test RIGHT side
+        #   RESOLVED 2026-06-02 (§4 pre-lock probe): must use the US cross-region INFERENCE
+        #   PROFILE, not the bare on-demand model id — Bedrock rejects the latter for
+        #   ConverseStream ("on-demand throughput isn't supported"). Verified via
+        #   `aws bedrock list-inference-profiles` + live probe (ttft≈1.95s / tps≈58).
         ("openai", "gpt-4o-mini", "direct"),
         ("anthropic", "claude-haiku-4-5-20251001", "direct"),
-        ("aws-bedrock", "anthropic.claude-haiku-4-5-PLACEHOLDER-v1:0", "bedrock"),
+        ("aws-bedrock", "us.anthropic.claude-haiku-4-5-20251001-v1:0", "bedrock"),
     ],
 }
 
