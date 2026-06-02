@@ -2,7 +2,7 @@
   "feature": "training-program-customization",
   "description": "Replace the fixed 6-day Push/Pull/Legs split (Models/TrainingProgramData.swift) with a user-defined custom training program. Users can: (a) pick a starting template from the gallery (current PPL, Upper/Lower, Full-body 3x/week, Bro split), (b) edit days (rename / change DayType / reorder), (c) add/remove/reorder exercises within each day from the catalog (depends on C3 read-only library), (d) save multiple programs and switch between them. Existing users keep current PPL until they explicitly create or import a different program — migration is implicit, not destructive. Closes backlog L348 (RICE 7.0, 4-6d Feature 9-phase — LARGEST in tier C carryover).",
   "work_type": "feature",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-06-01T19:50:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -37,15 +37,26 @@
     "scope_v1_NOT": "Per-day target progression curves. Periodization phase blocks. AI-suggested replacements. Shared community programs. Mid-week swap warnings."
   },
   "tasks": [],
+  "prd_path": "docs/product/prd/training-program-customization.md",
   "phases": {
     "research": {
-      "started_at": "2026-06-01T19:50:00Z"
+      "started_at": "2026-06-01T19:50:00Z",
+      "ended_at": "2026-06-02T14:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue with D1, C6 and C3"
+    },
+    "prd": {
+      "started_at": "2026-06-02T14:00:00Z"
     }
   },
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-01T19:50:00Z"
+        "started_at": "2026-06-01T19:50:00Z",
+        "ended_at": "2026-06-02T14:00:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-02T14:00:00Z"
       }
     }
   },
@@ -55,6 +66,12 @@
       "to": "research",
       "at": "2026-06-01T19:50:00Z",
       "reason": "C6 from 2026-05-31 tier carryover plan (RICE 7.0, LARGEST). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only — scope is 4-6d Feature 9-phase, can't realistically full-ship in one continuation alongside C3+E4+D1."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-02T14:00:00Z",
+      "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD authored at docs/product/prd/training-program-customization.md (~550 lines). C3 picker-mode dependency RESOLVED via C3 Phase 1 PRD §'Surface 1' defining ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil) — C6 calls with non-nil picker. FROZEN: schemaVersion=1, maxSavedProgramsPerUser=10, 4 templates, opt-in snapshot migration (NO destructive), 3 override fields (sets/reps/rest) all nil-defaulted, 7 days per program, picker-mode init signature. Data model: CustomProgram + CustomDay + ExerciseSlot, exerciseID as string reference (not copy). 6 surfaces (list / new-sheet / editor / day-edit-sheet / slot-override-sheet / Settings entry-row). 8 new training_-prefixed analytics events. 7 new + 8 modified source files, ~500 LoC tests, Phase 4 LoC est ~1700. 6 success metrics T1/T2/T3 + 5 kill criteria + 8 OQ resolved. Phase 4 begin BLOCKED on C3 reaching Phase 4 implement-complete (recommended; or stub picker with operator approval). Phase E compliant — no new gates, no schema fields."
     }
   ]
 }

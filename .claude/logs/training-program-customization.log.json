@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T17:29:44Z",
-  "updated_at": "2026-06-01T17:29:44Z",
+  "updated_at": "2026-06-02T09:47:19Z",
   "events": [
     {
       "timestamp": "2026-06-01T17:29:44Z",
@@ -15,6 +15,19 @@
       "summary": "C6 Phase 0 (Research) initialized. Research.md authored (12 sections, ~360 lines). Scope: replace fixed PPL with user-defined custom programs. Data model: customPrograms[] + customDay + exerciseSlot with exerciseID reference. 4 starter templates (PPL/UL/FB3/Empty). NO destructive migration \u2014 fixed PPL stays as fallback. Depends on C3 (PR #573) shipping exercise library picker. Out-of-scope guards (8 explicit). 8 new training_-prefixed analytics events. Phase 4 LoC estimate ~1700. Phase E compliant. 4-6 person-days effort.",
       "artifacts": [
         ".claude/features/training-program-customization/research.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-02T09:47:19Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Phase 0 (Research) approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD at docs/product/prd/training-program-customization.md (~550 lines). C3 picker-mode dependency RESOLVED via C3 PRD Surface 1. FROZEN: 4 templates / opt-in snapshot migration / 3 override fields / 7 days per program / picker-mode init signature. 6 surfaces. 8 new training_-prefixed analytics events. 7 new + 8 modified source files. Phase 4 LoC est ~1700. 6 success metrics T1/T2/T3 + 5 kill criteria + 8 OQ resolved. Phase 4 GATED on C3 reaching implement-complete.",
+      "artifacts": [
+        "docs/product/prd/training-program-customization.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",
