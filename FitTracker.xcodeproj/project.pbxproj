@@ -24,6 +24,7 @@
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
+		C3ELFB10000000000000003 /* ExerciseLibraryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */; };
 		A10000010000000000000004 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* AuthManager.swift */; };
 		A10000010000000000000005 /* SignInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SignInService.swift */; };
 		A10000010000000000000006 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* HealthKitService.swift */; };
@@ -319,6 +320,7 @@
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
+		C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilter.swift; sourceTree = "<group>"; };
 		A20000010000000000000004 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000005 /* SignInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInService.swift; sourceTree = "<group>"; };
 		A20000010000000000000006 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
@@ -702,6 +704,7 @@
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
+				C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */,
 				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
 				A20000010000000000000018 /* ReadinessAlertRecommendation.swift */,
 				TAH200001000000000000001 /* TrendAlertContext.swift */,
@@ -1475,6 +1478,7 @@
 				A10000010000000000000001 /* FitTrackerApp.swift in Sources */,
 				A10000010000000000000002 /* DomainModels.swift in Sources */,
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
+				C3ELFB10000000000000003 /* ExerciseLibraryFilter.swift in Sources */,
 				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
 				A10000010000000000000018 /* ReadinessAlertRecommendation.swift in Sources */,
 				SP100000000000000000AA01 /* StatsPeriod.swift in Sources */,
