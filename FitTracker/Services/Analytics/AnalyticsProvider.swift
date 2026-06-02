@@ -296,6 +296,24 @@ enum AnalyticsEvent {
     /// User taps a result row → detail view pushes (read-only mode) OR picker fires (picker mode)
     static let trainingExerciseDetailOpened    = "training_exercise_detail_opened"
 
+    // ── C6: Custom Training Programs (screen-prefixed: training_) ──
+    /// User opens Settings → Customize Program (the program list sheet)
+    static let trainingCustomProgramListOpened        = "training_custom_program_list_opened"
+    /// User picks a template tile in NewProgramSheet
+    static let trainingCustomProgramTemplateSelected  = "training_custom_program_template_selected"
+    /// User saves a program in the editor (or NewProgramSheet on first save)
+    static let trainingCustomProgramSaved             = "training_custom_program_saved"
+    /// User activates a saved program (sets activeProgramID)
+    static let trainingCustomProgramActivated         = "training_custom_program_activated"
+    /// User confirms swipe-to-delete on a program
+    static let trainingCustomProgramDeleted           = "training_custom_program_deleted"
+    /// User edits a day's name / DayType / weekday in DayEditSheet
+    static let trainingDayEdited                      = "training_day_edited"
+    /// User adds an exercise slot to a day (via C3 picker callback)
+    static let trainingExerciseSlotAdded              = "training_exercise_slot_added"
+    /// User removes an exercise slot from a day
+    static let trainingExerciseSlotRemoved            = "training_exercise_slot_removed"
+
     // ── Import Events (custom) ─────────────────────────────
 
     /// User initiates a training plan import flow
@@ -523,7 +541,16 @@ enum AnalyticsParam {
     static let queryLength     = "query_length"     // int — chars in the committed search query (>= 2)
     static let viaSearch       = "via_search"       // bool — query non-empty at row tap
     static let viaFilter       = "via_filter"       // bool — any chip non-default at row tap
-    static let exerciseId      = "exercise_id"      // string — canonical exercise-id from TrainingProgramData.allExercises
+    static let exerciseId      = "exercise_id"      // string — canonical exercise-id from TrainingProgramData.allExercises (shared by C3 + C6)
+
+    // C6 Custom Training Programs parameters
+    // (count + field + exerciseId already declared above)
+    static let programId               = "program_id"                // string — UUID of CustomProgram
+    static let dayId                   = "day_id"                    // string — UUID of CustomDay
+    static let templateId              = "template_id"               // string — ppl_6day / upper_lower_4day / full_body_3day / empty
+    static let dayCount                = "day_count"                 // int — number of days with at least 1 slot
+    static let totalExerciseCount      = "total_exercise_count"      // int — sum of slots across all days
+    static let overrideCount           = "override_count"            // int 0..3 — number of non-nil override fields per slot
 
     // Onboarding auth parameters
     // method already defined above — reuse for email/google/apple

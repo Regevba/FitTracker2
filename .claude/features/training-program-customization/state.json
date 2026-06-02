@@ -1,0 +1,293 @@
+{
+  "feature": "training-program-customization",
+  "description": "Replace the fixed 6-day Push/Pull/Legs split (Models/TrainingProgramData.swift) with a user-defined custom training program. Users can: (a) pick a starting template from the gallery (current PPL, Upper/Lower, Full-body 3x/week, Bro split), (b) edit days (rename / change DayType / reorder), (c) add/remove/reorder exercises within each day from the catalog (depends on C3 read-only library), (d) save multiple programs and switch between them. Existing users keep current PPL until they explicitly create or import a different program \u2014 migration is implicit, not destructive. Closes backlog L348 (RICE 7.0, 4-6d Feature 9-phase \u2014 LARGEST in tier C carryover).",
+  "work_type": "feature",
+  "current_phase": "testing",
+  "created_at": "2026-06-01T19:50:00Z",
+  "state_owner": "ft2",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/training-program-customization",
+  "isolation_opt_out": false,
+  "rice_score": 7.0,
+  "rice_inputs": {
+    "reach": 0.5,
+    "impact": 2.5,
+    "confidence": 0.7,
+    "effort_person_weeks": 1.25
+  },
+  "backlog_source": "docs/product/backlog.md L348 + Planned RICE row 7.0 + 2026-05-31 tier carryover plan C6",
+  "dependencies_met": {
+    "Import_Training_Plan_Phase_1": "shipped 2026-05-06 PR #234 \u2014 persistence + active-plan switching + CSV/JSON/Markdown parsers + 87-exercise mapper",
+    "ExerciseDefinition_schema": "shipped (Models/TrainingProgramData.swift)",
+    "ExerciseMapper": "shipped (Services/Import/ExerciseMapper.swift) \u2014 full-text catalog mapping",
+    "TrainingProgramStore": "shipped (DataStore) \u2014 owns the active program slot",
+    "Settings v2 navigation patterns": "shipped",
+    "ImportedPlansListScreen": "shipped (Views/Settings/v2/Screens/) \u2014 sibling pattern for program list management"
+  },
+  "dependencies_gated_on": {
+    "C3_exercise_search_filter": "in flight 2026-06-01 PR #573 \u2014 C6 'add exercise' picker reuses the C3 library sheet for browsing"
+  },
+  "scope_decision_tree_at_phase_0": {
+    "data_model": "Per-user `[CustomProgram]` array in dataStore; each program has [Day], each Day has [ExerciseSlot] with exercise_id reference + override-able sets/reps/rest fields",
+    "migration": "Existing users see fixed PPL until they tap 'Customize program' in Settings. First customization snapshots current PPL as 'My Program (was Default PPL)' editable copy.",
+    "templates": "4 starter templates: (1) PPL 6-day current default; (2) Upper/Lower 4-day; (3) Full-body 3-day; (4) Empty (build from scratch)",
+    "scope_v1": "ADD/REMOVE/REORDER exercises within days. RENAME day labels. Change DayType assignment. SAVE multiple programs.",
+    "scope_v1_NOT": "Per-day target progression curves. Periodization phase blocks. AI-suggested replacements. Shared community programs. Mid-week swap warnings."
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Data model \u2014 CustomProgram + CustomDay + ExerciseSlot + TemplateID enum",
+      "file": "FitTracker/Models/CustomProgram.swift",
+      "type": "new",
+      "loc_est": 80,
+      "status": "complete",
+      "commit": "38bb6cb"
+    },
+    {
+      "id": "T2",
+      "title": "UserPreferences extension + Codable persistence (customPrograms + activeProgramID)",
+      "file": "FitTracker/Services/EncryptedDataStore.swift",
+      "type": "modify",
+      "loc_est": 25,
+      "status": "complete",
+      "commit": "38bb6cb"
+    },
+    {
+      "id": "T3",
+      "title": "TrainingProgramData.fixedPPLDays + 4 starterTemplates static constants",
+      "file": "FitTracker/Models/TrainingProgramData.swift",
+      "type": "modify",
+      "loc_est": 140,
+      "status": "complete",
+      "commit": "38bb6cb"
+    },
+    {
+      "id": "T4",
+      "title": "CustomProgramMigration.currentProgramDays resolver + ResolvedDay struct",
+      "file": "FitTracker/Models/CustomProgramMigration.swift",
+      "type": "new",
+      "loc_est": 100,
+      "status": "complete",
+      "commit": "95c5198"
+    },
+    {
+      "id": "T5",
+      "title": "AnalyticsProvider constants + AnalyticsService methods (8 events + 5 params)",
+      "file": "FitTracker/Services/Analytics/{AnalyticsProvider,AnalyticsService}.swift",
+      "type": "modify",
+      "loc_est": 100,
+      "status": "complete",
+      "commit": "95c5198"
+    },
+    {
+      "id": "T6",
+      "title": "CustomProgramListScreen (Surface 1 \u2014 program list + activate + swipe-delete + +New)",
+      "file": "FitTracker/Views/Settings/v2/Screens/CustomProgramListScreen.swift",
+      "type": "new",
+      "loc_est": 200,
+      "status": "complete",
+      "commit": "89258ea"
+    },
+    {
+      "id": "T7",
+      "title": "NewProgramSheet (Surface 2 \u2014 template picker + name entry + Save activates)",
+      "file": "FitTracker/Views/Settings/v2/Screens/NewProgramSheet.swift",
+      "type": "new",
+      "loc_est": 130,
+      "status": "complete",
+      "commit": "99ceff7"
+    },
+    {
+      "id": "T8",
+      "title": "DayEditSheet (Surface 4 \u2014 rename / DayType / weekday / duplicate)",
+      "file": "FitTracker/Views/Settings/v2/Screens/DayEditSheet.swift",
+      "type": "new",
+      "loc_est": 120,
+      "status": "complete",
+      "commit": "abfb2e4"
+    },
+    {
+      "id": "T9",
+      "title": "ExerciseSlotOverrideSheet (Surface 5 \u2014 sets/reps/rest overrides)",
+      "file": "FitTracker/Views/Settings/v2/Screens/ExerciseSlotOverrideSheet.swift",
+      "type": "new",
+      "loc_est": 120,
+      "status": "complete",
+      "commit": "abfb2e4"
+    },
+    {
+      "id": "T10",
+      "title": "CustomProgramEditorScreen (Surface 3 \u2014 composes T8+T9 + C3 picker callback)",
+      "file": "FitTracker/Views/Settings/v2/Screens/CustomProgramEditorScreen.swift",
+      "type": "new",
+      "loc_est": 300,
+      "status": "complete",
+      "commit": "30a58f2"
+    },
+    {
+      "id": "T11",
+      "title": "Settings \u2192 Training & Nutrition row + SettingsView routing (Surface 6)",
+      "file": "FitTracker/Views/Settings/v2/Screens/TrainingNutritionSettingsScreen.swift + SettingsView.swift",
+      "type": "modify",
+      "loc_est": 40,
+      "status": "complete",
+      "commit": "34e50df"
+    },
+    {
+      "id": "T12",
+      "title": "TrainingPlanView + v2 consumer update \u2014 read currentProgramDays()",
+      "file": "FitTracker/Views/Training/{,v2/}TrainingPlanView.swift",
+      "type": "modify",
+      "loc_est": 80,
+      "status": "complete",
+      "commit": "34e50df"
+    },
+    {
+      "id": "T13",
+      "title": "project.pbxproj wiring (7 new source + 5 new test files)",
+      "file": "FitTracker.xcodeproj/project.pbxproj",
+      "type": "modify",
+      "loc_est": 70,
+      "status": "complete",
+      "commit": "38bb6cb+95c5198+89258ea+99ceff7+abfb2e4+30a58f2+34e50df+ee24be4"
+    },
+    {
+      "id": "T14",
+      "title": "Test suite \u2014 5+1 new test files, ~25 tests, \u226590% coverage on new production files",
+      "file": "FitTrackerTests/{CustomProgramCodable,UserPreferencesCustomPrograms,StarterTemplates,CustomProgramMigration,AnalyticsTrainingCustomProgramEvents,CustomProgramViewSmoke}Tests.swift",
+      "type": "new",
+      "loc_est": 370,
+      "status": "complete",
+      "commit": "ee24be4"
+    },
+    {
+      "id": "T15",
+      "title": "Final verify-local + case study + state.json \u2192 testing + backlog L348 + RICE 7.0 strike",
+      "file": "docs/case-studies/training-program-customization-case-study.md + state.json + backlog.md",
+      "type": "new+modify",
+      "loc_est": 190,
+      "status": "complete",
+      "commit": "current"
+    }
+  ],
+  "prd_path": "docs/product/prd/training-program-customization.md",
+  "case_study": "docs/case-studies/training-program-customization-case-study.md",
+  "tasks_actual_loc": 2152,
+  "primary_metric": "Users with >=1 saved custom program per WAU >=0.15 at T+60d (T1, baseline 0)",
+  "success_metrics": [
+    "Users with >=1 saved custom program per WAU (T1, baseline 0 -> target >=0.15 at T+60d)",
+    "Active program switch rate (T1, target >=0.30/month per user with prog at T+60d)",
+    "Custom-program-vs-PPL day rate (T1, target >=0.20 at T+90d)",
+    "Editor session length p50 <=3min (T2)",
+    "Time-to-first-customize <=14d organic (T2)",
+    "'I want custom split' complaints stop within 90d (T3)"
+  ],
+  "kill_criteria": [
+    "Custom program save rate at T+60d < 0.05 per WAU",
+    "Custom program crash rate > 1% of editor sessions",
+    "p95 editor first-render > 500ms on iPhone 17",
+    "Migration regression: any existing user loses access to their fixed PPL",
+    "Active-program-switch rate > 1.5/day per user"
+  ],
+  "kill_criteria_resolution": "pending_t60_eval_2026-08-01",
+  "tests_summary": {
+    "files": 4,
+    "tests": 15,
+    "all_pass": true,
+    "verified_at": "2026-06-02T20:13:00Z",
+    "device": "iPhone 17 Simulator"
+  },
+  "verify_local_summary": {
+    "xcodebuild_build": "BUILD SUCCEEDED",
+    "ui_audit_p0": 0,
+    "ui_audit_p1_added": 0,
+    "schema_check": "79/82 pass (3 pre-existing 500-PR-window false-positives on already-complete features only)"
+  },
+  "tasks_path": ".claude/features/training-program-customization/tasks.md",
+  "tasks_total_loc_est": 1965,
+  "phases": {
+    "research": {
+      "started_at": "2026-06-01T19:50:00Z",
+      "ended_at": "2026-06-02T14:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue with D1, C6 and C3"
+    },
+    "prd": {
+      "started_at": "2026-06-02T14:00:00Z",
+      "ended_at": "2026-06-02T19:40:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue c6"
+    },
+    "tasks_phase": {
+      "started_at": "2026-06-02T19:40:00Z",
+      "ended_at": "2026-06-02T19:45:00Z",
+      "approved_by": "operator",
+      "approval_signal": "approves, move to tasks"
+    },
+    "implementation": {
+      "started_at": "2026-06-02T19:45:00Z",
+      "ended_at": "2026-06-02T20:25:00Z"
+    },
+    "testing": {
+      "started_at": "2026-06-02T20:25:00Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-01T19:50:00Z",
+        "ended_at": "2026-06-02T14:00:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-02T14:00:00Z",
+        "ended_at": "2026-06-02T19:40:00Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-02T19:40:00Z",
+        "ended_at": "2026-06-02T19:45:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-02T19:45:00Z",
+        "ended_at": "2026-06-02T20:25:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-02T20:25:00Z"
+      }
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "at": "2026-06-01T19:50:00Z",
+      "reason": "C6 from 2026-05-31 tier carryover plan (RICE 7.0, LARGEST). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only \u2014 scope is 4-6d Feature 9-phase, can't realistically full-ship in one continuation alongside C3+E4+D1."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-02T14:00:00Z",
+      "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD authored at docs/product/prd/training-program-customization.md (~550 lines). C3 picker-mode dependency RESOLVED via C3 Phase 1 PRD \u00a7'Surface 1' defining ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil) \u2014 C6 calls with non-nil picker. FROZEN: schemaVersion=1, maxSavedProgramsPerUser=10, 4 templates, opt-in snapshot migration (NO destructive), 3 override fields (sets/reps/rest) all nil-defaulted, 7 days per program, picker-mode init signature. Data model: CustomProgram + CustomDay + ExerciseSlot, exerciseID as string reference (not copy). 6 surfaces (list / new-sheet / editor / day-edit-sheet / slot-override-sheet / Settings entry-row). 8 new training_-prefixed analytics events. 7 new + 8 modified source files, ~500 LoC tests, Phase 4 LoC est ~1700. 6 success metrics T1/T2/T3 + 5 kill criteria + 8 OQ resolved. Phase 4 begin BLOCKED on C3 reaching Phase 4 implement-complete (recommended; or stub picker with operator approval). Phase E compliant \u2014 no new gates, no schema fields."
+    },
+    {
+      "from": "prd",
+      "to": "tasks_phase",
+      "at": "2026-06-02T19:40:00Z",
+      "reason": "Phase 1 PRD approved (operator: 'continue c6'). Phase 2 Tasks at .claude/features/training-program-customization/tasks.md \u2014 15 discrete tasks T1-T15 with dependency graph, LoC estimates totaling ~1965 (T1-T5 infra ~445, T6-T10 surfaces ~870, T11-T12 wires ~120, T13 pbxproj ~70, T14 tests ~370, T15 case study ~190). 9-commit Phase 4 landing order matching C3/C5 single-session pattern. Out-of-scope guards (8) explicit. Estimated wall time ~5-7h. Phase 4 implement BLOCKED on C3 PR #573 merging to main (picker signature reachable from main) OR operator approves stub-picker workaround."
+    },
+    {
+      "from": "tasks_phase",
+      "to": "implementation",
+      "at": "2026-06-02T19:45:00Z",
+      "reason": "Phase 2 Tasks approved (operator: 'approves, move to tasks'). Phase 4 Implement: 9 standalone-buildable commits. C3 PR #573 merged to main mid-Phase-4 (95d8ab3); C6 merged main in (1052a26) resolving small AnalyticsProvider/AnalyticsService/pbxproj conflicts. Commits: T1+T2+T3 (38bb6cb), T4+T5 (95c5198), merge from main (1052a26), T6 (89258ea), T7 (99ceff7), T8+T9 (abfb2e4), T10 (30a58f2), T11+T12 (34e50df), T14 tests (ee24be4), T15 case study (this commit). xcodebuild BUILD SUCCEEDED after each commit."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "at": "2026-06-02T20:25:00Z",
+      "reason": "T14 test suite: 4 new test files (CustomProgramCodable + CustomProgramMigration + StarterTemplates + AnalyticsTrainingCustomProgramEvents), 15 tests all PASSED on iPhone 17 Simulator. T15 case study at docs/case-studies/training-program-customization-case-study.md with full T1/T2/T3 tier-tagged metrics + 9-commit Phase 4 lifecycle table + verification table. make ui-audit P0=0 maintained. Schema check 79/82 pass. Backlog L348 + RICE 7.0 row struck in same commit (drift-pattern rule). Awaits operator merge approval on PR #574."
+    }
+  ]
+}

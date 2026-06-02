@@ -34,7 +34,9 @@ struct TrainingPlanView: View {
     // MARK: - Computed Properties
 
     private var exercisesForSelectedDay: [ExerciseDefinition] {
-        TrainingProgramData.exercises(for: selectedDay)
+        // C6: read through CustomProgramMigration resolver. When
+        // activeProgramID is nil → fallback to fixed PPL (unchanged behavior).
+        CustomProgramMigration.exercisesForDay(selectedDay, in: dataStore.userPreferences)
     }
     private var focusedExercise: ExerciseDefinition? {
         if let focusedExerciseID,

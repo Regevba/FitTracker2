@@ -25,6 +25,9 @@
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
+		C6CP100000000000000003 /* CustomProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CP200000000000000003 /* CustomProgram.swift */; };
+		C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6TPT200000000000000003 /* TrainingProgramTemplates.swift */; };
+		C6CPM100000000000000004 /* CustomProgramMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPM200000000000000004 /* CustomProgramMigration.swift */; };
 		C3ELFB10000000000000003 /* ExerciseLibraryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */; };
 		A10000010000000000000004 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* AuthManager.swift */; };
 		A10000010000000000000005 /* SignInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SignInService.swift */; };
@@ -180,6 +183,11 @@
 		NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000009 /* FirstWorkoutTrigger.swift */; };
 		NT1000001000000000000010 /* ReminderPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000010 /* ReminderPreferencesStore.swift */; };
 		NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS2100001000000000000001 /* NotificationsSettingsScreen.swift */; };
+		C6CPLS100000000000UI06 /* CustomProgramListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */; };
+		C6NPS100000000000UI07 /* NewProgramSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6NPS200000000000UI07 /* NewProgramSheet.swift */; };
+		C6DES100000000000UI08 /* DayEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DES200000000000UI08 /* DayEditSheet.swift */; };
+		C6ESOS100000000000UI09 /* ExerciseSlotOverrideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ESOS200000000000UI09 /* ExerciseSlotOverrideSheet.swift */; };
+		C6CPES100000000000UI10 /* CustomProgramEditorScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPES200000000000UI10 /* CustomProgramEditorScreen.swift */; };
 		C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */; };
 		D1SSDS00100000000000FB04 /* SuppressedSignalDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SSDS00200000000000FR04 /* SuppressedSignalDetailScreen.swift */; };
 		RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */; };
@@ -241,6 +249,10 @@
 		C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */; };
 		C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */; };
 		C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */; };
+		C6T14A0000000000000ATT01 /* CustomProgramCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14A0000000000000FRT01 /* CustomProgramCodableTests.swift */; };
+		C6T14D0000000000000ATT02 /* CustomProgramMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14D0000000000000FRT02 /* CustomProgramMigrationTests.swift */; };
+		C6T14E0000000000000ATT03 /* AnalyticsTrainingCustomProgramEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14E0000000000000FRT03 /* AnalyticsTrainingCustomProgramEventsTests.swift */; };
+		C6T14C0000000000000ATT04 /* StarterTemplatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14C0000000000000FRT04 /* StarterTemplatesTests.swift */; };
 		RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AA01 /* ReadinessEngine.swift */; };
 		RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AT01 /* ReadinessEngineTests.swift */; };
 		RM100000000000000000AT01 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM200000000000000000AT01 /* ReminderTests.swift */; };
@@ -332,6 +344,9 @@
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
+		C6CP200000000000000003 /* CustomProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgram.swift; sourceTree = "<group>"; };
+		C6TPT200000000000000003 /* TrainingProgramTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramTemplates.swift; sourceTree = "<group>"; };
+		C6CPM200000000000000004 /* CustomProgramMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramMigration.swift; sourceTree = "<group>"; };
 		C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilter.swift; sourceTree = "<group>"; };
 		A20000010000000000000004 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000005 /* SignInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInService.swift; sourceTree = "<group>"; };
@@ -509,6 +524,11 @@
 		NT2000001000000000000009 /* FirstWorkoutTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstWorkoutTrigger.swift; sourceTree = "<group>"; };
 		NT2000001000000000000010 /* ReminderPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStore.swift; sourceTree = "<group>"; };
 		NS2100001000000000000001 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
+		C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramListScreen.swift; sourceTree = "<group>"; };
+		C6NPS200000000000UI07 /* NewProgramSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProgramSheet.swift; sourceTree = "<group>"; };
+		C6DES200000000000UI08 /* DayEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayEditSheet.swift; sourceTree = "<group>"; };
+		C6ESOS200000000000UI09 /* ExerciseSlotOverrideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSlotOverrideSheet.swift; sourceTree = "<group>"; };
+		C6CPES200000000000UI10 /* CustomProgramEditorScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramEditorScreen.swift; sourceTree = "<group>"; };
 		C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackSettingsScreen.swift; sourceTree = "<group>"; };
 		D1SSDS00200000000000FR04 /* SuppressedSignalDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppressedSignalDetailScreen.swift; sourceTree = "<group>"; };
 		RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStoreTests.swift; sourceTree = "<group>"; };
@@ -551,6 +571,10 @@
 		C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationWithConfidenceTests.swift; sourceTree = "<group>"; };
 		C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilterTests.swift; sourceTree = "<group>"; };
 		C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingExerciseEventsTests.swift; sourceTree = "<group>"; };
+		C6T14A0000000000000FRT01 /* CustomProgramCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramCodableTests.swift; sourceTree = "<group>"; };
+		C6T14D0000000000000FRT02 /* CustomProgramMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramMigrationTests.swift; sourceTree = "<group>"; };
+		C6T14E0000000000000FRT03 /* AnalyticsTrainingCustomProgramEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingCustomProgramEventsTests.swift; sourceTree = "<group>"; };
+		C6T14C0000000000000FRT04 /* StarterTemplatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarterTemplatesTests.swift; sourceTree = "<group>"; };
 		RE200000000000000000AA01 /* ReadinessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngine.swift; sourceTree = "<group>"; };
 		RE200000000000000000AT01 /* ReadinessEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngineTests.swift; sourceTree = "<group>"; };
 		RM200000000000000000AT01 /* ReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTests.swift; sourceTree = "<group>"; };
@@ -727,6 +751,9 @@
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
+				C6CP200000000000000003 /* CustomProgram.swift */,
+				C6TPT200000000000000003 /* TrainingProgramTemplates.swift */,
+				C6CPM200000000000000004 /* CustomProgramMigration.swift */,
 				C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */,
 				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
 				A20000010000000000000018 /* ReadinessAlertRecommendation.swift */,
@@ -954,6 +981,10 @@
 				C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */,
 				C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */,
 				C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */,
+				C6T14A0000000000000FRT01 /* CustomProgramCodableTests.swift */,
+				C6T14D0000000000000FRT02 /* CustomProgramMigrationTests.swift */,
+				C6T14E0000000000000FRT03 /* AnalyticsTrainingCustomProgramEventsTests.swift */,
+				C6T14C0000000000000FRT04 /* StarterTemplatesTests.swift */,
 				AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */,
 				TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */,
 				IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */,
@@ -1308,6 +1339,11 @@
 				NS2100001000000000000001 /* NotificationsSettingsScreen.swift */,
 				C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */,
 				D1SSDS00200000000000FR04 /* SuppressedSignalDetailScreen.swift */,
+				C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */,
+				C6NPS200000000000UI07 /* NewProgramSheet.swift */,
+				C6DES200000000000UI08 /* DayEditSheet.swift */,
+				C6ESOS200000000000UI09 /* ExerciseSlotOverrideSheet.swift */,
+				C6CPES200000000000UI10 /* CustomProgramEditorScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1511,6 +1547,9 @@
 				A10000010000000000000001 /* FitTrackerApp.swift in Sources */,
 				A10000010000000000000002 /* DomainModels.swift in Sources */,
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
+				C6CP100000000000000003 /* CustomProgram.swift in Sources */,
+				C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */,
+				C6CPM100000000000000004 /* CustomProgramMigration.swift in Sources */,
 				C3ELFB10000000000000003 /* ExerciseLibraryFilter.swift in Sources */,
 				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
 				A10000010000000000000018 /* ReadinessAlertRecommendation.swift in Sources */,
@@ -1627,6 +1666,11 @@
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
 				NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */,
+				C6CPLS100000000000UI06 /* CustomProgramListScreen.swift in Sources */,
+				C6NPS100000000000UI07 /* NewProgramSheet.swift in Sources */,
+				C6DES100000000000UI08 /* DayEditSheet.swift in Sources */,
+				C6ESOS100000000000UI09 /* ExerciseSlotOverrideSheet.swift in Sources */,
+				C6CPES100000000000UI10 /* CustomProgramEditorScreen.swift in Sources */,
 				C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */,
 				D1SSDS00100000000000FB04 /* SuppressedSignalDetailScreen.swift in Sources */,
 				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
@@ -1733,6 +1777,10 @@
 				C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */,
 				C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */,
 				C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */,
+				C6T14A0000000000000ATT01 /* CustomProgramCodableTests.swift in Sources */,
+				C6T14D0000000000000ATT02 /* CustomProgramMigrationTests.swift in Sources */,
+				C6T14E0000000000000ATT03 /* AnalyticsTrainingCustomProgramEventsTests.swift in Sources */,
+				C6T14C0000000000000ATT04 /* StarterTemplatesTests.swift in Sources */,
 				AS100000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift in Sources */,
 				TP100000000000000000AT01 /* TrainingProgramStoreTests.swift in Sources */,
 				IE100000000000000000AT01 /* ImportEdgeCaseTests.swift in Sources */,

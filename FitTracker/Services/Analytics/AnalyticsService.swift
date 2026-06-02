@@ -799,6 +799,71 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - C6 Custom Training Programs Events
+
+    /// User opens the program list (Settings → Customize Program)
+    func logTrainingCustomProgramListOpened(count: Int) {
+        logEvent(AnalyticsEvent.trainingCustomProgramListOpened, parameters: [
+            AnalyticsParam.count: count,
+        ])
+    }
+
+    /// User picks a template tile in NewProgramSheet
+    func logTrainingCustomProgramTemplateSelected(templateId: String) {
+        logEvent(AnalyticsEvent.trainingCustomProgramTemplateSelected, parameters: [
+            AnalyticsParam.templateId: templateId,
+        ])
+    }
+
+    /// User saves a program in the editor (or initial template-pick)
+    func logTrainingCustomProgramSaved(programId: String, dayCount: Int, totalExerciseCount: Int) {
+        logEvent(AnalyticsEvent.trainingCustomProgramSaved, parameters: [
+            AnalyticsParam.programId: programId,
+            AnalyticsParam.dayCount: dayCount,
+            AnalyticsParam.totalExerciseCount: totalExerciseCount,
+        ])
+    }
+
+    /// User activates a saved program
+    func logTrainingCustomProgramActivated(programId: String) {
+        logEvent(AnalyticsEvent.trainingCustomProgramActivated, parameters: [
+            AnalyticsParam.programId: programId,
+        ])
+    }
+
+    /// User confirms swipe-to-delete on a program
+    func logTrainingCustomProgramDeleted(programId: String, dayCount: Int) {
+        logEvent(AnalyticsEvent.trainingCustomProgramDeleted, parameters: [
+            AnalyticsParam.programId: programId,
+            AnalyticsParam.dayCount: dayCount,
+        ])
+    }
+
+    /// User edits a day's name / DayType / weekday — fires once per field changed
+    func logTrainingDayEdited(dayId: String, field: String) {
+        logEvent(AnalyticsEvent.trainingDayEdited, parameters: [
+            AnalyticsParam.dayId: dayId,
+            AnalyticsParam.field: field,
+        ])
+    }
+
+    /// User adds an exercise slot to a day (via C3 picker callback)
+    func logTrainingExerciseSlotAdded(exerciseId: String, dayId: String, overrideCount: Int) {
+        logEvent(AnalyticsEvent.trainingExerciseSlotAdded, parameters: [
+            AnalyticsParam.exerciseId: exerciseId,
+            AnalyticsParam.dayId: dayId,
+            AnalyticsParam.overrideCount: overrideCount,
+        ])
+    }
+
+    /// User removes an exercise slot from a day
+    func logTrainingExerciseSlotRemoved(exerciseId: String, dayId: String) {
+        logEvent(AnalyticsEvent.trainingExerciseSlotRemoved, parameters: [
+            AnalyticsParam.exerciseId: exerciseId,
+            AnalyticsParam.dayId: dayId,
+        ])
+    }
+
     // MARK: - Onboarding Auth Events
 
     func logOnboardingAuthMethodSelected(method: String) {
