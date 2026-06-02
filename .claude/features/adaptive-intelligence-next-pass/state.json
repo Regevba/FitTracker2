@@ -2,7 +2,7 @@
   "feature": "adaptive-intelligence-next-pass",
   "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform — it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
   "work_type": "feature",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-06-01T20:15:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -36,15 +36,32 @@
     "Phase_0_decision_required": "Pick 2 of D1.a/b/c/d for Phase 1 PRD. Phase 0 enumerates tradeoffs but does NOT pre-commit. Recommendation: D1.a + D1.d (100% on-device, ~3.5 person-days)."
   },
   "tasks": [],
+  "prd_path": "docs/product/prd/adaptive-intelligence-next-pass.md",
+  "selected_sub_features_v1": ["D1.a", "D1.d"],
+  "deferred_sub_features": {
+    "D1.b": "v8.0+ (backend cohort priors infra still maturing)",
+    "D1.c": "v8.0+ (LLM gateway needs Phase 0 separately)",
+    "D1.e": "v8.0+ (cross-segment trend correlation, low priority)"
+  },
   "phases": {
     "research": {
-      "started_at": "2026-06-01T20:15:00Z"
+      "started_at": "2026-06-01T20:15:00Z",
+      "ended_at": "2026-06-02T13:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue with D1, C6 and C3"
+    },
+    "prd": {
+      "started_at": "2026-06-02T13:00:00Z"
     }
   },
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-01T20:15:00Z"
+        "started_at": "2026-06-01T20:15:00Z",
+        "ended_at": "2026-06-02T13:00:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-02T13:00:00Z"
       }
     }
   },
@@ -54,6 +71,12 @@
       "to": "research",
       "at": "2026-06-01T20:15:00Z",
       "reason": "D1 from 2026-05-31 tier carryover plan (RICE 4.5, research-heavy 5-7d, pairs with C5). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only — D1 has 4 open candidate sub-features requiring decision before PRD authoring."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-02T13:00:00Z",
+      "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD locks recommended pair D1.a + D1.d. FROZEN constants: timeDecayLambda=0.0231 day^-1 (half-life 30d), trendDetectionWindow=60d, trendUnsuppressionAcceptanceFloor=0.50, manualUnsuppressionPersistence=14d, permanentBlacklistRevocation via clearAll, analyticsReinforcementMode confidenceTierOnly (inherited from C5). 4 new home_ai_feedback_* analytics events. 2 new source files + 6 modified. Data model: ManualUnsuppression + BlacklistedSignal new persisted fields. 100% on-device, no backend touch, no DPIA delta. 6 success metrics T1/T2/T3 tagged + 5 kill criteria. 6 OQ resolved. D1.b/c/e explicitly deferred to v8.0+."
     }
   ]
 }
