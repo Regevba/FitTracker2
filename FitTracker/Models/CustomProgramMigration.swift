@@ -49,6 +49,26 @@ enum CustomProgramMigration {
         return fixedPPLFallback(catalog: catalog)
     }
 
+    /// Convenience method for consumer call sites that currently call
+    /// `TrainingProgramData.exercises(for: dayType)`. Resolves through
+    /// `currentProgramDays(for:)` + filters to the requested DayType.
+    /// Returns the fixed PPL fallback's day if no matching day exists in
+    /// the active program (e.g., user customized to only 3 days + the
+    /// view is asking for cardioOnly which isn't in the custom program).
+    static func exercisesForDay(
+        _ dayType: DayType,
+        in preferences: UserPreferences,
+        catalog: [ExerciseDefinition] = TrainingProgramData.allExercises
+    ) -> [ExerciseDefinition] {
+        let days = currentProgramDays(for: preferences, catalog: catalog)
+        if let match = days.first(where: { $0.dayType == dayType }) {
+            return match.exercises
+        }
+        // Fallback to fixed PPL when the custom program doesn't have that
+        // DayType — preserves pre-C6 behavior for unmapped days.
+        return TrainingProgramData.exercises(for: dayType)
+    }
+
     /// True iff the user has a valid custom program active. Used by
     /// Settings UI to show "Customize Program · Active: <name>" subtitle.
     static func hasActiveCustomProgram(_ preferences: UserPreferences) -> Bool {
