@@ -2,7 +2,8 @@
   "feature": "adaptive-intelligence-next-pass",
   "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform — it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
   "work_type": "feature",
-  "current_phase": "tasks_phase",
+  "current_phase": "testing",
+  "case_study_path": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
   "created_at": "2026-06-01T20:15:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -69,7 +70,19 @@
       "approval_signal": "continue d1"
     },
     "tasks_phase": {
-      "started_at": "2026-06-02T20:40:00Z"
+      "started_at": "2026-06-02T20:40:00Z",
+      "ended_at": "2026-06-02T21:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue d1"
+    },
+    "implementation": {
+      "started_at": "2026-06-02T21:00:00Z",
+      "ended_at": "2026-06-02T22:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue d1 (single-session full Phase 4)"
+    },
+    "testing": {
+      "started_at": "2026-06-02T22:00:00Z"
     }
   },
   "timing": {
@@ -83,7 +96,15 @@
         "ended_at": "2026-06-02T20:40:00Z"
       },
       "tasks_phase": {
-        "started_at": "2026-06-02T20:40:00Z"
+        "started_at": "2026-06-02T20:40:00Z",
+        "ended_at": "2026-06-02T21:00:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-02T21:00:00Z",
+        "ended_at": "2026-06-02T22:00:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-02T22:00:00Z"
       }
     }
   },
@@ -105,6 +126,18 @@
       "to": "tasks_phase",
       "at": "2026-06-02T20:40:00Z",
       "reason": "Phase 1 PRD approved (operator: 'continue d1'). Phase 2 Tasks at .claude/features/adaptive-intelligence-next-pass/tasks.md — 9 discrete tasks T1-T9 with dependency graph, LoC estimates totaling ~835 (T1 analytics 70 + T2 memory 120 + T3+T4 detector+orchestrator 130 + T5+T6 detail screen+routing 195 + T7+T8 pbxproj+tests 320 + T9 case study 170). 6-commit Phase 4 landing order matching C3/C5/C6 single-session pattern. Out-of-scope guards (3) explicit. Estimated wall time ~3.5h. C5 dependency satisfied — RecommendationMemory + AIOrchestrator already on main."
+    },
+    {
+      "from": "tasks_phase",
+      "to": "implementation",
+      "at": "2026-06-02T21:00:00Z",
+      "reason": "Single-session Phase 4 ship (operator: 'continue d1'). 6 commits landing T1-T9. Pattern matches C3/C5/C6."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "at": "2026-06-02T22:00:00Z",
+      "reason": "Phase 4 complete in 6 commits (T1 analytics infra, T2 RecommendationMemory fields, T3+T4 detector+orchestrator partition logic, T5+T6 SuppressedSignalDetailScreen + NavigationLink routing, T7+T8 pbxproj wiring + 21 tests all green, T9 case study + backlog strike). Build SUCCEEDED on iPhone 17 sim. 21/21 D1 tests PASS (2 analytics naming + 6 memory fields + 8 detector + 5 orchestrator integration). Case study at docs/case-studies/adaptive-intelligence-next-pass-case-study.md with 6 success metrics (5 T1 instrumented + 1 T2) and 5 kill criteria; T+30d eval at 2026-07-02. Backlog RICE 4.5 row struck in same commit. PR #576 ready for review."
     }
   ]
 }

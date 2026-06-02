@@ -186,7 +186,7 @@ The following 5 rows moved out of "In Progress":
 | 6.0 | **Funnel Analysis Dashboards** | GA4 dashboards | 2-3d | Blocks PRD kill-criteria evaluation. Analytics taxonomy in place; just needs GA4 funnel definitions wired |
 | 5.5 | **App Store assets** (FIT-17) | Marketing chore | 5/10 already done | Pre-launch surface. Resume after S3-G3 / S5 / S4 / S7 / S6 / S8 / S9. Calendar-anchored to App Store submission window |
 | 5.0 | **Sentry Integration** | iOS infra | gated on pre-launch | PAUSED 2026-05-21 → resume before App Store submission. Code wiring preserved; just needs DSN + ConsentManager flow |
-| 4.5 | **D1 — adaptive-intelligence next pass** | Research → PRD | 5-7d | Cross-platform research-heavy. Pairs with C5 (AI feedback loop). Builds the reinforcement layer on top of AIOrchestrator |
+| ~~4.5~~ | ~~**D1 — adaptive-intelligence next pass**~~ — **SHIPPED 2026-06-02** | Feature CLOSED | ~3.5h Phase 4 | 2 of 5 sub-features (D1.a on-device decay+trend + D1.d transparency UX) — 6 commits T1-T9; AcceptanceTrendDetector + RecommendationMemory ManualUnsuppression + BlacklistedSignal + SuppressedSignalDetailScreen; 21 D1 tests pass. D1.b/c/e deferred to v8.0+ |
 | 4.5 | **Task 15: CX system** (carryover from Phase 0) | Cross-platform Feature | 2-3w | Reviews, NPS, follow-up, public roadmap. Needs research → PRD; defer to post-launch reality check |
 | 4.0 | **L353 Phase 1 simulator verification** | Operator action | ~10 min | Verify @ScaledMetric in PR #557 takes effect at AX5 Dynamic Type in simulator. Closes the implementation half of L353 |
 | 3.6 | **Task 3: Android app research** | Cross-platform research | 1-2w | Native vs framework decision. Android design system tokens already shipped; just need implementation-language scope decision |
