@@ -1,22 +1,12 @@
 // Views/Settings/v2/Screens/CustomProgramPlaceholders.swift
 // C6 training-program-customization (2026-06-02)
 //
-// TEMPORARY placeholder views for T7 (NewProgramSheet) and T10
-// (CustomProgramEditorScreen). Keep the T6 commit (CustomProgramListScreen)
-// buildable while T7 + T10 land in their own commits.
+// TEMPORARY placeholder view for T10 (CustomProgramEditorScreen). Keeps
+// the T6 commit (CustomProgramListScreen) buildable while T10 lands.
 //
-// THIS FILE IS DELETED by T7 + T10 commits — DO NOT add other content here.
+// THIS FILE IS DELETED by the T10 commit — DO NOT add other content here.
 
 import SwiftUI
-
-struct NewProgramSheet: View {
-    var onSave: (CustomProgram) -> Void
-
-    var body: some View {
-        Text("NewProgramSheet placeholder — replaced in T7 commit")
-            .padding()
-    }
-}
 
 struct CustomProgramEditorScreen: View {
     let program: CustomProgram

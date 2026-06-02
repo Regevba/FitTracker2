@@ -184,6 +184,7 @@
 		NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS2100001000000000000001 /* NotificationsSettingsScreen.swift */; };
 		C6CPLS100000000000UI06 /* CustomProgramListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */; };
 		C6CPLPH100000000000UI06 /* CustomProgramPlaceholders.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPLPH200000000000UI06 /* CustomProgramPlaceholders.swift */; };
+		C6NPS100000000000UI07 /* NewProgramSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6NPS200000000000UI07 /* NewProgramSheet.swift */; };
 		C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */; };
 		RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */; };
 		SCR100001000000000000001 /* SmartRemindersConsumerRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */; };
@@ -512,6 +513,7 @@
 		NS2100001000000000000001 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
 		C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramListScreen.swift; sourceTree = "<group>"; };
 		C6CPLPH200000000000UI06 /* CustomProgramPlaceholders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramPlaceholders.swift; sourceTree = "<group>"; };
+		C6NPS200000000000UI07 /* NewProgramSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProgramSheet.swift; sourceTree = "<group>"; };
 		C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackSettingsScreen.swift; sourceTree = "<group>"; };
 		RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStoreTests.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA01 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
@@ -1305,6 +1307,7 @@
 				C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */,
 				C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */,
 				C6CPLPH200000000000UI06 /* CustomProgramPlaceholders.swift */,
+				C6NPS200000000000UI07 /* NewProgramSheet.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1629,6 +1632,7 @@
 				NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */,
 				C6CPLS100000000000UI06 /* CustomProgramListScreen.swift in Sources */,
 				C6CPLPH100000000000UI06 /* CustomProgramPlaceholders.swift in Sources */,
+				C6NPS100000000000UI07 /* NewProgramSheet.swift in Sources */,
 				C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */,
 				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
