@@ -783,6 +783,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W25 `@MainActor` propagates to statics — test class must be `@MainActor` | W25 | 2026-05-31 |
 | W26 Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups | W26 | 2026-06-01 |
 | W27 `make preflight` enhancement_parent false-positive (was mis-numbered W11) | W27 | 2026-05-19 |
+| W28 Local `xcodebuild` blocked by CoreSimulator out-of-date (Mac restart required) | W28 | 2026-06-01 |
 
 ---
 
@@ -792,7 +793,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-06-01 (index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561).
+Last refreshed: 2026-06-02 (added W28 — local xcodebuild CoreSimulator-out-of-date — to the index; entry body shipped earlier by a parallel session without an index row). Prior (2026-06-01): index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561.
 
 ---
 

@@ -6,6 +6,8 @@ import SwiftUI
 
 struct TrainingNutritionSettingsScreen: View {
     @EnvironmentObject private var dataStore: EncryptedDataStore
+    @EnvironmentObject private var analytics: AnalyticsService
+    @State private var showExerciseLibrary = false
 
     var body: some View {
         SettingsDetailScaffold(
@@ -44,6 +46,34 @@ struct TrainingNutritionSettingsScreen: View {
                 }
             }
 
+            SettingsSectionCard(title: "Exercise Library", eyebrow: "Training") {
+                Button {
+                    showExerciseLibrary = true
+                } label: {
+                    HStack(spacing: AppSpacing.small) {
+                        Image(systemName: "books.vertical.fill")
+                            .foregroundStyle(AppColor.Accent.primary)
+                            .frame(width: AppSize.tapTarget * 0.6)
+                        VStack(alignment: .leading, spacing: AppSpacing.micro) {
+                            Text("Browse Exercise Library")
+                                .font(AppText.body)
+                                .foregroundStyle(AppColor.Text.primary)
+                            Text("Search and filter all \(TrainingProgramData.allExercises.count) exercises")
+                                .font(AppText.caption)
+                                .foregroundStyle(AppColor.Text.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: AppIcon.forward)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Text.secondary)
+                    }
+                    .padding(.vertical, AppSpacing.xSmall)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Browse exercise library")
+            }
+
             SettingsSectionCard(title: "Readiness Thresholds", eyebrow: "Training") {
                 SettingsSliderRow(
                     title: "Readiness HR Threshold",
@@ -69,6 +99,10 @@ struct TrainingNutritionSettingsScreen: View {
         }
         .navigationTitle(SettingsCategory.trainingNutrition.title)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showExerciseLibrary) {
+            ExerciseLibraryView(source: "settings_row")
+                .environmentObject(analytics)
+        }
     }
 
     private var nutritionGoalModeBinding: Binding<NutritionGoalMode> {

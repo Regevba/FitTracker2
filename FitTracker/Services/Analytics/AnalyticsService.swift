@@ -710,6 +710,39 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - C3 Exercise Library Events
+
+    /// User opens the Exercise Library sheet (Training tab toolbar or Settings row)
+    func logTrainingExerciseLibraryOpened(source: String) {
+        logEvent(AnalyticsEvent.trainingExerciseLibraryOpened, parameters: [
+            AnalyticsParam.source: source,
+        ])
+    }
+
+    /// User commits a search query (>= 2 chars; not per-keypress)
+    func logTrainingExerciseSearchQuery(queryLength: Int) {
+        logEvent(AnalyticsEvent.trainingExerciseSearchQuery, parameters: [
+            AnalyticsParam.queryLength: queryLength,
+        ])
+    }
+
+    /// User taps a filter chip — dimension is one of "muscle"/"equipment"/"category"
+    func logTrainingExerciseFilterTapped(dimension: String, value: String) {
+        logEvent(AnalyticsEvent.trainingExerciseFilterTapped, parameters: [
+            AnalyticsParam.dimension: dimension,
+            AnalyticsParam.chipValue: value,
+        ])
+    }
+
+    /// User taps a result row → detail view pushes (read-only) OR picker fires (picker mode)
+    func logTrainingExerciseDetailOpened(exerciseId: String, viaSearch: Bool, viaFilter: Bool) {
+        logEvent(AnalyticsEvent.trainingExerciseDetailOpened, parameters: [
+            AnalyticsParam.exerciseId: exerciseId,
+            AnalyticsParam.viaSearch: viaSearch,
+            AnalyticsParam.viaFilter: viaFilter,
+        ])
+    }
+
     // MARK: - Onboarding Auth Events
 
     func logOnboardingAuthMethodSelected(method: String) {

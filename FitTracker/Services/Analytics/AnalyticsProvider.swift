@@ -276,6 +276,16 @@ enum AnalyticsEvent {
     /// User taps "Clear feedback history" in Settings → AI Feedback
     static let homeAiFeedbackHistoryCleared    = "home_ai_feedback_history_cleared"
 
+    // ── C3: Exercise Library (screen-prefixed: training_) ──
+    /// User opens the Exercise Library sheet
+    static let trainingExerciseLibraryOpened   = "training_exercise_library_opened"
+    /// User commits a search query (>= 2 chars; not per-keypress)
+    static let trainingExerciseSearchQuery     = "training_exercise_search_query"
+    /// User taps a filter chip in any of the 3 dimensions
+    static let trainingExerciseFilterTapped    = "training_exercise_filter_tapped"
+    /// User taps a result row → detail view pushes (read-only mode) OR picker fires (picker mode)
+    static let trainingExerciseDetailOpened    = "training_exercise_detail_opened"
+
     // ── Import Events (custom) ─────────────────────────────
 
     /// User initiates a training plan import flow
@@ -490,6 +500,14 @@ enum AnalyticsParam {
     static let acceptanceRate          = "acceptance_rate"           // int 0..100 — rounded percentage acceptance rate
     static let outcomeCount            = "outcome_count"             // int — sample size at boost-evaluation time
     static let totalOutcomesCleared    = "total_outcomes_cleared"    // int — count of outcomes wiped via Settings → Clear feedback history
+
+    // C3 Exercise Library parameters
+    static let dimension       = "dimension"        // string — muscle/equipment/category (which chip dimension was tapped)
+    static let chipValue       = "value"            // string — chip rawValue (e.g., "chest" / "dumbbell" / "strength")
+    static let queryLength     = "query_length"     // int — chars in the committed search query (>= 2)
+    static let viaSearch       = "via_search"       // bool — query non-empty at row tap
+    static let viaFilter       = "via_filter"       // bool — any chip non-default at row tap
+    static let exerciseId      = "exercise_id"      // string — canonical exercise-id from TrainingProgramData.allExercises
 
     // Onboarding auth parameters
     // method already defined above — reuse for email/google/apple
