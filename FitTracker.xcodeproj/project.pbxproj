@@ -243,6 +243,10 @@
 		C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */; };
 		C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */; };
 		C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */; };
+		C6T14A0000000000000ATT01 /* CustomProgramCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14A0000000000000FRT01 /* CustomProgramCodableTests.swift */; };
+		C6T14D0000000000000ATT02 /* CustomProgramMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14D0000000000000FRT02 /* CustomProgramMigrationTests.swift */; };
+		C6T14E0000000000000ATT03 /* AnalyticsTrainingCustomProgramEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14E0000000000000FRT03 /* AnalyticsTrainingCustomProgramEventsTests.swift */; };
+		C6T14C0000000000000ATT04 /* StarterTemplatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6T14C0000000000000FRT04 /* StarterTemplatesTests.swift */; };
 		RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AA01 /* ReadinessEngine.swift */; };
 		RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AT01 /* ReadinessEngineTests.swift */; };
 		RM100000000000000000AT01 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM200000000000000000AT01 /* ReminderTests.swift */; };
@@ -555,6 +559,10 @@
 		C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationWithConfidenceTests.swift; sourceTree = "<group>"; };
 		C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilterTests.swift; sourceTree = "<group>"; };
 		C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingExerciseEventsTests.swift; sourceTree = "<group>"; };
+		C6T14A0000000000000FRT01 /* CustomProgramCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramCodableTests.swift; sourceTree = "<group>"; };
+		C6T14D0000000000000FRT02 /* CustomProgramMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramMigrationTests.swift; sourceTree = "<group>"; };
+		C6T14E0000000000000FRT03 /* AnalyticsTrainingCustomProgramEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingCustomProgramEventsTests.swift; sourceTree = "<group>"; };
+		C6T14C0000000000000FRT04 /* StarterTemplatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarterTemplatesTests.swift; sourceTree = "<group>"; };
 		RE200000000000000000AA01 /* ReadinessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngine.swift; sourceTree = "<group>"; };
 		RE200000000000000000AT01 /* ReadinessEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngineTests.swift; sourceTree = "<group>"; };
 		RM200000000000000000AT01 /* ReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTests.swift; sourceTree = "<group>"; };
@@ -956,6 +964,10 @@
 				C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */,
 				C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */,
 				C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */,
+				C6T14A0000000000000FRT01 /* CustomProgramCodableTests.swift */,
+				C6T14D0000000000000FRT02 /* CustomProgramMigrationTests.swift */,
+				C6T14E0000000000000FRT03 /* AnalyticsTrainingCustomProgramEventsTests.swift */,
+				C6T14C0000000000000FRT04 /* StarterTemplatesTests.swift */,
 				AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */,
 				TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */,
 				IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */,
@@ -1741,6 +1753,10 @@
 				C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */,
 				C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */,
 				C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */,
+				C6T14A0000000000000ATT01 /* CustomProgramCodableTests.swift in Sources */,
+				C6T14D0000000000000ATT02 /* CustomProgramMigrationTests.swift in Sources */,
+				C6T14E0000000000000ATT03 /* AnalyticsTrainingCustomProgramEventsTests.swift in Sources */,
+				C6T14C0000000000000ATT04 /* StarterTemplatesTests.swift in Sources */,
 				AS100000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift in Sources */,
 				TP100000000000000000AT01 /* TrainingProgramStoreTests.swift in Sources */,
 				IE100000000000000000AT01 /* ImportEdgeCaseTests.swift in Sources */,
