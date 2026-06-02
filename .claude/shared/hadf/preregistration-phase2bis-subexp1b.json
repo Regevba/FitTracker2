@@ -36,16 +36,24 @@
   "campaign_schedule": {
     "fires_per_day": 5,
     "fire_times_utc": [
-      "02:00",
-      "08:00",
+      "23:00",
+      "05:00",
+      "10:00",
       "14:00",
-      "18:00",
-      "22:00"
+      "18:00"
     ],
     "duration_days": 3,
     "earliest_start_date": "2026-06-10",
     "expected_endpoints_per_fire": 2,
-    "_schedule_note": "Original spec §4 schedule (02/08/14/18/22 UTC). Sub-exp 2 closes 2026-06-02 (frees the UTC 05/11/15/19/23 = IDT 08/14/18/22/02 slot for Sub-exp 3). Sub-exp 1B v2 keeps original 02/08/14/18/22 UTC slot — 3h offset from Sub-exp 3 so no co-fires. Operator earliest start 2026-06-10 per 2026-05-31 decision; merge-driver-dedup handles concurrent ledger appends if Sub-exp 3 is still firing."
+    "_schedule_note": "ACTUAL schedule (set 2026-06-02 at activation): launchd StartCalendarInterval fires at LOCAL IDT 02/08/13/17/21 (= UTC 23/05/10/14/18). Launched EARLY (2026-06-02, vs original earliest_start_date 2026-06-10) to run in parallel with Sub-exp 3 per operator directive. Spaced to a 2-hour MINIMUM gap from Sub-exp 3's local 05/11/15/19/23 (UTC 02/08/12/16/20) so the two experiments NEVER co-fire — both call anthropic-direct claude-haiku-4-5, and a simultaneous fire would contaminate each other's TTFT via rate-limit queuing. 2h is the max achievable min-gap given Sub-exp 3's (locked) 6/4/4/4/6-hour spacing; a fire is ~3-5 min so 2h = zero intrusion. Runs from a DEDICATED isolated worktree (FitTracker2-hadf-phase2bis-subexp1b).",
+    "fire_times_local_idt": [
+      "02:00",
+      "08:00",
+      "13:00",
+      "17:00",
+      "21:00"
+    ],
+    "actual_start_date": "2026-06-02"
   },
   "primary_metric": "silhouette score at k=2 (vs original v1 k=5 — adjusted for 2-endpoint design)",
   "secondary_metrics": [
@@ -86,7 +94,7 @@
     "_threshold_notes": "pass_yield_min halved from v1's 600 to 300 (matches the 2-endpoint scope). fail_clusters_lt reduced from 3 to 2 — with only 2 providers, the maximum cluster count is 2; require both clusters present for PASS."
   },
   "harness_hardening_proof": {
-    "env_local_sha256_at_deploy": "TBD — computed at lock time via shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+    "env_local_sha256_at_deploy": "5b379e825c5414d10ee88a23c5975968d6480a96803b0f57451810d3caedb44a",
     "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A — soak window scaffolding — establishes worktree-local venv pattern (Fix #1) via scripts/hadf-phase2bis-collect.sh preflight Check A (venv binary executable). Carries forward for Sub-exp 1B unchanged.",
     "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp1b-v2-deliberate-break.log",
     "state_owner_at_creation": "ft2"
