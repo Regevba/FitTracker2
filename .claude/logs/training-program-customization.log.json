@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T17:29:44Z",
-  "updated_at": "2026-06-02T16:27:15Z",
+  "updated_at": "2026-06-02T17:22:24Z",
   "events": [
     {
       "timestamp": "2026-06-01T17:29:44Z",
@@ -41,6 +41,19 @@
       "summary": "Phase 1 PRD approved (operator: 'continue c6'). Phase 2 Tasks at .claude/features/training-program-customization/tasks.md \u2014 15 discrete tasks T1-T15 with dependency graph + LoC est ~1965 total. 9-commit Phase 4 landing order: T1+T2+T3 infra > T4+T5 resolver+analytics > T6 list > T7 new-sheet > T8+T9 sub-sheets > T10 editor (C3 picker) > T11+T12 wires > T13+T14 pbxproj+tests > T15 case-study. ~5-7h estimated. Phase 4 BLOCKED on C3 PR #573 merging to main OR operator approves stub-picker workaround.",
       "artifacts": [
         ".claude/features/training-program-customization/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-02T17:22:24Z",
+      "event_type": "phase_transition",
+      "phase": "testing",
+      "summary": "T14 test suite landed: 4 new test files (CustomProgramCodable + CustomProgramMigration + StarterTemplates + AnalyticsTrainingCustomProgramEvents), 15 tests all PASSED on iPhone 17 Simulator. T15: case study at docs/case-studies/training-program-customization-case-study.md with full T1/T2/T3 tier-tagged metrics + 9-commit Phase 4 lifecycle table + verification table. Backlog L348 + RICE row 7.0 struck through in same commit (drift-pattern rule). State advanced through implementation -> testing. ~2152 LoC actual (PRD est ~1700, tasks.md est ~1965). C3 cross-branch merge resolved (1052a26) with shared exerciseId param + analytics section interleave. Awaiting operator merge approval on PR #574.",
+      "artifacts": [
+        "docs/case-studies/training-program-customization-case-study.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",
