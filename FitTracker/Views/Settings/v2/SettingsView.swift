@@ -12,6 +12,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
     case trainingNutrition
     case dataSync
     case notifications
+    case aiFeedback
 
     var id: String { rawValue }
 
@@ -23,6 +24,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .trainingNutrition: "Training & Nutrition"
         case .dataSync: "Data & Sync"
         case .notifications: "Notifications"
+        case .aiFeedback: "AI Feedback"
         }
     }
 
@@ -34,6 +36,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .trainingNutrition: "Nutrition mode, meal slots, and readiness thresholds."
         case .dataSync: "Cloud sync, local data counts, and destructive actions."
         case .notifications: "Per-reminder type toggles and daily cap."
+        case .aiFeedback: "Manage what the AI learns from your taps."
         }
     }
 
@@ -45,6 +48,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .trainingNutrition: "figure.run.circle.fill"
         case .dataSync: "arrow.triangle.2.circlepath.icloud.fill"
         case .notifications: "bell.badge.fill"
+        case .aiFeedback: "hand.thumbsup.fill"
         }
     }
 
@@ -56,6 +60,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .trainingNutrition: AppColor.Accent.sleep
         case .dataSync: AppColor.Status.success
         case .notifications: AppColor.Brand.warm
+        case .aiFeedback: AppColor.Accent.primary
         }
     }
 }
@@ -174,6 +179,10 @@ struct SettingsView: View {
                     NotificationsSettingsScreen()
                         .environmentObject(reminderPreferences)
                         .environmentObject(analytics)
+                case .aiFeedback:
+                    AIFeedbackSettingsScreen()
+                        .environmentObject(settings)
+                        .environmentObject(analytics)
                 }
             }
             .navigationDestination(for: SettingsReviewDestination.self) { destination in
@@ -266,6 +275,12 @@ struct SettingsView: View {
             return [
                 SettingsSummaryBadge(title: masterLabel, tint: masterTint),
                 SettingsSummaryBadge(title: "Cap \(reminderPreferences.dailyCap)/day", tint: AppColor.Brand.warm),
+            ]
+        case .aiFeedback:
+            let loopLabel = settings.aiFeedbackLoopEnabled ? "Loop On" : "Loop Off"
+            let loopTint: Color = settings.aiFeedbackLoopEnabled ? AppColor.Status.success : AppColor.Text.secondary
+            return [
+                SettingsSummaryBadge(title: loopLabel, tint: loopTint),
             ]
         }
     }
