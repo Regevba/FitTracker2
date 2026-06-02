@@ -683,6 +683,33 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - C5 AI User Feedback Loop Events
+
+    /// AIOrchestrator reinforcement-loop block suppressed a signal (user dismissed it >=3 times within 30 days)
+    func logHomeAiFeedbackSignalSuppressed(segment: String, signal: String, dismissalCount: Int) {
+        logEvent(AnalyticsEvent.homeAiFeedbackSignalSuppressed, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.signal: signal,
+            AnalyticsParam.dismissalCount: dismissalCount,
+        ])
+    }
+
+    /// AIOrchestrator reinforcement-loop block boosted a segment's confidence (acceptanceRate > 0.70 with >=5 outcomes)
+    func logHomeAiFeedbackSegmentBoosted(segment: String, acceptanceRate: Int, outcomeCount: Int) {
+        logEvent(AnalyticsEvent.homeAiFeedbackSegmentBoosted, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.acceptanceRate: acceptanceRate,
+            AnalyticsParam.outcomeCount: outcomeCount,
+        ])
+    }
+
+    /// User taps "Clear feedback history" in Settings → AI Feedback
+    func logHomeAiFeedbackHistoryCleared(totalOutcomesCleared: Int) {
+        logEvent(AnalyticsEvent.homeAiFeedbackHistoryCleared, parameters: [
+            AnalyticsParam.totalOutcomesCleared: totalOutcomesCleared,
+        ])
+    }
+
     // MARK: - Onboarding Auth Events
 
     func logOnboardingAuthMethodSelected(method: String) {

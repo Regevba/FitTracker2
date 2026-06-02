@@ -110,6 +110,19 @@ public struct AIRecommendation: Codable, Sendable {
 
 extension AIRecommendation {
 
+    /// Returns a copy of this recommendation with `confidence` replaced.
+    /// Used by AIOrchestrator's C5 reinforcement-loop block to apply per-segment
+    /// confidence-tier adjustments without mutating the source struct.
+    func withConfidence(_ newConfidence: Double) -> AIRecommendation {
+        AIRecommendation(
+            segment: segment,
+            signals: signals,
+            confidence: newConfidence,
+            escalateToLLM: escalateToLLM,
+            supportingData: supportingData
+        )
+    }
+
     /// Goal-aware local fallback: generates signals weighted by the user's GoalProfile drivers.
     /// Each driver checks the relevant snapshot field and generates a signal with magnitude context.
     static func localFallback(

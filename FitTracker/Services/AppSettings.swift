@@ -123,6 +123,16 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(smartTimingEnabled, forKey: "ft.smartTimingEnabled") }
     }
 
+    // ── AI feedback loop (C5 ai-user-feedback-loop, 2026-06-01) ──
+    // When ON, AIOrchestrator.refreshRecommendations applies per-segment confidence-tier
+    // adjustments based on RecommendationMemory (suppress on >=3 dismissals in 30 days;
+    // boost on acceptanceRate > 0.70 with 5-outcome quorum). When OFF, the orchestrator
+    // skips the reinforcement-loop block — feedback is still recorded so re-enable doesn't
+    // lose history. Default ON; opt-out lives in Settings → AI Feedback.
+    @Published var aiFeedbackLoopEnabled: Bool = true {
+        didSet { UserDefaults.standard.set(aiFeedbackLoopEnabled, forKey: "ft.ai.feedbackLoopEnabled") }
+    }
+
     init() {
         if let raw = UserDefaults.standard.string(forKey: "ft.unitSystem"),
            let v = UnitSystem(rawValue: raw) { unitSystem = v }
@@ -136,6 +146,9 @@ final class AppSettings: ObservableObject {
         }
         if UserDefaults.standard.object(forKey: "ft.smartTimingEnabled") != nil {
             smartTimingEnabled = UserDefaults.standard.bool(forKey: "ft.smartTimingEnabled")
+        }
+        if UserDefaults.standard.object(forKey: "ft.ai.feedbackLoopEnabled") != nil {
+            aiFeedbackLoopEnabled = UserDefaults.standard.bool(forKey: "ft.ai.feedbackLoopEnabled")
         }
     }
 }
