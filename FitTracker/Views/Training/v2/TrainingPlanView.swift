@@ -23,6 +23,7 @@ struct TrainingPlanView: View {
     @State private var showCompletionSheet = false
     @State private var showFocusMode = false
     @State private var showImportSheet = false
+    @State private var showExerciseLibrary = false
     @State private var focusedExerciseID: String?
     @State private var restTimerEnd: Date?
     @State private var restPresetSeconds = 90
@@ -126,6 +127,10 @@ struct TrainingPlanView: View {
                 ImportSourcePickerView()
                     .environmentObject(dataStore)
                     .environmentObject(programStore)
+                    .environmentObject(analytics)
+            }
+            .sheet(isPresented: $showExerciseLibrary) {
+                ExerciseLibraryView(source: "training_toolbar")
                     .environmentObject(analytics)
             }
             .fullScreenCover(isPresented: $showFocusMode) {
@@ -392,6 +397,14 @@ struct TrainingPlanView: View {
             .disabled(focusedExercise == nil)
             .accessibilityLabel("Focus mode")
             .accessibilityHint("Enter distraction-free workout mode")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button { showExerciseLibrary = true } label: {
+                Image(systemName: "books.vertical.fill")
+                    .font(AppText.iconSmall).foregroundStyle(AppColor.Accent.primary)
+            }
+            .accessibilityLabel("Browse exercise library")
+            .accessibilityHint("Search and filter all exercises")
         }
     }
 
