@@ -26,6 +26,7 @@
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
 		C6CP100000000000000003 /* CustomProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CP200000000000000003 /* CustomProgram.swift */; };
 		C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6TPT200000000000000003 /* TrainingProgramTemplates.swift */; };
+		C6CPM100000000000000004 /* CustomProgramMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPM200000000000000004 /* CustomProgramMigration.swift */; };
 		A10000010000000000000004 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* AuthManager.swift */; };
 		A10000010000000000000005 /* SignInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SignInService.swift */; };
 		A10000010000000000000006 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* HealthKitService.swift */; };
@@ -323,6 +324,7 @@
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
 		C6CP200000000000000003 /* CustomProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgram.swift; sourceTree = "<group>"; };
 		C6TPT200000000000000003 /* TrainingProgramTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramTemplates.swift; sourceTree = "<group>"; };
+		C6CPM200000000000000004 /* CustomProgramMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramMigration.swift; sourceTree = "<group>"; };
 		A20000010000000000000004 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000005 /* SignInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInService.swift; sourceTree = "<group>"; };
 		A20000010000000000000006 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
@@ -708,6 +710,7 @@
 				A20000010000000000000003 /* TrainingProgramData.swift */,
 				C6CP200000000000000003 /* CustomProgram.swift */,
 				C6TPT200000000000000003 /* TrainingProgramTemplates.swift */,
+				C6CPM200000000000000004 /* CustomProgramMigration.swift */,
 				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
 				A20000010000000000000018 /* ReadinessAlertRecommendation.swift */,
 				TAH200001000000000000001 /* TrendAlertContext.swift */,
@@ -1483,6 +1486,7 @@
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
 				C6CP100000000000000003 /* CustomProgram.swift in Sources */,
 				C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */,
+				C6CPM100000000000000004 /* CustomProgramMigration.swift in Sources */,
 				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
 				A10000010000000000000018 /* ReadinessAlertRecommendation.swift in Sources */,
 				SP100000000000000000AA01 /* StatsPeriod.swift in Sources */,
