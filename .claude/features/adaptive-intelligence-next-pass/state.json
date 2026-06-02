@@ -2,14 +2,19 @@
   "feature": "adaptive-intelligence-next-pass",
   "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform — it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
   "work_type": "feature",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "case_study_path": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
+  "case_study": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
+  "merge_pr_number": 576,
+  "merge_commit_sha": "ce5002277b711cbe9859c966d39ec068afb6a309",
+  "merged_at": "2026-06-02T18:33:12Z",
   "created_at": "2026-06-01T20:15:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
   "has_ui": true,
   "requires_analytics": true,
-  "branch": "feature/adaptive-intelligence-next-pass",
+  "branch": "chore/d1-post-merge-closure",
+  "feature_branch_merged": "feature/adaptive-intelligence-next-pass",
   "isolation_opt_out": false,
   "rice_score": 4.5,
   "rice_inputs": {
@@ -40,17 +45,92 @@
   "tasks_path": ".claude/features/adaptive-intelligence-next-pass/tasks.md",
   "tasks_total_loc_est": 835,
   "tasks": [
-    { "id": "T1", "title": "AnalyticsProvider + AnalyticsService (4 events + 3 new params)", "file": "FitTracker/Services/Analytics/{AnalyticsProvider,AnalyticsService}.swift", "type": "modify", "loc_est": 70, "status": "pending" },
-    { "id": "T2", "title": "RecommendationMemory new persisted fields (manualUnsuppressions + blacklistedSignals + 4 query + 2 mutation methods)", "file": "FitTracker/AI/RecommendationMemory.swift", "type": "modify", "loc_est": 120, "status": "pending" },
-    { "id": "T3", "title": "AcceptanceTrendDetector pure helper (time-decay + 7d acceptance + AND-gate)", "file": "FitTracker/AI/AcceptanceTrendDetector.swift", "type": "new", "loc_est": 80, "status": "pending" },
-    { "id": "T4", "title": "AIOrchestrator reinforcement-loop extension (blacklist + trend-unsuppress + manual-override)", "file": "FitTracker/AI/AIOrchestrator.swift", "type": "modify", "loc_est": 50, "status": "pending" },
-    { "id": "T5", "title": "SuppressedSignalDetailScreen (D1.d transparency UX with un-suppress + blacklist)", "file": "FitTracker/Views/Settings/v2/Screens/SuppressedSignalDetailScreen.swift", "type": "new", "loc_est": 170, "status": "pending" },
-    { "id": "T6", "title": "AIFeedbackSettingsScreen row-tap routing", "file": "FitTracker/Views/Settings/v2/Screens/AIFeedbackSettingsScreen.swift", "type": "modify", "loc_est": 25, "status": "pending" },
-    { "id": "T7", "title": "project.pbxproj wiring (2 new source + 4 new test)", "file": "FitTracker.xcodeproj/project.pbxproj", "type": "modify", "loc_est": 40, "status": "pending" },
-    { "id": "T8", "title": "Test suite — 4 new test files, ~12 tests, ≥90% coverage on new files", "file": "FitTrackerTests/{AnalyticsAdaptiveIntelligenceEvents,RecommendationMemoryD1Fields,AcceptanceTrendDetector,AIOrchestratorTrendUnsuppress}Tests.swift", "type": "new", "loc_est": 280, "status": "pending" },
-    { "id": "T9", "title": "Final verify-local + case study + state.json → testing + backlog RICE 4.5 strike", "file": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md + state.json + backlog.md", "type": "new+modify", "loc_est": 170, "status": "pending" }
+    {
+      "id": "T1",
+      "title": "AnalyticsProvider + AnalyticsService (4 events + 3 new params)",
+      "file": "FitTracker/Services/Analytics/{AnalyticsProvider,AnalyticsService}.swift",
+      "type": "modify",
+      "loc_est": 70,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T2",
+      "title": "RecommendationMemory new persisted fields (manualUnsuppressions + blacklistedSignals + 4 query + 2 mutation methods)",
+      "file": "FitTracker/AI/RecommendationMemory.swift",
+      "type": "modify",
+      "loc_est": 120,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T3",
+      "title": "AcceptanceTrendDetector pure helper (time-decay + 7d acceptance + AND-gate)",
+      "file": "FitTracker/AI/AcceptanceTrendDetector.swift",
+      "type": "new",
+      "loc_est": 80,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T4",
+      "title": "AIOrchestrator reinforcement-loop extension (blacklist + trend-unsuppress + manual-override)",
+      "file": "FitTracker/AI/AIOrchestrator.swift",
+      "type": "modify",
+      "loc_est": 50,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T5",
+      "title": "SuppressedSignalDetailScreen (D1.d transparency UX with un-suppress + blacklist)",
+      "file": "FitTracker/Views/Settings/v2/Screens/SuppressedSignalDetailScreen.swift",
+      "type": "new",
+      "loc_est": 170,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T6",
+      "title": "AIFeedbackSettingsScreen row-tap routing",
+      "file": "FitTracker/Views/Settings/v2/Screens/AIFeedbackSettingsScreen.swift",
+      "type": "modify",
+      "loc_est": 25,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T7",
+      "title": "project.pbxproj wiring (2 new source + 4 new test)",
+      "file": "FitTracker.xcodeproj/project.pbxproj",
+      "type": "modify",
+      "loc_est": 40,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T8",
+      "title": "Test suite — 4 new test files, ~12 tests, ≥90% coverage on new files",
+      "file": "FitTrackerTests/{AnalyticsAdaptiveIntelligenceEvents,RecommendationMemoryD1Fields,AcceptanceTrendDetector,AIOrchestratorTrendUnsuppress}Tests.swift",
+      "type": "new",
+      "loc_est": 280,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    },
+    {
+      "id": "T9",
+      "title": "Final verify-local + case study + state.json → testing + backlog RICE 4.5 strike",
+      "file": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md + state.json + backlog.md",
+      "type": "new+modify",
+      "loc_est": 170,
+      "status": "done",
+      "completed_at": "2026-06-02T18:33:12Z"
+    }
   ],
-  "selected_sub_features_v1": ["D1.a", "D1.d"],
+  "selected_sub_features_v1": [
+    "D1.a",
+    "D1.d"
+  ],
   "deferred_sub_features": {
     "D1.b": "v8.0+ (backend cohort priors infra still maturing)",
     "D1.c": "v8.0+ (LLM gateway needs Phase 0 separately)",
@@ -82,7 +162,37 @@
       "approval_signal": "continue d1 (single-session full Phase 4)"
     },
     "testing": {
-      "started_at": "2026-06-02T22:00:00Z"
+      "started_at": "2026-06-02T22:00:00Z",
+      "ended_at": "2026-06-02T18:33:12Z",
+      "approved_by": "operator",
+      "approval_signal": "(implicit — operator merged PR #576)"
+    },
+    "review": {
+      "started_at": "2026-06-02T18:33:00Z",
+      "ended_at": "2026-06-02T18:33:12Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-02T18:33:12Z",
+      "ended_at": "2026-06-02T18:33:12Z",
+      "pr_number": 576,
+      "merge_commit_sha": "ce5002277b711cbe9859c966d39ec068afb6a309",
+      "merged_at": "2026-06-02T18:33:12Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-02T18:33:12Z",
+      "ended_at": "2026-06-02T18:35:00Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike already shipped in PR #576 T9)"
+    },
+    "complete": {
+      "started_at": "2026-06-02T18:35:00Z",
+      "ended_at": "2026-06-02T18:35:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
@@ -104,7 +214,24 @@
         "ended_at": "2026-06-02T22:00:00Z"
       },
       "testing": {
-        "started_at": "2026-06-02T22:00:00Z"
+        "started_at": "2026-06-02T22:00:00Z",
+        "ended_at": "2026-06-02T18:33:12Z"
+      },
+      "review": {
+        "started_at": "2026-06-02T18:33:00Z",
+        "ended_at": "2026-06-02T18:33:12Z"
+      },
+      "merge": {
+        "started_at": "2026-06-02T18:33:12Z",
+        "ended_at": "2026-06-02T18:33:12Z"
+      },
+      "docs": {
+        "started_at": "2026-06-02T18:33:12Z",
+        "ended_at": "2026-06-02T18:35:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-02T18:35:00Z",
+        "ended_at": "2026-06-02T18:35:00Z"
       }
     }
   },
@@ -138,6 +265,30 @@
       "to": "testing",
       "at": "2026-06-02T22:00:00Z",
       "reason": "Phase 4 complete in 6 commits (T1 analytics infra, T2 RecommendationMemory fields, T3+T4 detector+orchestrator partition logic, T5+T6 SuppressedSignalDetailScreen + NavigationLink routing, T7+T8 pbxproj wiring + 21 tests all green, T9 case study + backlog strike). Build SUCCEEDED on iPhone 17 sim. 21/21 D1 tests PASS (2 analytics naming + 6 memory fields + 8 detector + 5 orchestrator integration). Case study at docs/case-studies/adaptive-intelligence-next-pass-case-study.md with 6 success metrics (5 T1 instrumented + 1 T2) and 5 kill criteria; T+30d eval at 2026-07-02. Backlog RICE 4.5 row struck in same commit. PR #576 ready for review."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-02T18:33:00Z",
+      "reason": "PR #576 opened; CI checks green (Build and Test + integrity + CodeQL + GitGuardian); operator review."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-02T18:33:12Z",
+      "reason": "Operator approved + squash-merged. PR #576 squashed onto main as ce5002277b711cbe9859c966d39ec068afb6a309. Pre-merge conflicts (5 files) resolved via merge of origin/main into D1 branch (pbxproj union of D1's SuppressedSignalDetailScreen entry + C6's 5 CustomProgram screens; analytics + backlog auto-merged; Package.resolved restored from main). xcodebuild Debug + D1 test suite re-run post-merge: clean."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-02T18:33:12Z",
+      "reason": "Docs already shipped in PR #576 T9: docs/case-studies/adaptive-intelligence-next-pass-case-study.md (7 required frontmatter fields + 6 success metrics + 5 kill criteria) + docs/product/backlog.md RICE 4.5 strike + Tier 2.2 log entry. No additional docs needed."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-02T18:35:00Z",
+      "reason": "Feature CLOSED. D1 (D1.a on-device decay+trend + D1.d transparency UX) shipped via PR #576 squash ce50022 (operator-merged 2026-06-02 18:33Z). Closure on chore/d1-post-merge-closure (feature branch merged + retained on remote; local merged-feature-branch deletion deferred per per-action approval rule). 21/21 D1 tests pass. T+14d eval 2026-06-16. T+30d eval 2026-07-02. D1.b/c/e deferred to v8.0+."
     }
   ]
 }
