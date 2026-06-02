@@ -27,6 +27,7 @@
 		C6CP100000000000000003 /* CustomProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CP200000000000000003 /* CustomProgram.swift */; };
 		C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6TPT200000000000000003 /* TrainingProgramTemplates.swift */; };
 		C6CPM100000000000000004 /* CustomProgramMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPM200000000000000004 /* CustomProgramMigration.swift */; };
+		C3ELFB10000000000000003 /* ExerciseLibraryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */; };
 		A10000010000000000000004 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* AuthManager.swift */; };
 		A10000010000000000000005 /* SignInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SignInService.swift */; };
 		A10000010000000000000006 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* HealthKitService.swift */; };
@@ -235,6 +236,8 @@
 		C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */; };
 		C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */; };
 		C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */; };
+		C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */; };
+		C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */; };
 		RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AA01 /* ReadinessEngine.swift */; };
 		RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AT01 /* ReadinessEngineTests.swift */; };
 		RM100000000000000000AT01 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM200000000000000000AT01 /* ReminderTests.swift */; };
@@ -264,6 +267,9 @@
 		SV100000000000000000AA01 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SV200000000000000000AA01 /* StatsView.swift */; };
 		TA100000000000000000001 /* TrainingAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TA200000000000000000001 /* TrainingAnalyticsTests.swift */; };
 		TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA01 /* TrainingPlanView.swift */; };
+		C3ELRW100000000000UI01 /* ExerciseLibraryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELRW200000000000UI01 /* ExerciseLibraryRow.swift */; };
+		C3ELDV100000000000UI02 /* ExerciseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELDV200000000000UI02 /* ExerciseDetailView.swift */; };
+		C3ELSV100000000000UI03 /* ExerciseLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3ELSV200000000000UI03 /* ExerciseLibraryView.swift */; };
 		TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA02 /* ExerciseRowView.swift */; };
 		TP100000000000000000AA03 /* SetRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA03 /* SetRowView.swift */; };
 		TP100000000000000000AA04 /* RestTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA04 /* RestTimerView.swift */; };
@@ -325,6 +331,7 @@
 		C6CP200000000000000003 /* CustomProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgram.swift; sourceTree = "<group>"; };
 		C6TPT200000000000000003 /* TrainingProgramTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramTemplates.swift; sourceTree = "<group>"; };
 		C6CPM200000000000000004 /* CustomProgramMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramMigration.swift; sourceTree = "<group>"; };
+		C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilter.swift; sourceTree = "<group>"; };
 		A20000010000000000000004 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000005 /* SignInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInService.swift; sourceTree = "<group>"; };
 		A20000010000000000000006 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
@@ -536,6 +543,8 @@
 		C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationFeedbackControllerTests.swift; sourceTree = "<group>"; };
 		C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorReinforcementHelpersTests.swift; sourceTree = "<group>"; };
 		C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationWithConfidenceTests.swift; sourceTree = "<group>"; };
+		C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilterTests.swift; sourceTree = "<group>"; };
+		C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingExerciseEventsTests.swift; sourceTree = "<group>"; };
 		RE200000000000000000AA01 /* ReadinessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngine.swift; sourceTree = "<group>"; };
 		RE200000000000000000AT01 /* ReadinessEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngineTests.swift; sourceTree = "<group>"; };
 		RM200000000000000000AT01 /* ReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTests.swift; sourceTree = "<group>"; };
@@ -583,6 +592,9 @@
 		SV200000000000000000AA01 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		TA200000000000000000001 /* TrainingAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingAnalyticsTests.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA01 /* TrainingPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPlanView.swift; sourceTree = "<group>"; };
+		C3ELRW200000000000UI01 /* ExerciseLibraryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryRow.swift; sourceTree = "<group>"; };
+		C3ELDV200000000000UI02 /* ExerciseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseDetailView.swift; sourceTree = "<group>"; };
+		C3ELSV200000000000UI03 /* ExerciseLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryView.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA02 /* ExerciseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRowView.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA03 /* SetRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRowView.swift; sourceTree = "<group>"; };
 		TP200000000000000000AA04 /* RestTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerView.swift; sourceTree = "<group>"; };
@@ -711,6 +723,7 @@
 				C6CP200000000000000003 /* CustomProgram.swift */,
 				C6TPT200000000000000003 /* TrainingProgramTemplates.swift */,
 				C6CPM200000000000000004 /* CustomProgramMigration.swift */,
+				C3ELFB20000000000000003 /* ExerciseLibraryFilter.swift */,
 				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
 				A20000010000000000000018 /* ReadinessAlertRecommendation.swift */,
 				TAH200001000000000000001 /* TrendAlertContext.swift */,
@@ -931,6 +944,8 @@
 				C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */,
 				C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */,
 				C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */,
+				C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */,
+				C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */,
 				AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */,
 				TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */,
 				IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */,
@@ -1326,6 +1341,9 @@
 				TP200000000000000000AA04 /* RestTimerView.swift */,
 				TP200000000000000000AA05 /* SessionCompletionSheet.swift */,
 				TP200000000000000000AA06 /* FocusModeView.swift */,
+				C3ELRW200000000000UI01 /* ExerciseLibraryRow.swift */,
+				C3ELDV200000000000UI02 /* ExerciseDetailView.swift */,
+				C3ELSV200000000000UI03 /* ExerciseLibraryView.swift */,
 			);
 			path = v2;
 			sourceTree = "<group>";
@@ -1487,6 +1505,7 @@
 				C6CP100000000000000003 /* CustomProgram.swift in Sources */,
 				C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */,
 				C6CPM100000000000000004 /* CustomProgramMigration.swift in Sources */,
+				C3ELFB10000000000000003 /* ExerciseLibraryFilter.swift in Sources */,
 				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
 				A10000010000000000000018 /* ReadinessAlertRecommendation.swift in Sources */,
 				SP100000000000000000AA01 /* StatsPeriod.swift in Sources */,
@@ -1545,6 +1564,9 @@
 				NV100000000000000000AA04 /* ProgressBar.swift in Sources */,
 				NV100000000000000000AA05 /* HapticFeedback.swift in Sources */,
 				TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */,
+				C3ELRW100000000000UI01 /* ExerciseLibraryRow.swift in Sources */,
+				C3ELDV100000000000UI02 /* ExerciseDetailView.swift in Sources */,
+				C3ELSV100000000000UI03 /* ExerciseLibraryView.swift in Sources */,
 				TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */,
 				TP100000000000000000AA03 /* SetRowView.swift in Sources */,
 				TP100000000000000000AA04 /* RestTimerView.swift in Sources */,
@@ -1697,6 +1719,8 @@
 				C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */,
 				C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */,
 				C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */,
+				C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */,
+				C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */,
 				AS100000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift in Sources */,
 				TP100000000000000000AT01 /* TrainingProgramStoreTests.swift in Sources */,
 				IE100000000000000000AT01 /* ImportEdgeCaseTests.swift in Sources */,
