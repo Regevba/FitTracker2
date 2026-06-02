@@ -1,9 +1,9 @@
 {
   "version": "1.0",
-  "updated": "2026-06-02T03:00:18Z",
+  "updated": "2026-06-02T06:06:00Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 83,
+    "case_studies_scanned": 84,
     "features_scanned": 82,
     "integrity_snapshot_files": 12,
     "integrity_cycle_snapshots": 10,
@@ -12,39 +12,39 @@
   },
   "coverage": {
     "date_written": {
-      "present": 83,
+      "present": 84,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 83,
+      "present": 84,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 83,
+      "present": 84,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 83,
+      "present": 84,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 83,
+      "present": 84,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 22,
+      "present": 23,
       "missing": 61,
-      "percent": 26.5,
+      "percent": 27.4,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -55,22 +55,21 @@
     },
     "pr_citation_exempt": {
       "present": 13,
-      "missing": 70,
-      "percent": 15.7,
+      "missing": 71,
+      "percent": 15.5,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+        "docs/case-studies/ai-user-feedback-loop-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
         "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
+        "docs/case-studies/audit-remediation-program-185-findings-case-study.md"
       ]
     },
     "state_case_study_linkage": {
-      "present": 80,
-      "missing": 2,
-      "percent": 97.6,
+      "present": 81,
+      "missing": 1,
+      "percent": 98.8,
       "examples": [
-        "adaptive-intelligence-next-pass",
         "trend-alerts-hrv"
       ]
     }
@@ -88,9 +87,8 @@
       "id": "state_case_study_linkage",
       "title": "Features missing case-study linkage in state.json",
       "severity": "low",
-      "count": 2,
+      "count": 1,
       "examples": [
-        "adaptive-intelligence-next-pass",
         "trend-alerts-hrv"
       ],
       "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
