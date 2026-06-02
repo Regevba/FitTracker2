@@ -37,13 +37,63 @@ struct RecommendationOutcome: Codable, Sendable, Identifiable {
     }
 }
 
+// MARK: - ManualUnsuppression (D1.d transparency UX)
+
+/// User explicitly un-suppressed a previously frequently-dismissed signal.
+/// Lasts `manualUnsuppressionPersistenceSeconds` (14d default) then expires.
+/// `viaTrend == true` means the un-suppression was AND-gated against the
+/// 7d acceptance-trend criterion at the moment of the user action — useful for
+/// post-hoc audit of "was the suggestion in good shape when the user re-enabled it".
+struct ManualUnsuppression: Codable, Sendable, Identifiable {
+    let id: UUID
+    let segment: String
+    let signal: String
+    let timestamp: Date
+    let viaTrend: Bool
+
+    init(segment: String, signal: String, viaTrend: Bool, timestamp: Date = Date()) {
+        self.id = UUID()
+        self.segment = segment
+        self.signal = signal
+        self.viaTrend = viaTrend
+        self.timestamp = timestamp
+    }
+}
+
+// MARK: - BlacklistedSignal (D1.d permanent suppression)
+
+/// User explicitly blacklisted a signal permanently. Revoked only by `clearAll()`.
+/// `dismissalCountAtBlacklist` is captured for analytics/audit.
+struct BlacklistedSignal: Codable, Sendable, Identifiable {
+    let id: UUID
+    let segment: String
+    let signal: String
+    let timestamp: Date
+    let dismissalCountAtBlacklist: Int
+
+    init(segment: String, signal: String, dismissalCount: Int, timestamp: Date = Date()) {
+        self.id = UUID()
+        self.segment = segment
+        self.signal = signal
+        self.dismissalCountAtBlacklist = dismissalCount
+        self.timestamp = timestamp
+    }
+}
+
 // MARK: - RecommendationMemory
 
 final class RecommendationMemory: @unchecked Sendable {
 
     private let storageKey = "fitme.ai.recommendation_memory"
+    private let manualUnsuppressionsKey = "fitme.ai.recommendation_memory.manual_unsuppressions"
+    private let blacklistedSignalsKey = "fitme.ai.recommendation_memory.blacklisted_signals"
     private let maxEntriesPerSegment = 200
+    /// D1 PRD-frozen constant: manual un-suppression persists 14 days, then expires.
+    static let manualUnsuppressionPersistenceSeconds: TimeInterval = 14 * 24 * 60 * 60
+
     private var outcomes: [RecommendationOutcome] = []
+    private var manualUnsuppressions: [ManualUnsuppression] = []
+    private var blacklistedSignals: [BlacklistedSignal] = []
     private let lock = NSLock()
 
     init() {
@@ -111,13 +161,114 @@ final class RecommendationMemory: @unchecked Sendable {
         return outcomes.count
     }
 
+    // MARK: - D1 Manual Un-suppression (transparency UX)
+
+    /// Returns true when the user has manually un-suppressed `signal` for `segment`
+    /// within the 14d persistence window. Expired entries are pruned lazily on read.
+    func isManuallyUnsuppressed(
+        signal: String,
+        in segment: AISegment,
+        now: Date = Date()
+    ) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return manualUnsuppressions.contains {
+            $0.signal == signal
+            && $0.segment == segment.rawValue
+            && now.timeIntervalSince($0.timestamp) <= Self.manualUnsuppressionPersistenceSeconds
+        }
+    }
+
+    /// All non-expired manual un-suppressions for `segment`. Useful for Settings UI.
+    func manualUnsuppressions(
+        for segment: AISegment,
+        now: Date = Date()
+    ) -> [ManualUnsuppression] {
+        lock.lock()
+        defer { lock.unlock() }
+        return manualUnsuppressions.filter {
+            $0.segment == segment.rawValue
+            && now.timeIntervalSince($0.timestamp) <= Self.manualUnsuppressionPersistenceSeconds
+        }
+    }
+
+    /// User confirmed "Un-suppress this signal" on the detail screen.
+    /// `viaTrend` records whether the 7d acceptance-trend criterion was also met
+    /// at the moment of the un-suppression (AND-gate audit).
+    func recordManualUnsuppression(
+        signal: String,
+        in segment: AISegment,
+        viaTrend: Bool,
+        timestamp: Date = Date()
+    ) {
+        lock.lock()
+        defer { lock.unlock() }
+        manualUnsuppressions.append(
+            ManualUnsuppression(
+                segment: segment.rawValue,
+                signal: signal,
+                viaTrend: viaTrend,
+                timestamp: timestamp
+            )
+        )
+        saveManualUnsuppressions()
+    }
+
+    // MARK: - D1 Blacklist (permanent suppression)
+
+    /// Returns true when `signal` is permanently blacklisted for `segment`.
+    /// No time decay — only `clearAll()` revokes a blacklist.
+    func isBlacklisted(signal: String, in segment: AISegment) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return blacklistedSignals.contains {
+            $0.signal == signal && $0.segment == segment.rawValue
+        }
+    }
+
+    /// All blacklisted signals for `segment`. Useful for Settings UI.
+    func blacklistedSignals(for segment: AISegment) -> [BlacklistedSignal] {
+        lock.lock()
+        defer { lock.unlock() }
+        return blacklistedSignals.filter { $0.segment == segment.rawValue }
+    }
+
+    /// User confirmed "Blacklist permanently" on the detail screen.
+    /// Idempotent: if the signal is already blacklisted for this segment, no-op.
+    func recordBlacklist(
+        signal: String,
+        in segment: AISegment,
+        dismissalCount: Int,
+        timestamp: Date = Date()
+    ) {
+        lock.lock()
+        defer { lock.unlock() }
+        let alreadyBlacklisted = blacklistedSignals.contains {
+            $0.signal == signal && $0.segment == segment.rawValue
+        }
+        guard !alreadyBlacklisted else { return }
+        blacklistedSignals.append(
+            BlacklistedSignal(
+                segment: segment.rawValue,
+                signal: signal,
+                dismissalCount: dismissalCount,
+                timestamp: timestamp
+            )
+        )
+        saveBlacklistedSignals()
+    }
+
     // MARK: - GDPR / Account Deletion
 
     func clearAll() {
         lock.lock()
         defer { lock.unlock() }
         outcomes = []
+        manualUnsuppressions = []
+        blacklistedSignals = []
         UserDefaults.standard.removeObject(forKey: storageKey)
+        UserDefaults.standard.removeObject(forKey: manualUnsuppressionsKey)
+        UserDefaults.standard.removeObject(forKey: blacklistedSignalsKey)
     }
 
     // MARK: - Persistence (plain UserDefaults)
@@ -127,11 +278,30 @@ final class RecommendationMemory: @unchecked Sendable {
         UserDefaults.standard.set(data, forKey: storageKey)
     }
 
+    private func saveManualUnsuppressions() {
+        guard let data = try? JSONEncoder().encode(manualUnsuppressions) else { return }
+        UserDefaults.standard.set(data, forKey: manualUnsuppressionsKey)
+    }
+
+    private func saveBlacklistedSignals() {
+        guard let data = try? JSONEncoder().encode(blacklistedSignals) else { return }
+        UserDefaults.standard.set(data, forKey: blacklistedSignalsKey)
+    }
+
     private func load() {
-        guard let data = UserDefaults.standard.data(forKey: storageKey),
-              let loaded = try? JSONDecoder().decode([RecommendationOutcome].self, from: data)
-        else { return }
-        outcomes = loaded
+        if let data = UserDefaults.standard.data(forKey: storageKey),
+           let loaded = try? JSONDecoder().decode([RecommendationOutcome].self, from: data) {
+            outcomes = loaded
+        }
+        // Backward-compat: D1 fields use separate keys so pre-D1 stores load fine.
+        if let data = UserDefaults.standard.data(forKey: manualUnsuppressionsKey),
+           let loaded = try? JSONDecoder().decode([ManualUnsuppression].self, from: data) {
+            manualUnsuppressions = loaded
+        }
+        if let data = UserDefaults.standard.data(forKey: blacklistedSignalsKey),
+           let loaded = try? JSONDecoder().decode([BlacklistedSignal].self, from: data) {
+            blacklistedSignals = loaded
+        }
     }
 
     /// LRU eviction: single pass to count per segment, then remove oldest excess entries.

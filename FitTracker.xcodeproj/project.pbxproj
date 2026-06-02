@@ -18,6 +18,7 @@
 		6CE2745F57FD4DE3B57B14A9 /* FitTracker/AI/GoalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */; };
 		74FEAE525F4C445790103F37 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift */; };
 		79436AA165D54D94937D68A8 /* FitTracker/AI/RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* FitTracker/AI/RecommendationMemory.swift */; };
+		26618B9465EB4F84B7A99565 /* FitTracker/AI/AcceptanceTrendDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2122A2F6FF4DE9BA3C54B5 /* FitTracker/AI/AcceptanceTrendDetector.swift */; };
 		C5AAFBAA111111111111AAAA /* FitTracker/AI/RecommendationFeedbackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AAFBAA222222222222AAAA /* FitTracker/AI/RecommendationFeedbackController.swift */; };
 		8287618AAA1A42A6A6AC9EB9 /* FitTracker/AI/Adapters/ProfileAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DB1AB8240F41ADB9BB8927 /* FitTracker/AI/Adapters/ProfileAdapter.swift */; };
 		98DFF4A40C424A3E9B71560F /* FitTracker/AI/Adapters/TrainingAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656B9E0FD2FC47EB9F874958 /* FitTracker/AI/Adapters/TrainingAdapter.swift */; };
@@ -188,6 +189,7 @@
 		C6ESOS100000000000UI09 /* ExerciseSlotOverrideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6ESOS200000000000UI09 /* ExerciseSlotOverrideSheet.swift */; };
 		C6CPES100000000000UI10 /* CustomProgramEditorScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CPES200000000000UI10 /* CustomProgramEditorScreen.swift */; };
 		C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */; };
+		D1SSDS00100000000000FB04 /* SuppressedSignalDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SSDS00200000000000FR04 /* SuppressedSignalDetailScreen.swift */; };
 		RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */; };
 		SCR100001000000000000001 /* SmartRemindersConsumerRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */; };
 		RAT100001000000000000001 /* ReadinessAwareTrainingTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000001 /* ReadinessAwareTrainingTrigger.swift */; };
@@ -240,6 +242,10 @@
 		C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */; };
 		C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */; };
 		C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */; };
+		281EBC6538174BECA448D026 /* AnalyticsAdaptiveIntelligenceEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D6CC01D5504DF09C5CD24C /* AnalyticsAdaptiveIntelligenceEventsTests.swift */; };
+		08E9DB205B0E467D8ACAB801 /* RecommendationMemoryD1FieldsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EF87AAE9D7412CAAF675D0 /* RecommendationMemoryD1FieldsTests.swift */; };
+		0EB0EB32E19F4D4D858C67A1 /* AcceptanceTrendDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB4FC17B5FB4AA79207AA00 /* AcceptanceTrendDetectorTests.swift */; };
+		D41ACF788705460F8EE16E40 /* AIOrchestratorTrendUnsuppressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFDB52F103461E9E314FAD /* AIOrchestratorTrendUnsuppressTests.swift */; };
 		C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */; };
 		C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */; };
 		C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */; };
@@ -328,6 +334,7 @@
 		11B09D322F852BF900DCB9A0 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		11B09D332F852BF900DCB9A0 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		1B4473D583514FE5A6A1297E /* FitTracker/AI/RecommendationMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationMemory.swift; sourceTree = "<group>"; };
+		0C2122A2F6FF4DE9BA3C54B5 /* FitTracker/AI/AcceptanceTrendDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/AcceptanceTrendDetector.swift; sourceTree = "<group>"; };
 		C5AAFBAA222222222222AAAA /* FitTracker/AI/RecommendationFeedbackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationFeedbackController.swift; sourceTree = "<group>"; };
 		1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/GoalProfile.swift; sourceTree = "<group>"; };
 		22DB1AB8240F41ADB9BB8927 /* FitTracker/AI/Adapters/ProfileAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/ProfileAdapter.swift; sourceTree = "<group>"; };
@@ -523,6 +530,7 @@
 		C6ESOS200000000000UI09 /* ExerciseSlotOverrideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSlotOverrideSheet.swift; sourceTree = "<group>"; };
 		C6CPES200000000000UI10 /* CustomProgramEditorScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgramEditorScreen.swift; sourceTree = "<group>"; };
 		C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackSettingsScreen.swift; sourceTree = "<group>"; };
+		D1SSDS00200000000000FR04 /* SuppressedSignalDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppressedSignalDetailScreen.swift; sourceTree = "<group>"; };
 		RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStoreTests.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA01 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA02 /* SupplementStackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementStackCard.swift; sourceTree = "<group>"; };
@@ -556,6 +564,10 @@
 		C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryWindowTests.swift; sourceTree = "<group>"; };
 		C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationFeedbackControllerTests.swift; sourceTree = "<group>"; };
 		C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorReinforcementHelpersTests.swift; sourceTree = "<group>"; };
+		41D6CC01D5504DF09C5CD24C /* AnalyticsAdaptiveIntelligenceEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsAdaptiveIntelligenceEventsTests.swift; sourceTree = "<group>"; };
+		E3EF87AAE9D7412CAAF675D0 /* RecommendationMemoryD1FieldsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryD1FieldsTests.swift; sourceTree = "<group>"; };
+		3EB4FC17B5FB4AA79207AA00 /* AcceptanceTrendDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTrendDetectorTests.swift; sourceTree = "<group>"; };
+		6DBFDB52F103461E9E314FAD /* AIOrchestratorTrendUnsuppressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorTrendUnsuppressTests.swift; sourceTree = "<group>"; };
 		C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationWithConfidenceTests.swift; sourceTree = "<group>"; };
 		C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryFilterTests.swift; sourceTree = "<group>"; };
 		C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrainingExerciseEventsTests.swift; sourceTree = "<group>"; };
@@ -671,6 +683,7 @@
 				1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */,
 				562BF2CE90DB4CFE8912F36E /* FitTracker/AI/ValidatedRecommendation.swift */,
 				1B4473D583514FE5A6A1297E /* FitTracker/AI/RecommendationMemory.swift */,
+				0C2122A2F6FF4DE9BA3C54B5 /* FitTracker/AI/AcceptanceTrendDetector.swift */,
 				C5AAFBAA222222222222AAAA /* FitTracker/AI/RecommendationFeedbackController.swift */,
 				CA6ACD6FF9F1414981D90944 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift */,
 			);
@@ -961,6 +974,10 @@
 				C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */,
 				C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */,
 				C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */,
+				41D6CC01D5504DF09C5CD24C /* AnalyticsAdaptiveIntelligenceEventsTests.swift */,
+				E3EF87AAE9D7412CAAF675D0 /* RecommendationMemoryD1FieldsTests.swift */,
+				3EB4FC17B5FB4AA79207AA00 /* AcceptanceTrendDetectorTests.swift */,
+				6DBFDB52F103461E9E314FAD /* AIOrchestratorTrendUnsuppressTests.swift */,
 				C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */,
 				C3T9B0000000000000FRT01 /* ExerciseLibraryFilterTests.swift */,
 				C3T9A0000000000000FRT02 /* AnalyticsTrainingExerciseEventsTests.swift */,
@@ -1321,6 +1338,7 @@
 				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
 				NS2100001000000000000001 /* NotificationsSettingsScreen.swift */,
 				C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */,
+				D1SSDS00200000000000FR04 /* SuppressedSignalDetailScreen.swift */,
 				C6CPLS200000000000UI06 /* CustomProgramListScreen.swift */,
 				C6NPS200000000000UI07 /* NewProgramSheet.swift */,
 				C6DES200000000000UI08 /* DayEditSheet.swift */,
@@ -1654,6 +1672,7 @@
 				C6ESOS100000000000UI09 /* ExerciseSlotOverrideSheet.swift in Sources */,
 				C6CPES100000000000UI10 /* CustomProgramEditorScreen.swift in Sources */,
 				C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */,
+				D1SSDS00100000000000FB04 /* SuppressedSignalDetailScreen.swift in Sources */,
 				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
@@ -1692,6 +1711,7 @@
 				6CE2745F57FD4DE3B57B14A9 /* FitTracker/AI/GoalProfile.swift in Sources */,
 				4EBF9208E18548B3B009001A /* FitTracker/AI/ValidatedRecommendation.swift in Sources */,
 				79436AA165D54D94937D68A8 /* FitTracker/AI/RecommendationMemory.swift in Sources */,
+				26618B9465EB4F84B7A99565 /* FitTracker/AI/AcceptanceTrendDetector.swift in Sources */,
 				C5AAFBAA111111111111AAAA /* FitTracker/AI/RecommendationFeedbackController.swift in Sources */,
 				74FEAE525F4C445790103F37 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift in Sources */,
 				RM1000001000000000000001 /* ReminderType.swift in Sources */,
@@ -1750,6 +1770,10 @@
 				C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */,
 				C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */,
 				C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */,
+				281EBC6538174BECA448D026 /* AnalyticsAdaptiveIntelligenceEventsTests.swift in Sources */,
+				08E9DB205B0E467D8ACAB801 /* RecommendationMemoryD1FieldsTests.swift in Sources */,
+				0EB0EB32E19F4D4D858C67A1 /* AcceptanceTrendDetectorTests.swift in Sources */,
+				D41ACF788705460F8EE16E40 /* AIOrchestratorTrendUnsuppressTests.swift in Sources */,
 				C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */,
 				C3T9B0000000000000ATT01 /* ExerciseLibraryFilterTests.swift in Sources */,
 				C3T9A0000000000000ATT02 /* AnalyticsTrainingExerciseEventsTests.swift in Sources */,

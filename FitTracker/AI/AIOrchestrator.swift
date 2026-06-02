@@ -182,12 +182,57 @@ public final class AIOrchestrator: ObservableObject {
         let dismissed = memory.frequentlyDismissedSignals(for: segment)
         let touched = recommendation.signals.filter { dismissed.contains($0) }
         if !touched.isEmpty {
-            analytics?.logHomeAiFeedbackSignalSuppressed(
-                segment: segment.rawValue,
-                signal: touched[0],
-                dismissalCount: dismissed.count
-            )
-            return recommendation.withConfidence(Self.downgradeConfidence(recommendation.confidence))
+            // D1 — partition touched into blacklist + manual-unsuppress + trend-unsuppress
+            // + still-suppressible. Only the latter two (blacklist + still-suppressible)
+            // trigger the C5 downgrade; the override paths skip it.
+            let segmentOutcomes = memory.outcomes(for: segment)
+            let now = Date()
+
+            let blacklisted = touched.filter { memory.isBlacklisted(signal: $0, in: segment) }
+            let manuallyUnsuppressed = touched.filter {
+                !blacklisted.contains($0)
+                && memory.isManuallyUnsuppressed(signal: $0, in: segment, now: now)
+            }
+            let trendUnsuppressed = touched.filter {
+                !blacklisted.contains($0)
+                && !manuallyUnsuppressed.contains($0)
+                && AcceptanceTrendDetector.shouldUnsuppressByTrend(
+                    signal: $0, segment: segment, outcomes: segmentOutcomes, now: now)
+            }
+            let stillSuppressible = touched.filter {
+                !blacklisted.contains($0)
+                && !manuallyUnsuppressed.contains($0)
+                && !trendUnsuppressed.contains($0)
+            }
+
+            // Newly trend-detected — fire analytics + persist a 14d auto-unsuppression
+            // so the same signal isn't immediately re-evaluated on the next call.
+            for signal in trendUnsuppressed {
+                analytics?.logHomeAiFeedbackSignalUnsuppressedByTrend(
+                    segment: segment.rawValue,
+                    signal: signal,
+                    priorDismissalCount: AcceptanceTrendDetector.priorDismissalCount(
+                        signal: signal, segment: segment, outcomes: segmentOutcomes),
+                    daysSinceLastDismiss: AcceptanceTrendDetector.daysSinceLastDismiss(
+                        signal: signal, segment: segment, outcomes: segmentOutcomes, now: now)
+                )
+                memory.recordManualUnsuppression(
+                    signal: signal, in: segment, viaTrend: true, timestamp: now)
+            }
+
+            // Suppression fires only when at least one touched signal is blacklisted
+            // OR still-suppressible (i.e. not covered by manual / trend overrides).
+            let suppressingSignals = blacklisted + stillSuppressible
+            if !suppressingSignals.isEmpty {
+                analytics?.logHomeAiFeedbackSignalSuppressed(
+                    segment: segment.rawValue,
+                    signal: suppressingSignals[0],
+                    dismissalCount: dismissed.count
+                )
+                return recommendation.withConfidence(Self.downgradeConfidence(recommendation.confidence))
+            }
+            // All touched signals were overridden — no downgrade.
+            return recommendation
         }
         if let rate = memory.acceptanceRate(for: segment), rate > 0.70 {
             let outcomeCount = memory.outcomes(for: segment).filter { $0.action != .ignored }.count

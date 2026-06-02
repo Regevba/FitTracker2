@@ -96,19 +96,29 @@ struct AIFeedbackSettingsScreen: View {
                         .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.secondary)
                 } else {
-                    ForEach(allSuppressed, id: \.label) { item in
-                        HStack(spacing: AppSpacing.xSmall) {
-                            Image(systemName: "eye.slash.fill")
-                                .foregroundStyle(AppColor.Text.secondary)
-                            Text(item.label)
-                                .font(AppText.body)
-                                .foregroundStyle(AppColor.Text.primary)
-                            Spacer()
-                            Text(item.segment)
-                                .font(AppText.caption)
-                                .foregroundStyle(AppColor.Text.secondary)
+                    ForEach(allSuppressed, id: \.id) { item in
+                        NavigationLink {
+                            SuppressedSignalDetailScreen(segment: item.segmentValue, signal: item.label)
+                        } label: {
+                            HStack(spacing: AppSpacing.xSmall) {
+                                Image(systemName: "eye.slash.fill")
+                                    .foregroundStyle(AppColor.Text.secondary)
+                                Text(item.label)
+                                    .font(AppText.body)
+                                    .foregroundStyle(AppColor.Text.primary)
+                                Spacer()
+                                Text(item.segment)
+                                    .font(AppText.caption)
+                                    .foregroundStyle(AppColor.Text.secondary)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(AppColor.Text.secondary)
+                            }
+                            .contentShape(Rectangle())
+                            .accessibilityElement(children: .combine)
+                            .accessibilityHint("Open details for \(item.label) in \(item.segment)")
                         }
-                        .accessibilityElement(children: .combine)
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -166,12 +176,17 @@ struct AIFeedbackSettingsScreen: View {
         var id: String { "\(segment):\(label)" }
         let label: String
         let segment: String
+        let segmentValue: AISegment
     }
 
     private func collectSuppressed() -> [SuppressedItem] {
         AISegment.allCases.flatMap { segment in
             feedbackController.frequentlyDismissedSignals(for: segment).map {
-                SuppressedItem(label: $0, segment: segment.rawValue.capitalized)
+                SuppressedItem(
+                    label: $0,
+                    segment: segment.rawValue.capitalized,
+                    segmentValue: segment
+                )
             }
         }
     }
