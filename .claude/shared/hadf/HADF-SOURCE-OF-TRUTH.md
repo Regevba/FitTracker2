@@ -203,3 +203,9 @@ Full *dispatch* activation requires **RQ4 PASS** (acting layer proven). Until th
 
 ### Status
 Phase 2-bis closes when Sub-exp 3 + 1B verdicts land (~2026-06-05) + Block C synthesis. **Phase 3 is defined here; not yet scaffolded** — 3A needs a build spec + the RQ4 experiment needs a pre-registration (design pass + operator confirmation before any lock).
+
+### Data-isolation guarantee (Phase 3 design phase)
+Phase 3 is currently a **doc-only research/design phase** and is **physically isolated from the live experiment data**:
+- All Phase 3 artifacts (this SoT update + the 3A/3B spec drafts) are `.md` documents committed on a **separate branch/worktree off main** (`chore/hadf-sot-phase3-activation`), distinct from the two live collector worktrees (`…-subexp3`, `…-subexp1b`).
+- The design phase **reads** locked sub-exp signatures as references but **writes nothing** to any live `.claude/shared/hadf/` collector data dir; the backup job's data globs (`phase2bis-raw-*.jsonl`, preregs, ledgers) do not include these docs.
+- The live Sub-exp 3 + 1B collectors + their locked preregs + raw data are **untouched** by Phase 3 design work. Build work that *would* touch data (3A reference-store, 3B collection) is gated on Phase 2-bis closure and will run in its own isolated worktree under the same discipline — never on the live collector trees, never on main directly.
