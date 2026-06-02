@@ -83,13 +83,13 @@ Sub-exp 1 launched 2026-05-25 with a **narrowed 4-endpoint matrix** (openai gpt-
 | #533 | FT2 | Sub-exp 1B v1 prep — 4-endpoint cloud matrix prereg + plist template | Merged 2026-05-30 |
 | #534 | FT2 | Sub-exp 3 prep — Bedrock routing-test scaffolding (collect.py `_call_bedrock` + ENDPOINTS["subexp3"] + prereg + plist template + operator-actions runbook) | Merged 2026-05-30 |
 | #536 | FT2 | verdict-script `--metric ks` for Sub-exp 2 cloud-vs-local KS-distinguishability | Merged 2026-05-31 |
-| #539 | FT2 | verdict-script `--metric signature_delta_ratio` for Sub-exp 3 Bedrock-vs-Anthropic-direct routing test | Open 2026-05-31 |
-| #542 | FT2 | Sub-exp 1B **v2 scope reduction** — drop mistral + vercel-ai-gateway after v1 Fire 0 free-tier rate-limit triage; ship 2-endpoint design (anthropic + google) for 2026-06-10 launch | Open 2026-05-31 |
-| this-PR | FT2 | Block C synthesis case study — §2 PR chain backfill + §3.A.1 Sub-exp 1B v2 update + §3.B/§3.C prereg-locked threshold values | Open 2026-05-31 |
-| TBD-B14.5 | FT2 | Sub-exp 2 verdict run + §3.B populated | Pending ~2026-06-02 (3 days × launch 2026-05-30T08:00Z) |
-| TBD-B15 | FT2 | Sub-exp 3 prereg lock ceremony + launchd bootstrap | Pending ~2026-06-02 (after Sub-exp 2 closes; gated on operator AWS Bedrock model-access approval — lead time minutes to days) |
+| #539 | FT2 | verdict-script `--metric signature_delta_ratio` for Sub-exp 3 Bedrock-vs-Anthropic-direct routing test | Merged 2026-05-31 |
+| #542 | FT2 | Sub-exp 1B **v2 scope reduction** — drop mistral + vercel-ai-gateway after v1 Fire 0 free-tier rate-limit triage; ship 2-endpoint design (anthropic + google) for 2026-06-10 launch | Merged 2026-05-31 |
+| #543 | FT2 | Block C synthesis case study — §2 PR chain backfill + §3.A.1 Sub-exp 1B v2 update + §3.B/§3.C prereg-locked threshold values | Merged 2026-05-31 |
+| **B14 (commits `8da3297`+`5981676`+`c21966c`)** | FT2 | Sub-exp 2 prereg lock + closure + §3.B verdict run | **Closed 2026-06-02 (verdict PASS — see §3.B); merged to main via the HADF-SoT consolidation PR** |
+| TBD-B15 | FT2 | Sub-exp 3 prereg lock ceremony + launchd bootstrap | Pending (AWS Bedrock access LIVE 2026-06-02; ceremony unblocked) |
 | TBD-B15.5 | FT2 | Sub-exp 3 verdict run + §3.C populated | Pending ~2026-06-05 (3 days × Sub-exp 3 launch) |
-| TBD-1B-V2 | FT2 | Sub-exp 1B v2 verdict run + §3.A.1 populated | Pending ~2026-06-13 (3 days × 2026-06-10 earliest launch) |
+| TBD-1B-V2 | FT2 | Sub-exp 1B v2 fresh lock + verdict run + §3.A.1 populated | Pending ~2026-06-13 (3 days × 2026-06-10 earliest launch; v2 prereg currently UNLOCKED on main) |
 | TBD-C | FT2 | Block C — final synthesis closure + fitme-story showcase slot 30 + state.json closure | Pending ~2026-06-13 (after all sub-exps close, latest sub-exp = 1B v2) |
 
 ## §3 Per-sub-exp verdicts (populated as each sub-exp closes)
@@ -177,29 +177,35 @@ The 200-record uniform drop (50/endpoint) traces to the 2026-05-25T16:40:34Z fir
 
 ### §3.B Sub-exp 2 — Cloud-vs-local separability
 
-**Verdict:** TBD (populate after B14.5 verdict-script run ~2026-06-02). Verdict script `scripts/hadf-phase2bis-verdict.py --metric ks` shipped via PR #536 (2026-05-31); ready when collection closes.
+**Verdict: PASS** (closed 2026-06-02; collection 2026-05-30T04:50Z → 2026-06-02T02:00Z, 18 fires, cost $0; verdict artifact [`phase2bis-subexp2-verdict.json`](../../.claude/shared/hadf/phase2bis-subexp2-verdict.json)). Computed against the lock-intact prereg (sha256 `d4ec4680…`, lock sidecar verified).
 
-**Pre-registered pass criteria** (per [`preregistration-phase2bis-subexp2.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp2.json) `verdict_thresholds` — **LOCKED 2026-05-30T04:43:31Z at sha256=`d4ec4680ef21`** via signed tag `prereg-phase2bis-subexp2-locked-2026-05-30`):
+**Pre-registered pass criteria** (per [`preregistration-phase2bis-subexp2.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp2.json) `verdict_thresholds`, operator-confirmed at the 2026-05-30 lock ceremony — **LOCKED at sha256=`d4ec4680ef21`** via signed tag `prereg-phase2bis-subexp2-locked-2026-05-30`):
 
 - `pass_ks_p_max`: **0.01** (per spec §1 RQ2)
-- `pass_yield_min`: **250** (3 days × 5 fires × 50 calls/fire = 750 expected; 250 = 33% floor)
-- `fail_if_ks_p_greater_than`: **0.05**
-- Anchor: pooled Sub-exp 1A cloud distribution (openai/gpt-4o-mini + openai/gpt-4o + anthropic/claude-haiku-4-5 + anthropic/claude-sonnet-4-6 = 2600 records)
-- Target: ollama/llama3.2:3b (Sub-exp 2's single endpoint, ~750 records expected)
+- `pass_yield_min`: **250** (kill floor `n_valid < 200`; nominal-valid expectation 375)
+- `fail_if_ks_p_greater_than`: 0.05
 
-**Observed values:**
+**Observed values** [all T1 — instrumented from raw `.jsonl`]:
 
 | Metric | Threshold | Observed | Pass/Fail |
 |---|---|---|---|
-| KS p-value vs openai/gpt-4o-mini | ≤ pass_ks_p_max | TBD | TBD |
-| KS p-value vs anthropic/claude-haiku-4-5 | ≤ pass_ks_p_max | TBD | TBD |
-| n_valid Ollama | ≥ pass_yield_min | TBD | TBD |
-| Ollama median TTFT | n/a | TBD | n/a |
-| Ollama median TPS | n/a | TBD | n/a |
+| n_valid Ollama | ≥ 250 (kill floor 200) | **800** / 900 dispatched (88.9% valid) | ✅ PASS |
+| KS p — **TTFT** vs openai/gpt-4o-mini | ≤ 0.01 | KS=0.9362, p ≈ 0 (< 1e-300) | ✅ |
+| KS p — **TTFT** vs anthropic/claude-haiku-4-5 | ≤ 0.01 | KS=0.9812, p ≈ 0 (< 1e-300) | ✅ |
+| KS p — **TPS** vs openai/gpt-4o-mini | ≤ 0.01 | KS=0.7492, p = 7.39e-273 | ✅ |
+| KS p — **TPS** vs anthropic/claude-haiku-4-5 | ≤ 0.01 | KS=0.9100, p = 9.88e-324 | ✅ |
+| Ollama median TTFT | n/a | 0.179 s | n/a |
+| Ollama median TPS | n/a | 43.84 tok/s | n/a |
 
-**Interpretation:** TBD. Expected narrative:
-- If KS p < pass_ks_p_max vs both cloud anchors: local execution produces a signature distinguishable from cloud → cloud-vs-local separability confirmed → Sub-exp 3 may launch.
-- If KS p > 0.05 vs ALL cloud anchors: Ollama-on-M2-3b is indistinguishable from cloud on this metric → operator decides whether to weaken Sub-exp 2's hypothesis or queue follow-up (different local model, different metric, different M2 thermal regime).
+**Full distribution summary** (2-sample comparison; Ollama n=800, each anchor n=1300) [T1]:
+
+| Endpoint | TTFT_s min / p25 / med / p75 / max | TPS min / p25 / med / p75 / max | TPS std |
+|---|---|---|---|
+| **Ollama** llama3.2:3b (M2, local) | 0.140 / 0.147 / **0.179** / 0.227 / 5.005 | 23.1 / 32.8 / **43.8** / 45.1 / 46.2 | **6.9** |
+| openai/gpt-4o-mini (cloud) | 0.000 / 0.001 / **0.021** / 0.055 / 32.2 | 0.3 / 46.2 / **65.4** / 102.1 / 3984.2 | 277.2 |
+| anthropic/claude-haiku-4-5 (cloud) | 0.594 / 0.909 / **1.099** / 1.417 / 34.7 | 6.3 / 66.4 / **83.3** / 152.9 / 27638.2 | 951.2 |
+
+**Interpretation** [T3]: Local execution produces a streaming signature **distinguishable from both cloud anchors at p ≪ 0.01 on both TTFT and TPS** — the hypothesis (RQ2) is confirmed. Two structural features carry the separation: (1) **TTFT** — Ollama's 0.179 s median sits cleanly between openai's near-instant 0.021 s (edge-served, no model-load latency) and anthropic's 1.099 s; the local 3B model has no network round-trip but a real prompt-eval step, landing it in its own band. (2) **TPS variance** — Ollama's throughput is tightly clustered (std 6.9, almost the entire mass in 32–45 tok/s), whereas both cloud endpoints show extreme variance (openai std 277, anthropic std 951) driven by short-output tok/s inflation and multi-tenant scheduling jitter. A local M2 inference loop is *consistent* in a way cloud serving is not, and that consistency is itself a fingerprint. **Cloud-vs-local separability confirmed → Sub-exp 3 (the routing falsification test) is unblocked** (gated separately on AWS Bedrock access).
 
 ### §3.C Sub-exp 3 — Routing test (the central HADF claim)
 
