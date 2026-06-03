@@ -327,6 +327,78 @@ To avoid rebuilding the Universe each time the framework advances, every
 scene element that depends on framework state reads from a **typed data
 contract**, never from hand-coded constants.
 
+### ⚠️ Pre-Phase-2 data-aggregation gate (added 2026-06-03)
+
+**Phase 1 → Phase 2 advancement is gated on a fresh re-inspection of every data input below.** The 2026-05-28 schema sketch is correct in *shape* but the data it references will move materially between now (2026-06-03, Phase E day 13) and Phase 2 start. The framework state ⇒ Universe scene mapping cannot be locked until the snapshots below are re-captured against the actually-shipped post-Phase-E + v7.9.1 platform.
+
+**Three things must be inspected + aggregated BEFORE Phase 2 begins:**
+
+#### 1. Post-Phase-E framework state (snapshot trigger: ~2026-06-04 Phase E exit)
+
+The 2026-05-12 → 2026-06-04 calibration window will close. The Universe's Act II timeline (version chain) + Act IV (gate firings) + Act V (adoption %) + Act VI (feature monuments) all depend on data that's still in motion:
+
+| What needs re-inspection | Why it shifts at Phase E exit |
+|---|---|
+| `docs/framework/versions.json` (canonical timeline) | v7.9 promotion outcome documented; v7.9.1 build window opens; mechanism list bumps from {A, B, C, D, E, F} possibly to {A–G} or with promotion deltas |
+| `.claude/features/*/state.json` (feature roster, currently 85) | D1 + C2 + C3 + C5 + C6 closed today (+5 complete); trend-alerts-hrv may complete; HADF Sub-exp 1B v2 + 3 verdicts may land. Roster count + status mix changes by ≥5–10 features |
+| `.claude/shared/measurement-adoption.json` (Act V bars) | The denominator-dilution issue documented in framework-v7-9-promotion §99.2 (process regressions in `adoption_pct_post_v6`, `timing_wall_time_pct_post_v6`, `cache_hits_pct_post_v6` observed 2026-05-28 are denominator effects from +9 features added during Phase E without adoption metrics backfilled). v7.9.1 backfill is a queued follow-up; the Universe should not freeze on the dilution baseline |
+| `.claude/logs/gate-coverage.jsonl` (Act IV live stream) | Promoted gates (BRANCH_ISOLATION_VIOLATION Mode B + Mode C + FEATURE_CLOSURE_COMPLETENESS) start producing real enforcement firings post-promotion. Pre-Phase-E telemetry is advisory-mode only; Universe rendering needs the enforced-mode firings for Act IV's gravity to be accurate |
+
+**Operator action when Phase E exits:** run `make daily-checkpoint --force` + `make integrity-diff` + `make measurement-adoption` + `make documentation-debt` on the day Phase E officially ends; commit the snapshot deltas; only then re-open this PRD for Phase 1 → 2 advancement.
+
+#### 2. Post-v7.9.1 framework state (snapshot trigger: v7.9.1 ship)
+
+v7.9.1 (Test Discipline Foundation per Notion page, ships 2026-06-04 → 06-11 window) introduces F-candidates that the Universe must visualize correctly:
+
+- Promoted advisories (the v7.9.1 docket per `docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`)
+- Per-skill gate-coverage telemetry (new keys land in `gate-coverage.jsonl`)
+- Possible new mechanism letter (G, if shipped)
+- The pm-workflow three-option auto-dispatch heuristic (PR #600, shipped 2026-06-03) will produce its own gate-coverage events: `pm_workflow.three_option_auto_dispatch` — the Universe should surface this in Act IV alongside the other gate firings
+
+**Operator action when v7.9.1 ships:** re-aggregate `versions.json` against the v7.9.1 release notes; verify the data contract still holds (new gates / mechanisms don't require schema-changes to the input files, only data additions).
+
+#### 3. NEW input — Observed Patterns Catalog → skill overlay
+
+The Universe's Act IV (gate firings) and Act III (chambers / skill phases) currently model "skill X owns phase Y" + "gate Z fires when conditions met." **What's missing:** the catalog of *patterns* that operators use to interpret gate firings — `.claude/integrity/observed-patterns.md` (23 gate patterns `#1..#23` + 28 workflow patterns `W1..W28+` as of 2026-06-03). This catalog is what closes the loop between "a gate fired" and "what the operator does about it."
+
+The new 5th data input the Universe must consume:
+
+| Input file (FT2 source) | What the Universe reads from it | Mirror destination (fitme-story) |
+|---|---|---|
+| `.claude/integrity/observed-patterns.md` | Per-pattern remediation overlay on Act IV gate firings: when a gate fires in operator mode, hover surfaces the matching catalog entry (#N gate-pattern or Wn workflow-pattern) with its short description + cross-link to the catalog. Provides the "what to do about it" layer the existing scene shape doesn't model. | `src/data/framework/observed-patterns.json` (build-time aggregate — parse the markdown into a typed JSON: `{ id, kind: "gate" \| "workflow", code?, title, gist, fixed_in?, severity, ucc_correlation }[]`) |
+
+This is a substantive scene addition, not a one-line overlay. Implication for the existing scenes:
+
+- **Act III (Chambers):** each phase chamber currently shows the skill that owns the phase; should ALSO surface the patterns that fire most often in that phase (e.g. Phase 9 chamber shows `#1 BRANCH_ISOLATION_HISTORICAL` + `#15 PARTIAL_SHIP_TERMINAL` as "common patterns observed at this phase")
+- **Act IV (Gate firings):** each gate-fire bubble currently has gate code + commit ref + timestamp; should ALSO display the matching `#N` catalog entry as a hover-revealed annotation, with a Tier-2 fallback (text-only annotation if 3D label-billboard exceeds budget)
+- **Act V (Adoption bars):** the W-pattern workflow catalog should drive a parallel rendering — workflow patterns are NOT gate firings; they're operator process patterns (`W1` ssh-agent unloaded, `W9` branch-drift, `W18` og-image 404, `W28` CoreSim env-flake). These are emerging signals; Act V should show their cumulative count alongside adoption % to indicate "framework maturity comes from W-pattern accumulation, not just gate firings"
+- **Skill chips on the LegoWall (cross-Act):** each skill (per `fitme-story/src/lib/skill-ecosystem.ts`) should surface its 2–4 most relevant observed patterns as a hover-revealed list. This closes the loop from skill description → typical failure modes the skill watches for. Highest-leverage examples:
+  - `/pm-workflow` → `W1 ssh-agent unloaded`, `W2 publish verbatim then remediate`, `W6 measurement case-study impartiality`, `#15 PARTIAL_SHIP_TERMINAL`
+  - `/brainstorm-pm` → `W2`, `W6`, `#17 CU_V2_INVALID`
+  - `/dev` + `/qa` → `#1`, `#3`, `#4`, `#11`
+  - `/cx` → `#16`, `#18`, `W2`
+  - `/release` → `#15`, `W4` (Vercel build cache stale), `W7` (Lighthouse SEO false-positive)
+
+**Aggregator contract for `observed-patterns.json`** (defines the new sync step in `fitme-story/scripts/sync-from-fittracker2.ts` Phase 4 task):
+
+- **Input:** `.claude/integrity/observed-patterns.md` (markdown source on FT2 main)
+- **Parser:** regex extraction of `### #N <CODE> — <title>` (gate patterns) + `### Wn <CODE> — <title>` (workflow patterns) → flat array; preserves the order in the source markdown so the Universe can use array index as render priority
+- **Output schema:** `{ schema_version: "1.0.0", patterns: [ { id: "#1" \| "W9" \| ..., kind: "gate" \| "workflow", code?: "BRANCH_ISOLATION_HISTORICAL", title: "...", gist: "first sentence of the body", fixed_in?: "PR #317" \| "v7.7 honesty fixes" \| null, severity: "advisory" \| "blocking" \| "narrowed" \| "informational", related_skill_slugs: [ "pm-workflow", "dev", ... ] (derived heuristically — operator review required at lock) }, ... ] }`
+- **Stability guarantee:** array order is stable across runs (source-markdown order); deltas detected via field-by-field diff
+- **Privacy:** no operator commit SHAs leak (the catalog body cites commits; the JSON aggregate strips them to keep the build artifact pseudo-public)
+- **Build trigger:** any modification to `observed-patterns.md` triggers re-aggregation; the existing pre-build sync detects this via mtime comparison
+
+**Open question for the aggregator** (must close before Phase 2 task drafting): the `related_skill_slugs[]` field is partly subjective (e.g. is `W1` ssh-agent related to `/pm-workflow` or to `/dev`?). Two paths:
+
+- Path A: operator manually labels each pattern with `related_skills:` frontmatter directly in `observed-patterns.md` — single source of truth, deterministic. Requires a one-time backfill pass against the current 23 + 28 patterns.
+- Path B: aggregator infers from pattern context (regex match on gate code → skill that owns the gate). Less labor but more brittle.
+
+Recommend Path A for the v1 (forward stability matters more than the one-time backfill cost). Locked in PRD §"Open Questions" as **OQ-3D-A: Operator labels `related_skills:` frontmatter in observed-patterns.md before Phase 2 advances**.
+
+### After all 3 aggregations land
+
+Re-run [`prd-review-2026-06-03.md`](prd-review-2026-06-03.md)'s dimension assessment with the fresh snapshots; close OQ-1 + OQ-2 + OQ-3 + OQ-3D-A; THEN advance Phase 1 → Phase 2.
+
 ### Source-of-truth → consumer flow
 
 ```
