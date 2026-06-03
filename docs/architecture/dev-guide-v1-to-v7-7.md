@@ -280,7 +280,7 @@ FitTracker2/
 The framework runs as **12 skills** (since 2026-05-14; was 11 through v7.8.4) following a hub-and-spoke pattern:
 
 - **Hub:** `pm-workflow` — owns the lifecycle, dispatches work to spokes, gates phase transitions.
-- **Spokes (11):** `brainstorm-pm` (added 2026-05-14, P1.0b — Phase 0 default new-feature entry point), `research`, `ux`, `design`, `dev`, `qa`, `analytics`, `cx`, `marketing`, `release`, `ops` — each owns a phase or cross-cutting responsibility.
+- **Spokes (11):** `brainstorm-pm` (added 2026-05-14, P1.0b — Phase 0 default new-feature entry point; 5 modes since 2026-06-03 — added Three-Option Trade-Off Mode via PR #597), `research`, `ux`, `design`, `dev`, `qa`, `analytics`, `cx`, `marketing`, `release`, `ops` — each owns a phase or cross-cutting responsibility.
 
 Each skill has:
 - An **agent-facing prompt** at `.claude/skills/<name>/SKILL.md`. The agent reads this when the skill is loaded.
@@ -390,7 +390,7 @@ The agent (Claude Code, Codex, etc.) interacts with the framework primarily via 
 
 ```
 /pm-workflow <feature-name>      ← hub: starts/resumes a feature
-/brainstorm-pm <feature-name>    ← spoke: Phase 0 problem framing (new features, runs before research)
+/brainstorm-pm <feature-name>    ← spoke: Phase 0 problem framing (5 modes — problem/solution/assumption/strategy + three-option trade-off matrix; runs before research)
 /dev                              ← spoke: implementation work
 /qa                               ← spoke: test work
 /design / /ux                     ← spoke: design + UX
