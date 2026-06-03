@@ -22,6 +22,10 @@ kill_criteria_resolution: pending_t14_eval_2026-06-16
 tier_tags_present: true
 related_prs:
   - 573
+pr_citation_exempt:
+  - "PR #572 (C5 sibling — same-day merge, architectural context only)"
+  - "PR #574 (C6 sibling — REUSES C3's picker-mode signature; consumer of C3 API)"
+  - "PR #576 (D1 sibling — same-day merge, parallel-sprint acknowledgment only)"
 case_study_type: full
 ---
 
