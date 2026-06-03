@@ -29,3 +29,7 @@
 {"timestamp":"2026-06-01T16:03:17Z","subexp":"subexp2","run_id":"subexp2-2026-06-01T16-00-05Z","records":      50,"estimated_cost_usd":0.006750}
 {"timestamp":"2026-06-01T20:03:22Z","subexp":"subexp2","run_id":"subexp2-2026-06-01T20-00-05Z","records":      50,"estimated_cost_usd":0.006750}
 {"timestamp":"2026-06-02T02:03:20Z","subexp":"subexp2","run_id":"subexp2-2026-06-02T02-00-04Z","records":      50,"estimated_cost_usd":0.006750}
+{"timestamp":"2026-06-02T12:08:51Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T12-01-53Z","records":     150,"estimated_cost_usd":0.020250}
+{"timestamp":"2026-06-02T16:09:44Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T16-00-01Z","records":     150,"estimated_cost_usd":0.020250}
+{"timestamp":"2026-06-02T20:06:15Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T20-00-05Z","records":     150,"estimated_cost_usd":0.020250}
+{"timestamp":"2026-06-03T02:06:52Z","subexp":"subexp3","run_id":"subexp3-2026-06-03T02-00-05Z","records":     150,"estimated_cost_usd":0.020250}
