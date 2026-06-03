@@ -43,3 +43,8 @@
 {"timestamp":"2026-06-02T02:00:04Z","subexp":"subexp2","run_id":"subexp2-2026-06-02T02-00-04Z","event":"fire_started"}
 {"timestamp":"2026-06-02T02:03:20Z","subexp":"subexp2","run_id":"subexp2-2026-06-02T02-00-04Z","event":"fire_ended","records_landed":      50,"collect_rc":0}
 {"timestamp":"2026-06-02T02:15:00Z","subexp":"subexp2","event":"experiment_closed","trigger":"15th_fire_complete","fire15_file":"phase2bis-raw-subexp2-subexp2-2026-06-02T02-00-04Z.jsonl","fire15_rows":50,"cumulative_fires":18,"cumulative_records":900,"collector_bootout_rc":0}
+{"timestamp":"2026-06-02T07:28:11Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T07-28-11Z","event":"dry_run_complete"}
+{"timestamp":"2026-06-02T07:42:29Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T07-42-29Z","event":"fire_started"}
+{"timestamp":"2026-06-02T07:49:33Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T07-42-29Z","event":"fire_ended","records_landed":     150,"collect_rc":0}
+{"timestamp":"2026-06-02T08:06:14Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T08-06-13Z","event":"fire_started"}
+{"timestamp":"2026-06-02T08:23:09Z","subexp":"subexp3","run_id":"subexp3-2026-06-02T08-06-13Z","event":"fire_ended","records_landed":     150,"collect_rc":0}

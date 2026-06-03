@@ -1,0 +1,12 @@
+{
+  "subexp": "subexp2",
+  "closed_at": "2026-06-02T02:15:00Z",
+  "trigger": "15th_fire_complete",
+  "fire15_file": "phase2bis-raw-subexp2-subexp2-2026-06-02T02-00-04Z.jsonl",
+  "fire15_rows": 50,
+  "cumulative_fires": 18,
+  "cumulative_records": 900,
+  "collector_label": "com.fitme.hadf-phase2bis-subexp2",
+  "collector_bootout_rc": 0,
+  "note": "Collector stopped. Backup job (com.fitme.hadf-phase2bis-backup) left running for final off-SSD snapshot; operator to remove during verdict/Sub-exp-3 ceremony. Verdict thresholds still _TBD_at_ceremony — verdict NOT computed by this close. state.json task B14 NOT auto-edited (left for operator session)."
+}
