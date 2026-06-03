@@ -12,7 +12,6 @@ case_study: docs/case-studies/readiness-aware-training-alert-case-study.md
 case_study_showcase: fitme-story/content/04-case-studies/40-readiness-aware-training-alert.mdx
 parent_case_study: docs/case-studies/smart-reminders-system-case-study.md
 parent_feature: smart-reminders
-related_prs: []
 dispatch_pattern: serial
 success_metrics:
   - name: alert_action_taken_rate_pct
@@ -33,7 +32,10 @@ kill_criteria:
   - condition: "Action-taken rate < 5% after 14 days of organic exposure (advisory is being ignored)"
   - condition: "User-reported false-positive rate > 20% via in-app feedback button (advisory fires when user feels fine)"
   - condition: "Daily push fatigue rate (read-but-no-action) > 60% (advisory is being treated as spam)"
+kill_criteria_resolution: pending_t14_eval_2026-06-15
 kill_criterion_fired: false
+related_prs:
+  - "PR #560"
 ---
 
 # Readiness-Aware Training Alert — C2 Case Study

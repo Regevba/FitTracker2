@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T17:26:23Z",
-  "updated_at": "2026-06-02T16:19:15Z",
+  "updated_at": "2026-06-03T05:20:24Z",
   "events": [
     {
       "timestamp": "2026-06-01T17:26:23Z",
@@ -55,6 +55,17 @@
       "artifacts": [
         "docs/case-studies/exercise-search-filter-case-study.md"
       ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-03T05:20:24Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Phase 9 CLOSED via consolidated state-drift closure batch. PR #573 squashed onto main earlier; this commit flips state.json testing\u2192complete with full audit transitions + Tier 2.2 record + merge metadata. Same pattern as D1 PR #587 closure.",
+      "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
       "status": "recorded",
