@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "generated_by": "manual seed 2026-05-28; future generator: fitme-story/scripts/sync-from-fittracker2.ts (Phase 4 of feature 3d-interactive-framework-flow-diagram)",
+  "last_reconciled": "2026-05-28",
+  "reconciled_by": "v7.9 → v7.9.1 PRD reconciliation pass for feature 3d-interactive-framework-flow-diagram",
+  "current": {
+    "version": "v7.9",
+    "shipped_at": "2026-05-21",
+    "status": "phase_e_calibration",
+    "phase_e_started": "2026-05-21",
+    "phase_e_ends": "2026-06-04",
+    "case_study_path": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+    "pr_number": 417
+  },
+  "next": {
+    "version": "v7.9.1",
+    "status": "in_flight",
+    "candidates": [
+      "F-AUTH-LATENCY-SERVER-METRIC",
+      "F-CONTRACT-FIXTURE-SAMPLING",
+      "F-DEPLOYED-URL-PROBE",
+      "F-LAUNCHD-DRIFT-EXTENSION"
+    ],
+    "expected_ship_window": "2026-06-04 → 2026-06-18",
+    "v8_window_opens": "2026-06-18"
+  },
+  "stats": {
+    "write_time_gates": 17,
+    "cycle_time_gates": 16,
+    "advisory_gates": 3,
+    "mechanisms": ["A", "B", "C", "D", "E", "F"],
+    "lifecycle_phases": 10,
+    "data_quality_tiers": 3,
+    "active_features_with_phase": 4,
+    "complete_features": 60,
+    "_note": "Gate counts are approximate as of last_reconciled; reconcile via `make integrity-check` for live numbers. Active/complete counts derive from .claude/features/*/state.json — see also .claude/shared/measurement-adoption.json."
+  },
+  "timeline": [
+    { "version": "v5.0", "ship_date": null, "label": "Skill-on-demand Separation of Concerns", "status": "shipped", "note": "Pre-PM-workflow tracking; ship date approximate." },
+    { "version": "v5.1", "ship_date": null, "label": "Adaptive Batch", "status": "shipped" },
+    { "version": "v5.2", "ship_date": null, "label": "Dispatch Intelligence + Parallel Write Safety", "status": "shipped" },
+    { "version": "v6.0", "ship_date": null, "label": "Framework Measurement", "status": "shipped", "pr_number": 81 },
+    { "version": "v7.0", "ship_date": null, "label": "Meta-Analysis", "status": "shipped" },
+    { "version": "v7.1", "ship_date": "2026-04-21", "label": "72h Integrity Cycle", "status": "shipped" },
+    { "version": "v7.5", "ship_date": "2026-04-24", "label": "Data Integrity Framework (Gemini-audit response)", "status": "shipped" },
+    { "version": "v7.6", "ship_date": "2026-04-25", "label": "Mechanical Enforcement", "status": "shipped", "pr_number": 141 },
+    { "version": "v7.7", "ship_date": "2026-04-27", "label": "Validity Closure", "status": "shipped", "pr_number": 144 },
+    { "version": "v7.8", "ship_date": "2026-05-04", "label": "Bridge (Mechanisms A–F)", "status": "shipped", "pr_numbers": [173, 185, 186, 187, 188, 189, 193, 194, 195] },
+    { "version": "v7.8.1", "ship_date": "2026-05-07", "label": "Branch Isolation + Feature-Closure Completeness", "status": "shipped", "pr_number": 244 },
+    { "version": "v7.8.2", "ship_date": "2026-05-08", "label": "Cross-Repo Telemetry Asymmetry (documented disposition)", "status": "shipped", "pr_number": 258 },
+    { "version": "v7.8.3", "ship_date": "2026-05-11", "label": "Cross-Repo State Sync Implementation", "status": "shipped", "pr_numbers": [298, 299] },
+    { "version": "v7.8.4", "ship_date": "2026-05-12", "label": "Pre-v7.9 Calibration & Doc-Debt Cleanup", "status": "shipped", "pr_number": 314 },
+    { "version": "v7.8.5", "ship_date": "2026-05-13", "label": "Observability Layer (Observed Patterns Catalog + W9)", "status": "shipped", "pr_numbers": [328, 341] },
+    { "version": "v7.8.6", "ship_date": "2026-05-15", "label": "Cadence Batch (preflight + integrity-diff + W1)", "status": "shipped", "pr_numbers": [363, 365, 366] },
+    { "version": "v7.9", "ship_date": "2026-05-21", "label": "Promotion Release (3 advisory gates flipped to enforced)", "status": "shipped", "pr_number": 417, "case_study_path": "docs/case-studies/framework-v7-9-promotion-case-study.md" },
+    { "version": "v7.9.1", "ship_date": null, "label": "In flight — 4 candidates", "status": "in_flight" }
+  ],
+  "gates_flipped_at_v7_9": [
+    "BRANCH_ISOLATION_VIOLATION Mode B (infra commit-level)",
+    "BRANCH_ISOLATION_VIOLATION Mode C (per-state.json non-feature-branch)",
+    "FEATURE_CLOSURE_COMPLETENESS (write-time)"
+  ],
+  "gates_already_enforced_pre_v7_9": [
+    "ISOLATION_OPT_OUT_REASON_MISSING (enforced at v7.8.1)",
+    "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT (enforced at v7.8.3 Phase 0)",
+    "Mechanism E custom merge driver (enforced at v7.8.3 Phase 0)"
+  ],
+  "gates_intentionally_advisory_permanent": [
+    "BRANCH_ISOLATION_HISTORICAL (cycle-time, forward-only audit T17)",
+    "BRANCH_ISOLATION_LAUNCHD_DRIFT (cycle-time, macOS-only T18)",
+    "FEATURE_CLOSURE_COMPLETENESS cycle-time mirror (catches --no-verify bypasses T19)",
+    "TIER_TAG_LIKELY_INCORRECT (judgement-based by design)"
+  ],
+  "mechanisms": [
+    { "id": "A", "label": "Coverage-asserting gates (gate-coverage.jsonl telemetry)", "introduced_at": "v7.8", "status": "advisory", "advisory_window_ends": "2026-06-04" },
+    { "id": "B", "label": "Schema field-rename detection + dual-read (created vs created_at)", "introduced_at": "v7.8", "status": "shipped" },
+    { "id": "C", "label": "PostToolUse:Read hook → session attribution (.claude/logs/_session-*.events.jsonl)", "introduced_at": "v7.8", "status": "shipped" },
+    { "id": "D", "label": "Pre-commit hook header self-audit", "introduced_at": "v7.8", "status": "shipped" },
+    { "id": "E", "label": "Custom git merge driver (append-only ledger union-dedup)", "introduced_at": "v7.8", "status": "shipped", "extended_at": "v7.8.3 Phase 0 to cover .claude/logs/<feature>.log.json" },
+    { "id": "F", "label": "Membrane status advisory (active feature + recent gate firings)", "introduced_at": "v7.8", "status": "shipped" }
+  ],
+  "phases": [
+    { "id": 0, "name": "Research" },
+    { "id": 1, "name": "PRD" },
+    { "id": 2, "name": "Tasks" },
+    { "id": 3, "name": "UX or Integration" },
+    { "id": 4, "name": "Implementation" },
+    { "id": 5, "name": "Testing" },
+    { "id": 6, "name": "Review" },
+    { "id": 7, "name": "Merge" },
+    { "id": 8, "name": "Documentation" },
+    { "id": 9, "name": "Learn (post-launch)" }
+  ],
+  "work_types": [
+    { "id": "feature", "phases": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], "label": "Feature — full lifecycle" },
+    { "id": "enhancement", "phases": [2, 4, 5, 7], "label": "Enhancement — Tasks → Implement → Test → Merge" },
+    { "id": "fix", "phases": [4, 5], "label": "Fix — Implement → Test" },
+    { "id": "chore", "phases": [4], "label": "Chore — Implement only" }
+  ],
+  "data_quality_tiers": [
+    { "tier": "T1", "label": "Instrumented" },
+    { "tier": "T2", "label": "Declared" },
+    { "tier": "T3", "label": "Narrative" }
+  ],
+  "consumers": [
+    "3d-interactive-framework-flow-diagram (Framework Universe) — see PRD §Data Contracts & Modularity",
+    "fitme-story /framework/dev-guide — version-timeline component",
+    "fitme-story /control-room/framework — gate-count and version pill",
+    "fitme-story /glossary — version chip on glossary terms"
+  ],
+  "source_of_truth_pointers": {
+    "version_history": "FT2:CLAUDE.md — Framework version sections (v7.5 → v7.9)",
+    "gate_definitions": "FT2:scripts/check-state-schema.py + FT2:scripts/integrity-check.py",
+    "observed_patterns": "FT2:.claude/integrity/observed-patterns.md",
+    "feature_roster": "FT2:.claude/features/*/state.json",
+    "adoption_ledger": "FT2:.claude/shared/measurement-adoption.json",
+    "gate_telemetry": "FT2:.claude/logs/gate-coverage.jsonl",
+    "case_studies": "FT2:docs/case-studies/*.md",
+    "lifecycle_event_catalog": "FT2:docs/architecture/feature-lifecycle-event-catalog.md",
+    "dev_guide": "FT2:docs/architecture/dev-guide-v1-to-v7-7.md (filename retained for ref-stability; content tracks v7.9)"
+  },
+  "update_protocol": {
+    "when": "Every framework version ship (v7.9.1, v8.0, v9.0, …) MUST update this file in the same PR that lands the version.",
+    "what_to_edit": [
+      "current — bump version, shipped_at, status",
+      "next — describe the next in-flight version",
+      "stats — adjust gate counts if any gates added/removed",
+      "timeline[] — append the new version entry",
+      "mechanisms[] — append new mechanism if introduced",
+      "gates_flipped_at_<version>[] — record which gates promoted",
+      "last_reconciled — set to ship date",
+      "reconciled_by — name the PR or process"
+    ],
+    "validation": "Any consumer of this file MUST check schema_version. Major bumps mean breaking changes."
+  }
+}

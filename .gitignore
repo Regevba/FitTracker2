@@ -84,6 +84,13 @@ Config/Local/*.xcconfig
 
 # Auth-polish-v2 / Sentry / HADF / Vercel local artifacts (never commit)
 .env.local
+# Operator credential backups (.env.local.save, .env.local.backup, etc.) —
+# always contain secrets; never commit. Added 2026-06-03 after HADF impl
+# worktree surfaced an unstaged .env.local.save during the cleanup sweep.
+# `.env.local.template` (committed operator runbook for the HADF env layout)
+# is explicitly re-included via the !negation below.
+.env.local.*
+!.env.local.template
 .sentryclirc
 .venv-hadf-phase2/
 .vercel/
