@@ -2,13 +2,13 @@
   "feature": "ai-user-feedback-loop",
   "description": "Wire the existing AI feedback signal (thumbs up/down in AIInsightCard + AIIntelligenceSheet AIFeedbackView) into a real reinforcement loop. RecommendationMemory storage layer already exists (record/outcomes/acceptanceRate/frequentlyDismissedSignals/clearAll) and has unit tests, but is per-AIOrchestrator-instance — not wired into views. C5 closes the deferred audit UI-024 by promoting RecommendationMemory to an injectable EnvironmentObject, wiring the actual record() call from AIInsightCard.recordFeedback (replacing the existing no-op comment block), feeding back into AIOrchestrator's recommendation pipeline (suppress signals with high dismiss-count + boost segments with high acceptance-rate), and surfacing a Settings → AI Feedback row showing history + GDPR clear-all. Pairs with D1 (adaptive-intelligence next pass).",
   "work_type": "feature",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "created_at": "2026-06-01T16:22:20Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
   "has_ui": true,
   "requires_analytics": true,
-  "branch": "feature/ai-user-feedback-loop",
+  "branch": "chore/state-drift-closure-c2-c3-c5-c6",
   "isolation_opt_out": false,
   "rice_score": 9.0,
   "rice_inputs": {
@@ -33,18 +33,114 @@
     "what_c5_adds_beyond_wiring": "Reinforcement loop in AIOrchestrator + Settings → AI Feedback management surface + dismiss-reason picker + 3 new analytics events"
   },
   "tasks": [
-    { "id": "T1", "title": "RecommendationMemory.frequentlyDismissedSignals → 30-day window", "file": "FitTracker/AI/RecommendationMemory.swift", "type": "modify", "loc_est": 12, "status": "complete", "commit": "6a00984" },
-    { "id": "T2", "title": "RecommendationFeedbackController facade (new ObservableObject)", "file": "FitTracker/AI/RecommendationFeedbackController.swift", "type": "new", "loc_est": 50, "status": "complete", "commit": "be993f8" },
-    { "id": "T3", "title": "AppSettings.aiFeedbackLoopEnabled UserDefaults-backed toggle", "file": "FitTracker/Services/AppSettings.swift", "type": "modify", "loc_est": 15, "status": "complete", "commit": "6a00984" },
-    { "id": "T4", "title": "FitTrackerApp @StateObject + env-object injection", "file": "FitTracker/FitTrackerApp.swift", "type": "modify", "loc_est": 3, "status": "complete", "commit": "be993f8" },
-    { "id": "T5", "title": "AIOrchestrator reinforcement-loop block + analytics fire", "file": "FitTracker/AI/AIOrchestrator.swift", "type": "modify", "loc_est": 40, "status": "complete", "commit": "571881d" },
-    { "id": "T6", "title": "AIInsightCard.recordFeedback — close audit UI-024", "file": "FitTracker/Views/AI/AIInsightCard.swift", "type": "modify", "loc_est": 10, "status": "complete", "commit": "c476572" },
-    { "id": "T7", "title": "DismissReasonPicker view modifier", "file": "FitTracker/Views/AI/DismissReasonPicker.swift", "type": "new", "loc_est": 80, "status": "complete", "commit": "f95e85b" },
-    { "id": "T8", "title": "AIFeedbackView dismiss-reason wire", "file": "FitTracker/Views/AI/AIFeedbackView.swift", "type": "modify", "loc_est": 25, "status": "complete", "commit": "f95e85b" },
-    { "id": "T9", "title": "AIFeedbackSettingsScreen — 4-section Settings detail", "file": "FitTracker/Views/Settings/v2/Screens/AIFeedbackSettingsScreen.swift", "type": "new", "loc_est": 180, "status": "complete", "commit": "438e02c" },
-    { "id": "T10", "title": "SettingsView add aiFeedback row", "file": "FitTracker/Views/Settings/v2/SettingsView.swift", "type": "modify", "loc_est": 25, "status": "complete", "commit": "438e02c" },
-    { "id": "T11", "title": "AnalyticsService — 3 new logAi* methods + AnalyticsProvider constants", "file": "FitTracker/Services/Analytics/AnalyticsService.swift,FitTracker/Services/Analytics/AnalyticsProvider.swift", "type": "modify", "loc_est": 30, "status": "complete", "commit": "6a00984" },
-    { "id": "T12", "title": "Test suite — 4 new test files, 14 tests, all passing", "file": "FitTrackerTests/{RecommendationMemoryWindow,RecommendationFeedbackController,AIOrchestratorReinforcementHelpers,AIRecommendationWithConfidence}Tests.swift", "type": "new", "loc_est": 200, "status": "complete", "commit": "tbd" }
+    {
+      "id": "T1",
+      "title": "RecommendationMemory.frequentlyDismissedSignals → 30-day window",
+      "file": "FitTracker/AI/RecommendationMemory.swift",
+      "type": "modify",
+      "loc_est": 12,
+      "status": "complete",
+      "commit": "6a00984"
+    },
+    {
+      "id": "T2",
+      "title": "RecommendationFeedbackController facade (new ObservableObject)",
+      "file": "FitTracker/AI/RecommendationFeedbackController.swift",
+      "type": "new",
+      "loc_est": 50,
+      "status": "complete",
+      "commit": "be993f8"
+    },
+    {
+      "id": "T3",
+      "title": "AppSettings.aiFeedbackLoopEnabled UserDefaults-backed toggle",
+      "file": "FitTracker/Services/AppSettings.swift",
+      "type": "modify",
+      "loc_est": 15,
+      "status": "complete",
+      "commit": "6a00984"
+    },
+    {
+      "id": "T4",
+      "title": "FitTrackerApp @StateObject + env-object injection",
+      "file": "FitTracker/FitTrackerApp.swift",
+      "type": "modify",
+      "loc_est": 3,
+      "status": "complete",
+      "commit": "be993f8"
+    },
+    {
+      "id": "T5",
+      "title": "AIOrchestrator reinforcement-loop block + analytics fire",
+      "file": "FitTracker/AI/AIOrchestrator.swift",
+      "type": "modify",
+      "loc_est": 40,
+      "status": "complete",
+      "commit": "571881d"
+    },
+    {
+      "id": "T6",
+      "title": "AIInsightCard.recordFeedback — close audit UI-024",
+      "file": "FitTracker/Views/AI/AIInsightCard.swift",
+      "type": "modify",
+      "loc_est": 10,
+      "status": "complete",
+      "commit": "c476572"
+    },
+    {
+      "id": "T7",
+      "title": "DismissReasonPicker view modifier",
+      "file": "FitTracker/Views/AI/DismissReasonPicker.swift",
+      "type": "new",
+      "loc_est": 80,
+      "status": "complete",
+      "commit": "f95e85b"
+    },
+    {
+      "id": "T8",
+      "title": "AIFeedbackView dismiss-reason wire",
+      "file": "FitTracker/Views/AI/AIFeedbackView.swift",
+      "type": "modify",
+      "loc_est": 25,
+      "status": "complete",
+      "commit": "f95e85b"
+    },
+    {
+      "id": "T9",
+      "title": "AIFeedbackSettingsScreen — 4-section Settings detail",
+      "file": "FitTracker/Views/Settings/v2/Screens/AIFeedbackSettingsScreen.swift",
+      "type": "new",
+      "loc_est": 180,
+      "status": "complete",
+      "commit": "438e02c"
+    },
+    {
+      "id": "T10",
+      "title": "SettingsView add aiFeedback row",
+      "file": "FitTracker/Views/Settings/v2/SettingsView.swift",
+      "type": "modify",
+      "loc_est": 25,
+      "status": "complete",
+      "commit": "438e02c"
+    },
+    {
+      "id": "T11",
+      "title": "AnalyticsService — 3 new logAi* methods + AnalyticsProvider constants",
+      "file": "FitTracker/Services/Analytics/AnalyticsService.swift,FitTracker/Services/Analytics/AnalyticsProvider.swift",
+      "type": "modify",
+      "loc_est": 30,
+      "status": "complete",
+      "commit": "6a00984"
+    },
+    {
+      "id": "T12",
+      "title": "Test suite — 4 new test files, 14 tests, all passing",
+      "file": "FitTrackerTests/{RecommendationMemoryWindow,RecommendationFeedbackController,AIOrchestratorReinforcementHelpers,AIRecommendationWithConfidence}Tests.swift",
+      "type": "new",
+      "loc_est": 200,
+      "status": "complete",
+      "commit": "tbd"
+    }
   ],
   "tasks_total_loc_est": 870,
   "tasks_actual_loc": 670,
@@ -103,7 +199,37 @@
       "ended_at": "2026-06-01T19:12:00Z"
     },
     "testing": {
-      "started_at": "2026-06-01T19:12:00Z"
+      "started_at": "2026-06-01T19:12:00Z",
+      "ended_at": "2026-06-02T04:35:02Z",
+      "approved_by": "operator",
+      "approval_signal": "(implicit — operator merged PR #572)"
+    },
+    "review": {
+      "started_at": "2026-06-02T04:35:02Z",
+      "ended_at": "2026-06-02T04:35:02Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-02T04:35:02Z",
+      "ended_at": "2026-06-02T04:35:02Z",
+      "pr_number": 572,
+      "merge_commit_sha": "ec5dff951d8637f49158fe574b2842f455d79582",
+      "merged_at": "2026-06-02T04:35:02Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-02T04:35:02Z",
+      "ended_at": "2026-06-03T05:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-03T05:00:00Z",
+      "ended_at": "2026-06-03T05:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
@@ -125,7 +251,24 @@
         "ended_at": "2026-06-01T19:12:00Z"
       },
       "testing": {
-        "started_at": "2026-06-01T19:12:00Z"
+        "started_at": "2026-06-01T19:12:00Z",
+        "ended_at": "2026-06-02T04:35:02Z"
+      },
+      "review": {
+        "started_at": "2026-06-02T04:35:02Z",
+        "ended_at": "2026-06-02T04:35:02Z"
+      },
+      "merge": {
+        "started_at": "2026-06-02T04:35:02Z",
+        "ended_at": "2026-06-02T04:35:02Z"
+      },
+      "docs": {
+        "started_at": "2026-06-02T04:35:02Z",
+        "ended_at": "2026-06-03T05:00:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-03T05:00:00Z",
+        "ended_at": "2026-06-03T05:00:00Z"
       }
     }
   },
@@ -159,6 +302,34 @@
       "to": "testing",
       "at": "2026-06-01T19:12:00Z",
       "reason": "T12 test suite: 4 new test files (RecommendationMemoryWindowTests, RecommendationFeedbackControllerTests, AIOrchestratorReinforcementHelpersTests, AIRecommendationWithConfidenceTests). 14 tests, all PASSED on iPhone 17 Simulator. make ui-audit: P0=0 maintained. Schema check 82/82 pass. Awaits operator review of PR #572 for merge."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-02T04:35:02Z",
+      "reason": "PR #572 squashed onto main as ec5dff951d (operator-merged 2026-06-02T04:35:02Z). CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-02T04:35:02Z",
+      "reason": "PR #572 squashed onto main as ec5dff951d (operator-merged 2026-06-02T04:35:02Z). Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-02T04:35:02Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs needed."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-03T05:00:00Z",
+      "reason": "Feature CLOSED. Closure batch on chore/state-drift-closure-c2-c3-c5-c6 (one of 4 features in 2026-06-03 sweep — addresses 5th instance of state-drift pattern documented in session memory). PR #587 closed D1 alone; this PR consolidates C2 + C3 + C5 + C6."
     }
-  ]
+  ],
+  "merge_pr_number": 572,
+  "merge_commit_sha": "ec5dff951d8637f49158fe574b2842f455d79582",
+  "merged_at": "2026-06-02T04:35:02Z",
+  "feature_branch_merged": "feature/ai-user-feedback-loop"
 }

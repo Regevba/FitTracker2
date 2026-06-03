@@ -2,7 +2,7 @@
   "feature": "readiness-aware-training-alert",
   "description": "Proactive pre-training readiness alert that fires BEFORE the user starts today's planned session. Integrates yesterday's HealthKit signals (HRV trend, RHR, sleep) + nutrition + recovery flags from ReadinessEngine v2 with today's training plan (DayType + volume from training-plan-v2). Outputs one of three smart recommendations (Continue / Rest day swap / Adapt to easier load) surfaced via AIInsightCard + push notification + AI avatar state. Includes Why? affordance that opens AIIntelligenceSheet with the readiness component breakdown that drove the recommendation.",
   "work_type": "enhancement",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "created_at": "2026-06-01T07:10:00Z",
   "state_owner": "ft2",
   "parent_feature": "smart-reminders",
@@ -10,7 +10,7 @@
   "framework_version": "v7.9",
   "has_ui": true,
   "requires_analytics": true,
-  "branch": "feature/readiness-aware-training-alert",
+  "branch": "chore/state-drift-closure-c2-c3-c5-c6",
   "isolation_opt_out": false,
   "rice_score": 13.0,
   "rice_inputs": {
@@ -82,7 +82,7 @@
       "id": "T8",
       "title": "DeepLinkRouter integration (fitme://nav/home)",
       "status": "complete",
-      "artifact": "no change \u2014 existing ReadinessAlertObserver consumer covers this URL"
+      "artifact": "no change — existing ReadinessAlertObserver consumer covers this URL"
     },
     {
       "id": "T9",
@@ -105,7 +105,8 @@
     {
       "id": "T12",
       "title": "Case study + showcase MDX + backlog strike + PR",
-      "status": "in_progress"
+      "status": "done",
+      "completed_at": "2026-06-01T06:47:06Z"
     }
   ],
   "phases": {
@@ -118,7 +119,37 @@
       "ended_at": "2026-06-01T07:50:00Z"
     },
     "testing": {
-      "started_at": "2026-06-01T07:50:00Z"
+      "started_at": "2026-06-01T07:50:00Z",
+      "ended_at": "2026-06-01T06:47:06Z",
+      "approved_by": "operator",
+      "approval_signal": "(implicit — operator merged PR #560)"
+    },
+    "review": {
+      "started_at": "2026-06-01T06:47:06Z",
+      "ended_at": "2026-06-01T06:47:06Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-01T06:47:06Z",
+      "ended_at": "2026-06-01T06:47:06Z",
+      "pr_number": 560,
+      "merge_commit_sha": "dcf30c905eb67058394818a0100dd457cc43c349",
+      "merged_at": "2026-06-01T06:47:06Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-01T06:47:06Z",
+      "ended_at": "2026-06-03T05:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-03T05:00:00Z",
+      "ended_at": "2026-06-03T05:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
@@ -132,7 +163,24 @@
         "ended_at": "2026-06-01T07:50:00Z"
       },
       "testing": {
-        "started_at": "2026-06-01T07:50:00Z"
+        "started_at": "2026-06-01T07:50:00Z",
+        "ended_at": "2026-06-01T06:47:06Z"
+      },
+      "review": {
+        "started_at": "2026-06-01T06:47:06Z",
+        "ended_at": "2026-06-01T06:47:06Z"
+      },
+      "merge": {
+        "started_at": "2026-06-01T06:47:06Z",
+        "ended_at": "2026-06-01T06:47:06Z"
+      },
+      "docs": {
+        "started_at": "2026-06-01T06:47:06Z",
+        "ended_at": "2026-06-03T05:00:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-03T05:00:00Z",
+        "ended_at": "2026-06-03T05:00:00Z"
       }
     }
   },
@@ -147,13 +195,37 @@
       "from": "tasks",
       "to": "implementation",
       "at": "2026-06-01T07:25:00Z",
-      "reason": "Operator authorized via 'continue after data no violation check' \u2014 data violation gate passed (integrity 0+0, 80/80 state schemas, Tier 2.2 log valid)"
+      "reason": "Operator authorized via 'continue after data no violation check' — data violation gate passed (integrity 0+0, 80/80 state schemas, Tier 2.2 log valid)"
     },
     {
       "from": "implementation",
       "to": "testing",
       "at": "2026-06-01T07:50:00Z",
       "reason": "All 11 implementation tasks shipped (5 new source files + 5 modified) + 25 new tests written across 3 test files; swiftc parse exit 0 on all new source"
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-01T06:47:06Z",
+      "reason": "PR #560 squashed onto main as dcf30c905e (operator-merged 2026-06-01T06:47:06Z). CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-01T06:47:06Z",
+      "reason": "PR #560 squashed onto main as dcf30c905e (operator-merged 2026-06-01T06:47:06Z). Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-01T06:47:06Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs needed."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-03T05:00:00Z",
+      "reason": "Feature CLOSED. Closure batch on chore/state-drift-closure-c2-c3-c5-c6 (one of 4 features in 2026-06-03 sweep — addresses 5th instance of state-drift pattern documented in session memory). PR #587 closed D1 alone; this PR consolidates C2 + C3 + C5 + C6."
     }
   ],
   "cache_hits": [
@@ -176,5 +248,11 @@
       "phase": "implementation"
     }
   ],
-  "updated": "2026-06-01T04:45:52Z"
+  "updated": "2026-06-01T04:45:52Z",
+  "merge_pr_number": 560,
+  "merge_commit_sha": "dcf30c905eb67058394818a0100dd457cc43c349",
+  "merged_at": "2026-06-01T06:47:06Z",
+  "case_study": "docs/case-studies/readiness-aware-training-alert-case-study.md",
+  "feature_branch_merged": "feature/readiness-aware-training-alert",
+  "kill_criteria_resolution": "pending_t14_eval_2026-06-15"
 }

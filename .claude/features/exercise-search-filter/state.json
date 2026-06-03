@@ -1,14 +1,14 @@
 {
   "feature": "exercise-search-filter",
-  "description": "Add a searchable + filterable exercise library surface on top of the existing TrainingProgramData.allExercises catalog (~50 exercises in the v1 program; ~87 unique post-import-training-plan v1 mapper). Today the catalog is consumed silently \u2014 TrainingPlanView shows the day's exercises but there's no UI to discover all available exercises, filter by muscle/equipment/category, or search by name. C3 builds a sheet-based ExerciseLibraryView with: (a) live text search across name + muscle keywords, (b) horizontal scrolling filter chips for muscle group + equipment + category, (c) one-tap exercise detail with coaching cue + sets/reps/rest, (d) optional 'add to today' affordance gated on the v2 training surface. Closes backlog L347 (RICE 8.0, 2-3d Feature 9-phase).",
+  "description": "Add a searchable + filterable exercise library surface on top of the existing TrainingProgramData.allExercises catalog (~50 exercises in the v1 program; ~87 unique post-import-training-plan v1 mapper). Today the catalog is consumed silently — TrainingPlanView shows the day's exercises but there's no UI to discover all available exercises, filter by muscle/equipment/category, or search by name. C3 builds a sheet-based ExerciseLibraryView with: (a) live text search across name + muscle keywords, (b) horizontal scrolling filter chips for muscle group + equipment + category, (c) one-tap exercise detail with coaching cue + sets/reps/rest, (d) optional 'add to today' affordance gated on the v2 training surface. Closes backlog L347 (RICE 8.0, 2-3d Feature 9-phase).",
   "work_type": "feature",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "created_at": "2026-06-01T19:30:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
   "has_ui": true,
   "requires_analytics": true,
-  "branch": "feature/exercise-search-filter",
+  "branch": "chore/state-drift-closure-c2-c3-c5-c6",
   "isolation_opt_out": false,
   "rice_score": 8.0,
   "rice_inputs": {
@@ -19,17 +19,17 @@
   },
   "backlog_source": "docs/product/backlog.md L347 + Planned RICE row 8.0",
   "dependencies_met": {
-    "ExerciseDefinition_schema": "shipped (Models/TrainingProgramData.swift \u2014 id, name, category, equipment, muscleGroups, targetSets, targetReps, restSeconds, coachingCue, dayType, order, progressionNote)",
+    "ExerciseDefinition_schema": "shipped (Models/TrainingProgramData.swift — id, name, category, equipment, muscleGroups, targetSets, targetReps, restSeconds, coachingCue, dayType, order, progressionNote)",
     "Static catalog": "shipped (~50 exercises across upperPush/lowerBody/upperPull/fullBody/cardioOnly)",
-    "ExerciseMapper": "shipped (Services/Import/ExerciseMapper.swift \u2014 full-text mapping from external plan imports)",
+    "ExerciseMapper": "shipped (Services/Import/ExerciseMapper.swift — full-text mapping from external plan imports)",
     "Settings v2 sheet patterns": "shipped (SettingsDetailScaffold + SettingsSectionCard reusable for the library detail row)",
-    "ChipRow component or equivalent": "RESOLVED at Phase 1 \u2014 AppPickerChip + AppFilterBar already exist in FitTracker/DesignSystem/AppComponents.swift; no new primitive needed."
+    "ChipRow component or equivalent": "RESOLVED at Phase 1 — AppPickerChip + AppFilterBar already exist in FitTracker/DesignSystem/AppComponents.swift; no new primitive needed."
   },
   "scope_known_gaps": {
-    "no_existing_search_index": "Catalog is a 50-element array \u2014 linear scan is fast enough; no FTS / Core Data index needed for v1.",
+    "no_existing_search_index": "Catalog is a 50-element array — linear scan is fast enough; no FTS / Core Data index needed for v1.",
     "no_existing_filter_chip_component": "AppComponents may or may not have a chip; verify in Phase 1 (PRD) and either reuse or add as a single new component.",
-    "no_existing_navigation_entrypoint": "Must add entry point \u2014 likely from Training tab (Library button on TrainingPlanView) and/or Settings \u2192 Training & Nutrition.",
-    "no_routing_to_add_to_plan": "C3 ships a discovery + browse surface. The 'add to active program' action is GATED by C6 (Training program customization) data model \u2014 out of scope for C3."
+    "no_existing_navigation_entrypoint": "Must add entry point — likely from Training tab (Library button on TrainingPlanView) and/or Settings → Training & Nutrition.",
+    "no_routing_to_add_to_plan": "C3 ships a discovery + browse surface. The 'add to active program' action is GATED by C6 (Training program customization) data model — out of scope for C3."
   },
   "tasks": [
     {
@@ -52,7 +52,7 @@
     },
     {
       "id": "T3",
-      "title": "ExerciseLibraryRow view \u2014 single row with name + muscle/equipment/sets-reps badges",
+      "title": "ExerciseLibraryRow view — single row with name + muscle/equipment/sets-reps badges",
       "file": "FitTracker/Views/Training/v2/ExerciseLibraryRow.swift",
       "type": "new",
       "loc_est": 70,
@@ -61,7 +61,7 @@
     },
     {
       "id": "T4",
-      "title": "ExerciseDetailView push view \u2014 full name + day-type chip + sets\u00d7reps\u00d7rest + coaching cue",
+      "title": "ExerciseDetailView push view — full name + day-type chip + sets×reps×rest + coaching cue",
       "file": "FitTracker/Views/Training/v2/ExerciseDetailView.swift",
       "type": "new",
       "loc_est": 120,
@@ -70,7 +70,7 @@
     },
     {
       "id": "T5",
-      "title": "ExerciseLibraryView sheet \u2014 composes T2/T3 + analytics + picker-mode dual init (C6 contract)",
+      "title": "ExerciseLibraryView sheet — composes T2/T3 + analytics + picker-mode dual init (C6 contract)",
       "file": "FitTracker/Views/Training/v2/ExerciseLibraryView.swift",
       "type": "new",
       "loc_est": 180,
@@ -88,7 +88,7 @@
     },
     {
       "id": "T7",
-      "title": "Settings \u2192 Training & Nutrition row entry point",
+      "title": "Settings → Training & Nutrition row entry point",
       "file": "FitTracker/Views/Settings/v2/Screens/TrainingNutritionSettingsScreen.swift",
       "type": "modify",
       "loc_est": 15,
@@ -106,7 +106,7 @@
     },
     {
       "id": "T9",
-      "title": "Test suite \u2014 4 new test files, 15 tests, \u226590% coverage on new files",
+      "title": "Test suite — 4 new test files, 15 tests, ≥90% coverage on new files",
       "file": "FitTrackerTests/{AnalyticsTrainingExerciseEventsTests,ExerciseLibraryFilterTests,Views/ExerciseLibraryViewModeTests,Views/ExerciseLibraryEntryPointTests}.swift",
       "type": "new",
       "loc_est": 250,
@@ -115,7 +115,7 @@
     },
     {
       "id": "T10",
-      "title": "Final verify-local + case study + state.json \u2192 testing",
+      "title": "Final verify-local + case study + state.json → testing",
       "file": "docs/case-studies/exercise-search-filter-case-study.md + state.json",
       "type": "new+modify",
       "loc_est": 170,
@@ -128,9 +128,9 @@
   "tasks_path": ".claude/features/exercise-search-filter/tasks.md",
   "prd_path": "docs/product/prd/exercise-search-filter.md",
   "case_study": "docs/case-studies/exercise-search-filter-case-study.md",
-  "primary_metric": "Exercise library opens per WAU >= 0.30 at T+30d (T1, baseline 0 \u2014 feature didn't exist)",
+  "primary_metric": "Exercise library opens per WAU >= 0.30 at T+30d (T1, baseline 0 — feature didn't exist)",
   "success_metrics": [
-    "Exercise library opens per WAU (T1, baseline 0 \u2192 target >=0.30 at T+30d)",
+    "Exercise library opens per WAU (T1, baseline 0 → target >=0.30 at T+30d)",
     "Search-vs-browse rate (T1, target >=0.20 at T+30d)",
     "Chip-tap session rate (T1, target >=40% of library sessions)",
     "Detail-tap-through rate (T1, target >=0.40 at T+30d)",
@@ -181,7 +181,37 @@
       "ended_at": "2026-06-02T19:10:00Z"
     },
     "testing": {
-      "started_at": "2026-06-02T19:10:00Z"
+      "started_at": "2026-06-02T19:10:00Z",
+      "ended_at": "2026-06-02T16:39:26Z",
+      "approved_by": "operator",
+      "approval_signal": "(implicit — operator merged PR #573)"
+    },
+    "review": {
+      "started_at": "2026-06-02T16:39:26Z",
+      "ended_at": "2026-06-02T16:39:26Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-02T16:39:26Z",
+      "ended_at": "2026-06-02T16:39:26Z",
+      "pr_number": 573,
+      "merge_commit_sha": "95d8ab31983f06791fffcb79b98a71b45f2d9aee",
+      "merged_at": "2026-06-02T16:39:26Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-02T16:39:26Z",
+      "ended_at": "2026-06-03T05:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-03T05:00:00Z",
+      "ended_at": "2026-06-03T05:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
@@ -203,7 +233,24 @@
         "ended_at": "2026-06-02T19:10:00Z"
       },
       "testing": {
-        "started_at": "2026-06-02T19:10:00Z"
+        "started_at": "2026-06-02T19:10:00Z",
+        "ended_at": "2026-06-02T16:39:26Z"
+      },
+      "review": {
+        "started_at": "2026-06-02T16:39:26Z",
+        "ended_at": "2026-06-02T16:39:26Z"
+      },
+      "merge": {
+        "started_at": "2026-06-02T16:39:26Z",
+        "ended_at": "2026-06-02T16:39:26Z"
+      },
+      "docs": {
+        "started_at": "2026-06-02T16:39:26Z",
+        "ended_at": "2026-06-03T05:00:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-03T05:00:00Z",
+        "ended_at": "2026-06-03T05:00:00Z"
       }
     }
   },
@@ -218,13 +265,13 @@
       "from": "research",
       "to": "prd",
       "at": "2026-06-02T13:30:00Z",
-      "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD authored at docs/product/prd/exercise-search-filter.md. FROZEN: 0ms search debounce, localizedCaseInsensitiveContains match, 3 chip dimensions (Muscle/Equipment/Category) with one-of-N mutex within dim AND across dims, .large sheet detent, 2-char analytics threshold. 6 OQ resolved (no filter memory, multi-word AND-via-contains, no video v1, count badge YES, catalog order, no Home-tab entry). Phase 0 \u00a77 chip-component question RESOLVED: AppPickerChip + AppFilterBar already exist. Picker-mode init signature defined for C6 reuse: ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil). 4 new training_-prefixed analytics events. ~600 LoC est (4 new + 5 modified). Phase E compliant."
+      "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD authored at docs/product/prd/exercise-search-filter.md. FROZEN: 0ms search debounce, localizedCaseInsensitiveContains match, 3 chip dimensions (Muscle/Equipment/Category) with one-of-N mutex within dim AND across dims, .large sheet detent, 2-char analytics threshold. 6 OQ resolved (no filter memory, multi-word AND-via-contains, no video v1, count badge YES, catalog order, no Home-tab entry). Phase 0 §7 chip-component question RESOLVED: AppPickerChip + AppFilterBar already exist. Picker-mode init signature defined for C6 reuse: ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil). 4 new training_-prefixed analytics events. ~600 LoC est (4 new + 5 modified). Phase E compliant."
     },
     {
       "from": "prd",
       "to": "tasks_phase",
       "at": "2026-06-02T16:30:00Z",
-      "reason": "Phase 1 PRD approved (operator marked PR #573 ready + 'continue'). Phase 2 Tasks at .claude/features/exercise-search-filter/tasks.md \u2014 10 discrete tasks T1-T10 with dependency graph, LoC estimates totaling ~875 (105 infra + 190 row+detail + 180 sheet + 30 entry wires + 30 pbxproj + 250 tests + 170 case study). 7-commit Phase 4 landing order matching C5 single-session pattern. Out-of-scope guards (5) explicit. Estimated wall time ~3-4h."
+      "reason": "Phase 1 PRD approved (operator marked PR #573 ready + 'continue'). Phase 2 Tasks at .claude/features/exercise-search-filter/tasks.md — 10 discrete tasks T1-T10 with dependency graph, LoC estimates totaling ~875 (105 infra + 190 row+detail + 180 sheet + 30 entry wires + 30 pbxproj + 250 tests + 170 case study). 7-commit Phase 4 landing order matching C5 single-session pattern. Out-of-scope guards (5) explicit. Estimated wall time ~3-4h."
     },
     {
       "from": "tasks_phase",
@@ -237,6 +284,34 @@
       "to": "testing",
       "at": "2026-06-02T19:10:00Z",
       "reason": "T9 test suite: 2 new test files (ExerciseLibraryFilterTests + AnalyticsTrainingExerciseEventsTests). 7 tests, all PASSED on iPhone 17 Simulator. T9.C + T9.D view-mode tests deferred to follow-up (need ViewInspector infra not in project). make ui-audit P0=0 maintained. Schema check 79/82 pass (3 pre-existing 500-PR-window false positives). Case study at docs/case-studies/exercise-search-filter-case-study.md with full T1/T2/T3 tier-tagged metrics + 7-section frozen-PRD recap + 6-commit lifecycle table. Awaits operator review of PR #573 for merge."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-02T16:39:26Z",
+      "reason": "PR #573 squashed onto main as 95d8ab3198 (operator-merged 2026-06-02T16:39:26Z). CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-02T16:39:26Z",
+      "reason": "PR #573 squashed onto main as 95d8ab3198 (operator-merged 2026-06-02T16:39:26Z). Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-02T16:39:26Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs needed."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-03T05:00:00Z",
+      "reason": "Feature CLOSED. Closure batch on chore/state-drift-closure-c2-c3-c5-c6 (one of 4 features in 2026-06-03 sweep — addresses 5th instance of state-drift pattern documented in session memory). PR #587 closed D1 alone; this PR consolidates C2 + C3 + C5 + C6."
     }
-  ]
+  ],
+  "merge_pr_number": 573,
+  "merge_commit_sha": "95d8ab31983f06791fffcb79b98a71b45f2d9aee",
+  "merged_at": "2026-06-02T16:39:26Z",
+  "feature_branch_merged": "feature/exercise-search-filter"
 }
