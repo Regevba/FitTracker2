@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-06-03T06:06:03Z",
+  "updated": "2026-06-03T17:15:21Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -745,7 +745,7 @@
       "feature": "ai-user-feedback-loop",
       "created": "2026-06-01",
       "post_v6": true,
-      "current_phase": "testing",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -969,7 +969,7 @@
       "feature": "exercise-search-filter",
       "created": "2026-06-01",
       "post_v6": true,
-      "current_phase": "testing",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -1529,7 +1529,7 @@
       "feature": "readiness-aware-training-alert",
       "created": "2026-06-01",
       "post_v6": true,
-      "current_phase": "testing",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -1683,7 +1683,7 @@
       "feature": "training-program-customization",
       "created": "2026-06-01",
       "post_v6": true,
-      "current_phase": "testing",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
