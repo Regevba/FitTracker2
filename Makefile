@@ -28,11 +28,14 @@ CLANG_MODULE_CACHE_PATH ?= $(BUILD_DIR)/clang-cache
 DERIVED_DATA            ?= $(BUILD_DIR)/DerivedData
 TEST_DERIVED_DATA       ?= $(BUILD_DIR)/TestDerivedData
 
-# Regenerate DesignTokens.swift from tokens.json via Style Dictionary
-# Uses node to run sd.config.js directly (not CLI) because custom transforms
-# and formats are registered in the config file itself.
+# Regenerate DesignTokens.swift from tokens.json via Style Dictionary v5
+# v5 migration (2026-06-03): use the npm-script CLI invocation (matches
+# package.json::scripts.tokens — `style-dictionary build --config sd.config.js`).
+# sd.config.js's registerTransform + registerFormat calls run as side-effects
+# when the config module loads via the CLI, so custom transforms/formats stay
+# available for the `swift` platform.
 tokens: node_modules
-	node -e "const sd = require('style-dictionary').extend(require('./sd.config.js')); sd.buildAllPlatforms();"
+	npm run tokens
 	@echo "✅  DesignTokens.swift regenerated"
 
 # CI gate: verify committed DesignTokens.swift matches what make tokens would produce
