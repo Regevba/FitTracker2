@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -204,6 +204,31 @@ verify-isolation:
 # completeness audit. Replaces the manual reconcile pass. Per PRD §6.2.
 feature-completeness-audit:
 	@python3 scripts/feature-completeness-audit.py
+
+# Post-merge feature-state closure — automates the 5×-documented drift pattern
+# where a single-session feature ships via squash-merge but state.json never
+# flips testing→complete. Use after the feature PR has merged.
+#
+#   make close-feature FEATURE=<name>
+#   make close-feature FEATURE=<name> PR=<N>            # explicit PR
+#   make close-feature FEATURE=<name> CLOSE_FLAGS=--dry-run
+#
+# Behavior:
+#   - Looks up the merge PR via `gh pr view` (auto-detects via headRefName)
+#   - Opens chore/<feature>-post-merge-closure off current HEAD
+#   - Flips state.json current_phase → complete with full audit transitions
+#     + merge metadata + case_study link
+#   - Appends a Tier 2.2 log entry
+#   - Strikes the matching backlog row (use CLOSE_FLAGS=--no-strike to skip)
+#   - Stages everything; caller writes the commit message
+#
+# Idempotent: re-running on an already-complete feature exits 0 with a no-op.
+.PHONY: close-feature
+close-feature:
+ifndef FEATURE
+	$(error FEATURE is required. Usage: make close-feature FEATURE=<name> [PR=<N>] [CLOSE_FLAGS=...])
+endif
+	@python3 scripts/close-feature.py $(FEATURE) $(if $(PR),--pr $(PR)) $(CLOSE_FLAGS)
 
 # Gemini audit Tier 1.1 — inventory which features have v6.0 measurement
 # fields populated in their state.json. Produces a machine-readable report

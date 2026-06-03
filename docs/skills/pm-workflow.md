@@ -53,6 +53,30 @@ Single invocation: `/pm-workflow {feature-name}`. The hub's behavior depends on 
 
 The user can override at any time: `Move to {phase}` or `Roll back to {phase}` — logged with `approved_by: "user-manual"`.
 
+### `make close-feature` — automated post-merge closure (2026-06-03)
+
+When a single-session feature ships via squash-merge, its state.json closure (testing → review → merge → docs → complete) historically required a separate chore-PR with manual mutation. By 2026-06-03 this pattern had repeated 5 times (D1 PR #587, then C2 + C3 + C5 + C6 consolidated in PR #590). Automated via `scripts/close-feature.py`:
+
+```bash
+# Auto-detects the merge PR via feature branch name
+make close-feature FEATURE=<name>
+
+# Explicit when the branch name didn't match
+make close-feature FEATURE=<name> PR=<N>
+
+# Dry-run to inspect what would change
+make close-feature FEATURE=<name> CLOSE_FLAGS=--dry-run
+
+# Skip backlog row strike
+make close-feature FEATURE=<name> CLOSE_FLAGS=--no-strike
+
+# Force-close from a phase earlier than `testing` (escape hatch — usually
+# means the merge PR was the FINAL landing of an incomplete-feeling feature)
+make close-feature FEATURE=<name> CLOSE_FLAGS=--force-incomplete
+```
+
+Idempotent: re-running on an already-complete feature exits 0 with a no-op. Validates the PR is actually merged (state == MERGED) before mutating. Warns + exits non-zero if the feature is at a phase earlier than `testing` unless `--force-incomplete` is set.
+
 ## Work item types
 
 Not every work item walks all 10 phases. The hub supports four types:
