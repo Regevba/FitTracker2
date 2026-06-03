@@ -84,16 +84,6 @@
   },
   "debt_items": [
     {
-      "id": "state_case_study_linkage",
-      "title": "Features missing case-study linkage in state.json",
-      "severity": "low",
-      "count": 1,
-      "examples": [
-        "trend-alerts-hrv"
-      ],
-      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
-    },
-    {
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
       "severity": "low",
@@ -106,6 +96,16 @@
         "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
       ],
       "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill."
+    },
+    {
+      "id": "state_case_study_linkage",
+      "title": "Features missing case-study linkage in state.json",
+      "severity": "low",
+      "count": 1,
+      "examples": [
+        "trend-alerts-hrv"
+      ],
+      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
     }
   ]
 }

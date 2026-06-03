@@ -23,7 +23,10 @@ kill_criteria_resolution: pending_t60_eval_2026-08-01
 tier_tags_present: true
 related_prs:
   - 574
-  - 573
+pr_citation_exempt:
+  - "PR #234 (import-training-plan predecessor — training-plan data model, architectural context)"
+  - "PR #573 (C3 sibling — picker-mode signature source; C6 consumes C3's API in 'Add exercise')"
+  - "PR #576 (D1 sibling — same-day merge, parallel-sprint acknowledgment only)"
 case_study_type: full
 ---
 
