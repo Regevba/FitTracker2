@@ -803,7 +803,52 @@ Phase 4 patch, and Section A of
 
 Before filling out the research template, run `/brainstorm-pm` to lock the problem framing, surface assumptions, and enumerate alternative solutions. The skill writes to `state.json::brainstorm.<mode>` which serves as input to Phase 1 PRD sections (see `.claude/skills/brainstorm-pm/SKILL.md` → §"Integration with /pm-workflow"). Skip only if the problem framing is already documented in a research/spec doc and validated externally.
 
-**Three-option trade-off mode (added 2026-06-03):** when the problem is locked + scope is roughly known but the implementation path isn't, run `/brainstorm-pm three-option` to produce a UX / Design / Dev trade-off matrix across ≥3 distinct paths spanning the feasibility space. NO pre-ranking — output IS the matrix and the user picks. Matrix lands at `state.json::brainstorm.three_option_matrix` and renders as the PRD's §Alternatives considered section. Auto-dispatch heuristic (when to auto-invoke `--mode=three-option`) is a queued follow-up after the v7.9.1 build window opens (~2026-06-04).
+**Three-option trade-off mode (added 2026-06-03):** when the problem is locked + scope is roughly known but the implementation path isn't, run `/brainstorm-pm three-option` to produce a UX / Design / Dev trade-off matrix across ≥3 distinct paths spanning the feasibility space. NO pre-ranking — output IS the matrix and the user picks. Matrix lands at `state.json::brainstorm.three_option_matrix` and renders as the PRD's §Alternatives considered section.
+
+### Three-option auto-dispatch heuristic (added 2026-06-03)
+
+Phase 0 auto-invokes `/brainstorm-pm three-option` **after** the 4-base-mode brainstorm pass completes, when the problem-shape signals are ambiguous. Decision tree the agent evaluates:
+
+```
+If state.json::brainstorm.problem_statement is set AND
+   state.json::brainstorm.solution_alternatives.length ≥ 2:
+
+   Skip three-option — solution mode already produced ranked candidates.
+
+Else if work_type ∈ {feature, enhancement, refactor_v2} AND
+        problem statement contains ≥1 of:
+          • "could be A or B", "vs", "trade-off", "trade off", "alternative"
+          • "implement", "build", "wire" + ≥2 distinct platform/surface terms
+            (e.g. "iOS and Web", "in-app + cloud", "sync vs async")
+          • backlog row has "alternatives considered" in scope
+        OR the operator explicitly requests it ("/pm-workflow {name} --mode=three-option"):
+
+   AUTO-INVOKE `/brainstorm-pm three-option`. Surface the matrix to the operator
+   inline; require explicit pick before advancing to Phase 1.
+
+Else if work_type == fix OR chore:
+   DO NOT auto-invoke. (Three-option matrices have negative ROI on bug fixes —
+   the answer is "fix the root cause" not "pick a trade-off".)
+
+Otherwise:
+   DEFAULT NO. The 4 base modes are enough; offer three-option as an explicit
+   command (`/brainstorm-pm three-option`) without auto-dispatching.
+```
+
+**Fallback when heuristic mis-fires (matrix becomes ritual rather than discriminating):**
+the operator can disable auto-dispatch for the current session via
+`/pm-workflow {feature} --no-three-option`. Record the disable in
+`state.json::brainstorm.three_option_skip_reason` so the kill-criterion
+metric (per `brainstorm-pm/SKILL.md` Three-Option mode §Kill criterion) can
+measure how often the operator overrides the heuristic. If override rate
+exceeds 30% over a 30-day rolling window, the gate condition fires: narrow
+the heuristic to require explicit operator opt-in instead of auto-dispatch.
+
+**Telemetry:** Phase 0 emits one event per dispatch decision to
+`gate-coverage.jsonl` with key `pm_workflow.three_option_auto_dispatch`
+and outcome ∈ {invoked, skipped_solution_already_done, skipped_fix_chore,
+skipped_default_no, operator_disabled, operator_explicit_request}. The
+existing weekly framework-status cron tracks this alongside other gates.
 
 ### New-feature research template
 
