@@ -2,12 +2,14 @@
 
 > **Owner:** Regev (orchestrator: Claude Opus 4.7)
 > **Date:** 2026-05-13
-> **Phase:** 1 — PRD (in progress)
-> **Status:** Draft
+> **Last reconciled:** 2026-05-28 — v7.9 → v7.9.1 reconciliation + Data Contracts & Modularity section added
+> **Phase:** 1 — PRD (in progress; paused per operator decision 2026-05-19 until v7.9.1 closes ~2026-06-04)
+> **Status:** Draft — pause-compliant edits permitted (no Phase 1 → 2 advancement)
 > **Feature slug:** `3d-interactive-framework-flow-diagram`
 > **Public name:** Framework Universe
 > **Repo:** fitme-story (state_owner)
-> **Framework version:** v7.8.3 (created); ships under v7.9.x
+> **Framework version:** v7.8.3 (created); v7.9 in Phase E calibration (shipped 2026-05-21 → ends 2026-06-04); ships under v7.9.x or v8.0
+> **Live framework data:** [`docs/framework/versions.json`](../../../docs/framework/versions.json) — single source of truth for gate counts, mechanism list, version timeline (see §Data Contracts & Modularity)
 > **Linear:** [FIT-138](https://linear.app/fitme-project/issue/FIT-138)
 > **Notion:** [3D Interactive Framework Flow Diagram — Public-Site Flagship Visual](https://www.notion.so/35e0e7a0eace81b5ba12eb6e6950da5a)
 > **Research dossier:** [`research.md`](./research.md) (597 lines, shipped FT2 PR #324)
@@ -20,7 +22,7 @@ A standalone ~3:15-minute cinematic 3D walkthrough of how the FitMe framework op
 
 ## Business Objective
 
-The framework's complexity (60+ features, 25 gates + advisories, 4 cooperating enforcement layers, T1/T2/T3 data quality tiers) is hard to grasp from prose alone. Two existing 2D visuals — `LifecycleLoop` (orbital reference at `/pm-flow`) and `DispatchReplay` (scrollytelling at `/framework/dispatch`) — establish framework legibility but neither delivers a **narrative end-to-end view**.
+The framework's complexity (60+ features, ~36+ gates and advisories across write-time + cycle-time + permanent-advisory layers, 6 cooperating Mechanisms A–F, T1/T2/T3 data quality tiers, 10-phase lifecycle) is hard to grasp from prose alone. Live counts in [`docs/framework/versions.json`](../../../docs/framework/versions.json) (the Universe reads from this — see §Data Contracts & Modularity). Two existing 2D visuals — `LifecycleLoop` (orbital reference at `/pm-flow`) and `DispatchReplay` (scrollytelling at `/framework/dispatch`) — establish framework legibility but neither delivers a **narrative end-to-end view**.
 
 The Framework Universe addresses three business needs simultaneously:
 
@@ -56,7 +58,7 @@ The Framework Universe addresses three business needs simultaneously:
 | 3 | Hybrid asset pipeline | Planned | Procedural R3F primitives for architectural shell (chambers, walls, terrain, signage). Blender → glTF (.glb with Draco + Meshopt + KTX2) for ≤6 hero pieces (gate machinery, telemetry instruments, signature props). |
 | 4 | Three primary stacks with cascading fallback | Planned | Tier 1: R3F + Drei + Theatre.js + Three.js WebGPURenderer (WebGL2 fallback automatic since r171). Tier 2: Rive state machine for reduced-motion + low-RAM mobile. Tier 3: `next/image` poster frame for saved-data / no-JS. |
 | 5 | Interactive controls | Planned | Pause / scrub timeline / hover-to-label / time-dilation (slow current act 4×). No camera pan beyond rail-constrained orbit. Reader controls camera and time; no other state. |
-| 6 | Live-data wiring (Stream B) | Planned | Build-time snapshot of `gate-coverage.jsonl` + `measurement-adoption-history.json` + last-N state.json mutations. On-session-start client fetch for freshness. Data surfaces in Acts IV–VI as visual phenomena (gate firings, ledger growth, completed-feature monuments). |
+| 6 | Live-data wiring (Stream B) | Planned | Build-time snapshot of **four typed data inputs** (see §Data Contracts & Modularity for the full contract): `docs/framework/versions.json` (timeline + counts), `.claude/features/*/state.json` (feature roster → Act VI monuments), `.claude/shared/measurement-adoption.json` (Act V adoption bars), `.claude/logs/gate-coverage.jsonl` (Act IV gate firings, operator mode only). On-session-start client fetch for freshness. |
 | 7 | Visitor analytics (Stream A) | Planned | GA4 events captured at act boundaries, label-hover, scrub seek, time-dilation, replay, fallback-tier activation. Feeds new "Visitor Comprehension" panel at `/control-room/framework`. |
 | 8 | Operator-mode (Stream C) | Planned | Same component rendered at `/control-room/framework` with live WebSocket telemetry overlay, UCC-passkey gated. Shares 100% of scene code with visitor mode; only data subscription differs. |
 | 9 | Glossary integration | Planned | Every label that has a `glossary.ts` entry shows the `<Term>` tooltip on hover. Vocabulary inherits from canonical models — 10 phase IDs from `lifecycle-phases.ts`, 8 region accents from `blueprint-data.ts`. |
@@ -300,12 +302,138 @@ Kill criteria are independent: any one triggering forces a re-assessment, not an
 | `fitme-story/src/components/bespoke/framework-universe/primitives/` | Procedural R3F primitives (chambers, terrain, signage, label-billboards) |
 | `fitme-story/public/assets/3d/framework-universe/` | glTF hero pieces (`.glb` with Draco + Meshopt + KTX2) |
 | `fitme-story/src/lib/motion-3d/primitives.ts` | Calibrated Isometric motion primitives (5 reusable, per research §3.4) |
-| `fitme-story/src/lib/framework-snapshot.ts` | Build-time data layer (reads FT2 `.claude/shared/*.jsonl`) |
+| `fitme-story/src/lib/framework-snapshot.ts` | Build-time data layer; reads the four mirrored inputs from `src/data/framework/` |
+| `fitme-story/src/data/framework/versions.json` | Build-time mirror of FT2 `docs/framework/versions.json` (see §Data Contracts & Modularity) |
+| `fitme-story/src/data/framework/feature-roster.json` | Build-time aggregate of FT2 `.claude/features/*/state.json` (slug + status + phase + version) |
+| `fitme-story/src/data/framework/adoption-snapshot.json` | Build-time mirror of FT2 `.claude/shared/measurement-adoption.json` |
+| `fitme-story/src/data/integrity/gate-coverage-ft2.jsonl` | Build-time mirror of FT2 `.claude/logs/gate-coverage.jsonl` (already exists per v7.8.3 Phase 1) |
 | `fitme-story/src/app/framework/page.tsx` | Route; lazy-loads `<FrameworkUniverse>` post-IntersectionObserver |
 | `fitme-story/src/app/control-room/framework/page.tsx` | Operator mode; extends existing page |
 | `fitme-story/src/lib/analytics-events.ts` | GA4 event + parameter typed exports |
-| `fitme-story/scripts/sync-from-fittracker2.ts` | Extended to copy gate-coverage.jsonl + measurement-adoption-history.json into build snapshot |
+| `fitme-story/scripts/sync-from-fittracker2.ts` | Extended (Phase 4 task) to mirror versions.json + aggregate feature-roster.json + copy adoption-snapshot.json |
 | `fitme-story/scripts/check-bundle-size.ts` | New CI check; fails if `/framework` deferred bundle exceeds 350 KB compressed |
+| `FT2:docs/framework/versions.json` | **Canonical framework timeline + gate counts + mechanism list + phase IDs.** Read by every consumer; updated in every framework-version-ship PR. |
+
+## Data Contracts & Modularity
+
+> **Added 2026-05-28** as part of the v7.9 → v7.9.1 reconciliation pass.
+> Resolves operator requirement: "every time the framework advances, the
+> feature should reflect the changes without rebuilding from scratch."
+
+This feature visualizes the framework itself. The framework changes — new
+gates ship, mechanisms get promoted from advisory to enforced, features
+graduate from `paused` to `complete`, mechanism letters extend past F.
+To avoid rebuilding the Universe each time the framework advances, every
+scene element that depends on framework state reads from a **typed data
+contract**, never from hand-coded constants.
+
+### Source-of-truth → consumer flow
+
+```
+FT2 source files                       fitme-story sync                       Universe scene
+─────────────────                      ──────────────────                     ──────────────
+docs/framework/versions.json ──┐                                              versions.ts
+.claude/features/*/state.json ─┼──► scripts/sync-from-fittracker2.ts ──┬──► framework-snapshot.ts
+.claude/shared/                │                                       │      (typed module)
+  measurement-adoption.json ───┤                                       │
+.claude/logs/                  │                                       └──► gate-coverage.ts
+  gate-coverage.jsonl ─────────┘                                              (operator stream)
+```
+
+### The four data inputs
+
+| Input file (FT2 source) | What the Universe reads from it | Mirror destination (fitme-story) |
+|---|---|---|
+| `docs/framework/versions.json` | Version timeline (Act II), mechanism list (Act IV), gate counts (Act IV signage), phase IDs (Act III chambers), data-quality tiers (Act V), work-type funnel widths | `src/data/framework/versions.json` (build-time copy) |
+| `.claude/features/*/state.json` (62 files) | Feature monuments in Act VI; status (`complete`/`paused`/`in_progress`) drives monument material; framework_version drives placement on Act II timeline | `src/data/framework/feature-roster.json` (build-time aggregate) |
+| `.claude/shared/measurement-adoption.json` | Adoption % bars in Act V; per-dimension trend lines (`cache_hits`, `cu_v2`, `fully_adopted_post_v6`) | `src/data/framework/adoption-snapshot.json` (build-time copy) |
+| `.claude/logs/gate-coverage.jsonl` | Live gate-firing bursts in Act IV (operator mode only); attribution to specific commits | `src/data/integrity/gate-coverage-ft2.jsonl` (already mirrored per v7.8.3 Phase 1) |
+
+### `docs/framework/versions.json` schema (v1.0.0)
+
+The canonical machine-readable framework timeline. Lives in FT2; mirrored
+to fitme-story at build. Schema versioned via the top-level `schema_version`
+field — consumers MUST check it before reading.
+
+Top-level keys:
+
+- `schema_version` (semver) — bump major on breaking changes
+- `last_reconciled` (ISO date) — when a human last walked the file
+- `reconciled_by` (string) — name the PR or process that last touched it
+- `current` — `{ version, shipped_at, status, phase_e_started, phase_e_ends, case_study_path, pr_number }`
+- `next` — `{ version, status, candidates[], expected_ship_window, v8_window_opens }`
+- `stats` — `{ write_time_gates, cycle_time_gates, advisory_gates, mechanisms[], lifecycle_phases, data_quality_tiers, active_features_with_phase, complete_features }`
+- `timeline[]` — every version `{ version, ship_date, label, status, pr_number?, case_study_path? }`
+- `gates_flipped_at_v7_9[]` — record of v7.9-specific advisory→enforced promotions
+- `gates_already_enforced_pre_v7_9[]` — context for the timeline
+- `gates_intentionally_advisory_permanent[]` — semantic distinction (matters in Act IV mood)
+- `mechanisms[]` — `{ id, label, introduced_at, status, advisory_window_ends?, extended_at? }`
+- `phases[]` — `{ id, name }` (the lifecycle funnel — drives Act III chamber count)
+- `work_types[]` — `{ id, phases[], label }` (Feature / Enhancement / Fix / Chore — drives funnel-width variants)
+- `data_quality_tiers[]` — `{ tier, label }` (T1/T2/T3)
+- `consumers[]` — every place that reads from this file; adding a consumer requires updating this list (forces architectural awareness)
+- `source_of_truth_pointers` — paths back to the FT2 source files this JSON is derived from (audit trail)
+- `update_protocol` — when/what/how to update this file when the framework advances
+
+### What happens when the framework advances
+
+| Framework change | What must be edited | What auto-propagates |
+|---|---|---|
+| New gate ships | `versions.json`: `stats.{write_time,cycle_time,advisory}_gates` + `timeline[]` entry | All Universe signage, gate-count overlays, version pill, glossary chip |
+| Mechanism G ships | `versions.json`: `mechanisms[]` + `stats.mechanisms[]` | Act IV mechanism markers, dev-guide page, dropdown filter on /control-room |
+| New version ships | `versions.json`: `current` block + `timeline[]` entry + `next` block updated | Version timeline scene, latest-version overlay, all version pills site-wide |
+| Feature graduates `paused` → `complete` | Nothing — `state.json` is the source; sync picks it up | Act VI monument materializes; feature-count stats update |
+| Adoption % moves | Nothing — `measurement-adoption.json` is the source; sync picks it up | Act V adoption bars |
+| Gate fires in production | Nothing — `gate-coverage.jsonl` appends; live stream picks it up | Operator-mode bursts of light (Stream C) |
+
+> Only the first three rows require a manual edit. Authors of any v7.9.2 /
+> v8.0 / v9.0 framework change MUST update `versions.json` as part of their
+> ship checklist — this becomes a checklist item in
+> [`docs/architecture/feature-lifecycle-event-catalog.md`](../../../docs/architecture/feature-lifecycle-event-catalog.md)
+> Phase 8 Documentation.
+
+### Build-pipeline extension (Phase 4 task)
+
+`fitme-story/scripts/sync-from-fittracker2.ts` already mirrors
+`.claude/shared/*.json` and `state.json` files (per v7.8.3 Phase 1). Phase 4
+of this feature extends the script with four additional steps:
+
+1. Copy `FT2/docs/framework/versions.json` → `fitme-story/src/data/framework/versions.json`
+2. Aggregate every FT2 `state.json` into `fitme-story/src/data/framework/feature-roster.json` (just `{slug, name, status, current_phase, framework_version, state_owner, has_case_study}`)
+3. Copy `FT2/.claude/shared/measurement-adoption.json` → `fitme-story/src/data/framework/adoption-snapshot.json`
+4. Generate TypeScript types from `versions.json` schema and compile-time-validate the synced data (errors abort the build)
+
+A 5th step adds a CI gate: a fitme-story PR cannot merge if `versions.json`
+references a version not present in `.claude/shared/measurement-adoption.json`
+or `docs/case-studies/`. Prevents the most likely modularity failure: timeline
+entry added, supporting evidence missing.
+
+### Anti-pattern: hand-coded gate counts in MDX
+
+The current `/framework/dev-guide` page and several case study showcases
+hand-code numbers like "25 gates" or "16 cycle-time checks". As part of this
+feature's Phase 4, those literals get replaced with `<GateCount kind="write_time" />`
+React components that read from `versions.json`. The value shown is always
+whatever the synced JSON says on last build — no drift between docs and reality.
+
+The PRD's own Business Objective section (above) already uses parameterized
+phrasing ("~36+ gates and advisories ... live counts in versions.json") as
+a deliberate example of the pattern.
+
+### Future modularity (v2 considerations, out of scope here)
+
+- A version-history *content* field per timeline entry (markdown blob explaining what changed) — would let the Universe surface inline tooltips. Deferred to v2 because case studies already serve this role and re-encoding them in JSON is duplicative.
+- Live WebSocket subscription on `versions.json` changes — overkill; rebuilds-on-deploy are enough.
+- A formal RFC process for breaking schema changes — defer until first breaking change is needed.
+- Cross-repo write path (fitme-story-authored versions.json edits propagating back to FT2) — explicitly not supported; versions.json is FT2-authoritative per the v7.8.2 cross-repo asymmetry policy.
+
+### Compliance with pause rule
+
+Adding this section advances PRD *content* but does not transition
+`state.json::current_phase` from `prd`. Operator pause decision 2026-05-19
+forbids Phase 1 → Phase 2 advancement until v7.9.1 closes (~2026-06-04).
+This edit is pause-compliant. No `current_phase` mutation; PRD approval gate
+remains held.
 
 ## Dependencies & Risks
 
@@ -319,7 +447,7 @@ Kill criteria are independent: any one triggering forces a re-assessment, not an
 | Visitor analytics privacy | All Stream A events are aggregate-only; no PII; opt-out via cookie consent banner (existing fitme-story mechanism) |
 | Cross-repo coupling: requires FT2 `gate-coverage.jsonl` + `measurement-adoption-history.json` in build context | Already mirrored via existing `sync-from-fittracker2.ts` script; extend not introduce |
 | Operator-mode duplicating scene code | Single component, `mode` prop branches data subscription only; scene code 100% shared |
-| Launch window collision with HADF Phase 2-bis Block B sub-experiments (collection 2026-05-23 →) | Track A schedule explicitly avoids: PRD/Tasks/UX during v7.9 Phase E (2026-05-21 → 06-04); implement 06-04 → 06-15; ship pre-2026-06-18 |
+| Launch window collision with HADF Phase 2-bis Block B sub-experiments (Sub-exp 1A launched 2026-05-25; Sub-exps 2 + 3 prereg shipped 2026-05-27) | **Superseded 2026-05-19:** entire feature paused at Phase 1 PRD-draft until v7.9.1 closes (~2026-06-04). Original Track A (PRD/Tasks/UX during Phase E, implement 06-04 → 06-15) collapsed into post-v7.9.1 compressed timeline. Ship target remains pre-2026-06-18 v8.0 window; tradeoff accepted for v7.9 calibration purity. |
 | Reduced-motion users get a meaningfully different experience | By design per WCAG 2.3.3; Tier 2 (Rive) is a deliberate equal-information variant, not a degraded one |
 | Scene complexity grows beyond what's tractable in one feature | Storyboard locked at 6 acts in research §5; expansion is a v2 feature, not in-scope |
 
