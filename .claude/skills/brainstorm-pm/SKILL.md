@@ -115,7 +115,7 @@ If you are unsure which to use, start with `/brainstorm-pm` problem mode — wro
 
 - A scoped feature has a clear PRD draft but the design / dev / UX path is still open
 - The user describes the desired outcome and you suspect there are equal-or-better alternatives the user hasn't surfaced
-- A skill / hub / pm-workflow Phase 0 dispatches `/brainstorm-pm --mode=three-option` (the future auto-dispatch heuristic)
+- A skill / hub / pm-workflow Phase 0 dispatches `/brainstorm-pm --mode=three-option` (auto-dispatch heuristic shipped 2026-06-03; see `.claude/skills/pm-workflow/SKILL.md` §"Three-option auto-dispatch heuristic")
 - Backlog item is filed as Enhancement or Feature and the row says "alternatives considered" must be in the PRD
 
 **Critical contract — what this mode MUST do:**
