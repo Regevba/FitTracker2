@@ -159,6 +159,19 @@ No sub-command changes. No mode changes. Pure metadata sync against the v7.8.6 c
 
 ## `/brainstorm-pm` (NEW)
 
+### 2026-06-03 — v7.9 (PR #597)
+
+- **NEW mode added** — Three-Option Trade-Off Mode (the 5th mode; 4 modes + 1 trade-off mode). Closes the backlog row `brainstorm-pm 3-option trade-off generation` authored by the operator on 2026-05-28 (drafted on `save/r9-dirty-2026-05-28`, preserved into main 2026-06-03 via PR #592 earlier the same day).
+- Mode produces a UX / Design / Dev trade-off matrix for a scoped problem with ≥3 distinct viable implementation paths spanning the feasibility space (effort / platform / compute / timing / surface / custom axis).
+- Critical contract: matrix shape MUST include `outcome` + `ux` + `design` + `dev` + `defer_to_v2` + `failure_modes` + `effort` rows per option; **NO pre-ranking** — output IS the matrix; the user picks.
+- Anti-patterns added: throw-away options to satisfy the gate, skipping a dimension, recommending after the matrix, 1-row matrices.
+- Kill criterion: if operators report the discipline becomes ritual rather than discriminating, narrow scope to "≥2 options + abandoned-reason field" instead of mandatory 3.
+- Schema delta: `state.json::brainstorm.three_option_matrix` added to output contract (axis + options[].{outcome, ux, design, dev, defer_to_v2, failure_modes, effort}).
+- `framework_version: v7.8.6 → v7.9`, `last_updated: 2026-05-15 → 2026-06-03`.
+- Skill description string bumped to surface the 5th mode for tool-discovery.
+- Companion: `docs/skills/brainstorm-pm.md` operator-facing doc gets a 5th sub-command row + Recent-usage entry + Example #4 (three-option matrix on stats expansion).
+- **Deferred to follow-up:** auto-dispatch wiring (`/pm-workflow` Phase 0 auto-invokes `--mode=three-option` whenever the problem shape is non-obvious) is NOT in this PR. Requires editing `.claude/skills/pm-workflow/SKILL.md` + adding a non-obvious-problem heuristic.
+
 ### 2026-05-15 — v7.8.6 (PR #368)
 
 - `framework_version: v7.8.5 → v7.8.6`, `last_updated: 2026-05-14 → 2026-05-15` (closes the gap left by PR #367 which only touched 11 SKILL.md files).
