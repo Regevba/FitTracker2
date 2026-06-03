@@ -56,6 +56,9 @@ kill_criteria:
   - condition: "Push-fatigue rate > 75% (advisory treated as spam)"
   - condition: "Adoption rate < 5% of Layer ≥2 cohort (personal-baseline computation broken or threshold too restrictive)"
 kill_criterion_fired: false
+kill_criteria_resolution: pending_t14_eval_2026-06-17 — all 5 kill criteria carry calendar-anchored T+14d evaluations (action-taken rate 14d, false-positive 30d, push-fatigue 30d, adoption 30d, daily-trigger latency 14d post-wire-up). All not_fired at closure.
+pr_citation_exempt:
+  - "PR #562 (Phase 0 Research split-shipped — predecessor of #564; cited for chain-of-custody, not as the closure PR)"
 ---
 
 # Trend Alerts (HRV) — C4 Case Study

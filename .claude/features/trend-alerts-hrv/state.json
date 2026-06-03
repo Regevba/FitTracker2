@@ -2,13 +2,13 @@
   "feature": "trend-alerts-hrv",
   "description": "Sustained-trend HRV alert: fires when HRV stays below the user's personal baseline (or a fixed floor for cold-start users) for 3+ consecutive days. Distinct from ReadinessAlertObserver (single-day score crossing) and ReadinessAwareTrainingObserver (daily pre-training advisory) — this observer surfaces a multi-day pattern. Surfaces via push notification + Home AIInsightCard banner; the Why? affordance opens an AIIntelligenceSheet section showing the 3-day HRV mini-chart with baseline overlay. Backlog source: docs/product/backlog.md L346 (RICE 10.5 per 2026-05-31 E1 refresh).",
   "work_type": "feature",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-06-01T08:30:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
   "has_ui": true,
   "requires_analytics": true,
-  "branch": "feature/trend-alerts-hrv",
+  "branch": "chore/trend-alerts-hrv-t14-closure",
   "isolation_opt_out": false,
   "rice_score": 10.5,
   "rice_inputs": {
@@ -40,36 +40,93 @@
   "phases": {
     "research": {
       "started_at": "2026-06-01T08:30:00Z",
-      "ended_at":   "2026-06-01T07:10:30Z"
+      "ended_at": "2026-06-01T07:10:30Z"
     },
     "prd": {
       "started_at": "2026-06-01T07:10:30Z",
-      "ended_at":   "2026-06-01T07:22:30Z"
+      "ended_at": "2026-06-01T07:22:30Z"
     },
     "tasks": {
       "started_at": "2026-06-01T07:22:30Z",
-      "ended_at":   "2026-06-01T07:24:00Z"
+      "ended_at": "2026-06-01T07:24:00Z"
     },
     "implementation": {
-      "started_at": "2026-06-01T07:24:00Z"
+      "started_at": "2026-06-01T07:24:00Z",
+      "ended_at": "2026-06-01T14:13:53Z",
+      "approved_by": "operator",
+      "approval_signal": "(implicit — operator merged PR #564)"
+    },
+    "testing": {
+      "started_at": "2026-06-01T14:13:53Z",
+      "ended_at": "2026-06-01T14:13:53Z",
+      "approved_by": "operator",
+      "approval_signal": "tests pass + build green"
+    },
+    "review": {
+      "started_at": "2026-06-01T14:13:53Z",
+      "ended_at": "2026-06-01T14:13:53Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-01T14:13:53Z",
+      "ended_at": "2026-06-01T14:13:53Z",
+      "pr_number": 564,
+      "merge_commit_sha": "3deab70daab66f9c0c7a3540b96fec3e3a02a09e",
+      "merged_at": "2026-06-01T14:13:53Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-01T14:13:53Z",
+      "ended_at": "2026-06-03T18:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue L1"
+    },
+    "complete": {
+      "started_at": "2026-06-03T18:00:00Z",
+      "ended_at": "2026-06-03T18:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
     "phases": {
       "research": {
         "started_at": "2026-06-01T08:30:00Z",
-        "ended_at":   "2026-06-01T07:10:30Z"
+        "ended_at": "2026-06-01T07:10:30Z"
       },
       "prd": {
         "started_at": "2026-06-01T07:10:30Z",
-        "ended_at":   "2026-06-01T07:22:30Z"
+        "ended_at": "2026-06-01T07:22:30Z"
       },
       "tasks": {
         "started_at": "2026-06-01T07:22:30Z",
-        "ended_at":   "2026-06-01T07:24:00Z"
+        "ended_at": "2026-06-01T07:24:00Z"
       },
       "implementation": {
-        "started_at": "2026-06-01T07:24:00Z"
+        "started_at": "2026-06-01T07:24:00Z",
+        "ended_at": "2026-06-01T14:13:53Z"
+      },
+      "testing": {
+        "started_at": "2026-06-01T14:13:53Z",
+        "ended_at": "2026-06-01T14:13:53Z"
+      },
+      "review": {
+        "started_at": "2026-06-01T14:13:53Z",
+        "ended_at": "2026-06-01T14:13:53Z"
+      },
+      "merge": {
+        "started_at": "2026-06-01T14:13:53Z",
+        "ended_at": "2026-06-01T14:13:53Z"
+      },
+      "docs": {
+        "started_at": "2026-06-01T14:13:53Z",
+        "ended_at": "2026-06-03T18:00:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-03T18:00:00Z",
+        "ended_at": "2026-06-03T18:00:00Z"
       }
     }
   },
@@ -98,6 +155,42 @@
       "to": "implementation",
       "at": "2026-06-01T07:24:00Z",
       "reason": "Operator approved Phase 4 (Implement) kickoff via 'go' directive. T1-T14 begin. Branch: feature/trend-alerts-hrv (Mode C compliant — no infra-path edits)."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "at": "2026-06-01T14:13:53Z",
+      "reason": "Phase 4 implementation closed via PR #564 (Phase 0+1+2+4 single-session ship); ~31 tests pass; build green."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-01T14:13:53Z",
+      "reason": "CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-01T14:13:53Z",
+      "reason": "PR #564 squashed onto main as 3deab70d (operator-merged 2026-06-01)."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-01T14:13:53Z",
+      "reason": "Case study at docs/case-studies/trend-alerts-hrv-case-study.md shipped in feature PR. Closure (state flip + backlog strike + state.json link) ran 2026-06-03 via L1 follow-up."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-03T18:00:00Z",
+      "reason": "Feature CLOSED. ~31 tests pass; T7 helpers scope-shifted from ReadinessEngine to TrendAlertTrigger.swift per Phase 4 decision (keeps the high-risk-area file untouched). Known platform-wide gap: v2-observer daily-trigger wire-up is not yet built (affects C2 + C4 + ReadinessAlertObserver equally); deferred to v7.9.1-era work item."
     }
-  ]
+  ],
+  "case_study": "docs/case-studies/trend-alerts-hrv-case-study.md",
+  "merge_pr_number": 564,
+  "merge_commit_sha": "3deab70daab66f9c0c7a3540b96fec3e3a02a09e",
+  "merged_at": "2026-06-01T14:13:53Z",
+  "feature_branch_merged": "feature/trend-alerts-hrv",
+  "kill_criteria_resolution": "pending_t14_eval_2026-06-17 — all 5 kill criteria carry calendar-anchored T+14d evaluations per case study frontmatter (action-taken rate 14d, false-positive 30d, push-fatigue 30d, adoption 30d, daily-trigger latency 14d post-wire-up). kill_criterion_fired: false at closure."
 }
