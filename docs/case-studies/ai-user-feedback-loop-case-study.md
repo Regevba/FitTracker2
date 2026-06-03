@@ -20,7 +20,11 @@ kill_criteria:
 kill_criteria_resolution: pending_t14_eval_2026-06-15
 tier_tags_present: true
 related_prs:
-  - 572
+  - "PR #572"
+pr_citation_exempt:
+  - "PR #79 (UI-024 origin — RecommendationMemory storage + UI scaffold from 2026-04-10; predecessor)"
+  - "PR #560 (C2 sibling — `home_*_alert_action_taken` analytics pattern source)"
+  - "PR #564 (C4 sibling — second action_taken pattern reference)"
 case_study_type: full
 ---
 
