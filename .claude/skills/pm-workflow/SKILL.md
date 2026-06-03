@@ -788,7 +788,7 @@ Cross-reference the freshness output against any operator-gate inventory, status
 
 | Subtype | Phase 0 primary output | Skills dispatched |
 |---|---|---|
-| **New feature** | `research.md` (market + competitive + alternatives) + populated `state.json::brainstorm` block | `/brainstorm-pm` (default — problem/solution/assumption/strategy modes) → `/research wide` → `/research narrow` → `/research feature` |
+| **New feature** | `research.md` (market + competitive + alternatives) + populated `state.json::brainstorm` block | `/brainstorm-pm` (default — problem/solution/assumption/strategy modes + three-option trade-off mode for scoped problems with multiple viable paths, added 2026-06-03) → `/research wide` → `/research narrow` → `/research feature` |
 | **V2 refactor** (`state.json.work_subtype == "v2_refactor"`) | `v2-audit-report.md` (numbered findings against `ux-foundations.md`, each with P0/P1/P2 severity + tractability tag: auto / decision / new-token / new-component) | `/ux audit` on the v1 file |
 | **Enhancement** | Skipped — parent feature's research already exists | — |
 | **Fix / Chore** | Skipped | — |
@@ -802,6 +802,8 @@ Phase 4 patch, and Section A of
 ### New-feature brainstorm preflight (v7.8.5+)
 
 Before filling out the research template, run `/brainstorm-pm` to lock the problem framing, surface assumptions, and enumerate alternative solutions. The skill writes to `state.json::brainstorm.<mode>` which serves as input to Phase 1 PRD sections (see `.claude/skills/brainstorm-pm/SKILL.md` → §"Integration with /pm-workflow"). Skip only if the problem framing is already documented in a research/spec doc and validated externally.
+
+**Three-option trade-off mode (added 2026-06-03):** when the problem is locked + scope is roughly known but the implementation path isn't, run `/brainstorm-pm three-option` to produce a UX / Design / Dev trade-off matrix across ≥3 distinct paths spanning the feasibility space. NO pre-ranking — output IS the matrix and the user picks. Matrix lands at `state.json::brainstorm.three_option_matrix` and renders as the PRD's §Alternatives considered section. Auto-dispatch heuristic (when to auto-invoke `--mode=three-option`) is a queued follow-up after the v7.9.1 build window opens (~2026-06-04).
 
 ### New-feature research template
 
