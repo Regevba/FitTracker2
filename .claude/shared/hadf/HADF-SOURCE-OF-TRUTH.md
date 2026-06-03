@@ -90,7 +90,7 @@ KS TPS  vs anthropic/claude-haiku-4-5: KS=0.9100, p = 9.88e-324   ✅   →  VER
 |---|---|---|
 | `com.fitme.hadf-phase2bis-subexp2` (collector) | ❌ booted out (auto-close) | none — closed |
 | `com.fitme.hadf-phase2bis-subexp2-close` (one-shot) | ❌ self-removed after firing | none |
-| `com.fitme.hadf-phase2bis-backup` (off-SSD snapshot) | 🟢 **still running** | **bootout during cleanup** |
+| `com.fitme.hadf-phase2bis-backup` (off-SSD snapshot) | 🟢 **still running, needed** | **KEEP running** — action revised 2026-06-03. The 2026-06-02 "bootout during cleanup" note was queued for the Sub-exp 2 closure window. Sub-exp 1B + 3 became actively-collecting AFTER that note (per §1+§2 above). The per-sub-exp backup-routing (`hadf-snapshot.sh` get_internal_backup / get_ssd_backup case statements) is now load-bearing for 1B + 3 raw-data preservation to `~/Documents/.../*-raw-data/` + `/Volumes/DevSSD/.../*-backups/`. Re-evaluate bootout when both 1B + 3 collectors auto-close. |
 | `com.fitme.hadf-phase2bis-subexp3` | 🟢 **firing autonomously** (every ~4h since 2026-06-02 07:42Z) | monitor; bootout when target yield reached |
 | `com.fitme.hadf-phase2bis-subexp1b` | 🟢 **firing autonomously** (every ~5h since 2026-06-02 08:41Z) | monitor; bootout when target yield reached |
 
