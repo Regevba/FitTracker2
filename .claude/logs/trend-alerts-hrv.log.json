@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T05:13:55Z",
-  "updated_at": "2026-06-01T07:28:35Z",
+  "updated_at": "2026-06-03T17:59:52Z",
   "events": [
     {
       "timestamp": "2026-06-01T05:13:55Z",
@@ -49,6 +49,17 @@
       "artifacts": [],
       "metrics": {},
       "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-03T17:59:52Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Phase 9 CLOSED via L1 T14 follow-up. PR #564 squashed onto main as 3deab70 (operator-merged 2026-06-01 14:13Z). state.json implementation\u2192testing\u2192review\u2192merge\u2192docs\u2192complete with full audit transitions + case_study link + merge metadata. T7 helpers scope-shifted from ReadinessEngine to TrendAlertTrigger.swift per Phase 4 decision. ~31 tests pass on iPhone 17 sim. Daily-trigger wire-up = platform-wide gap (affects C2 + C4 + ReadinessAlertObserver), deferred to v7.9.1.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
