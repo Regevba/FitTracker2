@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-06-03T06:06:03Z",
+  "updated": "2026-06-03T17:15:21Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 87,
@@ -42,9 +42,9 @@
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 26,
-      "missing": 61,
-      "percent": 29.9,
+      "present": 27,
+      "missing": 60,
+      "percent": 31.0,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -54,15 +54,15 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 14,
-      "missing": 73,
-      "percent": 16.1,
+      "present": 17,
+      "missing": 70,
+      "percent": 19.5,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-        "docs/case-studies/ai-user-feedback-loop-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
         "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md"
+        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
+        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
       ]
     },
     "state_case_study_linkage": {
@@ -84,20 +84,6 @@
   },
   "debt_items": [
     {
-      "id": "kill_criteria_resolution_missing",
-      "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
-      "severity": "low",
-      "count": 61,
-      "examples": [
-        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-        "docs/case-studies/android-design-system-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
-      ],
-      "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill."
-    },
-    {
       "id": "state_case_study_linkage",
       "title": "Features missing case-study linkage in state.json",
       "severity": "low",
@@ -106,6 +92,20 @@
         "trend-alerts-hrv"
       ],
       "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
+    },
+    {
+      "id": "kill_criteria_resolution_missing",
+      "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
+      "severity": "low",
+      "count": 60,
+      "examples": [
+        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+        "docs/case-studies/android-design-system-case-study.md",
+        "docs/case-studies/audit-remediation-case-study.md",
+        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
+        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
+      ],
+      "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill."
     }
   ]
 }
