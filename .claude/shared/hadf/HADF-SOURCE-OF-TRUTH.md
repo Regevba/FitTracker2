@@ -1,6 +1,6 @@
 # HADF — Single Source of Truth (consolidated status ledger)
 
-> **As-of: 2026-06-02.** This file is the **authoritative, machine-and-human-readable
+> **As-of: 2026-06-03.** This file is the **authoritative, machine-and-human-readable
 > status** for the Hardware-Aware Dispatch Framework experimental program. It
 > consolidates and **supersedes** scattered claims across memory, PR descriptions,
 > per-sub-exp prereg JSONs, the cross-sub-exp synthesis case study, and the
@@ -31,9 +31,9 @@ Feature dir: [`.claude/features/hadf-phase2bis-replication/`](../../features/had
 | Sub-exp | Question | Endpoints | Metric | Status | Verdict | n_valid |
 |---|---|---|---|---|---|---|
 | **1 (1A)** | Cloud signature generalizes beyond OpenAI? | 4 cloud (openai ×2 + anthropic ×2) | silhouette @ k=5 ≥ 0.5 | ✅ **CLOSED** | **PASS** | 2,600 [T1] |
-| **1B** | Cross-window drift re-check (v2: 2 clean endpoints) | 2 (anthropic haiku + google gemini-flash-lite) | silhouette @ k=2 | ⏳ **NOT STARTED** (prereg **NOT locked**) | — | 0 (v1 Fire-0 only: 114/200) |
+| **1B** | Cross-window drift re-check (v2: 2 clean endpoints) | 2 (anthropic haiku + google gemini-flash-lite) | silhouette @ k=2 | 🔄 **ACTIVELY COLLECTING** (since 2026-06-02 08:41Z; 5 fires landed) | — | 500 raw (466 OK + 34 err = 93.2%) [T1, in-progress] |
 | **2** | Local (Ollama) distinguishable from cloud? | 1 (ollama/llama3.2:3b) | KS p ≤ 0.01 vs Sub-exp 1 anchor | ✅ **CLOSED 2026-06-02** | **PASS** | 800 [T1] |
-| **3** | Bedrock haiku ≠ Anthropic-direct haiku? (routing-layer signature) | 3 (bedrock haiku + anthropic haiku + openai anchor) | signature_delta_ratio > 2.0 | 🟢 **READY TO LAUNCH** (AWS live; prereg not locked) | — | 0 |
+| **3** | Bedrock haiku ≠ Anthropic-direct haiku? (routing-layer signature) | 3 (bedrock haiku + anthropic haiku + openai anchor) | signature_delta_ratio > 2.0 | 🔄 **ACTIVELY COLLECTING** (since 2026-06-02 07:42Z; 6 fires landed) | — | 900 raw (889 OK + 11 err = 98.8%) [T1, in-progress] |
 | **Synthesis (Block C)** | Does the program confirm the HADF dispatch premise? | — | Sub-exp 3 ratio > 2.0 (primary) | ⏳ pending Sub-exp 3 | — | — |
 
 ---
@@ -60,12 +60,30 @@ KS TPS  vs anthropic/claude-haiku-4-5: KS=0.9100, p = 9.88e-324   ✅   →  VER
 - **Interpretation [T3]:** local M2 execution produces a streaming signature trivially separable from cloud — cloud-vs-local separability confirmed; **Sub-exp 3 is unblocked.**
 - ⚠️ **The full Sub-exp 2 closure is committed on `feat/hadf-phase2bis-impl` but UNMERGED to main.** Commits `8da3297` (subexp2 lock), `5981676` (state.json B14 close + 15 raw data files + heartbeat/log), `c21966c` (synthesis §3.B verdict PASS). Main still shows the DRAFT skeleton (§3.B "TBD", state.json B14 `prep_in_progress`). **Reconciling this to main is the central pre-ceremony integrity action (§5/§6).**
 
-### Sub-exp 3 — pending
-- Smoke-test on Sub-exp 1A anchors gave signature_delta_ratio = **6.62** (correct PASS) [T1, smoke only]. Real run pending launch.
+### Sub-exp 3 — ACTIVELY COLLECTING (verdict pending) [T1, in-progress]
+- Smoke-test on Sub-exp 1A anchors gave signature_delta_ratio = **6.62** (correct PASS) [T1, smoke only]. Real run **started 2026-06-02T07:42Z** under the autonomous launchd.
+- **6 fires landed 2026-06-02 07:42Z → 2026-06-03 02:00Z** (every ~4h pattern). 900 raw rows = 300 × 3 endpoints. 889 OK + 11 err = 98.8% success.
+- Endpoint matrix per prereg (`preregistration-phase2bis-subexp3.json`, sha256=`521f0f45f14d`):
+  - `openai/gpt-4o-mini` (anchor) — 300 rows
+  - `anthropic/claude-haiku-4-5-20251001` (direct) — 300 rows
+  - `aws-bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0` (routed) — 300 rows
+- Cost: ~$0.1215 USD (6 × $0.02025/fire). Daily budget ~$0.122.
+- Verdict computation deferred until operator confirms target yield (commits land via `exp/hadf-subexp3` branch tagged `hadf-subexp3-data-preservation-2026-06-03`).
+- ⚠️ **The autonomous launchd was bootstrapped between SoT-write 2026-06-02 and now (2026-06-03).** The earlier SoT entry said "READY TO LAUNCH, prereg not locked" — but the data + commit `1a43130` (resolve subexp3 bedrock model-id + lock prereg sha256=`521f0f45f14d`) prove the lock happened. The "prereg not locked" claim was stale at write-time.
+
+### Sub-exp 1B v2 — ACTIVELY COLLECTING (verdict pending) [T1, in-progress]
+- Real run **started 2026-06-02T08:41Z** under the autonomous launchd (v2 scope = 2 clean endpoints).
+- **5 fires landed 2026-06-02 08:41Z → 23:00Z**. 500 raw rows = 250 × 2 endpoints. 466 OK + 34 err = 93.2% success.
+- Endpoint matrix per v2 prereg:
+  - `anthropic/claude-haiku-4-5-20251001` — 250 rows
+  - `google/gemini-2.5-flash-lite` — 250 rows
+- Cost: ~$0.0675 USD (5 × $0.0135/fire).
+- Verdict computation deferred (commits land via `exp/hadf-subexp1b` branch tagged `hadf-subexp1b-data-preservation-2026-06-03`).
+- ⚠️ **Same staleness story as Sub-exp 3:** v2 was described as "prereg NOT locked" but the autonomous launchd has been firing since 2026-06-02. Either operator locked v2 between sessions, or v2's prereg was never actually unlocked. Source-of-truth state to be confirmed against the v2 lock tag (if it exists).
 
 ---
 
-## §3 Infrastructure state (2026-06-02)
+## §3 Infrastructure state (2026-06-03)
 
 **launchd jobs** (`gui/501`):
 | Job | State | Action needed |
@@ -73,17 +91,23 @@ KS TPS  vs anthropic/claude-haiku-4-5: KS=0.9100, p = 9.88e-324   ✅   →  VER
 | `com.fitme.hadf-phase2bis-subexp2` (collector) | ❌ booted out (auto-close) | none — closed |
 | `com.fitme.hadf-phase2bis-subexp2-close` (one-shot) | ❌ self-removed after firing | none |
 | `com.fitme.hadf-phase2bis-backup` (off-SSD snapshot) | 🟢 **still running** | **bootout during cleanup** |
-| `com.fitme.hadf-phase2bis-subexp3` | not installed | install + bootstrap at §5 launch |
-| `com.fitme.hadf-phase2bis-subexp1b` | not installed | install at 1B launch |
+| `com.fitme.hadf-phase2bis-subexp3` | 🟢 **firing autonomously** (every ~4h since 2026-06-02 07:42Z) | monitor; bootout when target yield reached |
+| `com.fitme.hadf-phase2bis-subexp1b` | 🟢 **firing autonomously** (every ~5h since 2026-06-02 08:41Z) | monitor; bootout when target yield reached |
 
-**Worktrees:**
-- `/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl` — launchd WorkingDirectory + raw data store. ⚠️ **STALE** (old silhouette-only verdict script + v1 1B prereg). **Must `git pull origin main`** to pick up ks/signature_delta_ratio verdicts + v2 1B prereg before any further launch/verdict.
+**Worktrees (2026-06-03 state — rebased + data committed):**
+- `/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl` — launchd WorkingDirectory + raw data store. **REBASED 2026-06-03 onto current `origin/main`** (2 ahead, 0 behind). Stale verdict scripts + v1 1B prereg replaced by ks/signature_delta_ratio + v2 prereg from main. Preserved data: 14 Sub-exp 1 raw fires (n=2,800 raw → 2,600 valid PASS) + 1 Sub-exp 1B v1 + `.v1-rate-limited-partial` + `phase2bis-subexp2-CLOSED.json` verdict artifact + 2 Sub-exp 3 raw fires. Force-push to remote pending operator approval (13 stale-history commits on remote would be replaced; all 13 commits' CONTENT verified on main via squash-merges). Tagged `hadf-impl-data-preservation-pre-rebase-2026-06-03` for findability.
+- `/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3` — clean. Preservation commit `35f86b8` + tag `hadf-subexp3-data-preservation-2026-06-03`. Local-only; no remote push needed.
+- `/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp1b` — clean. Preservation commit `e2e9684` + tag `hadf-subexp1b-data-preservation-2026-06-03`. Local-only; no remote push needed.
 - `…/worktrees/feat-hadf-subexp1b-v2-scope-2026-05-31` — **redundant** (main already has v2) + behind main → safe to discard.
 - `…/worktrees/feat-hadf-verdict-signature-delta-2026-05-31` — merged via #539 → safe to discard.
 
-**AWS Bedrock (Sub-exp 3):** ✅ **LIVE & verified** — IAM user `hadf-bedrock.` (acct 988661375201), model `anthropic.claude-haiku-4-5-20251001-v1:0` = **ACTIVE**, keys in `.env.local`, prereg model-id resolved (0 PLACEHOLDER).
+**AWS Bedrock (Sub-exp 3):** ✅ **LIVE & verified** — IAM user `hadf-bedrock.` (acct 988661375201), model `anthropic.claude-haiku-4-5-20251001-v1:0` = **ACTIVE**, keys in `.env.local`, prereg model-id resolved (0 PLACEHOLDER). 6 fires landed since 2026-06-02 successfully routing through bedrock.
 
-**Snapshot:** `~/Documents/FitTracker2-backups/2026-06-02-hadf-pre-cleanup-snapshot/` exists (MANIFEST + from-impl-worktree + from-mainline + from-operator-env + CHECKSUMS).
+**Snapshots (cumulative, dual-location):**
+- `~/Documents/FitTracker2-backups/2026-06-02-hadf-pre-cleanup-snapshot/` — earlier pre-cleanup state
+- `~/Documents/FitTracker2-backups/2026-06-03-hadf-subexp3-preservation/` + `/Volumes/DevSSD/FitTracker2-snapshots/2026-06-03-hadf-subexp3-preservation/` — Sub-exp 3 raw data + ledgers (6 fires)
+- `~/Documents/FitTracker2-backups/2026-06-03-hadf-subexp1b-preservation/` + SSD twin — Sub-exp 1B v2 raw data + ledgers (5 fires)
+- `~/Documents/FitTracker2-backups/2026-06-03-hadf-impl-preservation/` + SSD twin — Sub-exp 1 closed-experiment raw data (n=2,800) + Sub-exp 1B v1 + subexp2-CLOSED.json + `.env.local.save.SECRET-DO-NOT-COMMIT` (chmod 600)
 
 ---
 
@@ -92,9 +116,9 @@ KS TPS  vs anthropic/claude-haiku-4-5: KS=0.9100, p = 9.88e-324   ✅   →  VER
 | Sub-exp | Canonical config (main) | Locked? | Lock tag | Note |
 |---|---|---|---|---|
 | 1 | 4-endpoint | ✅ yes | `…subexp1-locked-2026-05-25` | closed |
-| 1B | **2-endpoint v2** (anthropic+google) on main, **UNLOCKED** | ❌ **NO** | only stale **v1** tag `…subexp1b-locked-2026-05-30` (→ 4-endpoint) | **needs fresh v2 lock before launch** |
+| 1B | **2-endpoint v2** (anthropic+google) | ⚠️ **UNCERTAIN** — autonomous launchd has been firing since 2026-06-02 08:41Z (5 fires/500 rows), which would normally only happen post-lock | stale **v1** tag `…subexp1b-locked-2026-05-30` (→ 4-endpoint) exists; v2 lock tag UNVERIFIED at SoT-write time | **operator must confirm v2 lock state.** If unlocked, the in-flight data either constitutes a prereg integrity gap (must be discarded or backfilled-locked-post-hoc) OR was a smoke-test misclassified as production. |
 | 2 | 1-endpoint | ✅ yes | `…subexp2-locked-2026-05-30` (sha `d4ec4680ef21`) | closed |
-| 3 | 3-endpoint, model-id resolved | ❌ no | — | §5 lock pending (irreversible) |
+| 3 | 3-endpoint, model-id resolved | ✅ **YES** (resolved 2026-06-02; commit `1a43130` reachable from main) | `…subexp3-locked` referenced as sha256=`521f0f45f14d` in the impl commit message | locked; autonomous fires since 2026-06-02 07:42Z are valid post-lock data |
 
 ---
 
