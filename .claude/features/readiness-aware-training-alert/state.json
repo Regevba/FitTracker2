@@ -105,7 +105,8 @@
     {
       "id": "T12",
       "title": "Case study + showcase MDX + backlog strike + PR",
-      "status": "in_progress"
+      "status": "done",
+      "completed_at": "2026-06-01T06:47:06Z"
     }
   ],
   "phases": {
