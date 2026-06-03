@@ -1,8 +1,8 @@
 ---
 name: brainstorm-pm
-description: "Use when starting a new feature without a clear PRD shape, deciding whether the problem is real before investing in a solution, surfacing hidden assumptions in a proposed feature, or doing strategic framing (e.g. why this feature now, why not the alternative). PM-flavored brainstorming with 4 modes (problem / solution / assumption / strategy) and 4 frameworks (HMW / JTBD / First Principles / OST). Distinct from /superpowers:brainstorming which is generic creative work. Default Phase 0 (Research & Discovery) entry point for /pm-workflow on any new-feature work whose problem shape is not obvious."
-last_updated: 2026-05-15
-framework_version: v7.8.6
+description: "Use when starting a new feature without a clear PRD shape, deciding whether the problem is real before investing in a solution, surfacing hidden assumptions in a proposed feature, or doing strategic framing (e.g. why this feature now, why not the alternative). PM-flavored brainstorming with 4 modes (problem / solution / assumption / strategy), 1 trade-off mode (three-option), and 4 frameworks (HMW / JTBD / First Principles / OST). Distinct from /superpowers:brainstorming which is generic creative work. Default Phase 0 (Research & Discovery) entry point for /pm-workflow on any new-feature work whose problem shape is not obvious."
+last_updated: 2026-06-03
+framework_version: v7.9
 status: active
 adapters_used: []
 ---
@@ -33,6 +33,7 @@ Before producing a brainstorm output that will be cited downstream (PRDs, case s
 | "Why are we doing this now and not the alternative?" | `/brainstorm-pm` (start in **strategy** mode) |
 | Naming a feature, drafting marketing copy, essay-style writing | `superpowers:brainstorming` |
 | Pure creative exploration with no PM frame | `superpowers:brainstorming` |
+| "Pick the design / dev approach for this scoped feature" — multiple viable solutions exist | `/brainstorm-pm` (use **three-option** trade-off mode) |
 
 If you are unsure which to use, start with `/brainstorm-pm` problem mode — wrong-skill cost is one re-route; under-triggering cost is shipping a feature on no real problem.
 
@@ -105,6 +106,62 @@ If you are unsure which to use, start with `/brainstorm-pm` problem mode — wro
 **Output:** strategy memo + alternative trade-off matrix, recorded in `state.json::brainstorm.strategy_memo`.
 
 **Anti-pattern:** do not produce a strategy memo that just says "this is high-RICE" — RICE is necessary but not sufficient. The memo must name the strategic angle.
+
+## Three-option trade-off mode
+
+**Added 2026-06-03.** Distinct from the 4 modes above. Used when the problem is locked + scope is roughly known, but the **implementation path** isn't — there are ≥2 viable solutions spanning the feasibility space and the user needs the trade-off matrix to pick.
+
+**When:**
+
+- A scoped feature has a clear PRD draft but the design / dev / UX path is still open
+- The user describes the desired outcome and you suspect there are equal-or-better alternatives the user hasn't surfaced
+- A skill / hub / pm-workflow Phase 0 dispatches `/brainstorm-pm --mode=three-option` (the future auto-dispatch heuristic)
+- Backlog item is filed as Enhancement or Feature and the row says "alternatives considered" must be in the PRD
+
+**Critical contract — what this mode MUST do:**
+
+1. **Enumerate ≥3 distinct solution scenarios spanning the feasibility space.** Examples of viable axes (pick the axis that fits the problem):
+   - `minimal-build / mid-tier / ambitious` (effort axis)
+   - `platform-A / platform-B / platform-C` (where it lives)
+   - `in-app / cloud / hybrid` (compute axis)
+   - `synchronous / asynchronous / lazy` (timing axis)
+   - `iOS-first / Web-first / both` (surface axis)
+2. **For each option, document trade-offs across exactly THREE dimensions** — no skipping:
+   - **UX** — how it will *behave*: interaction flow, latency, error states, accessibility implications, edge-case handling. Cite the touched screens / surfaces by name.
+   - **Design** — how it will *appear*: surface placement, visual weight, design-system token reuse vs new tokens needed, dark-mode + reduced-motion implications. Cite the affected DS tokens / components.
+   - **Dev** — best implementation path: file/module footprint, dependencies, test surface, what's reusable vs net-new, rollback profile, risk areas (cross-reference CLAUDE.md "Branching Strategy" high-risk file list).
+3. **For each option, explicitly mark what can be deferred** to a v2 / follow-up so the option isn't conflated with its ambitious end-state. Use a `defer_to_v2:` row in the matrix.
+4. **Apply a critical + skeptical lens to every option.** Surface failure modes, "this might not work because…" objections, user-cost and maintenance-cost downsides — NOT just upsides. Each option carries a `failure_modes:` field with ≥1 entry.
+5. **NO pre-ranking.** The skill MUST NOT recommend "the best one." Output is the matrix; the user picks. If you find yourself ranking, drop back to step 1 and add more candidates.
+
+**Output matrix shape:**
+
+```
+| Dimension      | Option 1 (minimal) | Option 2 (mid) | Option 3 (ambitious) |
+|----------------|---------------------|----------------|----------------------|
+| Outcome        | ...                 | ...            | ...                  |
+| UX             | ...                 | ...            | ...                  |
+| Design         | ...                 | ...            | ...                  |
+| Dev            | ...                 | ...            | ...                  |
+| Defer to v2    | ...                 | ...            | ...                  |
+| Failure modes  | ...                 | ...            | ...                  |
+| Effort         | S / M / L           | S / M / L      | S / M / L            |
+```
+
+The matrix is recorded in `state.json::brainstorm.three_option_matrix`.
+
+**When to combine with the 4 modes:** three-option works AFTER problem mode locks the problem and BEFORE solution mode runs RICE. The three options are inputs to solution-mode's RICE pass — not a replacement for it.
+
+**Anti-patterns:**
+
+- Generating 3 options where Option 2 and Option 3 are throw-aways to satisfy the gate. If the only real choice is "do it" or "don't," that's a problem-mode signal — drop back. If forced to generate filler, narrow scope to "≥2 options + abandoned-reason field" instead.
+- Skipping a dimension because "it's obvious." UX + Design + Dev are the contract — all three present, every option. The point of the matrix is the user reading across the row.
+- Recommending one option in the output text after producing the matrix. The matrix IS the output. The user picks.
+- Producing a matrix that's only 1 row deep. The 6 rows (outcome / UX / design / dev / defer / failure / effort) are the minimum; richer matrices add custom rows.
+
+**Success metric (post-ship):** ≥80% of new features that enter Phase 0 brainstorm via this mode produce a 3-option matrix that survives into the PRD's "Alternatives considered" section. Measurable by grepping the next 5–10 brainstorm artifacts for the matrix shape.
+
+**Kill criterion:** if operators report the 3-option discipline becomes ritual rather than discriminating (options 2 + 3 are throw-aways generated to satisfy the gate), narrow scope to "≥2 options + abandoned-reason field" instead of mandatory 3.
 
 ## Four frameworks
 
@@ -181,12 +238,28 @@ Outputs of `/brainstorm-pm` are written to `state.json::brainstorm.<mode>`:
 ```json
 {
   "brainstorm": {
-    "modes_run": ["problem", "solution", "assumption"],
+    "modes_run": ["problem", "solution", "assumption", "three_option"],
     "problem_statement": "...",
     "problem_alternatives": ["...", "..."],
     "solution_alternatives": [{"id": "A", "rice": 4.2, "...": "..."}],
     "assumption_map": [{"assumption": "...", "class": "speculative", "test": "..."}],
     "strategy_memo": "...",
+    "three_option_matrix": {
+      "axis": "effort | platform | compute | timing | surface | custom",
+      "options": [
+        {
+          "id": "1",
+          "name": "minimal-build",
+          "outcome": "...",
+          "ux": "...",
+          "design": "...",
+          "dev": "...",
+          "defer_to_v2": "...",
+          "failure_modes": ["...", "..."],
+          "effort": "S"
+        }
+      ]
+    },
     "started_at": "2026-05-14T15:30:00Z",
     "completed_at": "2026-05-14T16:45:00Z"
   }
@@ -202,6 +275,7 @@ These fields are **inputs to Phase 1 (PRD writing)** — every PRD section has a
 | Strategic context | `brainstorm.strategy_memo` |
 | Considered alternatives | `brainstorm.solution_alternatives` |
 | JTBD statement | derived from `brainstorm.problem_statement` |
+| Three-option trade-off matrix (PRD §Alternatives considered) | `brainstorm.three_option_matrix` |
 
 If a PRD section lacks a brainstorm backing, `/pm-workflow` Phase 1 prompts to run `/brainstorm-pm` for that section before approval.
 
@@ -224,3 +298,4 @@ Hard-won mistakes for `/brainstorm-pm` work. Every bullet encodes a real or near
 - Do not generate a strategy memo without naming explicit alternatives in the backlog — "this is high-RICE" is not a strategy
 - Do not run more than 2 modes in a single session — fatigue degrades the quality of the third mode; break and resume
 - Do not write brainstorm outputs as PRD copy — they are PRD INPUTS; rendering happens in Phase 2 with the user
+- Do not rank options in three-option mode — the matrix IS the output; the user picks. If you find yourself writing "Option 2 is recommended" after the matrix, delete the recommendation and add a third row instead

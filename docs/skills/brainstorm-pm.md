@@ -8,7 +8,7 @@
 
 ## What it does
 
-PM-flavored brainstorming with 4 modes (problem / solution / assumption / strategy) and 4 frameworks (HMW / JTBD / First Principles / OST). Every output is reducible to a PRD section: problem statement, success metric, kill criterion, JTBD statement, opportunity branch.
+PM-flavored brainstorming with 4 modes (problem / solution / assumption / strategy), **1 trade-off mode (three-option, added 2026-06-03)**, and 4 frameworks (HMW / JTBD / First Principles / OST). Every output is reducible to a PRD section: problem statement, success metric, kill criterion, JTBD statement, opportunity branch, or alternatives-considered matrix.
 
 Distinct from [`superpowers:brainstorming`](https://github.com/anthropics/superpowers) — that one is for generic creative work (naming, copywriting, essays). `/brainstorm-pm` is for product decisions that will land in a PRD.
 
@@ -20,6 +20,7 @@ Distinct from [`superpowers:brainstorming`](https://github.com/anthropics/superp
 | `/brainstorm-pm solution` | Generate 5–8 RICE-light scored candidates including "do nothing" baseline | Problem locked, solution unclear | Phase 0 → Phase 1 (PRD) |
 | `/brainstorm-pm assumption` | Surface user / behavior / market / technical / resource assumptions and classify (Validated / Plausible / Speculative / Unknown) | Feature picked but the bet is unproven | Phase 0 (Research) |
 | `/brainstorm-pm strategy` | Three-question frame: why this / why now / why not the alternative | RICE > 3.0 feature needs strategic justification | Pre-Phase 0 prioritization |
+| `/brainstorm-pm three-option` | Produce a 3-option trade-off matrix across UX / Design / Dev dimensions for a scoped problem with multiple viable implementation paths. NO ranking — user picks. | "Build this 3 different ways and lay out the trade-offs" | Phase 0 (Research) → Phase 1 (PRD §Alternatives considered) |
 
 ## When to use vs. `superpowers:brainstorming`
 
@@ -44,7 +45,7 @@ If unsure, start with `/brainstorm-pm problem` — wrong-skill cost is one re-ro
 
 **Reads:** `context.json` (positioning, personas), `feature-registry.json` (active features and their phase), `cx-signals.json` (CX-surfaced problems), `case-study-monitoring.json` (kill criteria from prior features for pattern transfer).
 
-**Writes:** `state.json::brainstorm` block on the active feature — `problem_alternatives`, `solution_alternatives`, `assumption_map`, `strategy_frame`. Each becomes a PRD source citation downstream.
+**Writes:** `state.json::brainstorm` block on the active feature — `problem_alternatives`, `solution_alternatives`, `assumption_map`, `strategy_frame`, `three_option_matrix`. Each becomes a PRD source citation downstream.
 
 ## PM workflow integration
 
@@ -66,9 +67,11 @@ If unsure, start with `/brainstorm-pm problem` — wrong-skill cost is one re-ro
 1. **No-PRD start:** `/brainstorm-pm problem` on "we should add a workout AI coach" → surfaces that the actual user-stated problem is "I don't know what to do next" → reframes as a recommendation problem (cheaper) before AI scope is locked.
 2. **Solution comparison:** `/brainstorm-pm solution` on "improve onboarding completion" → 5 candidates from "do nothing + measure" → "AI-personalized first session" → user picks medium-RICE option with a 4-week kill criterion.
 3. **Assumption pressure-test:** `/brainstorm-pm assumption` on a paused feature about to resume → surfaces 3 Speculative-tier assumptions that became Validated via a 1-day analytics probe → unblocks Phase 1.
+4. **Three-option trade-off matrix:** `/brainstorm-pm three-option` on "add a stats expansion for richer recovery insights" → 3 options on the compute axis (in-app summarization / cloud LLM / hybrid prefetch) each with UX / Design / Dev rows + deferred-to-v2 column + failure modes. User picks; mid-tier option drops into PRD §Alternatives considered.
 
 ## Recent usage
 
+- **2026-06-03** — added Three-Option Trade-Off Mode as a 5th mode. Backlog row authored 2026-05-28 (drafted on `save/r9-dirty-2026-05-28`, preserved into main 2026-06-03 via PR #592). Addresses the convergence-too-fast pattern previously observed: PRD candidates landing with one solution path and zero documented alternatives, losing the cheap-but-real audit-trail value of having ≥2 abandoned alternatives in the case study.
 - **First production use 2026-05-13** during the skills-review execution sweep — shipped as part of FT2 PR #350. The skill formalizes a brainstorming pattern previously embedded inside `/pm-workflow` Phase 0; extracting it to a dedicated skill made the protocol reusable outside the full lifecycle.
 
 ## Key references
