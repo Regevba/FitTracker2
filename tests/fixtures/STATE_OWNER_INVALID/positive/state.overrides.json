@@ -1,0 +1,4 @@
+{
+  "_comment": "Invalid enum value. VALID_STATE_OWNERS = {ft2, fitme-story}; anything else fires.",
+  "state_owner": "invalid-owner"
+}

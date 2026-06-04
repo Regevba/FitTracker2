@@ -1,0 +1,5 @@
+{
+  "_comment": "Replace canonical created_at with legacy created key. Gate fires per scripts/check-state-schema.py: `if \"created\" in d and \"created_at\" not in d`.",
+  "created_at": null,
+  "created": "2026-06-04T00:00:00Z"
+}
