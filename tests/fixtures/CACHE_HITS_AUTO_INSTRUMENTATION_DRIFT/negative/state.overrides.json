@@ -1,0 +1,18 @@
+{
+  "_comment": "Transition current_phase=complete + post-Mechanism-C created_at + populated cache_hits[]. Baseline cache_hits already has 1 entry — preserved. Gate must NOT fire.",
+  "current_phase": "complete",
+  "created_at": "2026-05-15T00:00:00Z",
+  "case_study": "docs/case-studies/_test-fixture-case-study.md",
+  "kill_criteria_resolution": "all_not_fired_2026-06-04",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T00:00:03Z",
+        "ended_at": "2026-06-04T00:00:04Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T00:00:05Z"
+      }
+    }
+  }
+}

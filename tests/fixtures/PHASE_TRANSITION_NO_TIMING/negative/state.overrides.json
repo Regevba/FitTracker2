@@ -1,0 +1,15 @@
+{
+  "_comment": "Transition current_phase to 'tasks' WITH timing.phases.tasks.started_at + timing.phases.implementation.ended_at. Gate must NOT fire.",
+  "current_phase": "tasks",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T00:00:03Z",
+        "ended_at": "2026-06-04T00:00:04Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-04T00:00:05Z"
+      }
+    }
+  }
+}

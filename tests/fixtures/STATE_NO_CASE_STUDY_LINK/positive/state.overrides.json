@@ -1,0 +1,18 @@
+{
+  "_comment": "Transition current_phase=complete WITHOUT case_study link. Baseline has case_study set; delete it to trigger the gate. Also delete parent_case_study (also satisfies the gate) — baseline doesn't have it but be defensive.",
+  "current_phase": "complete",
+  "case_study": null,
+  "parent_case_study": null,
+  "case_study_type": null,
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T00:00:03Z",
+        "ended_at": "2026-06-04T00:00:04Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T00:00:05Z"
+      }
+    }
+  }
+}

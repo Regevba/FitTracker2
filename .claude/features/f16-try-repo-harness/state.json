@@ -1,8 +1,8 @@
 {
   "feature_name": "f16-try-repo-harness",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-06-04T05:30:00Z",
-  "updated_at": "2026-06-04T06:10:00Z",
+  "updated_at": "2026-06-04T08:50:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -11,34 +11,41 @@
   "state_owner": "ft2",
   "isolation_opt_out": false,
   "isolation_opt_out_reason": "",
-  "branch": "feature/f16-try-repo-harness-phase-4",
+  "branch": "feature/f16-closure-t6-t10",
   "scheduled_after": null,
   "linear": "FIT-88",
-  "primary_metric": "Every write-time gate has ≥1 try-repo integration test that spawns a real git repo + runs the actual .githooks/pre-commit script + asserts the gate fires/skips per fixture",
+  "primary_metric": "Every write-time gate has \u22651 try-repo integration test that spawns a real git repo + runs the actual .githooks/pre-commit script + asserts the gate fires/skips per fixture",
   "success_metrics": [
     "100% of write-time gates (currently 16) have at least one try-repo fixture pair (positive: should fire, negative: should pass) at v7.9.1 ship (T1, measured by gate-name set difference)",
     "Try-repo harness runs in CI nightly (or on every PR touching .githooks/* or scripts/check-*.py) and completes in <60s wall-clock (T1, measured via GHA workflow_run timing)",
-    "Catches at least 1 regression in the next 90 days that monkey-patch dispatch tests would have missed — measured via a deliberately-introduced regression test during Phase 5 (T1)",
+    "Catches at least 1 regression in the next 90 days that monkey-patch dispatch tests would have missed \u2014 measured via a deliberately-introduced regression test during Phase 5 (T1)",
     "Zero false positives during 14-day advisory-mode soak window (T1, measured via gate-coverage.jsonl)"
   ],
   "kill_criteria": [
-    "Harness wall-clock >5 min when scaled to all 16 gates — operators will start skipping it locally; needs sharding or rewrite",
-    "False-positive rate >5% during calibration — fixtures don't survive real-world pre-commit state (e.g., HOME-pollution issues, gitignored-file edge cases)",
-    "Maintenance burden too high — adding a fixture per new gate becomes a barrier to adding gates (signal: >2h per new fixture pair, or operators reject the discipline)"
+    "Harness wall-clock >5 min when scaled to all 16 gates \u2014 operators will start skipping it locally; needs sharding or rewrite",
+    "False-positive rate >5% during calibration \u2014 fixtures don't survive real-world pre-commit state (e.g., HOME-pollution issues, gitignored-file edge cases)",
+    "Maintenance burden too high \u2014 adding a fixture per new gate becomes a barrier to adding gates (signal: >2h per new fixture pair, or operators reject the discipline)"
   ],
-  "kill_criteria_resolution": "",
+  "kill_criteria_resolution": "pending_t14_eval_2026-06-18 \u2014 T+14d soak window for false-positive evaluation closes 2026-06-18. K1 + K3 are continuous-monitoring criteria with no fire at ship. K2 (false-positive rate) requires 14 days of CI runs.",
   "dispatch_pattern": "agent-driven (harness scaffold + fixture generation per gate + CI workflow)",
   "case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
-  "case_study_showcase": "",
-  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md §3.4 Theme G F16 (RICE 48.0) + .claude/features/f16-try-repo-harness/research.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/44-f16-try-repo-harness.mdx",
+  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md \u00a73.4 Theme G F16 (RICE 48.0) + .claude/features/f16-try-repo-harness/research.md",
   "predecessor_case_study": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
-  "scope_summary": "Spawn throwaway git repos in `pytest` fixtures, stage canonical positive/negative fixtures from `tests/fixtures/<gate-id>/`, run the real `.githooks/pre-commit` via subprocess, assert each gate fires or skips per fixture. CI nightly runs the full matrix. Complements F14's monkey-patch dispatch tests (which test main() in isolation) by adding the full pre-commit pipeline integration surface — catches hook composition bugs, regex-match edge cases on real git status output, and HOME-pollution issues that monkey-patches mask. Ships in advisory mode at v7.9.1; advisory→enforced at v7.10 promotion window after 14d Mechanism A calibration. Out of scope: cycle-time check coverage (separate F-candidate), test of `make integrity-check` end-to-end (separate work), Bash-only fixtures (Python pytest-based).",
-  "related_prs": [],
+  "scope_summary": "Spawn throwaway git repos in `pytest` fixtures, stage canonical positive/negative fixtures from `tests/fixtures/<gate-id>/`, run the real `.githooks/pre-commit` via subprocess, assert each gate fires or skips per fixture. CI nightly runs the full matrix. Complements F14's monkey-patch dispatch tests (which test main() in isolation) by adding the full pre-commit pipeline integration surface \u2014 catches hook composition bugs, regex-match edge cases on real git status output, and HOME-pollution issues that monkey-patches mask. Ships in advisory mode at v7.9.1; advisory\u2192enforced at v7.10 promotion window after 14d Mechanism A calibration. Out of scope: cycle-time check coverage (separate F-candidate), test of `make integrity-check` end-to-end (separate work), Bash-only fixtures (Python pytest-based).",
+  "related_prs": [
+    606,
+    607,
+    608,
+    610,
+    611,
+    612
+  ],
   "phases": {
     "research": {
       "started_at": "2026-06-04T05:30:00Z",
       "ended_at": "2026-06-04T05:40:00Z",
-      "notes": "Research artifact at research.md. Outstanding questions: Q1 (subprocess vs in-process for the hook invocation), Q2 (fixture format — canonical state.json vs partial-record YAML), Q3 (CI matrix shape — per-gate job vs single job with parametrize), Q4 (worktree cleanup discipline), Q5 (gate-coverage.jsonl pollution prevention — surfaced during research)."
+      "notes": "Research artifact at research.md. Outstanding questions: Q1 (subprocess vs in-process for the hook invocation), Q2 (fixture format \u2014 canonical state.json vs partial-record YAML), Q3 (CI matrix shape \u2014 per-gate job vs single job with parametrize), Q4 (worktree cleanup discipline), Q5 (gate-coverage.jsonl pollution prevention \u2014 surfaced during research)."
     },
     "prd": {
       "started_at": "2026-06-04T05:40:00Z",
@@ -48,33 +55,109 @@
     "tasks": {
       "started_at": "2026-06-04T05:50:00Z",
       "ended_at": "2026-06-04T06:10:00Z",
-      "notes": "Tasks at tasks.md. 16 write-time gates enumerated + bucketed into 4 fixture groups (schema 5 / closure 4 / telemetry 4 / isolation 3). 12-commit breakdown across T2-T10 + advisory→enforced calendar T11. ~1,720 lines new code/docs total. Deliberate-regression test (T7) design locked: monkey-patch CU_V2_INVALID's check function to silently return True; F14 dispatch test still passes (asserts row emission only); F16 try-repo test catches (asserts pre-commit exit code on integration surface). Per-fixture pattern + per-test parametrize pattern + canonical-ledger-untouched assertion (Q5 test) all spelled out as code in tasks.md."
+      "notes": "Tasks at tasks.md. 16 write-time gates enumerated + bucketed into 4 fixture groups (schema 5 / closure 4 / telemetry 4 / isolation 3). 12-commit breakdown across T2-T10 + advisory\u2192enforced calendar T11. ~1,720 lines new code/docs total. Deliberate-regression test (T7) design locked: monkey-patch CU_V2_INVALID's check function to silently return True; F14 dispatch test still passes (asserts row emission only); F16 try-repo test catches (asserts pre-commit exit code on integration surface). Per-fixture pattern + per-test parametrize pattern + canonical-ledger-untouched assertion (Q5 test) all spelled out as code in tasks.md."
     },
     "implementation": {
       "started_at": "2026-06-04T06:10:00Z",
-      "ended_at": null,
+      "ended_at": "2026-06-04T08:50:00Z",
       "notes": "T2 shipped (baseline + builder, 12/12 tests pass in 0.08s). T3-T10 remaining for ~2.3d wall-clock total."
+    },
+    "complete": {
+      "started_at": "2026-06-04T08:50:00Z",
+      "ended_at": null,
+      "notes": "All T2-T10 done. T11 (advisory\u2192enforced flip) is calendar-anchored to T+14d (~2026-06-18) per kill_criteria_resolution window."
     }
   },
   "calendar_gate": {
-    "phase_e_unblocker": "Phase E exit 2026-06-04 unblocked v7.9.1 build window. F16 is the highest-leverage v7.9.1 candidate per external research synthesis (infra-master-plan §3.4 Theme G note 'Highest-leverage single change'). RICE 48.0; ranked alongside F14 which already shipped without F16 via the monkey-patch pattern (PR #317).",
-    "rationale": "Cannot start before v7.9 promotion + Phase E exit because the harness exercises the .githooks/pre-commit script end-to-end, which would have generated test-mode gate-coverage telemetry rows during the Phase E calibration window — contaminating the 14-day baseline used to verify the 3 advisory→enforced promotions."
+    "phase_e_unblocker": "Phase E exit 2026-06-04 unblocked v7.9.1 build window. F16 is the highest-leverage v7.9.1 candidate per external research synthesis (infra-master-plan \u00a73.4 Theme G note 'Highest-leverage single change'). RICE 48.0; ranked alongside F14 which already shipped without F16 via the monkey-patch pattern (PR #317).",
+    "rationale": "Cannot start before v7.9 promotion + Phase E exit because the harness exercises the .githooks/pre-commit script end-to-end, which would have generated test-mode gate-coverage telemetry rows during the Phase E calibration window \u2014 contaminating the 14-day baseline used to verify the 3 advisory\u2192enforced promotions."
   },
   "tasks": [
-    {"id": "T1", "description": "Decide Q1-Q5 in Phase 0/1 + write PRD + Tasks", "status": "done", "completed_at": "2026-06-04T05:50:00Z"},
-    {"id": "T2", "description": "Fixture dir layout + tests/fixtures/_baseline/state.json canonical + make_state_json builder", "status": "done", "completed_at": "2026-06-04T06:10:00Z"},
-    {"id": "T3", "description": "scripts/tests/test_try_repo_harness.py skeleton + make_throwaway_repo() + run_precommit() helpers. Q5 mechanism REVISED during dev — production gates use GATE_COVERAGE_LEDGER as module-level constant (not env var); revised opt-out is GATE_COVERAGE_LEDGER_DISABLED=1. PRD §3.5 updated. 17/17 tests pass in 2.55s.", "status": "done", "completed_at": "2026-06-04T06:30:00Z"},
-    {"id": "T4a", "description": "Schema gate fixtures (5): SCHEMA_DRIFT_LEGACY_PHASE/_CREATED, FRAMEWORK_VERSION_FORMAT, STATE_OWNER_MISSING/_INVALID. SHIPPED 2026-06-04 — 10/10 tests pass end-to-end (5 positive fire + 5 negative pass). Q6 resolved via PR #611. Discovered + fixed 4 additional baseline issues during T4a unblock: (1) cu_v2 schema needed `factors` sub-key + `total` + `tier_class`; (2) BRANCH_ISOLATION needed throwaway repo on feature/_test-fixture branch matching baseline.branch; (3) gitignore was blocking .claude/logs/* git add; (4) PHASE_TRANSITION_NO_LOG needed dynamically-generated log with current timestamp + canonical `timestamp` field name (not `ts`).", "status": "done", "completed_at": "2026-06-04T07:30:00Z"},
-    {"id": "T4b", "description": "Closure gate fixtures (4): STATE_OWNER_LOCATION_MISMATCH, FEATURE_CLOSURE_COMPLETENESS, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS", "status": "blocked", "blocked_by": "Q6 — same REPO_ROOT issue as T4a"},
-    {"id": "T4c", "description": "Telemetry gate fixtures (4): PHASE_TRANSITION_NO_LOG/_TIMING, CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT, CU_V2_INVALID", "status": "blocked", "blocked_by": "Q6 — same REPO_ROOT issue as T4a"},
-    {"id": "T4d", "description": "Isolation gate fixtures (3): ISOLATION_OPT_OUT_REASON_MISSING, BRANCH_ISOLATION_VIOLATION Mode B + Mode C", "status": "blocked", "blocked_by": "Q6 — same REPO_ROOT issue as T4a"},
-    {"id": "T5", "description": "32 parametrized test functions (16 positive + 16 negative) + Mechanism A canonical-ledger-untouched assertion (Q5 enforcement)", "status": "pending"},
-    {"id": "T6", "description": "Extend .github/workflows/ci.yml with try-repo job (parametrize + JUnit XML; <60s wall-clock)", "status": "pending"},
-    {"id": "T7", "description": "Deliberate-regression test — monkey-patch CU_V2_INVALID's check function to silently return success; assert F14 dispatch test still passes; assert F16 try-repo catches", "status": "pending"},
-    {"id": "T8", "description": "Update CLAUDE.md Data Integrity Framework section — try-repo discipline + new-gate fixture rule", "status": "pending"},
-    {"id": "T9", "description": "Update docs/architecture/dev-guide-v1-to-v7-7.md §4 gate catalog with try-repo coverage column", "status": "pending"},
-    {"id": "T10", "description": "Source case study at docs/case-studies/f16-try-repo-harness-case-study.md + fitme-story showcase MDX (chronological slot per v7.9.1 ship date)", "status": "pending"},
-    {"id": "T11", "description": "Advisory → enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window earliest 2026-06-18", "status": "pending"}
+    {
+      "id": "T1",
+      "description": "Decide Q1-Q5 in Phase 0/1 + write PRD + Tasks",
+      "status": "done",
+      "completed_at": "2026-06-04T05:50:00Z"
+    },
+    {
+      "id": "T2",
+      "description": "Fixture dir layout + tests/fixtures/_baseline/state.json canonical + make_state_json builder",
+      "status": "done",
+      "completed_at": "2026-06-04T06:10:00Z"
+    },
+    {
+      "id": "T3",
+      "description": "scripts/tests/test_try_repo_harness.py skeleton + make_throwaway_repo() + run_precommit() helpers. Q5 mechanism REVISED during dev \u2014 production gates use GATE_COVERAGE_LEDGER as module-level constant (not env var); revised opt-out is GATE_COVERAGE_LEDGER_DISABLED=1. PRD \u00a73.5 updated. 17/17 tests pass in 2.55s.",
+      "status": "done",
+      "completed_at": "2026-06-04T06:30:00Z"
+    },
+    {
+      "id": "T4a",
+      "description": "Schema gate fixtures (5): SCHEMA_DRIFT_LEGACY_PHASE/_CREATED, FRAMEWORK_VERSION_FORMAT, STATE_OWNER_MISSING/_INVALID. SHIPPED 2026-06-04 \u2014 10/10 tests pass end-to-end (5 positive fire + 5 negative pass). Q6 resolved via PR #611. Discovered + fixed 4 additional baseline issues during T4a unblock: (1) cu_v2 schema needed `factors` sub-key + `total` + `tier_class`; (2) BRANCH_ISOLATION needed throwaway repo on feature/_test-fixture branch matching baseline.branch; (3) gitignore was blocking .claude/logs/* git add; (4) PHASE_TRANSITION_NO_LOG needed dynamically-generated log with current timestamp + canonical `timestamp` field name (not `ts`).",
+      "status": "done",
+      "completed_at": "2026-06-04T07:30:00Z"
+    },
+    {
+      "id": "T4b",
+      "description": "Closure gate fixtures (4): 3 SHIPPED + 1 structurally-skipped (STATE_OWNER_LOCATION_MISMATCH, skips with `path_neutral` when throwaway path is /private/tmp/* rather than under /FitTracker2[-/] or /fitme-story/; deferred to F16.1). FEATURE_CLOSURE_COMPLETENESS + STATE_NO_CASE_STUDY_LINK + CASE_STUDY_MISSING_FIELDS all 6/6 tests pass end-to-end. Discovered: (1) kill_criteria_resolution lives in case-study frontmatter, not state.json; (2) gate reads `date_written` not `date` for the cutoff check; (3) _write_fresh_baseline_log refactored to honor merged state's current_phase.",
+      "status": "done",
+      "completed_at": "2026-06-04T07:55:00Z"
+    },
+    {
+      "id": "T4c",
+      "description": "Telemetry gate fixtures (4): PHASE_TRANSITION_NO_LOG/_TIMING, CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT, CU_V2_INVALID",
+      "status": "done",
+      "completed_at": "2026-06-04T08:15:00Z"
+    },
+    {
+      "id": "T4d",
+      "description": "Isolation gate fixtures (3): ISOLATION_OPT_OUT_REASON_MISSING, BRANCH_ISOLATION_VIOLATION Mode B + Mode C",
+      "status": "done",
+      "completed_at": "2026-06-04T08:15:00Z"
+    },
+    {
+      "id": "T5",
+      "description": "32 parametrized test functions (16 positive + 16 negative) + Mechanism A canonical-ledger-untouched assertion (Q5 enforcement) \u2014 SHIPPED: each gate bucket file (test_try_repo_schema_gates.py + _closure_gates.py + _telemetry_gates.py + _isolation_gates.py) uses pytest.mark.parametrize over the gate set; 30 positive + 30 negative test cases + 1 Q5 canonical-ledger-untouched assertion all running.",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
+    },
+    {
+      "id": "T6",
+      "description": "Extend .github/workflows/ci.yml with try-repo job (parametrize + JUnit XML; <60s wall-clock)",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
+    },
+    {
+      "id": "T7",
+      "description": "Deliberate-regression test \u2014 monkey-patch CU_V2_INVALID's check function to silently return success; assert F14 dispatch test still passes; assert F16 try-repo catches",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
+    },
+    {
+      "id": "T8",
+      "description": "Update CLAUDE.md Data Integrity Framework section \u2014 try-repo discipline + new-gate fixture rule",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
+    },
+    {
+      "id": "T9",
+      "description": "Update docs/architecture/dev-guide-v1-to-v7-7.md \u00a74 gate catalog with try-repo coverage column",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
+    },
+    {
+      "id": "T10",
+      "description": "Source case study at docs/case-studies/f16-try-repo-harness-case-study.md + fitme-story showcase MDX (chronological slot per v7.9.1 ship date)",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
+    },
+    {
+      "id": "T11",
+      "description": "Advisory \u2192 enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window earliest 2026-06-18",
+      "status": "deferred",
+      "deferred_at": "2026-06-04T08:50:00Z",
+      "deferred_reason": "Calendar-anchored to T+14d soak window (earliest 2026-06-18). Not actionable until then. Re-evaluation gate: kill_criteria_resolution K2 false-positive rate at 2026-06-18."
+    }
   ],
   "timing": {
     "phases": {
@@ -91,7 +174,11 @@
         "ended_at": "2026-06-04T06:10:00Z"
       },
       "implementation": {
-        "started_at": "2026-06-04T06:10:00Z"
+        "started_at": "2026-06-04T06:10:00Z",
+        "ended_at": "2026-06-04T08:50:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T08:50:00Z"
       }
     }
   }

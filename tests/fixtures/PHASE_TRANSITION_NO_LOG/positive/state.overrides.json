@@ -1,0 +1,15 @@
+{
+  "_comment": "Transition current_phase implementation→tasks (any non-baseline phase). The companion feature.log.json contains only stale (>15 min old) events, so PHASE_TRANSITION_NO_LOG fires.",
+  "current_phase": "tasks",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T00:00:03Z",
+        "ended_at": "2026-06-04T00:00:04Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-04T00:00:05Z"
+      }
+    }
+  }
+}

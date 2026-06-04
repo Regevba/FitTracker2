@@ -1,0 +1,8 @@
+{
+  "_comment": "Corrupt cu_v2 by deleting required `factors` sub-dict. Gate fires with 'factors missing or not a dict'.",
+  "cu_v2": {
+    "factors": null,
+    "total": 1.0,
+    "tier_class": "B_medium"
+  }
+}
