@@ -40,6 +40,7 @@ still catches any drift introduced through bypass.
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -55,7 +56,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from gate_coverage import GateCoverage  # noqa: E402
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+# `REPO_ROOT_OVERRIDE` env var redirects all repo-relative path resolution
+# to a different root — required by the F16 try-repo harness, which spawns
+# throwaway git repos and needs the gates to look up staged state.json
+# files under the throwaway path instead of canonical FT2. Production never
+# sets this; fallback is the canonical `<file>/../..` resolution.
+# See .claude/features/f16-try-repo-harness/prd.md §3.5 Q6.
+_REPO_ROOT_OVERRIDE = os.environ.get("REPO_ROOT_OVERRIDE")
+if _REPO_ROOT_OVERRIDE:
+    REPO_ROOT = Path(_REPO_ROOT_OVERRIDE).resolve()
+else:
+    REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 LOGS_DIR = REPO_ROOT / ".claude" / "logs"
 GATE_COVERAGE_LEDGER = LOGS_DIR / "gate-coverage.jsonl"
