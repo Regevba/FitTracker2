@@ -1,0 +1,641 @@
+[
+  {
+    "id": "#1",
+    "title": "BRANCH_ISOLATION_HISTORICAL \u2014 squash-merge + branch-cleanup artifact",
+    "section": "gate",
+    "blocker": false,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Confirm squash-merge cleanup-artifact via PR head_ref; set isolation_opt_out + reason only if work was genuinely direct-to-main."
+  },
+  {
+    "id": "#2",
+    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE \u2014 Mechanism C captured, writer-path manual",
+    "section": "gate",
+    "blocker": false,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "analytics"
+    ],
+    "remediation": "Mid-workflow Reads captured but not yet persisted; log via scripts/log-cache-hit.py (v7.9 auto-writes)."
+  },
+  {
+    "id": "#3",
+    "title": "BRANCH_ISOLATION_VIOLATION Mode B \u2014 infra-only commit on non-feature branch",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Move the infra-path commit onto a feature/chore branch (isolated worktree); Mode B ignores isolation_opt_out."
+  },
+  {
+    "id": "#4",
+    "title": "BRANCH_ISOLATION_VIOLATION Mode C \u2014 state.json current_phase mutation off-branch",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Work on the declared feature/chore branch, or set isolation_opt_out + reason when the branch field is legitimately stale."
+  },
+  {
+    "id": "#5",
+    "title": "ISOLATION_OPT_OUT_REASON_MISSING \u2014 opt-out without justification",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Set isolation_opt_out_reason to a non-empty justification, or remove isolation_opt_out."
+  },
+  {
+    "id": "#6",
+    "title": "FEATURE_CLOSURE_COMPLETENESS \u2014 missing frontmatter on current_phase=complete",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "design",
+      "ux"
+    ],
+    "remediation": "Populate the 7 required case-study frontmatter fields + kill_criteria_resolution before the complete-transition commit."
+  },
+  {
+    "id": "#7",
+    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT \u2014 empty cache_hits[] post-v6",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "analytics"
+    ],
+    "remediation": "Log Reads via scripts/log-cache-hit.py; features created_at < 2026-05-02 are auto-exempt."
+  },
+  {
+    "id": "#8",
+    "title": "TIER_TAG_LIKELY_INCORRECT \u2014 heuristic T1/T2/T3 mismatch (advisory permanent)",
+    "section": "gate",
+    "blocker": false,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "design"
+    ],
+    "remediation": "Verify the T1/T2/T3 tag; pin correct T1 values in case-study-t1-references.json or set tier_tags_present:false."
+  },
+  {
+    "id": "#9",
+    "title": "SCHEMA_DRIFT_LEGACY_CREATED \u2014 legacy `created` key",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Rename the legacy `created` key to canonical `created_at` in state.json."
+  },
+  {
+    "id": "#10",
+    "title": "FRAMEWORK_VERSION_FORMAT \u2014 unprefixed numeric values",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Set framework_version to canonical vX.Y format (e.g. v7.9)."
+  },
+  {
+    "id": "#11",
+    "title": "STATE_OWNER_* (MISSING / INVALID / LOCATION_MISMATCH) \u2014 cross-repo schema",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Set state_owner to ft2|fitme-story matching file location; reverse-sync mirrors use state_owner_sync_origin ending -reverse."
+  },
+  {
+    "id": "#12",
+    "title": "PR_CACHE_STALE \u2014 empty/stale cache \u2192 cascading false positives",
+    "section": "gate",
+    "blocker": false,
+    "detector": "scripts/ensure-pr-cache-fresh.py",
+    "autoheal": true,
+    "skills": [
+      "pm-workflow",
+      "dev"
+    ],
+    "remediation": "Auto-refreshes via scripts/ensure-pr-cache-fresh.py; run make refresh-pr-cache if findings persist."
+  },
+  {
+    "id": "#13",
+    "title": "BROKEN_PR_CITATION \u2014 unresolved PR cite (graceful fallback when gh unavailable)",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "dev"
+    ],
+    "remediation": "Fix the PR citation or add pr_citation_exempt frontmatter; skipped gracefully when gh is unavailable."
+  },
+  {
+    "id": "#14",
+    "title": "CASE_STUDY_MISSING_TIER_TAGS \u2014 forward-only on case studies dated >=2026-04-21",
+    "section": "gate",
+    "blocker": false,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "design"
+    ],
+    "remediation": "Add at least one T1/T2/T3 tier tag to the case study (dated on or after 2026-04-21)."
+  },
+  {
+    "id": "#15",
+    "title": "PARTIAL_SHIP_TERMINAL \u2014 decision fork on completion",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Remove partial_ship:true, or downgrade current_phase + add partial_ship_terminal_disposition."
+  },
+  {
+    "id": "#16",
+    "title": "CASE_STUDY_MISSING_FIELDS \u2014 required frontmatter validation",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "ux"
+    ],
+    "remediation": "Fill the required frontmatter fields, or apply the appropriate case_study_type exemption."
+  },
+  {
+    "id": "#17",
+    "title": "CU_V2_INVALID \u2014 schema-only check (presence, not magnitude)",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "brainstorm-pm"
+    ],
+    "remediation": "Fix cu_v2 schema: 4 factors in [0,1], total within 0.01 of sum, valid tier_class."
+  },
+  {
+    "id": "#18",
+    "title": "STATE_NO_CASE_STUDY_LINK \u2014 terminal phase requires case_study or exemption",
+    "section": "gate",
+    "blocker": true,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Add case_study / parent_case_study path, or case_study_type:no_case_study_required + reason."
+  },
+  {
+    "id": "#19",
+    "title": "MECHANISM_C_SHIP_DATE auto-exemption",
+    "section": "gate",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "No action \u2014 gates auto-exempt features with created_at < 2026-05-02."
+  },
+  {
+    "id": "#20",
+    "title": "GATE_COVERAGE_ZERO \u2014 meta-check for silent-pass detection",
+    "section": "gate",
+    "blocker": false,
+    "detector": "scripts/integrity-check.py",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Diagnose root cause (predicate too strict / schema drift / never-fires-by-design); fix or document advisory-permanent."
+  },
+  {
+    "id": "#21",
+    "title": "case_study_type exemption tags \u2014 bypass scope",
+    "section": "gate",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "Apply the correct case_study_type tag + case_study_exempt_reason; framework versions cannot use framework_meta_retroactive post-v7.9."
+  },
+  {
+    "id": "#22",
+    "title": "v7.5 pipeline regression test decay \u2014 fixture rot",
+    "section": "gate",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "qa"
+    ],
+    "remediation": "Update scripts/tests/test-v7-5-pipeline.sh fixtures to satisfy new required gates; run make test-v7-5-pipeline."
+  },
+  {
+    "id": "#23",
+    "title": ".gitignore blocks Mechanism A / Mechanism C remote-agent visibility",
+    "section": "gate",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "dev"
+    ],
+    "remediation": "Commit periodic gate-coverage / session-ledger snapshots to non-gitignored paths so remote agents can audit."
+  },
+  {
+    "id": "W1",
+    "title": "SSH signing requires loaded agent before headless commits",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "scripts/check-ssh-agent.sh",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "Run ssh-add ~/.ssh/id_ed25519 before headless commits; verify with ssh-add -l."
+  },
+  {
+    "id": "W2",
+    "title": "Publish verbatim, then remediate",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "brainstorm-pm"
+    ],
+    "remediation": "Never silently rewrite published artifacts; add a Correction Note / \u00a799 addendum instead."
+  },
+  {
+    "id": "W3",
+    "title": "Check CI before local-build panic",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "Check CI status (gh run list) before deep local-build debugging."
+  },
+  {
+    "id": "W4",
+    "title": "No auto-merge without explicit approval",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "release"
+    ],
+    "remediation": "Never auto-merge; surface PR + checks and wait for explicit approval."
+  },
+  {
+    "id": "W5",
+    "title": "No destructive operations without approval",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "Never delete branches/worktrees/files or force-push without explicit approval; list + propose first."
+  },
+  {
+    "id": "W6",
+    "title": "Measurement case-study impartiality",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "brainstorm-pm"
+    ],
+    "remediation": "Backfill/exempt measurement adoption all-or-none; document any exemption explicitly."
+  },
+  {
+    "id": "W7",
+    "title": "Approval gates are multi-part",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "Treat each destructive step as a separate approval; prior approval doesn't carry over."
+  },
+  {
+    "id": "W8",
+    "title": "External audit status is a UI marker",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "cx"
+    ],
+    "remediation": "Treat the audit-status UI marker as a signal, not a merge gate."
+  },
+  {
+    "id": "W9",
+    "title": "Branch drift from concurrent-session git checkout collision",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "scripts/check-branch-drift.py",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "If the branch-drift alert fires, stop, stash/cherry-pick, and git checkout the expected branch (W9 playbook)."
+  },
+  {
+    "id": "W10",
+    "title": "Stale [gone] branches + orphan worktrees surfaced by daily-checkpoint",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "Clean stale [gone] branches / orphan worktrees via commit-commands:clean_gone after confirming merge."
+  },
+  {
+    "id": "W11",
+    "title": "Incomplete PR cache (one of two expected repos absent)",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "scripts/ensure-pr-cache-fresh.py",
+    "autoheal": true,
+    "skills": [
+      "ops"
+    ],
+    "remediation": "Run make refresh-pr-cache to repopulate all expected repos; per-repo completeness check auto-detects."
+  },
+  {
+    "id": "W12",
+    "title": "vercel env pull returns empty values for Sensitive vars",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops"
+    ],
+    "remediation": "Sensitive Vercel vars pull empty; use the Development env variant or a non-Sensitive CLI admin var."
+  },
+  {
+    "id": "W13",
+    "title": "Upstash KV_* vs UPSTASH_REDIS_REST_* naming asymmetry",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops"
+    ],
+    "remediation": "Alias UPSTASH_REDIS_REST_* to KV_REST_API_*, or read either name in code."
+  },
+  {
+    "id": "W14",
+    "title": "Code Connect figma.connect() rejects page frames as targets",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "design"
+    ],
+    "remediation": "Code Connect targets must be components/component-sets; convert page frames or map leaf components only."
+  },
+  {
+    "id": "W15",
+    "title": "MDX `<digit` / `<non-letter` breaks page rendering",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "release",
+      "marketing"
+    ],
+    "remediation": "Escape/avoid `<digit` in MDX (use 'under 5 min', &lt;, or a code-span) to keep prerender green."
+  },
+  {
+    "id": "W16",
+    "title": "Contract-boundary tests must sample from the canonical producer",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ux"
+    ],
+    "remediation": "Sample cross-repo test fixtures from the canonical producer; normalize at parse with a nullish fallback."
+  },
+  {
+    "id": "W17",
+    "title": "Stale-base branches \u2014 cherry-pick onto fresh main is ground truth",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "For stale-base branches, cherry-pick onto fresh origin/main to find ground truth before merging."
+  },
+  {
+    "id": "W18",
+    "title": "Default-URL OG image silent-404",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "release",
+      "marketing"
+    ],
+    "remediation": "Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves."
+  },
+  {
+    "id": "W19",
+    "title": "Env-var trailing newline corrupts runtime string",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "release",
+      "analytics"
+    ],
+    "remediation": "Trim string env vars at the boundary (process.env.X?.trim()) to strip trailing newlines."
+  },
+  {
+    "id": "W20",
+    "title": "Stale-session-state inventory drift",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "research"
+    ],
+    "remediation": "Run make freshness-check before any 'what's open' inventory or before editing recently-shipped files."
+  },
+  {
+    "id": "W21",
+    "title": "Swift String.contains(\"\\n\") misses CRLF graphemes \u2014 scan unicodeScalars",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "qa"
+    ],
+    "remediation": "Scan unicodeScalars (not graphemes) for ASCII control chars like CR/LF in Swift."
+  },
+  {
+    "id": "W22",
+    "title": "Swift type-checker timeout on heterogeneous array literals >20 elements",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "qa"
+    ],
+    "remediation": "Pre-compute each cell as a String local; use .map { String($0) } closure form for Optionals."
+  },
+  {
+    "id": "W23",
+    "title": "AnalyticsService.logEvent is private \u2014 callers must use a log* method",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "qa"
+    ],
+    "remediation": "logEvent is private \u2014 add a named log* method, or use #if DEBUG print for can't-happen paths."
+  },
+  {
+    "id": "W24",
+    "title": "pbxproj merge conflicts from concurrent PRs at same group/sources position",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev"
+    ],
+    "remediation": "Resolve pbxproj merge conflicts additively \u2014 keep all branches' distinct PBXBuildFile/FileReference entries."
+  },
+  {
+    "id": "W25",
+    "title": "@MainActor propagates to statics \u2014 test class must be @MainActor",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "qa"
+    ],
+    "remediation": "Mark test classes that exercise @MainActor types (incl. their statics) with @MainActor."
+  },
+  {
+    "id": "W26",
+    "title": "Two workflows sharing name: clash in github.workflow concurrency groups",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "scripts/preflight_checks.py",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "release"
+    ],
+    "remediation": "Give each workflow a hardcoded concurrency-group prefix, not ${{ github.workflow }}, when names collide."
+  },
+  {
+    "id": "W27",
+    "title": "make preflight enhancement_parent false-positive",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow"
+    ],
+    "remediation": "enhancement_parent mis-aims at the enhancement's own prd.md; verify against state.json::parent_feature (now fixed)."
+  },
+  {
+    "id": "W28",
+    "title": "Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required)",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "qa",
+      "release"
+    ],
+    "remediation": "Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI."
+  }
+]
