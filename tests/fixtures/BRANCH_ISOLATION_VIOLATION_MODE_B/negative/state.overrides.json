@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is: throwaway repo on feature/_test-fixture (default), baseline branch field matches. Mode B does NOT fire (branch is feature/*). Gate skips with not_infra_commit_level."
+}

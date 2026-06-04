@@ -1,0 +1,9 @@
+{
+  "_comment": "Transition current_phase to 'tasks' but explicitly null out timing.phases.tasks. Gate requires timing.phases.<new>.started_at + timing.phases.<old>.ended_at on every transition.",
+  "current_phase": "tasks",
+  "timing": {
+    "phases": {
+      "tasks": null
+    }
+  }
+}

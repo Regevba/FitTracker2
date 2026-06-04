@@ -1,0 +1,4 @@
+{
+  "_comment": "Override state.json::branch to a value that does NOT match the throwaway repo's actual git branch (feature/_test-fixture). Mode C fires demanding the branch match.",
+  "branch": "feature/some-other-feature"
+}

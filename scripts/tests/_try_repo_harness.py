@@ -95,20 +95,27 @@ def scrub_home_env(tmp_home: Path) -> dict[str, str]:
     }
 
 
-def make_throwaway_repo(tmp_path: Path) -> Path:
+def make_throwaway_repo(
+    tmp_path: Path, *, initial_branch: str = "feature/_test-fixture"
+) -> Path:
     """Initialize a throwaway git repo at `tmp_path` with bootstrap commit.
 
     Steps:
     1. Write the 3 THROWAWAY_REPO_INIT_FILES to the repo root
-    2. `git init` (suppress branch-name hint)
+    2. `git init --initial-branch=<initial_branch>`
     3. Set local git user.email + user.name (so commits don't fail on
        missing identity in CI)
     4. Set core.hooksPath to `.githooks` so the throwaway repo USES the
        real FT2 pre-commit hook (the whole point of the harness)
-    5. Symlink `.githooks` from the real repo so the hook script can be
-       executed by the throwaway repo's pre-commit driver
-    6. Symlink `scripts/` so the hook can find the Python gate dispatchers
-    7. Initial commit (NOT via the hook — bypass to seed history)
+    5. Symlink `scripts/` so the hook can find the Python gate dispatchers
+    6. Initial commit (NOT via the hook — bypass to seed history)
+
+    Args:
+        tmp_path: pytest tmp_path parent under which the repo is created
+        initial_branch: branch name for the initial commit. Default matches
+            the baseline state.json::branch field. Use "main" or another
+            non-feature/* value to exercise BRANCH_ISOLATION_VIOLATION
+            Mode B (infra-commit-level) tests.
 
     Returns:
         Path to the throwaway repo root.
@@ -122,10 +129,10 @@ def make_throwaway_repo(tmp_path: Path) -> Path:
     for filename, content in THROWAWAY_REPO_INIT_FILES.items():
         (repo / filename).write_text(content, encoding="utf-8")
 
-    # Initial branch matches the baseline state.json::branch field so
-    # BRANCH_ISOLATION_VIOLATION Mode B + Mode C gates can be exercised
-    # in either positive (mismatch) or negative (match) fixtures.
-    _run_git(repo, "init", "--initial-branch=feature/_test-fixture")
+    # Initial branch defaults to feature/_test-fixture (matches baseline
+    # state.json::branch field). Callers can override to "main" to exercise
+    # BRANCH_ISOLATION_VIOLATION Mode B (infra-commit on non-feature branch).
+    _run_git(repo, "init", f"--initial-branch={initial_branch}")
     _run_git(repo, "config", "user.email", "f16-test@example.com")
     _run_git(repo, "config", "user.name", "F16 Test")
     _run_git(repo, "config", "commit.gpgsign", "false")  # CI signing-key absent
@@ -264,6 +271,13 @@ def stage_fixture(
     make_state_json(overrides, dest)
     _run_git(repo, "add", target_path)
 
+    # Read back the merged state to determine the destination phase — the
+    # auto-generated log event must point at the final current_phase so
+    # PHASE_TRANSITION_NO_LOG finds a matching record.
+    with dest.open("r", encoding="utf-8") as f:
+        merged_state = json.load(f)
+    target_phase = merged_state.get("current_phase") or "implementation"
+
     # Companion files — baseline first, per-fixture overrides last.
     baseline_dir = (
         Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "_baseline"
@@ -277,12 +291,12 @@ def stage_fixture(
         shutil.copy2(src, dest_path)
         _run_git(repo, "add", rel_dest)
 
-    # 1. Generate a baseline log with a fresh-timestamp phase_started event.
-    # PHASE_TRANSITION_NO_LOG requires the matching event to be ≤15 min old.
-    # Static log files in fixtures cannot satisfy this; we generate at
-    # stage time using the current process clock. This is a TEST-ONLY
-    # construction — production logs are written by append-feature-log.py.
-    _write_fresh_baseline_log(repo, ".claude/logs/_test-fixture.log.json")
+    # 1. Generate a baseline log with a fresh-timestamp phase_started event
+    # pointed at the merged state's current_phase. PHASE_TRANSITION_NO_LOG
+    # requires the matching event to be ≤15 min old.
+    _write_fresh_baseline_log(
+        repo, ".claude/logs/_test-fixture.log.json", target_phase=target_phase
+    )
     _run_git(repo, "add", ".claude/logs/_test-fixture.log.json")
     # 2. Baseline case study (only if a baseline copy exists)
     _maybe_copy(
@@ -302,16 +316,18 @@ def stage_fixture(
     return dest
 
 
-def _write_fresh_baseline_log(repo: Path, rel_path: str) -> None:
+def _write_fresh_baseline_log(
+    repo: Path, rel_path: str, target_phase: str = "implementation"
+) -> None:
     """Write a baseline feature.log.json with a current-time phase_started event.
 
     PHASE_TRANSITION_NO_LOG (scripts/check-state-schema.py) requires the
-    matching event to be ≤PHASE_EVENT_FRESHNESS_MIN (15 min) old. Static
-    fixtures cannot satisfy this in long-lived test infra, so we generate
-    at stage time using the current process clock.
+    matching event to be ≤PHASE_EVENT_FRESHNESS_MIN (15 min) old AND have
+    `phase` matching the state's new current_phase. Static fixtures cannot
+    satisfy the timing constraint, so we generate at stage time using the
+    current process clock and the merged state's current_phase.
 
-    Mirrors append-feature-log.py's event shape. The implementation phase
-    matches the baseline state.json's current_phase.
+    Mirrors append-feature-log.py's event shape.
     """
     from datetime import datetime, timezone
 
@@ -321,7 +337,7 @@ def _write_fresh_baseline_log(repo: Path, rel_path: str) -> None:
         "events": [
             {
                 "event_type": "phase_started",
-                "phase": "implementation",
+                "phase": target_phase,
                 "timestamp": now_iso,
                 "summary": "F16 try-repo fixture — fresh phase_started event "
                 "to satisfy PHASE_TRANSITION_NO_LOG freshness window.",

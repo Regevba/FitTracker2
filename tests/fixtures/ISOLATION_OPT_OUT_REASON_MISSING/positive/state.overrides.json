@@ -1,0 +1,5 @@
+{
+  "_comment": "Set isolation_opt_out=true with empty isolation_opt_out_reason. Gate fires demanding the reason.",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": ""
+}

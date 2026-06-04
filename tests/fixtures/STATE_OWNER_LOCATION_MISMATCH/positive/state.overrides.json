@@ -1,0 +1,3 @@
+{
+  "_comment": "PLACEHOLDER — STATE_OWNER_LOCATION_MISMATCH is structurally untestable via the try-repo harness: the gate skips with `path_neutral` when the file path is not under /FitTracker2[-/] or /fitme-story/. The throwaway repo lives in /private/tmp/pytest-of-*/ which matches neither pattern. To test this gate the harness would need bind-mount or symlink hacks; deferred to a future F16.1 work item. See test_try_repo_closure_gates.py SKIP marker."
+}

@@ -1,0 +1,11 @@
+{
+  "feature": "_test-fixture",
+  "events": [
+    {
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "timestamp": "2026-05-01T00:00:00Z",
+      "summary": "Stale event — deliberately older than 15 minutes so PHASE_TRANSITION_NO_LOG fires on the positive fixture."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "_comment": "Transition current_phase implementation→complete. Provide case_study link so the gate proceeds past the no-link guard. The staged case-study.md is missing required frontmatter fields, so FEATURE_CLOSURE_COMPLETENESS fires.",
+  "current_phase": "complete",
+  "case_study": "docs/case-studies/_test-fixture-case-study.md",
+  "kill_criteria_resolution": "all_not_fired_2026-06-04",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T00:00:03Z",
+        "ended_at": "2026-06-04T00:00:04Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T00:00:05Z"
+      }
+    }
+  }
+}
