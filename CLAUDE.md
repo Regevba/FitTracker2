@@ -43,6 +43,20 @@ Not everything needs the full 9-phase funnel:
 
 Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded in the audit trail with reason `work_type:{type}`.
 
+### Impact tier labels (B_medium, A_high, B_low, …)
+
+Backlog rows + v7.9.1+ docket entries carry an **impact tier label** like `(cu_v2 ~1.8, B_medium)` alongside RICE. The tier label is a coarse sort key for "how much does this matter to the framework's load-bearing chain" — distinct from RICE (which scores effort vs. value for a single feature).
+
+| Tier | What it means | Typical workflow shape |
+|---|---|---|
+| **A_high** | Load-bearing: change blocks something downstream that operators or framework consumers rely on. Schema changes, enforced-gate additions, public-API contracts, kill-criteria evaluations that gate a promotion. | Full `Feature` lifecycle; PRD + tasks + UX (if any) NOT optional; advisory→enforced calibration window mandatory for new gates. |
+| **B_medium** | Important but not load-bearing: ergonomic improvements, doc clarifications, schema additions that are non-breaking, observability extensions, internal-tool enhancements where the downstream consumer is the framework itself. | `Enhancement` or **abbreviated `Feature`** — PRD optional (state.json + case study is enough for non-novel scope); UX phase optional (skip if no user-visible surface); skipped phases recorded as `work_type_subtype:b_medium_<reason>` audit-trail entry. |
+| **B_low** | Hygiene, polish, doc nits, low-risk refactors of well-tested code. | `Chore` lifecycle. |
+
+**Why this taxonomy:** before v7.9.1, the Feature/Enhancement/Fix/Chore taxonomy left an ambiguous middle for "this is bigger than a chore but doesn't need a PRD because the scope is mechanical (e.g. add a schema field + backfill)." Operators had to pick Feature (heavy) or Enhancement (technically requires parent PRD — which doesn't exist for net-new framework scaffolding). B_medium formalizes that middle: a `Feature` work_type with `work_subtype: b_medium` may skip PRD/tasks/UX phases as long as the skip reason is documented in `phases.<skipped>.skip_reason` per the existing skipped-phase audit-trail mechanism.
+
+**Forward-only:** existing backlog rows with `B_medium` labels (e.g. v8.x icebox L417 style-dictionary v5 migration) retain their label. New work items use the table above to choose. Old rows are not retroactively re-labeled.
+
 ## Branching Strategy
 
 - **Large features** (>5 files changed OR new models/services) → `feature/{name}` branch
