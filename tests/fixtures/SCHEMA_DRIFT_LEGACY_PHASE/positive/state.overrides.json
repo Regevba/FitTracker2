@@ -1,0 +1,5 @@
+{
+  "_comment": "Replace canonical current_phase with legacy phase key. Gate fires per scripts/check-state-schema.py: `if \"phase\" in d and \"current_phase\" not in d`.",
+  "current_phase": null,
+  "phase": "implementation"
+}

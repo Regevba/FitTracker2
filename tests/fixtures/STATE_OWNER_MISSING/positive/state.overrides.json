@@ -1,0 +1,4 @@
+{
+  "_comment": "Delete required state_owner field. Gate fires on `state_owner is None`.",
+  "state_owner": null
+}

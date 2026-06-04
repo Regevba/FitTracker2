@@ -1,0 +1,4 @@
+{
+  "_comment": "framework_version missing the `v` prefix. Gate _FRAMEWORK_VERSION_RE = `^(pre-)?v\\d+\\.\\d+(\\.\\d+)?$`; bare `7.9` fails the match.",
+  "framework_version": "7.9"
+}

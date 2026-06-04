@@ -29,12 +29,20 @@ than be silently masked here.
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping
+from typing import Any, Mapping
+
+# Import sibling helper (sys.path injection for test-time use).
+_HERE = Path(__file__).resolve().parent
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+from _try_repo_fixtures import make_state_json  # noqa: E402
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -207,6 +215,83 @@ def stage_files(repo: Path, files: Mapping[str, str | bytes | Path]) -> None:
         _run_git(repo, "add", rel_path)
 
 
+def stage_fixture(
+    fixture_dir: Path,
+    repo: Path,
+    target_path: str = ".claude/features/_test-fixture/state.json",
+) -> Path:
+    """Materialize a per-gate fixture into `repo` and `git add` the result.
+
+    Reads `fixture_dir / "state.overrides.json"` as a JSON dict of overrides
+    to merge onto the baseline (via `make_state_json`). Writes the merged
+    state.json at `repo / target_path` and stages it.
+
+    Optional companion files in `fixture_dir`:
+    - `case-study.md` — copied to `docs/case-studies/_test-fixture-case-study.md`
+      (if present)
+    - `feature.log.json` — copied to `.claude/logs/_test-fixture.log.json`
+      (if present)
+
+    `_comment` keys at any depth in the overrides JSON are stripped before
+    merging — they're for fixture-readers, not for the gate dispatchers.
+
+    Args:
+        fixture_dir: path under tests/fixtures/<gate-id>/{positive,negative}/
+        repo: throwaway repo root (output of `make_throwaway_repo`)
+        target_path: where in the throwaway repo to write the state.json.
+            Default matches the canonical feature-directory pattern.
+
+    Returns:
+        Absolute path to the staged state.json file.
+
+    Raises:
+        FileNotFoundError: if `fixture_dir/state.overrides.json` does not exist
+        json.JSONDecodeError: if the overrides file is not valid JSON
+    """
+    overrides_path = fixture_dir / "state.overrides.json"
+    with overrides_path.open("r", encoding="utf-8") as f:
+        overrides = json.load(f)
+    overrides = _strip_comments(overrides)
+
+    dest = repo / target_path
+    make_state_json(overrides, dest)
+    _run_git(repo, "add", target_path)
+
+    # Optional companion files.
+    case_study_src = fixture_dir / "case-study.md"
+    if case_study_src.exists():
+        cs_dest = repo / "docs/case-studies/_test-fixture-case-study.md"
+        cs_dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(case_study_src, cs_dest)
+        _run_git(repo, "add", "docs/case-studies/_test-fixture-case-study.md")
+
+    log_src = fixture_dir / "feature.log.json"
+    if log_src.exists():
+        log_dest = repo / ".claude/logs/_test-fixture.log.json"
+        log_dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(log_src, log_dest)
+        _run_git(repo, "add", ".claude/logs/_test-fixture.log.json")
+
+    return dest
+
+
+def _strip_comments(obj: Any) -> Any:
+    """Recursively remove keys starting with `_comment` from a dict tree.
+
+    Fixtures use `_comment` keys to document themselves; the gate dispatchers
+    never see them.
+    """
+    if isinstance(obj, dict):
+        return {
+            k: _strip_comments(v)
+            for k, v in obj.items()
+            if not (isinstance(k, str) and k.startswith("_comment"))
+        }
+    if isinstance(obj, list):
+        return [_strip_comments(item) for item in obj]
+    return obj
+
+
 def _run_git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
     """Run `git <args>` in `repo` with hook bypass for harness setup ops.
 
@@ -230,4 +315,5 @@ __all__ = [
     "run_precommit",
     "scrub_home_env",
     "stage_files",
+    "stage_fixture",
 ]

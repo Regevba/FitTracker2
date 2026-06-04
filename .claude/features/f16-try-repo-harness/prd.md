@@ -72,6 +72,46 @@ One GHA job runs `pytest -k try_repo --junitxml=try-repo.xml`. JUnit XML uploade
 
 **Follow-up tracked but NOT in scope for v7.9.1:** add a real env-var path-override (`GATE_COVERAGE_LEDGER_OVERRIDE=<path>`) to scripts/check-state-schema.py if a future test wants to ASSERT ledger emission was correct (instead of skipping). That would be a separate small-tier feature.
 
+### Q6 — DISCOVERED 2026-06-04 during T4a development: hardcoded `REPO_ROOT` blocks subprocess test isolation
+
+**Symptom:** T4a's 5 positive fixtures all caused pre-commit to return 0 (accept), even though they contain explicit schema violations the gates know how to detect. Investigation showed every test got `"No state.json files to validate (mode=staged)"` despite the test successfully `git add`ing a state.json in the throwaway repo.
+
+**Root cause:** `scripts/check-state-schema.py:58` hardcodes:
+
+```python
+REPO_ROOT = Path(__file__).resolve().parent.parent
+```
+
+Combined with `collect_staged_state_files()` which does:
+
+```python
+p = REPO_ROOT / line
+if p.exists():
+    paths.append(p)
+```
+
+The flow:
+
+1. Try-repo runs `git diff --cached --name-only` in the throwaway repo → returns `.claude/features/_test-fixture/state.json` (correct)
+2. The gate prepends FT2's REPO_ROOT (because Python resolves `__file__` to FT2 wherever the .py actually lives, even via symlink)
+3. The resulting path `<FT2-root>/.claude/features/_test-fixture/state.json` does not exist (the file is in the THROWAWAY repo, not FT2)
+4. `if p.exists()` is False → the file is silently dropped from the candidate list
+5. Gate runs with an empty list → "No state.json files to validate" → all gates skip → pre-commit returns 0
+
+**Significance:** this IS the integration-surface class of bug F16 was designed to catch — and it caught one in the framework's own infrastructure on the first try. F14 monkey-patches `_mod.collect_staged_state_files` to return a known list, so it never exercised the `REPO_ROOT / line` path resolution.
+
+**Fix:** small production-side change. Add `REPO_ROOT_OVERRIDE` env var support to both gate dispatchers:
+
+```python
+REPO_ROOT = Path(os.environ.get("REPO_ROOT_OVERRIDE", Path(__file__).resolve().parent.parent))
+```
+
+~3 lines per file × 2 files. Falls back to current behavior if env not set. Production never sets it. F16 try-repo tests set it to `throwaway_repo`.
+
+**Status:** **fix-tier follow-up PR queued** for next session. Not in scope for THIS F16 Phase 4 PR — keeps the Phase 4 PR's diff focused on the harness + fixtures. T4a tests are marked `pytest.mark.skip` with a clear reason citing this Q6 finding; they auto-enable when the override ships. T4b-T4d work is similarly gated.
+
+**Tracked as:** a future fix-tier work item `gate-repo-root-env-override` (RICE ~10, ~0.3d) — the F16 Phase 4 implementation cannot reach completion without it.
+
 ## 4. Frozen constants
 
 ```python
