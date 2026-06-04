@@ -1,0 +1,70 @@
+{
+  "feature_name": "f-phase-e-adoption-freeze-discipline",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T16:20:00Z",
+  "updated_at": "2026-06-04T16:20:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/f-phase-e-adoption-freeze-discipline",
+  "scheduled_after": null,
+  "primary_metric": "Documented soak-window discipline that prevents denominator-dilution measurement noise during future framework-version Phase E windows",
+  "success_metrics": [
+    "CLAUDE.md Data Integrity Framework section gains a 'Soak-window discipline (v7.9.1+)' subsection codifying the freeze-or-backfill rule (T1, measured by presence)",
+    "docs/product/backlog.md 'Framework hygiene' section gains a cross-reference entry pointing at the new CLAUDE.md subsection + v7.9 case study \u00a799.4 lesson 2 (T1, measured by presence)",
+    "Operator-readable rationale captured for the 2026-05-21 \u2192 2026-05-28 v7.9 Phase E observed regressions (timing_wall_time_pct_post_v6 -9.4pp, adoption_pct_post_v6 -1.6pp, cache_hits_pct_post_v6 -1.7pp) so future operators understand WHY the rule exists (T2, narrative)"
+  ],
+  "kill_criteria": [
+    "Documentation gets stale and operators ignore it \u2014 no enforcement teeth; depends on operator attention. Mitigated by Part 1's promotion clause: enforce if 2 consecutive soak windows show >5pp regression",
+    "Future framework versions adopt a different soak-window model (continuous vs phased) \u2014 the rule must reference 'soak-window' as a concept, not 'Phase E' specifically"
+  ],
+  "kill_criteria_resolution": "Both mitigated by the spec's design. (1) The promotion clause ('enforce if 2 consecutive soak windows show >5pp regression on any post-v6 percentage metric') gives the doc-only rule a concrete trigger for upgrading to a gate. The 2026-05-28 v7.9 baseline + the next post-soak baseline will be the first data points. (2) The rule's wording uses 'soak window' as the generic term and 'Phase E for v7.X' as a specific instance \u2014 see CLAUDE.md change in this PR.",
+  "dispatch_pattern": "agent-driven (2-file doc edit)",
+  "case_study": "docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md",
+  "case_study_showcase": "",
+  "spec": ".claude/shared/v7-9-1-candidates.md F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE + docs/case-studies/framework-v7-9-promotion-case-study.md \u00a799.4 lesson 2",
+  "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+  "scope_summary": "Documentation-only fix codifying the soak-window adoption-metric discipline. Adds a 'Soak-window discipline (v7.9.1+)' subsection to CLAUDE.md (freeze adoption metrics OR backfill in same PR) + a backlog cross-reference entry. Rationale: v7.9 Phase E observed 3 process regressions caused by denominator dilution (+9 features), not framework regressions. Future Phase E windows for v7.10+ would repeat the noise without this discipline. ADVISORY at v7.9.1 ship; promotion clause built in (enforce after 2 consecutive >5pp regressions). No gate; no telemetry impact; Phase-E-safe (doc-only).",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "CLAUDE.md \u2014 add 'Soak-window discipline (v7.9.1+)' subsection to Data Integrity Framework section",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "docs/product/backlog.md \u2014 add 'Framework hygiene' cross-reference entry",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "Source case study at docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "description": "Update .claude/shared/v7-9-1-candidates.md \u2014 strike F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE as closed",
+      "status": "complete"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T16:20:00Z",
+      "ended_at": null,
+      "notes": "Documentation-only; no gate; no telemetry impact. Closes v7.9 case study \u00a799.4 lesson 2 with a codified rule."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T16:20:00Z"
+      }
+    }
+  }
+}

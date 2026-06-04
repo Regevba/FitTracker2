@@ -455,6 +455,29 @@ The new sub-checks ship in **ADVISORY mode** — no calibration window because t
 
 **F-LAUNCHD-DRIFT-EXTENSION fully closed.** Sub-fixes (b)+(c) shipped via PR #621 (`ed20cbf`, 2026-06-04); sub-fix (a) shipped this PR. All three reinforce the same posture: cron context is a different execution environment than interactive — make its failures loud, bounded, and self-diagnostic.
 
+## Soak-window discipline (v7.9.1+)
+
+During any framework-version soak window (Phase E for v7.X, Phase Y for future versions), new features that ship during the soak MUST either (a) freeze adoption metric collection until soak exit, OR (b) backfill adoption metrics in the same PR that introduces the feature's `state.json`.
+
+**Why this rule exists.** v7.9 Phase E (2026-05-21 → 2026-05-28) added 9 new features to `.claude/features/*/` without backfilling their adoption metrics (`cache_hits`, `cu_v2`, `timing_wall_time`, `per_phase_timing`). `make integrity-diff` against the 2026-05-14 anchor consequently surfaced 3 measured regressions purely from **denominator dilution**:
+
+| Metric | 2026-05-14 | 2026-05-28 | Δ |
+|---|---|---|---|
+| `adoption_pct_post_v6` | 8.3% | 6.7% | −1.6 pp |
+| `timing_wall_time_pct_post_v6` | 47.2% | 37.8% | −9.4 pp |
+| `cache_hits_pct_post_v6` | 52.8% | 51.1% | −1.7 pp |
+
+These were **process regressions** — added features moved into the denominator while their numerator stayed empty (no adoption-metric backfill in the same PR). They were NOT v7.9 kill criteria; the kill criteria targeted false positives + rollbacks, both `not_fired`. v7.9 promoted regardless. But the **weekly trend-scan alerts** the regressions triggered are real noise that the next soak window will repeat without this discipline.
+
+**Two ways to comply** when shipping a feature during a soak window:
+
+1. **Freeze** — explicitly mark the feature's `state.json` with `soak_window_freeze: <version>` (e.g., `"v7.9"`). The weekly trend-scan and `make integrity-diff` will skip frozen features when computing percentage metrics.
+2. **Backfill** — populate `cache_hits[]`, `cu_v2.factors`, `cu_v2.total`, `cu_v2.tier_class`, `timing.phases.<phase>.{started_at,ended_at}`, and `timing.wall_time_seconds` in the SAME PR that introduces the feature. The percentage metric stays stable.
+
+**Enforcement posture.** Advisory at v7.9.1 ship (operator-attention; the weekly trend-scan emails will flag any soak-window dilution >1pp on any post-v6 percentage metric). Promotes to enforced (write-time gate `SOAK_WINDOW_FREEZE_OR_BACKFILL`) if 2 consecutive soak windows show >5 pp regression on any post-v6 percentage metric. Promotion criterion is built into the spec so the rule never silently sticks at advisory.
+
+**See also.** [v7.9 promotion case study §99.4 lesson 2](docs/case-studies/framework-v7-9-promotion-case-study.md) for the original measurement; [`f-phase-e-adoption-freeze-discipline-case-study.md`](docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md) for this rule's source case study.
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:
