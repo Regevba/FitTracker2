@@ -10,7 +10,8 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/f-launchd-drift-extension-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs:
+  - 621
 dispatch_pattern: serial
 success_metrics:
   - name: phantom_findings_per_cron_run
@@ -82,6 +83,10 @@ Three alternatives were considered:
 2. **Disable PR-citation gates entirely in cron context** — silently suppresses real findings; operator loses observability into a class of real bugs. Rejected.
 
 3. **Sentinel flag + ADVISORY surface (shipped)** — fail-loud-but-bounded. The operator sees exactly ONE clearly-labeled advisory (`PR_CACHE_REFRESH_FAILED`) with the failure timestamp + reason + context, instead of either silent suppression or 319 phantoms. The 1h TTL ensures the flag cannot accumulate.
+
+## Shipped via
+
+PR #621 (merge commit `ed20cbf`, 2026-06-04) — 10 files / +699 / −74. Squash-merged after all 12 CI checks green; PR-integrity bot reported 0 new findings vs main.
 
 ## Verification
 

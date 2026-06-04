@@ -199,7 +199,7 @@ if result.returncode != 0:
 
 ### Linked PR closing this thread
 
-Sub-fixes (b)+(c) closed via `feature/f-launchd-drift-extension` branch (PR # TBD when push lands). Sub-fix (a) still open — follow-on PR to extend `check_branch_isolation_launchd_drift` advisory to validate plist path resolution.
+Sub-fixes (b)+(c) closed via PR #621 (merge commit `ed20cbf`, 2026-06-04). Sub-fix (a) still open — follow-on PR to extend `check_branch_isolation_launchd_drift` advisory to validate plist path resolution.
 
 **What shipped 2026-06-04 (sub-fixes (b)+(c)):**
 

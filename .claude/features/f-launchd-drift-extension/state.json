@@ -1,6 +1,6 @@
 {
   "feature_name": "f-launchd-drift-extension",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "created_at": "2026-06-04T15:20:00Z",
   "updated_at": "2026-06-04T16:05:00Z",
   "framework_version": "v7.9.1",
@@ -11,7 +11,7 @@
   "state_owner": "ft2",
   "isolation_opt_out": false,
   "isolation_opt_out_reason": "",
-  "branch": "feature/f-launchd-drift-extension",
+  "branch": "chore/f-launchd-drift-extension-post-merge-closure",
   "scheduled_after": null,
   "primary_metric": "Launchd-context cron failures produce a clear sentinel finding instead of 319+ phantom BROKEN_PR_CITATION findings",
   "success_metrics": [
@@ -34,13 +34,42 @@
   "scope_summary": "Close the W11.b silent-pass class — launchd-cron context where `gh` CLI auth fails (no keychain access) caused 319 phantom BROKEN_PR_CITATION findings on 2026-05-24. Same context also caused 5 silently-broken cron days after the 2026-05-19 SSD migration. This PR ships sub-fixes (b) + (c) of the 3-part F-LAUNCHD-DRIFT-EXTENSION plan: ensure-pr-cache-fresh.py writes a sentinel flag file when launchd context detected + refresh fails; integrity-check.py reads the flag and skips affected gates with clear messaging; daily-integrity-checkpoint.py pre-validates gh auth and exits 78 (EX_CONFIG) on launchd-context failure. Sub-fix (a) — BRANCH_ISOLATION_LAUNCHD_DRIFT plist path-resolution check — deferred to a follow-on PR since it requires gate-coverage-calibration discipline (advisory window).",
   "related_prs": [],
   "tasks": [
-    {"id": "T1", "description": "ensure-pr-cache-fresh.py — detect LAUNCHD_LABEL env; write .claude/shared/pr-cache-refresh-failed.flag (JSON) on failure", "status": "complete"},
-    {"id": "T2", "description": "integrity-check.py — at startup, read flag if newer than 1h; if present, skip BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED with explicit skip-reason", "status": "complete"},
-    {"id": "T3", "description": "daily-integrity-checkpoint.py — pre-validate `gh auth status`; exit 78 (EX_CONFIG) if launchd-context + auth missing", "status": "complete"},
-    {"id": "T4", "description": "Unit tests at scripts/tests/test_launchd_drift_extension.py — interactive happy path, launchd-context failure, flag staleness, downstream skip-on-flag", "status": "complete"},
-    {"id": "T5", "description": "CLAUDE.md v7.9.1 F-LAUNCHD-DRIFT-EXTENSION section", "status": "complete"},
-    {"id": "T6", "description": "Source case study + fitme-story showcase MDX slot 47", "status": "deferred", "deferred_reason": "Operator directive 2026-06-04 — fitme-story showcase MDX assigned to companion agent; source case study shipped FT2-side"},
-    {"id": "T7", "description": "Update .claude/shared/v7-9-1-candidates.md to strike F-LAUNCHD-DRIFT-EXTENSION sub-fixes (b)+(c) as closed (sub-fix (a) remains queued)", "status": "complete"}
+    {
+      "id": "T1",
+      "description": "ensure-pr-cache-fresh.py — detect LAUNCHD_LABEL env; write .claude/shared/pr-cache-refresh-failed.flag (JSON) on failure",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "integrity-check.py — at startup, read flag if newer than 1h; if present, skip BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED with explicit skip-reason",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "daily-integrity-checkpoint.py — pre-validate `gh auth status`; exit 78 (EX_CONFIG) if launchd-context + auth missing",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "description": "Unit tests at scripts/tests/test_launchd_drift_extension.py — interactive happy path, launchd-context failure, flag staleness, downstream skip-on-flag",
+      "status": "complete"
+    },
+    {
+      "id": "T5",
+      "description": "CLAUDE.md v7.9.1 F-LAUNCHD-DRIFT-EXTENSION section",
+      "status": "complete"
+    },
+    {
+      "id": "T6",
+      "description": "Source case study + fitme-story showcase MDX slot 47",
+      "status": "deferred",
+      "deferred_reason": "Operator directive 2026-06-04 — fitme-story showcase MDX assigned to companion agent; source case study shipped FT2-side"
+    },
+    {
+      "id": "T7",
+      "description": "Update .claude/shared/v7-9-1-candidates.md to strike F-LAUNCHD-DRIFT-EXTENSION sub-fixes (b)+(c) as closed (sub-fix (a) remains queued)",
+      "status": "complete"
+    }
   ],
   "phases": {
     "implementation": {
@@ -51,13 +80,94 @@
     "testing": {
       "started_at": "2026-06-04T16:05:00Z",
       "ended_at": null,
-      "notes": "Unit tests green. Pending: pre-commit hook validation + integrity baseline confirmation before PR open."
+      "notes": "Unit tests green. Pending: pre-commit hook validation + integrity baseline confirmation before PR open.",
+      "approved_by": "operator",
+      "approval_signal": "(implicit — operator merged PR #621)"
+    },
+    "review": {
+      "started_at": "2026-06-04T15:39:36Z",
+      "ended_at": "2026-06-04T15:39:36Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-04T15:39:36Z",
+      "ended_at": "2026-06-04T15:39:36Z",
+      "pr_number": 621,
+      "merge_commit_sha": "ed20cbf01a1874f044c4fa0ee4502247e58f0753",
+      "merged_at": "2026-06-04T15:39:36Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-04T15:39:36Z",
+      "ended_at": "2026-06-04T15:40:04Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-04T15:40:04Z",
+      "ended_at": "2026-06-04T15:40:04Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
     "phases": {
-      "implementation": {"started_at": "2026-06-04T15:20:00Z", "ended_at": "2026-06-04T16:05:00Z"},
-      "testing": {"started_at": "2026-06-04T16:05:00Z"}
+      "implementation": {
+        "started_at": "2026-06-04T15:20:00Z",
+        "ended_at": "2026-06-04T16:05:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-04T16:05:00Z",
+        "ended_at": "2026-06-04T15:39:36Z"
+      },
+      "review": {
+        "started_at": "2026-06-04T15:39:36Z",
+        "ended_at": "2026-06-04T15:39:36Z"
+      },
+      "merge": {
+        "started_at": "2026-06-04T15:39:36Z",
+        "ended_at": "2026-06-04T15:39:36Z"
+      },
+      "docs": {
+        "started_at": "2026-06-04T15:39:36Z",
+        "ended_at": "2026-06-04T15:40:04Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T15:40:04Z",
+        "ended_at": "2026-06-04T15:40:04Z"
+      }
     }
-  }
+  },
+  "merge_pr_number": 621,
+  "merge_commit_sha": "ed20cbf01a1874f044c4fa0ee4502247e58f0753",
+  "merged_at": "2026-06-04T15:39:36Z",
+  "feature_branch_merged": "feature/f-launchd-drift-extension",
+  "transitions": [
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-04T15:39:36Z",
+      "reason": "PR #621 squashed onto main as ed20cbf01a (operator-merged 2026-06-04T15:39:36Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-04T15:39:36Z",
+      "reason": "PR #621 squashed onto main as ed20cbf01a (operator-merged 2026-06-04T15:39:36Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-04T15:39:36Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-04T15:40:04Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/f-launchd-drift-extension-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ]
 }
