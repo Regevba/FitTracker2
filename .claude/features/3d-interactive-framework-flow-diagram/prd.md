@@ -2,13 +2,31 @@
 
 > **Owner:** Regev (orchestrator: Claude Opus 4.7)
 > **Date:** 2026-05-13
-> **Last reconciled:** 2026-05-28 — v7.9 → v7.9.1 reconciliation + Data Contracts & Modularity section added
-> **Phase:** 1 — PRD (in progress; paused per operator decision 2026-05-19 until v7.9.1 closes ~2026-06-04)
-> **Status:** Draft — pause-compliant edits permitted (no Phase 1 → 2 advancement)
+> **Last reconciled:** 2026-06-04 — v7.9.1 build window closed (8 ships, 14 PRs, 0 new gates); observed-patterns W1-W32 finalized; pattern↔skill preflight overlay operational
+> **Phase:** 1 — PRD (v7.9.1 closure gate LIFTED 2026-06-04; Phase 2 advancement now pending OQ-1 + OQ-2 + OQ-3D-A resolution)
+> **Status:** Draft — pause-compliant edits permitted (no Phase 1 → 2 advancement until OQs close)
 > **Feature slug:** `3d-interactive-framework-flow-diagram`
 > **Public name:** Framework Universe
 > **Repo:** fitme-story (state_owner)
-> **Framework version:** v7.8.3 (created); v7.9 in Phase E calibration (shipped 2026-05-21 → ends 2026-06-04); ships under v7.9.x or v8.0
+> **Framework version:** v7.8.3 (created); v7.9 promoted 2026-05-21 → Phase E PASSED 2026-06-04; **v7.9.1 CLOSED 2026-06-04** (8 ships, 0 new gates); ships under v7.9.x or v8.0
+
+## CHANGELOG
+
+### 2026-06-04 — v7.9.1 closure + pattern↔skill preflight overlay operationalization
+
+- **Status:** Phase 1 pause gate LIFTED — v7.9.1 build window CLOSED 2026-06-04 (8 ships across 14 PRs: F16 try-repo harness + F17 last_fired_at index + F2 Phase 0 reality-check + Dev-env Track B + F-LAUNCHD-DRIFT-EXTENSION (b)+(c)+(a) + observed-patterns W29-W32 batch + F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE + R9 Track B coverage aggregator + dev-env R11+R13+R14+R17+R18 hygiene batch + F-DEPLOYED-URL-PROBE FT2 substrate). **0 new enforcement gates** (Phase E exit discipline preserved). Synthesis case study: [`framework-v7-9-1-promotion-case-study.md`](../../../docs/case-studies/framework-v7-9-1-promotion-case-study.md).
+- **Framework state finalized:** observed-patterns catalog at 55 work-blocking patterns (23 gate `#1`-`#23` + 32 workflow `W1`-`W32`) + 1 self-doc entry (W33 — overlay tool). CI workflows 8 → 14 (+6 warn-only). Mechanism letters unchanged at {A, B, C, D, E, F} (no G shipped).
+- **NEW: pattern↔skill preflight overlay** — operational via PR #615 (this PR, rebased 2026-06-04). The catalog now ships with a **dual-purpose wiring**: (1) **dev-process preempt mechanism** — `make skill-preflight SKILL=<name>` runs the mechanized detectors + emits manual checklists for each skill's relevant patterns BEFORE work begins, instead of reactively when a gate fires mid-task; (2) **3D Universe overlay input** — `.claude/shared/pattern-skill-map.json` (55 entries) is the build-time source for FR-13 (Act III chamber annotations + Act IV gate-fire hover-reveals + LegoWall skill chips). The same map serves both purposes.
+- **§3a NEW (inserted below)** — "Pattern↔skill preflight overlay dual-use case" documents the architecture choice (centralized JSON map + auto-generated SKILL.md blocks + warn-only `PATTERN_SKILL_UNMAPPED` advisory).
+- **FR-13 NEW (inserted in §Functional Requirements):** "Pattern overlay on Acts III-V — display relevant observed-patterns entries as scene annotations, driven by `pattern-skill-map.json` and the `related_skills:` mapping."
+- **Data input #5:** `.claude/integrity/observed-patterns.md` (markdown source) + `.claude/shared/pattern-skill-map.json` (typed JSON) → aggregated to `src/data/framework/observed-patterns.json` + `src/data/framework/skills-patterns-map.json` at fitme-story build time.
+- **OQ status:**
+  - **OQ-1** (acceptance criterion 10 deterministic phrasing) — still open; ~15 min operator work
+  - **OQ-2** (`feature-roster.json` aggregator contract) — still open; ~30-45 min operator work
+  - **OQ-3** (Alternatives Considered backfill) — deferred (parallel with Phase 2 tasks.md drafting)
+  - **OQ-3D-A** (operator labels `related_skills:` frontmatter across 55 patterns) — **RESOLVED 2026-06-04** via this PR (`pattern-skill-map.json::skills[]` is the canonical mapping; per-pattern `related_skills:` frontmatter inside observed-patterns.md is the read-path; both kept in lockstep via `PATTERN_SKILL_UNMAPPED` advisory)
+- **PRD sections modified by this changelog:** Header (above), §Data Contracts (around line 330), §Functional Requirements, §Key Files, §Acceptance Criteria, §Open Questions.
+- **Remaining Phase 2 unblocker:** OQ-1 + OQ-2 (~45-60 min total operator work)
 > **Live framework data:** [`docs/framework/versions.json`](../../../docs/framework/versions.json) — single source of truth for gate counts, mechanism list, version timeline (see §Data Contracts & Modularity)
 > **Linear:** [FIT-138](https://linear.app/fitme-project/issue/FIT-138)
 > **Notion:** [3D Interactive Framework Flow Diagram — Public-Site Flagship Visual](https://www.notion.so/35e0e7a0eace81b5ba12eb6e6950da5a)

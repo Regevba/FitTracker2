@@ -637,5 +637,58 @@
       "release"
     ],
     "remediation": "Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI."
+  },
+  {
+    "id": "W29",
+    "title": "Inline import in case-study MDX is a no-op under compileMDX; JSX components must be registered in useMDXComponents",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "design",
+      "marketing"
+    ],
+    "remediation": "Register MDX components in src/mdx-components.tsx useMDXComponents map. Inline `import` lines inside MDX bodies are inert under compileMDX. See observed-patterns.md W29 for silence paths."
+  },
+  {
+    "id": "W30",
+    "title": "Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking #",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "qa",
+      "pm-workflow"
+    ],
+    "remediation": "In case-study related_prs frontmatter, use either string form (- \"PR #623\") OR inline bracket form (related_prs: [621, 623]). Bare YAML integers under dashed lists get silently dropped by _parse_case_study_frontmatter at scripts/check-state-schema.py:1149. Durable parser patch queued in backlog Framework hygiene."
+  },
+  {
+    "id": "W31",
+    "title": "Workflow delivery anomaly: initial pull_request:opened sometimes fires only the dynamic/skip-path workflows; rebase + force-push triggers full set",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "dev"
+    ],
+    "remediation": "If a PR open fires fewer than the usual 11-12 checks, run `git rebase origin/main` + `git push --force-with-lease`. close+reopen does NOT reliably re-trigger. Workaround documented as a PR-flow protocol; durable fix queued (CI assertion of expected workflow set)."
+  },
+  {
+    "id": "W32",
+    "title": "scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation \u2192 complete directly, no testing phase)",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "pm-workflow"
+    ],
+    "remediation": "For single-phase framework features (e.g., sub-fixes shipping their own unit tests in-phase), call `python3 scripts/close-feature.py <feature> --force-incomplete` directly. The `make close-feature` target does NOT pass --force-incomplete through. Durable script-heuristic patch queued in backlog Framework hygiene."
   }
 ]

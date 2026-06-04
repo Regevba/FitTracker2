@@ -22,6 +22,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `#8` | TIER_TAG_LIKELY_INCORRECT — heuristic T1/T2/T3 mismatch (advisory permanent) *(probed)* | no | Verify the T1/T2/T3 tag; pin correct T1 values in case-study-t1-references.json or set tier_tags_present:false. |
 | `#14` | CASE_STUDY_MISSING_TIER_TAGS — forward-only on case studies dated >=2026-04-21 *(probed)* | no | Add at least one T1/T2/T3 tier tag to the case study (dated on or after 2026-04-21). |
 | `W14` | Code Connect figma.connect() rejects page frames as targets | yes | Code Connect targets must be components/component-sets; convert page frames or map leaf components only. |
+| `W29` | Inline import in case-study MDX is a no-op under compileMDX; JSX components must be registered in useMDXComponents | yes | Register MDX components in src/mdx-components.tsx useMDXComponents map. Inline `import` lines inside MDX bodies are inert under compileMDX. See observed-patterns.md W29 for silence paths. |
 
 At activation run `make skill-preflight SKILL=design` — probes the 3 mechanized blockers for this work type; clear any before proceeding.
 

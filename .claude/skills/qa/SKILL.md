@@ -24,6 +24,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `W23` | AnalyticsService.logEvent is private — callers must use a log* method | yes | logEvent is private — add a named log* method, or use #if DEBUG print for can't-happen paths. |
 | `W25` | @MainActor propagates to statics — test class must be @MainActor | yes | Mark test classes that exercise @MainActor types (incl. their statics) with @MainActor. |
 | `W28` | Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required) | no | Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI. |
+| `W30` | Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking # | yes | In case-study related_prs frontmatter, use either string form (- "PR #623") OR inline bracket form (related_prs: [621, 623]). Bare YAML integers under dashed lists get silently dropped by _parse_case_study_frontmatter at scripts/check-state-schema.py:1149. Durable parser patch queued in backlog Framework hygiene. |
 
 At activation run `make skill-preflight SKILL=qa` — probes the 0 mechanized blockers for this work type; clear any before proceeding.
 

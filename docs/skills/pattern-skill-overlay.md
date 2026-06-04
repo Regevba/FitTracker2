@@ -32,7 +32,7 @@ So the overlay *probes what it can* and *reminds you of the rest*.
 
 ## `pattern-skill-map.json` schema
 
-A JSON array of 51 objects (one per work-blocking pattern):
+A JSON array of 55 objects (one per work-blocking pattern; updated 2026-06-04 to include W29-W32 which landed via PRs #620/#621/#623/#625 during the same v7.9.1 build window):
 
 ```json
 {
@@ -49,7 +49,7 @@ A JSON array of 51 objects (one per work-blocking pattern):
 
 | Field | Type | Meaning |
 |---|---|---|
-| `id` | string | Catalog ID — `#1`–`#23` (gate) or `W1`–`W28` (workflow) |
+| `id` | string | Catalog ID — `#1`–`#23` (gate) or `W1`–`W32` (workflow) |
 | `title` | string | Catalog entry title |
 | `section` | `"gate"` \| `"workflow"` | Which catalog section |
 | `blocker` | bool | Does ignoring this block/break the work (vs. an advisory)? |

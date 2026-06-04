@@ -42,6 +42,8 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `W6` | Measurement case-study impartiality | no | Backfill/exempt measurement adoption all-or-none; document any exemption explicitly. |
 | `W20` | Stale-session-state inventory drift | no | Run make freshness-check before any 'what's open' inventory or before editing recently-shipped files. |
 | `W27` | make preflight enhancement_parent false-positive | no | enhancement_parent mis-aims at the enhancement's own prd.md; verify against state.json::parent_feature (now fixed). |
+| `W30` | Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking # | yes | In case-study related_prs frontmatter, use either string form (- "PR #623") OR inline bracket form (related_prs: [621, 623]). Bare YAML integers under dashed lists get silently dropped by _parse_case_study_frontmatter at scripts/check-state-schema.py:1149. Durable parser patch queued in backlog Framework hygiene. |
+| `W32` | scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation → complete directly, no testing phase) | yes | For single-phase framework features (e.g., sub-fixes shipping their own unit tests in-phase), call `python3 scripts/close-feature.py <feature> --force-incomplete` directly. The `make close-feature` target does NOT pass --force-incomplete through. Durable script-heuristic patch queued in backlog Framework hygiene. |
 
 At activation run `make skill-preflight SKILL=pm-workflow` — probes the 18 mechanized blockers for this work type; clear any before proceeding.
 

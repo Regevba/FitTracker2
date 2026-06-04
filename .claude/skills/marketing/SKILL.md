@@ -20,6 +20,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 |---|---|---|---|
 | `W15` | MDX `<digit` / `<non-letter` breaks page rendering | yes | Escape/avoid `<digit` in MDX (use 'under 5 min', &lt;, or a code-span) to keep prerender green. |
 | `W18` | Default-URL OG image silent-404 | no | Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves. |
+| `W29` | Inline import in case-study MDX is a no-op under compileMDX; JSX components must be registered in useMDXComponents | yes | Register MDX components in src/mdx-components.tsx useMDXComponents map. Inline `import` lines inside MDX bodies are inert under compileMDX. See observed-patterns.md W29 for silence paths. |
 
 At activation run `make skill-preflight SKILL=marketing` — probes the 0 mechanized blockers for this work type; clear any before proceeding.
 

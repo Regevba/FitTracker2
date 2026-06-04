@@ -25,6 +25,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `W13` | Upstash KV_* vs UPSTASH_REDIS_REST_* naming asymmetry | no | Alias UPSTASH_REDIS_REST_* to KV_REST_API_*, or read either name in code. |
 | `W18` | Default-URL OG image silent-404 | no | Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves. |
 | `W19` | Env-var trailing newline corrupts runtime string | no | Trim string env vars at the boundary (process.env.X?.trim()) to strip trailing newlines. |
+| `W31` | Workflow delivery anomaly: initial pull_request:opened sometimes fires only the dynamic/skip-path workflows; rebase + force-push triggers full set | no | If a PR open fires fewer than the usual 11-12 checks, run `git rebase origin/main` + `git push --force-with-lease`. close+reopen does NOT reliably re-trigger. Workaround documented as a PR-flow protocol; durable fix queued (CI assertion of expected workflow set). |
 
 At activation run `make skill-preflight SKILL=ops` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
 

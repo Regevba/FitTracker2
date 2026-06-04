@@ -1066,8 +1066,11 @@ def check_pattern_skill_unmapped() -> list[dict]:
 
     # Self-doc meta-entries: catalog patterns that document the overlay TOOL
     # itself (not a work-blocking pattern), intentionally absent from the
-    # work-blocking map. W29 documents the pattern↔skill overlay (v7.9.1).
-    SELF_DOC_EXEMPT = {"W29"}
+    # work-blocking map. W33 documents the pattern↔skill overlay (v7.9.1).
+    # (Originally numbered W29 when the feature branch opened 2026-06-04 10:29 UTC;
+    #  renumbered to W33 during rebase because PRs #620/#621/#623/#625 landed
+    #  W29-W32 the same afternoon with non-overlay content.)
+    SELF_DOC_EXEMPT = {"W33"}
 
     findings: list[dict] = []
     for pid in sorted(catalog_ids - SELF_DOC_EXEMPT, key=lambda x: (x[0] != "#", x)):
