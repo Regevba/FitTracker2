@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:34:52Z",
-  "updated_at": "2026-06-04T05:52:50Z",
+  "updated_at": "2026-06-04T06:23:16Z",
   "events": [
     {
       "timestamp": "2026-06-04T05:34:52Z",
@@ -57,6 +57,17 @@
       "event_type": "implementation",
       "phase": "implementation",
       "summary": "T3 SHIPPED \u2014 harness scaffold (make_throwaway_repo + run_precommit + scrub_home_env + stage_files + PrecommitResult dataclass). 17/17 tests pass in 2.55s. Q5 mechanism PIVOTED during development: production gates use GATE_COVERAGE_LEDGER as module-level constant (not env var); revised opt-out is GATE_COVERAGE_LEDGER_DISABLED=1 toggle. The Q5 enforcement test caught the original misdesign immediately (caught the contamination, then PASSED on the corrected mechanism). PRD \u00a73.5 updated to reflect reality.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T06:23:16Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T4a fixtures + tests SHIPPED but BLOCKED on Q6 finding. Q6: scripts/check-state-schema.py:58 hardcodes REPO_ROOT to where the .py file lives; the harness's subprocess-invoked gates resolve REPO_ROOT to canonical FT2 (not the throwaway repo). The fixtures' state.json files exist in the throwaway repo but  looks them up under FT2's REPO_ROOT and silently drops them \u2014 'No state.json files to validate' \u2192 gates skip \u2192 pre-commit returns 0 (accept) on every positive fixture. F16 caught the bug F14 monkey-patch could not see. Fix-tier follow-up PR: add REPO_ROOT_OVERRIDE env var (~3 lines \u00d7 2 files). T4a-d marked status=blocked + tests pytest.mark.skip with reason. T2+T3 tests still pass (29/29). PRD \u00a73.5 Q6 documents the finding + the fix path.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

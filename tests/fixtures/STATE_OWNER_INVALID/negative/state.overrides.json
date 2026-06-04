@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is. Baseline has state_owner=ft2 which is in VALID_STATE_OWNERS. Gate must NOT fire."
+}

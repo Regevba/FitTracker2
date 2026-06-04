@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is. Baseline uses created_at; no legacy `created` key. Gate must NOT fire."
+}

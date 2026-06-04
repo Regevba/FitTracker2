@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is. Baseline already uses canonical current_phase and has no `phase` key. Gate must NOT fire."
+}

@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is. Baseline has framework_version=v7.9.1 which matches the canonical regex. Gate must NOT fire."
+}
