@@ -12,6 +12,17 @@
 
 ## CHANGELOG
 
+### 2026-06-04 (19:30 UTC) — Phase 1 → Phase 2 ADVANCEMENT (all 3 blockers resolved)
+
+- **`current_phase`: prd → tasks_phase.** Operator-approved 2026-06-04 19:30 UTC.
+- **OQ-1 RESOLVED:** Acceptance Criterion 10 rephrased to a deterministic Playwright-testable form (see §Acceptance Criteria AC-10). New AC-11 added covering the pattern-skill overlay smoke (hover Act IV signage → tooltip contains pattern title from skills-patterns-map.json).
+- **OQ-2 RESOLVED:** `feature-roster.json` aggregator contract locked in §Data Contracts → "feature-roster.json aggregator contract (OQ-2 closure, locked 2026-06-04)". Locks input glob + output `FeatureRosterEntry` schema + sort key (alphabetical slug) + stability guarantees (field set / sort order / privacy / versioning) + ~30 LOC reference TypeScript skeleton + Phase 4 T-aggregator task creation reference.
+- **OQ-3D-A RESOLVED** (closed 2026-06-04 19:01 UTC via PR #615 `bb6ae2b`): pattern-skill-map.json shipped with 55 entries (23 gate + 32 workflow). PATTERN_SKILL_UNMAPPED advisory keeps catalog ↔ map in lockstep.
+- **OQ-3 DEFERRED** (non-blocking): Alternatives Considered backfill happens in parallel with Phase 2 tasks.md drafting via brainstorm-pm three-option mode.
+- **Framework version bumped:** v7.8.3 → v7.9.1.
+- **Paused → unpaused.** `paused: True → False`; `unpaused_at: 2026-06-04T19:30:00Z`. Pause window: 2026-05-13 → 2026-06-04 = 22 days.
+- **Phase 2 (Tasks) opens** with 3 critical follow-on tasks pre-seeded in §Data Contracts + §Acceptance Criteria: `T-aggregator` (consumes the locked feature-roster.json contract), `T-overlay-wiring` (consumes the v7.9.1 pattern-skill-map.json), `T-act-iv-pattern-hover` (wires AC-11).
+
 ### 2026-06-04 — v7.9.1 closure + pattern↔skill preflight overlay operationalization
 
 - **Status:** Phase 1 pause gate LIFTED — v7.9.1 build window CLOSED 2026-06-04 (8 ships across 14 PRs: F16 try-repo harness + F17 last_fired_at index + F2 Phase 0 reality-check + Dev-env Track B + F-LAUNCHD-DRIFT-EXTENSION (b)+(c)+(a) + observed-patterns W29-W32 batch + F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE + R9 Track B coverage aggregator + dev-env R11+R13+R14+R17+R18 hygiene batch + F-DEPLOYED-URL-PROBE FT2 substrate). **0 new enforcement gates** (Phase E exit discipline preserved). Synthesis case study: [`framework-v7-9-1-promotion-case-study.md`](../../../docs/case-studies/framework-v7-9-1-promotion-case-study.md).
@@ -134,7 +145,8 @@ The Framework Universe addresses three business needs simultaneously:
 - [ ] Operator mode at `/control-room/framework` shows live gate firings within 5s of event
 - [ ] Tier 3 static fallback renders for `js: disabled` and saved-data
 - [ ] Zero regression on existing `/framework/dispatch` and `/pm-flow` visuals
-- [ ] At least one cross-repo PR-cite hover (Act IV) opens FT2's PR page on click
+- [ ] **AC-10 (OQ-1 closure, rephrased 2026-06-04 for testability):** Hovering ANY Act IV gate-fire signage reveals the linked PR ID in the hover-card; clicking the PR ID opens the corresponding GitHub PR page in a new tab (`target="_blank" rel="noopener noreferrer"`). The criterion is satisfied by a single passing case; Playwright at Phase 5 asserts via `await page.locator('[data-act="iv"] [data-pr-id]').first().hover() → assert tooltip contains '#NNN' → click → assert new tab URL matches `https://github.com/<owner>/<repo>/pull/NNN`.` (Replaces the prior "at least one cross-repo PR-cite hover (Act IV) opens FT2's PR page on click" formulation, which was non-deterministic at runtime because it depended on which gate fired in the operator-mode live stream.)
+- [ ] **AC-11 (NEW — pattern-skill overlay smoke):** Hovering ANY Act IV gate-fire signage that has a matching observed-patterns catalog entry (`pattern-skill-map.json::id`) reveals the entry's title + short remediation in the hover-card. Playwright assertion: `await page.locator('[data-act="iv"] [data-pattern-id]').first().hover() → assert tooltip contains pattern title from skills-patterns-map.json`. Closes the dev-preempt + 3D-overlay dual-use loop documented in §3a.
 
 ---
 
@@ -344,6 +356,113 @@ graduate from `paused` to `complete`, mechanism letters extend past F.
 To avoid rebuilding the Universe each time the framework advances, every
 scene element that depends on framework state reads from a **typed data
 contract**, never from hand-coded constants.
+
+### `feature-roster.json` aggregator contract (OQ-2 closure, locked 2026-06-04)
+
+Locked here per OQ-2 of the 2026-06-03 PRD review. Implements the operator's
+"every framework advancement reflects without rebuild" requirement for the
+feature-roster surface (Act VI monuments). The aggregator runs at fitme-story
+build time and is invoked by `scripts/sync-from-fittracker2.ts` Phase 4 task.
+
+**Input.** Glob `FT2/.claude/features/*/state.json` on the FT2 main branch
+HEAD at sync time. As of 2026-06-04 the glob matches **96 files**. Files
+that fail JSON-parse are skipped with a stderr warning; the build does NOT
+abort (degraded-graceful — a corrupted state.json should never block the
+public site deploy).
+
+**Output schema.** Stable TypeScript-shaped array, one element per state.json
+parsed successfully:
+
+```ts
+type FeatureRosterEntry = {
+  slug: string;                  // feature directory name (= state.json::feature_name)
+  status: 'paused' | 'in_progress' | 'complete' | 'cancelled' | 'unknown';
+  framework_version: string | null;   // e.g. 'v7.9.1', or null if absent
+  current_phase: string;         // raw value of state.json::current_phase
+  case_study: string | null;     // relative path or null
+  parent_feature: string | null; // for Enhancement work_type only
+  state_owner: 'ft2' | 'fitme-story' | null;
+  isolation_opt_out: boolean;    // defaults to false if absent
+  has_brainstorm: boolean;       // true iff state.json::brainstorm is present + non-empty
+};
+```
+
+**Sort key.** `slug` (alphabetical, ASCII order). **Array order is stable
+across runs** so consumers can detect deltas via field-by-field diff rather
+than array-position diff. New features appear at their alphabetical position;
+removed features disappear from their alphabetical position. Phase 4
+aggregator must NOT preserve insertion-order.
+
+**Stability guarantees:**
+
+| Surface | Guarantee | Failure mode |
+|---|---|---|
+| Field set | Closed enum — adding a field is a minor version bump on the schema (consumers don't break); removing is a major (breaks consumers). | Schema-drift caught by `src/data/framework/skills-patterns-map.json` contract-fixture test (v7.9.1 backlog `F-CONTRACT-FIXTURE-SAMPLING`). |
+| Sort order | Alphabetical by `slug` (ASCII codepoint). | Sort-order drift would invalidate consumer diff caches; CI lint check enforces. |
+| Privacy | No `cache_hits[]`, no `_session-*.events.jsonl`, no operator email hashes, no commit SHAs, no PR cite text leak into the output. The aggregate is build-time and the resulting JSON ships to the public site. | Privacy-leak class — guarded by an explicit allow-list filter in the aggregator, NOT a deny-list. New top-level state.json fields are dropped by default unless added to the FeatureRosterEntry type above. |
+| Versioning | Schema-version field embedded at the top of the output: `{ schema_version: '1.0.0', generated_at: 'YYYY-MM-DDTHH:MM:SSZ', entries: [...] }`. | Consumers gate on `schema_version`. |
+
+**Build trigger.** Any modification to any `FT2/.claude/features/*/state.json`
+file (detected via mtime comparison in `sync-from-fittracker2.ts` Phase 4
+task — same detection mechanism already used for `observed-patterns.md`).
+Sync runs are idempotent: re-running produces zero diff if upstream is
+unchanged.
+
+**Reference implementation skeleton** (pseudocode, ~30 LOC TypeScript;
+formalized in Phase 4 Task `T-aggregator`):
+
+```ts
+// fitme-story/scripts/sync-from-fittracker2.ts (Phase 4 task)
+async function aggregateFeatureRoster(ft2Root: string): Promise<RosterFile> {
+  const files = await glob(`${ft2Root}/.claude/features/*/state.json`);
+  const entries: FeatureRosterEntry[] = [];
+  for (const file of files.sort()) {
+    try {
+      const s = JSON.parse(await readFile(file, 'utf-8'));
+      entries.push({
+        slug: s.feature_name,
+        status: deriveStatus(s.current_phase),
+        framework_version: s.framework_version ?? null,
+        current_phase: s.current_phase,
+        case_study: s.case_study ?? null,
+        parent_feature: s.parent_feature ?? null,
+        state_owner: s.state_owner ?? null,
+        isolation_opt_out: s.isolation_opt_out ?? false,
+        has_brainstorm: Boolean(s.brainstorm && Object.keys(s.brainstorm).length),
+      });
+    } catch (err) {
+      console.warn(`feature-roster: skipped ${file}: ${err}`);
+    }
+  }
+  entries.sort((a, b) => a.slug.localeCompare(b.slug));
+  return {
+    schema_version: '1.0.0',
+    generated_at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'),
+    entries,
+  };
+}
+```
+
+**Output destination.** `fitme-story/src/data/framework/feature-roster.json`
+(part of the existing `src/data/framework/` build-time aggregate tree).
+Read by Act VI monument renderer at build time (not runtime — the Universe
+ships as static HTML/JS with the aggregate inlined into the bundle).
+
+**Privacy posture.** The aggregator is a write-once, public-artifact tool —
+any field added to `state.json` that is NOT in the `FeatureRosterEntry`
+type above is silently dropped. This is enforced by the type system at
+the aggregator's call site (TypeScript narrowing on the destructured
+object literal). Catalog of fields-dropped-by-design: `cache_hits[]`,
+`per_phase_timing`, `wall_time_seconds`, `cu_v2`, `tasks`, `phases`,
+`timing`, `success_metrics`, `kill_criteria`, `kill_criteria_resolution`,
+`scope_summary`, `spec`, `related_prs`, `tier_tags_required`, and all
+fields starting with underscore.
+
+**Phase 4 task creation.** When Phase 2 (Tasks) drafts the per-task
+breakdown, the `T-aggregator` task in `tasks.md` references THIS section
+verbatim as its acceptance bar.
+
+
 
 ### ⚠️ Pre-Phase-2 data-aggregation gate (added 2026-06-03)
 
