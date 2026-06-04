@@ -50,7 +50,9 @@ PRE_COMMIT_HOOK_PATH = REPO_ROOT / ".githooks" / "pre-commit"
 PRE_COMMIT_TIMEOUT_S = 30
 
 THROWAWAY_REPO_INIT_FILES: dict[str, str] = {
-    ".gitignore": ".claude/logs/*\n*.pyc\n__pycache__/\n",
+    # Intentionally do NOT gitignore .claude/logs/* — fixtures need to
+    # `git add` the canonical log file to satisfy PHASE_TRANSITION_NO_LOG.
+    ".gitignore": "*.pyc\n__pycache__/\n",
     "CLAUDE.md": (
         "# F16 try-repo test fixture\n\n"
         "This is a throwaway repo created by the F16 try-repo harness.\n"
@@ -120,7 +122,10 @@ def make_throwaway_repo(tmp_path: Path) -> Path:
     for filename, content in THROWAWAY_REPO_INIT_FILES.items():
         (repo / filename).write_text(content, encoding="utf-8")
 
-    _run_git(repo, "init", "--initial-branch=main")
+    # Initial branch matches the baseline state.json::branch field so
+    # BRANCH_ISOLATION_VIOLATION Mode B + Mode C gates can be exercised
+    # in either positive (mismatch) or negative (match) fixtures.
+    _run_git(repo, "init", "--initial-branch=feature/_test-fixture")
     _run_git(repo, "config", "user.email", "f16-test@example.com")
     _run_git(repo, "config", "user.name", "F16 Test")
     _run_git(repo, "config", "commit.gpgsign", "false")  # CI signing-key absent
@@ -226,11 +231,13 @@ def stage_fixture(
     to merge onto the baseline (via `make_state_json`). Writes the merged
     state.json at `repo / target_path` and stages it.
 
-    Optional companion files in `fixture_dir`:
-    - `case-study.md` — copied to `docs/case-studies/_test-fixture-case-study.md`
-      (if present)
-    - `feature.log.json` — copied to `.claude/logs/_test-fixture.log.json`
-      (if present)
+    Companion files (resolved in order — per-gate fixture wins over baseline):
+
+    1. `tests/fixtures/_baseline/feature.log.json` → `.claude/logs/_test-fixture.log.json`
+       (canonical log to satisfy PHASE_TRANSITION_NO_LOG gate)
+    2. `tests/fixtures/_baseline/case-study.md` (if present) → `docs/case-studies/_test-fixture-case-study.md`
+    3. `fixture_dir / "feature.log.json"` (if present) — OVERRIDES the baseline log
+    4. `fixture_dir / "case-study.md"` (if present) — OVERRIDES the baseline case study
 
     `_comment` keys at any depth in the overrides JSON are stripped before
     merging — they're for fixture-readers, not for the gate dispatchers.
@@ -257,22 +264,75 @@ def stage_fixture(
     make_state_json(overrides, dest)
     _run_git(repo, "add", target_path)
 
-    # Optional companion files.
-    case_study_src = fixture_dir / "case-study.md"
-    if case_study_src.exists():
-        cs_dest = repo / "docs/case-studies/_test-fixture-case-study.md"
-        cs_dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(case_study_src, cs_dest)
-        _run_git(repo, "add", "docs/case-studies/_test-fixture-case-study.md")
+    # Companion files — baseline first, per-fixture overrides last.
+    baseline_dir = (
+        Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "_baseline"
+    )
 
-    log_src = fixture_dir / "feature.log.json"
-    if log_src.exists():
-        log_dest = repo / ".claude/logs/_test-fixture.log.json"
-        log_dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(log_src, log_dest)
-        _run_git(repo, "add", ".claude/logs/_test-fixture.log.json")
+    def _maybe_copy(src: Path, rel_dest: str) -> None:
+        if not src.exists():
+            return
+        dest_path = repo / rel_dest
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dest_path)
+        _run_git(repo, "add", rel_dest)
+
+    # 1. Generate a baseline log with a fresh-timestamp phase_started event.
+    # PHASE_TRANSITION_NO_LOG requires the matching event to be ≤15 min old.
+    # Static log files in fixtures cannot satisfy this; we generate at
+    # stage time using the current process clock. This is a TEST-ONLY
+    # construction — production logs are written by append-feature-log.py.
+    _write_fresh_baseline_log(repo, ".claude/logs/_test-fixture.log.json")
+    _run_git(repo, "add", ".claude/logs/_test-fixture.log.json")
+    # 2. Baseline case study (only if a baseline copy exists)
+    _maybe_copy(
+        baseline_dir / "case-study.md",
+        "docs/case-studies/_test-fixture-case-study.md",
+    )
+    # 3. Per-fixture log override
+    _maybe_copy(
+        fixture_dir / "feature.log.json", ".claude/logs/_test-fixture.log.json"
+    )
+    # 4. Per-fixture case study override
+    _maybe_copy(
+        fixture_dir / "case-study.md",
+        "docs/case-studies/_test-fixture-case-study.md",
+    )
 
     return dest
+
+
+def _write_fresh_baseline_log(repo: Path, rel_path: str) -> None:
+    """Write a baseline feature.log.json with a current-time phase_started event.
+
+    PHASE_TRANSITION_NO_LOG (scripts/check-state-schema.py) requires the
+    matching event to be ≤PHASE_EVENT_FRESHNESS_MIN (15 min) old. Static
+    fixtures cannot satisfy this in long-lived test infra, so we generate
+    at stage time using the current process clock.
+
+    Mirrors append-feature-log.py's event shape. The implementation phase
+    matches the baseline state.json's current_phase.
+    """
+    from datetime import datetime, timezone
+
+    now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    log = {
+        "feature": "_test-fixture",
+        "events": [
+            {
+                "event_type": "phase_started",
+                "phase": "implementation",
+                "timestamp": now_iso,
+                "summary": "F16 try-repo fixture — fresh phase_started event "
+                "to satisfy PHASE_TRANSITION_NO_LOG freshness window.",
+            }
+        ],
+    }
+    dest = repo / rel_path
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with dest.open("w", encoding="utf-8") as f:
+        json.dump(log, f, indent=2)
+        f.write("\n")
 
 
 def _strip_comments(obj: Any) -> Any:
