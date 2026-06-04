@@ -369,12 +369,12 @@ To be filled when shipped.
 
 ---
 
-## F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE
+## ~~F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE~~ — **CLOSED 2026-06-04**
 
 **Discovered:** 2026-05-28 (Phase E Day 7 B2 baseline analysis; framework-v7-9-promotion case study §99.4 lesson 2).
-**Status:** queued.
-**Owner:** TBD (documentation-only; ~30 min spec + ~15 min reference cite in CLAUDE.md).
-**Effort:** ~45 min total.
+**Status:** SHIPPED 2026-06-04 via PR #625 (CLAUDE.md "Soak-window discipline (v7.9.1+)" section + backlog `Framework hygiene` subsection + source case study). Ships as ADVISORY with promotion clause: enforce as `SOAK_WINDOW_FREEZE_OR_BACKFILL` write-time gate if 2 consecutive soak windows show >5 pp regression on any post-v6 percentage metric.
+**Owner:** N/A (closed).
+**Effort:** ~40 min actual.
 
 ### Problem
 
