@@ -137,13 +137,25 @@ jobs:
           set +e
           python3 scripts/weekly-trend-scan.py 2>&1 | tee /tmp/weekly-trend.txt
 
+      - name: Refresh per-gate last_fired_at index (F17)
+        id: gate_last_fired
+        continue-on-error: true
+        # v7.9.1 F17 — materialize per-gate last_fired_at index nightly from
+        # gate-coverage.jsonl. Read-only derived artifact; safe to fail
+        # without blocking the weekly snapshot. Enables planned v7.10
+        # GATE_COVERAGE_ZERO meta-check at O(1) instead of O(records × gates).
+        # No untrusted input — static script invocation only.
+        run: |
+          python3 scripts/refresh-gate-last-fired.py
+
       - name: Stage history snapshot
         id: stage
         run: |
           git add .claude/shared/measurement-adoption-history.json \
                   .claude/shared/measurement-adoption.json \
                   .claude/shared/documentation-debt.json \
-                  .claude/shared/gate-coverage-weekly.jsonl 2>/dev/null || true
+                  .claude/shared/gate-coverage-weekly.jsonl \
+                  .claude/shared/gate-last-fired.json 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No snapshot changes to stage."

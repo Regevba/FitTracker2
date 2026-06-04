@@ -359,6 +359,24 @@ v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates tha
 **Honesty ledger entry:** [FT2-FH-003](docs/case-studies/framework-honesty-ledger.md#ft2-fh-003).
 **Per-PR provenance:** PR (TBD) on `feature/v7-9-promotion`.
 
+## v7.9.1 F17 — Per-gate `last_fired_at` Index (shipped 2026-06-04)
+
+`.claude/shared/gate-last-fired.json` is a derived per-gate index of Mechanism A telemetry. For each gate that ever produced a row in `.claude/logs/gate-coverage.jsonl`, the index records `last_fired_at` (most recent timestamp where `checked >= 1`), `last_checked_at` (most recent of any candidate row), `last_skipped_at` (most recent skip), `first_seen_at`, `total_firings`, `total_skips`, and `total_candidates`.
+
+**Producer:** `scripts/refresh-gate-last-fired.py` — reads the JSONL line-by-line, aggregates per-gate, writes the index. Empirical wall-clock <1s for ~2k rows. Schema-versioned at 1; readers can detect future format drift via `schema_version`.
+
+**Invocation points:**
+- `make gate-last-fired` (direct, on-demand)
+- `make integrity-check` (chained before integrity scan)
+- `scripts/daily-integrity-checkpoint.py` (inherits via integrity-check)
+- `.github/workflows/framework-status-weekly.yml` (nightly index materialization)
+
+**Pattern reference:** AWS Config Rules `LastSuccessfulInvocationTime` — derive a small index from a large append-only stream so consumers query "when did X last happen?" in O(1).
+
+**Why it matters:** the planned v7.10 `GATE_COVERAGE_ZERO` meta-check (which catches gates that have stopped firing despite producing prior telemetry) can now be O(1) per gate instead of O(records × gates). The same index supports the quarterly Data Freshness Audit (next: 2026-08-12).
+
+**Spec:** [`docs/master-plan/infra-master-plan-2026-05-12.md`](docs/master-plan/infra-master-plan-2026-05-12.md) §3.1 Theme G F17 (RICE 66.7 — highest of all v7.9.1 items).
+
 ## v7.9.1 F16 — Try-repo Pre-commit Harness (shipped 2026-06-04)
 
 The framework now has **3 layers of gate testing** instead of 2:
