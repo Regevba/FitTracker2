@@ -58,13 +58,19 @@ One GHA job runs `pytest -k try_repo --junitxml=try-repo.xml`. JUnit XML uploade
 
 `@pytest.fixture(scope="function")` returning a `tmp_path`-based throwaway repo. `tmp_path` is pytest-managed; no special cleanup discipline needed. Module-scope fixtures (which would survive between tests) are explicitly banned in the test layout.
 
-### Q5 — LOCKED: `GATE_COVERAGE_LEDGER` env-var override
+### Q5 — REVISED 2026-06-04 during T3 development: `GATE_COVERAGE_LEDGER_DISABLED=1` env toggle
 
-The try-repo subprocess inherits parent env minus a deliberate override: `env["GATE_COVERAGE_LEDGER"] = str(tmp_path / "gate-coverage.jsonl")`. The Python gates already honor `GATE_COVERAGE_LEDGER` env var (F14 dispatch tests use the same mechanism via `monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", ...)`).
+**Original spec:** `GATE_COVERAGE_LEDGER` env-var path-override.
 
-**Why this matters:** without it, every CI run adds ~16 rows to `.claude/logs/gate-coverage.jsonl` (32 rows in the regression-test PR), contaminating the canonical Mechanism A telemetry used for advisory→enforced promotion decisions.
+**Reality discovered by the Q5 enforcement test:** production code uses `GATE_COVERAGE_LEDGER` as a **module-level constant** (`scripts/check-state-schema.py:61`), not an env var. The real opt-out is `GATE_COVERAGE_LEDGER_DISABLED=1` (line 1544) which skips the ledger write entirely.
 
-**Test:** Phase 4 includes an explicit assertion that the canonical ledger path is unchanged after a try-repo run (i.e., the override is real, not silently no-op).
+**The misunderstanding traced to:** F14 dispatch tests use `monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", ...)` to override the module constant. That works in-process but NOT across subprocess boundary, which is what F16 actually needs.
+
+**Revised mechanism:** try-repo subprocess must include `env["GATE_COVERAGE_LEDGER_DISABLED"] = "1"`. Per-test assertions rely on stderr + exit code rather than ledger row inspection. This is strictly stronger evidence — `rc != 0` proves the gate fired; a ledger row only proves a row was emitted.
+
+**Test:** Phase 4 T3 includes `test_canonical_gate_coverage_ledger_untouched_after_run` which captures the canonical ledger's mtime + size before a try-repo run and asserts both unchanged after. This caught the original misdesign during T3 development (the wrong override silently produced contamination; the new DISABLED toggle PASSED the assertion immediately).
+
+**Follow-up tracked but NOT in scope for v7.9.1:** add a real env-var path-override (`GATE_COVERAGE_LEDGER_OVERRIDE=<path>`) to scripts/check-state-schema.py if a future test wants to ASSERT ledger emission was correct (instead of skipping). That would be a separate small-tier feature.
 
 ## 4. Frozen constants
 
