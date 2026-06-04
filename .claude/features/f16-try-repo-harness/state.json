@@ -1,8 +1,8 @@
 {
   "feature_name": "f16-try-repo-harness",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-06-04T05:30:00Z",
-  "updated_at": "2026-06-04T05:30:00Z",
+  "updated_at": "2026-06-04T05:40:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -37,8 +37,13 @@
   "phases": {
     "research": {
       "started_at": "2026-06-04T05:30:00Z",
+      "ended_at": "2026-06-04T05:40:00Z",
+      "notes": "Research artifact at research.md. Outstanding questions: Q1 (subprocess vs in-process for the hook invocation), Q2 (fixture format — canonical state.json vs partial-record YAML), Q3 (CI matrix shape — per-gate job vs single job with parametrize), Q4 (worktree cleanup discipline), Q5 (gate-coverage.jsonl pollution prevention — surfaced during research)."
+    },
+    "prd": {
+      "started_at": "2026-06-04T05:40:00Z",
       "ended_at": null,
-      "notes": "Research artifact at research.md. Outstanding questions: Q1 (subprocess vs in-process for the hook invocation), Q2 (fixture format — canonical state.json vs partial-record YAML), Q3 (CI matrix shape — per-gate job vs single job with parametrize), Q4 (worktree cleanup discipline)."
+      "notes": "PRD at prd.md. Q1-Q5 all LOCKED with recommendations: subprocess invocation, hybrid fixture format (YAML for state.json + canonical .md for content), single CI job + parametrize + JUnit XML, pytest tmp_path auto-cleanup, GATE_COVERAGE_LEDGER env-var override. Frozen constants: THROWAWAY_REPO_INIT_FILES, PRE_COMMIT_TIMEOUT_S=30, FIXTURE_DIR=tests/fixtures, GATE_COVERAGE_LEDGER_ENV. 8 acceptance criteria + 3 kill criteria. Rollback = single-line CI workflow revert."
     }
   },
   "calendar_gate": {
@@ -61,7 +66,11 @@
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-04T05:30:00Z"
+        "started_at": "2026-06-04T05:30:00Z",
+        "ended_at": "2026-06-04T05:40:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-04T05:40:00Z"
       }
     }
   }

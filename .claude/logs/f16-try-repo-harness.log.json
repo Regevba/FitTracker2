@@ -6,13 +6,24 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:34:52Z",
-  "updated_at": "2026-06-04T05:34:52Z",
+  "updated_at": "2026-06-04T05:38:45Z",
   "events": [
     {
       "timestamp": "2026-06-04T05:34:52Z",
       "event_type": "phase_transition",
       "phase": "research",
       "summary": "Phase 0 Research opened 2026-06-04. F16 try-repo pre-commit harness. RICE 48.0 (foundational v7.9.1 test-discipline). FIT-88 Urgent. Research.md captures Q1-Q5 outstanding for Phase 1 PRD: subprocess vs in-process (Q1, lean subprocess), fixture format hybrid (Q2), CI single-job parametrize (Q3), pytest tmp_path cleanup (Q4), gate-coverage env-var override (Q5 new \u2014 surfaced during research).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T05:38:45Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Phase 1 PRD opened 2026-06-04T05:40Z. Q1-Q5 all LOCKED + 4 frozen constants. 8 acceptance criteria. 3 kill criteria + opt-out rollback plan (single-line CI revert). T2-T10 task preview included. Phase 4 implementation ~2.5d wall-clock. Earliest enforced ship 2026-06-18 (T+14d soak).",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
