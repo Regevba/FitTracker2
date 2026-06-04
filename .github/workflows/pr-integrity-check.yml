@@ -256,3 +256,56 @@ jobs:
             cat /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+  try-repo-harness:
+    name: try-repo-harness
+    # F16 try-repo harness — spawns throwaway git repos and runs the actual
+    # .githooks/pre-commit script against canonical positive/negative
+    # fixtures per gate. Catches integration-surface regressions that the
+    # F14 in-process monkey-patch dispatch tests cannot see (proven by Q5
+    # GATE_COVERAGE_LEDGER + Q6 REPO_ROOT_OVERRIDE findings during T4
+    # development).
+    #
+    # Scope: 15 of 16 write-time gates + harness mechanics + Q5 canonical-
+    # ledger-untouched assertion. 1 gate skipped by design
+    # (STATE_OWNER_LOCATION_MISMATCH — path-neutral throwaway repo).
+    #
+    # Wall-clock budget per PRD §4: <60s. Empirical: ~15s for the 59
+    # tests + 1 skip suite.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install pytest
+        run: |
+          python3 -m pip install --quiet pytest
+
+      - name: Run F16 try-repo harness suite
+        run: |
+          pytest \
+            scripts/tests/test_try_repo_baseline.py \
+            scripts/tests/test_try_repo_harness.py \
+            scripts/tests/test_try_repo_schema_gates.py \
+            scripts/tests/test_try_repo_closure_gates.py \
+            scripts/tests/test_try_repo_telemetry_gates.py \
+            scripts/tests/test_try_repo_isolation_gates.py \
+            scripts/tests/test_repo_root_override.py \
+            -v --tb=short --junitxml=try-repo.xml
+
+      - name: Upload JUnit XML on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: try-repo-junit
+          path: try-repo.xml
+          retention-days: 7
+          if-no-files-found: ignore

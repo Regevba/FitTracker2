@@ -359,6 +359,24 @@ v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates tha
 **Honesty ledger entry:** [FT2-FH-003](docs/case-studies/framework-honesty-ledger.md#ft2-fh-003).
 **Per-PR provenance:** PR (TBD) on `feature/v7-9-promotion`.
 
+## v7.9.1 F16 — Try-repo Pre-commit Harness (shipped 2026-06-04)
+
+The framework now has **3 layers of gate testing** instead of 2:
+
+1. **Unit** (`scripts/tests/test_check_state_schema.py` per-function) — fastest, narrowest. Catches wrong field-name logic, wrong regex.
+2. **Dispatch** (F14 PR #317 pattern — monkey-patched `main()` end-to-end via `monkeypatch.setattr(_mod, ...)`) — catches wrong gate registration, wrong skip semantics, wrong Mechanism A row emission.
+3. **Try-repo** (F16, this section) — spawns a throwaway git repo at `pytest tmp_path`, stages canonical positive/negative fixtures from `tests/fixtures/<GATE_ID>/{positive,negative}/`, runs the **real** `.githooks/pre-commit` shell script via subprocess, asserts the exit code + stderr match the fixture's intent. **Catches the integration-surface bugs the monkey-patch pattern architecturally cannot see** — hook composition, env-var inheritance, real `git status --porcelain` interaction, HOME pollution.
+
+**Empirically proven:** during T4 development, F16 caught two real architectural bugs in the framework's own infrastructure that F14 had not surfaced — `GATE_COVERAGE_LEDGER` was a module-level constant not an env-var (Q5 finding), and `REPO_ROOT` was hardcoded to where the .py file lived (Q6 finding, closed via PR #611's `REPO_ROOT_OVERRIDE` env-var support). T7 (`scripts/tests/test_try_repo_regression_proof.py`) is the deliberate-regression test that PROVES the value claim by construction.
+
+**Coverage:** 15 of 16 write-time gates covered end-to-end. 1 documented skip (STATE_OWNER_LOCATION_MISMATCH — the gate skips with `path_neutral` when the throwaway repo is not under `/FitTracker2[-/]` or `/fitme-story/`; deferred to F16.1).
+
+**Discipline for new gates:** every gate added going forward MUST ship with a try-repo fixture pair under `tests/fixtures/<GATE_ID>/{positive,negative}/state.overrides.json` PLUS a per-gate test in the appropriate bucket file (`test_try_repo_*_gates.py`). The fixture overrides merge with `tests/fixtures/_baseline/state.json` via `make_state_json()`. Positive fixture: gate must fire (rc != 0). Negative fixture: gate must pass (rc == 0). See [`docs/architecture/dev-guide-v1-to-v7-7.md`](docs/architecture/dev-guide-v1-to-v7-7.md) §4 for the gate-catalog try-repo column.
+
+**CI integration:** the `try-repo-harness` job in [`.github/workflows/pr-integrity-check.yml`](.github/workflows/pr-integrity-check.yml) runs the full F16 suite on every PR. Empirical wall-clock: ~15s for 59 tests + 1 skip (budget: <60s).
+
+**PR provenance:** #607 (Phase 0+1+2 scoping) + #608 (T2+T3 baseline + harness scaffold) + #610 (T4a fixtures + Q6 finding) + #611 (REPO_ROOT_OVERRIDE fix) + #612 (T4a unblock + T4b/c/d + T6 CI + T7 regression proof).
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:
