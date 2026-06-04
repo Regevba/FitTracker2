@@ -1,0 +1,107 @@
+name: Coverage
+
+# R9 Track B (dev-env-master-plan §3): code-coverage aggregator workflow.
+# Track A shipped 2026-05-25 (.slather.yml + [tool.coverage.*] config);
+# Track B (Makefile coverage-report aggregator + this workflow) ships
+# post-Phase-E (2026-06-04+).
+#
+# Posture: warn-only baseline. Each job uses `continue-on-error: true` so a
+# coverage gap does not gate PRs at this stage. The intent is to accumulate
+# 30 days of coverage telemetry against which the v8.0 GATE_TEST_MISSING
+# meta-gate (T1 in backlog) can calibrate concrete per-module thresholds.
+#
+# Security posture: ALL inputs are static (no PR titles, branch names, or
+# commit messages interpolated into run: commands). The workflow only reads
+# the repo at the PR HEAD and runs make targets / xcodebuild against static
+# arguments — no command-injection surface.
+#
+# Two independent jobs (iOS + Python) so a regression on one surface does not
+# mask the other. Web (c8) lives in the fitme-story repo per the dev-env plan.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'FitTracker/**'
+      - 'FitTrackerTests/**'
+      - 'FitTrackerUITests/**'
+      - 'ai-engine/**'
+      - 'Makefile'
+      - '.slather.yml'
+      - '.github/workflows/coverage.yml'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  coverage-ios:
+    name: coverage-ios (Slather)
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Install Slather
+        run: gem install slather
+
+      - name: Build + test with coverage enabled
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -workspace FitTracker.xcworkspace \
+            -scheme FitTracker \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -enableCodeCoverage YES \
+            -derivedDataPath .build/coverage-derived \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --color || true
+
+      - name: Aggregate via Slather
+        continue-on-error: true
+        run: make coverage-ios
+
+  coverage-py:
+    name: coverage-py (pytest --cov)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install ai-engine deps + pytest-cov
+        working-directory: ai-engine
+        run: pip install --quiet pytest pytest-cov
+
+      - name: Run pytest --cov
+        continue-on-error: true
+        run: make coverage-py
+
+      - name: Upload coverage.xml as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-engine-coverage-xml
+          path: ai-engine/coverage.xml
+          if-no-files-found: ignore
+          retention-days: 14
