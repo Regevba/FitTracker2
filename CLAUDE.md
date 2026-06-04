@@ -437,6 +437,24 @@ Three cooperating changes ship together (sub-fix (a) — `BRANCH_ISOLATION_LAUNC
 
 **Spec:** [`.claude/shared/v7-9-1-candidates.md`](.claude/shared/v7-9-1-candidates.md) F-LAUNCHD-DRIFT-EXTENSION + [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md) E-14. **Case study:** [`docs/case-studies/f-launchd-drift-extension-case-study.md`](docs/case-studies/f-launchd-drift-extension-case-study.md).
 
+## v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (a) — Plist path-resolution health checks (shipped 2026-06-04)
+
+Closes the third sub-fix of F-LAUNCHD-DRIFT-EXTENSION. The `BRANCH_ISOLATION_LAUNCHD_DRIFT` cycle-time advisory in [`scripts/integrity-check.py`](scripts/integrity-check.py) gains 3 path-resolution health checks fired against any FT2-related plist (detected via filename heuristic + `ProgramArguments` + `WorkingDirectory` pattern):
+
+1. **WorkingDirectory exists** — emits advisory if the plist's `WorkingDirectory` does not resolve to an extant directory on the current filesystem. Catches the 2026-05-19 SSD-migration class (`/Volumes/DevSSD 1/...` vs canonical `/Volumes/DevSSD/...` after mount swap) on day 1 instead of day 5.
+
+2. **ProgramArguments[0] script exists** — strips an interpreter prefix (`/bin/bash`, `python3`, `/usr/bin/env`, etc.) and checks that the resolved script path exists as a file. Catches plists whose script moved during a refactor. Relative paths (`scripts/foo.py`) are out of scope since they rely on PATH resolution at fire time.
+
+3. **StandardOutPath / StandardErrorPath parent dir is writable** — emits advisory if either the parent directory is missing OR the current user lacks write permission. Without this, cron failures become invisible because launchd cannot capture stdout/stderr.
+
+The new sub-checks ship in **ADVISORY mode** — no calibration window because they are additive on top of an existing advisory; false positives don't break anything and the operator can ignore them. The pre-existing T18 feature-attached `WorkingDirectory` mismatch check (HADF Phase 2 incident class) is unchanged and runs alongside the new checks in the same gate function.
+
+**Empirical coverage:** unrelated plists (Spotlight, etc.) are explicitly NOT scanned via `_plist_references_ft2()` heuristic — keeps the operator surface clean.
+
+**Test coverage:** [`scripts/tests/test_launchd_drift_extension_sub_a.py`](scripts/tests/test_launchd_drift_extension_sub_a.py) — 14 tests covering Linux-skip, 4 heuristic cases (filename / program-args / workdir / unrelated-ignore), all 3 sub-checks (fire + no-fire), compound plist with multiple problems, and the unrelated-plist negative. Runs in 0.28s.
+
+**F-LAUNCHD-DRIFT-EXTENSION fully closed.** Sub-fixes (b)+(c) shipped via PR #621 (`ed20cbf`, 2026-06-04); sub-fix (a) shipped this PR. All three reinforce the same posture: cron context is a different execution environment than interactive — make its failures loud, bounded, and self-diagnostic.
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:

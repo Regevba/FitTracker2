@@ -156,12 +156,12 @@ To be filled when shipped.
 
 ---
 
-## F-LAUNCHD-DRIFT-EXTENSION
+## ~~F-LAUNCHD-DRIFT-EXTENSION~~ — **FULLY CLOSED 2026-06-04**
 
 **Discovered:** 2026-05-24 (W11.b sub-pattern documented in [`observed-patterns.md`](../integrity/observed-patterns.md) after 2026-05-24 daily cron captured 319 phantom `BROKEN_PR_CITATION` findings due to launchd context lacking keychain access for `gh` CLI; second trigger was the 2026-05-19 SSD migration which silently broke cron for 5 days due to plist hardcoding `/Volumes/DevSSD 1/...` instead of canonical `/Volumes/DevSSD/...`).
-**Status:** sub-fixes (b)+(c) **SHIPPED 2026-06-04** via feature `f-launchd-drift-extension`. Sub-fix (a) remains queued for follow-on PR. Master plan entry: E-14 in [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../../docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md).
-**Owner:** TBD (sub-fix (a) — single-PR FT2 fix at `scripts/check-state-schema.py` + `scripts/integrity-check.py`).
-**Effort:** ~1h remaining (sub-fix (a) only — (b)+(c) closed in 2h actual / 2-3h budgeted).
+**Status:** ALL 3 sub-fixes **SHIPPED 2026-06-04**. Sub-fix (b)+(c) via PR #621 (`ed20cbf`); sub-fix (a) via follow-on feature `f-launchd-drift-extension-sub-a`. Master plan entry: E-14 in [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../../docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md).
+**Owner:** N/A (closed).
+**Effort:** ~3h actual total — sub-fix (b)+(c) ~2h, sub-fix (a) ~1h.
 
 ### Problem
 
@@ -199,7 +199,17 @@ if result.returncode != 0:
 
 ### Linked PR closing this thread
 
-Sub-fixes (b)+(c) closed via PR #621 (merge commit `ed20cbf`, 2026-06-04). Sub-fix (a) still open — follow-on PR to extend `check_branch_isolation_launchd_drift` advisory to validate plist path resolution.
+Sub-fixes (b)+(c) closed via PR #621 (merge commit `ed20cbf`, 2026-06-04). Sub-fix (a) closed via follow-on feature `f-launchd-drift-extension-sub-a` (this PR).
+
+**What shipped 2026-06-04 (sub-fix (a)):**
+
+- `scripts/integrity-check.py::check_branch_isolation_launchd_drift()` — extended with 3 path-resolution sub-checks for any FT2-related plist: (i) WorkingDirectory resolves to an extant directory, (ii) ProgramArguments[0] script resolves to an extant file, (iii) StandardOutPath / StandardErrorPath parent is writable.
+- `scripts/integrity-check.py::_plist_references_ft2()` — new heuristic gate (filename / ProgramArguments / WorkingDirectory pattern match) so unrelated system plists are explicitly NOT scanned.
+- `scripts/tests/test_launchd_drift_extension_sub_a.py` — 14 unit tests; runs in 0.28s.
+- `CLAUDE.md` — new v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (a) section closing the 3-part plan.
+- `docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md` — source case study.
+
+**Outcome:** the 2026-05-19 SSD-migration drift class (5 silently-broken cron days) now surfaces as a `BRANCH_ISOLATION_LAUNCHD_DRIFT` advisory on day 1 of the next 72h cycle-time cron run.
 
 **What shipped 2026-06-04 (sub-fixes (b)+(c)):**
 

@@ -1,0 +1,55 @@
+{
+  "feature_name": "f-launchd-drift-extension-sub-a",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T15:50:00Z",
+  "updated_at": "2026-06-04T15:50:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/f-launchd-drift-extension-sub-a",
+  "scheduled_after": null,
+  "primary_metric": "BRANCH_ISOLATION_LAUNCHD_DRIFT advisory catches plist path-resolution failures (would have caught 2026-05-19 SSD migration on day 1 instead of day 5)",
+  "success_metrics": [
+    "Advisory fires for plists whose WorkingDirectory path no longer resolves on current filesystem (T1, measured via fault-injection test)",
+    "Advisory fires for plists whose ProgramArguments[0] script path no longer exists (T1)",
+    "Advisory fires for plists whose StandardOutPath / StandardErrorPath are unwritable (T1)",
+    "Unit tests cover all 3 new sub-checks plus the existing WorkingDirectory worktree mismatch (T1, measured via pytest)"
+  ],
+  "kill_criteria": [
+    "Path-resolution checks false-positive on legitimate plists (e.g., plists whose script lives in a sibling repo by design) — would surface noise without a real risk",
+    "Advisory misses the 2026-05-19 SSD-migration class because plist filename pattern doesn't match — design must scan all FT2-related plists not just feature-attached ones",
+    "Checking writability touches the filesystem on every cycle-time scan — could be slow if many plists; needs to stay <100ms in aggregate"
+  ],
+  "kill_criteria_resolution": "",
+  "dispatch_pattern": "agent-driven (1-file extension + test suite)",
+  "case_study": "docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md",
+  "case_study_showcase": "",
+  "spec": ".claude/shared/v7-9-1-candidates.md F-LAUNCHD-DRIFT-EXTENSION sub-fix (a) + docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md E-14",
+  "predecessor_case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",
+  "scope_summary": "Sub-fix (a) of the 3-part F-LAUNCHD-DRIFT-EXTENSION plan. Sub-fixes (b) + (c) shipped via PR #621 (merge ed20cbf, 2026-06-04). This PR extends the existing `check_branch_isolation_launchd_drift()` advisory to validate (i) plist WorkingDirectory path resolves on current filesystem, (ii) ProgramArguments[0] script path resolves, (iii) StandardOutPath / StandardErrorPath writability. Catches the 2026-05-19 SSD-migration drift class (5 silently-broken cron days) on day 1. Ships as ADVISORY (not enforced) — no calibration window needed because the new sub-checks are additive on top of an existing advisory; operator can ignore false positives without breaking anything.",
+  "related_prs": [],
+  "tasks": [
+    {"id": "T1", "description": "scripts/integrity-check.py — extend check_branch_isolation_launchd_drift() with 3 path-resolution sub-checks (WorkingDirectory exists, ProgramArguments[0] script exists, StandardOutPath writable)", "status": "pending"},
+    {"id": "T2", "description": "Unit tests at scripts/tests/test_launchd_drift_extension_sub_a.py — cover all 3 sub-checks + happy path + filename heuristic for FT2-related plists", "status": "pending"},
+    {"id": "T3", "description": "CLAUDE.md update — append sub-fix (a) closure note under existing F-LAUNCHD-DRIFT-EXTENSION section", "status": "pending"},
+    {"id": "T4", "description": "Source case study at docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md", "status": "pending"},
+    {"id": "T5", "description": "Update .claude/shared/v7-9-1-candidates.md — mark F-LAUNCHD-DRIFT-EXTENSION fully closed (all 3 sub-fixes shipped)", "status": "pending"}
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T15:50:00Z",
+      "ended_at": null,
+      "notes": "Sub-fix (a) follow-on to PR #621. ADVISORY mode — no calibration window. Extends existing gate function with 3 additional sub-checks."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {"started_at": "2026-06-04T15:50:00Z"}
+    }
+  }
+}

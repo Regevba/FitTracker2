@@ -37,6 +37,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 import re
 import subprocess
 import sys
@@ -690,17 +691,50 @@ def check_branch_isolation_historical() -> list[dict]:
     return findings
 
 
+def _plist_references_ft2(plist_path: Path, program_args: list, wd: str | None) -> bool:
+    """Return True iff the plist appears to be an FT2-related launchd job.
+
+    Heuristic (any one is sufficient):
+      - filename contains "fittracker" (case-insensitive)
+      - ProgramArguments references a path under this repo
+      - WorkingDirectory starts with a known FT2 repo path
+
+    Used by sub-fix (a) so the path-resolution advisory fires for ALL FT2
+    plists (not just feature-attached ones). The 2026-05-19 SSD migration
+    broke the daily-checkpoint plist (no feature attached) for 5 days
+    silently; without this broader scan, the new sub-checks wouldn't catch it.
+    """
+    if "fittracker" in plist_path.name.lower():
+        return True
+    all_args_str = " ".join(str(a) for a in program_args)
+    if "/FitTracker2" in all_args_str or "/fitme-story" in all_args_str:
+        return True
+    if isinstance(wd, str) and ("/FitTracker2" in wd or "/fitme-story" in wd):
+        return True
+    return False
+
+
 def check_branch_isolation_launchd_drift() -> list[dict]:
     """T18 (Block D, framework-v7-8-branch-isolation): macOS-only advisory.
 
-    Scans ~/Library/LaunchAgents/*.plist files for jobs that reference
-    scripts writing to .claude/features/<feature>/. Verifies their
-    WorkingDirectory key resolves to the expected worktree path (per
-    state.json::worktree_path). Skipped on Linux/CI.
+    Scans ~/Library/LaunchAgents/*.plist files for jobs related to this repo.
 
-    Triggered by the HADF Phase 2 incident (2026-04-30): launchd plist
-    pointed at canonical repo path; long-running script wrote to wrong
-    tree. This catches the misconfiguration upstream of the actual write.
+    Original (T18): for jobs that reference scripts writing to
+    .claude/features/<feature>/, verifies their WorkingDirectory key resolves
+    to the expected worktree path (per state.json::worktree_path). Triggered
+    by the HADF Phase 2 incident (2026-04-30).
+
+    Sub-fix (a) extension (v7.9.1, 2026-06-04): for ALL FT2-related plists
+    (detected via filename heuristic + ProgramArguments + WorkingDirectory
+    pattern), validates 3 path-resolution health checks:
+      (i)   WorkingDirectory path resolves to an extant directory
+      (ii)  ProgramArguments[0] script path resolves to an extant file
+      (iii) StandardOutPath / StandardErrorPath parent dir is writable
+
+    Catches the 2026-05-19 SSD-migration drift class (5 silently-broken cron
+    days from `/Volumes/DevSSD 1/...` path hardcoding) on day 1.
+
+    Skipped on Linux/CI (launchd is macOS-only).
     """
     findings: list[dict] = []
     if sys.platform != "darwin":
@@ -714,7 +748,7 @@ def check_branch_isolation_launchd_drift() -> list[dict]:
     if not features_dir.exists():
         return findings
 
-    # Build map of feature → expected worktree
+    # Build map of feature → expected worktree (for the T18 worktree check)
     expected_worktrees: dict[str, str] = {}
     for state_path in features_dir.glob("*/state.json"):
         try:
@@ -724,9 +758,6 @@ def check_branch_isolation_launchd_drift() -> list[dict]:
         wt = state.get("worktree_path")
         if isinstance(wt, str) and wt:
             expected_worktrees[state_path.parent.name] = wt
-
-    if not expected_worktrees:
-        return findings
 
     try:
         import plistlib
@@ -742,28 +773,113 @@ def check_branch_isolation_launchd_drift() -> list[dict]:
 
         program_args = plist.get("ProgramArguments", []) or []
         wd = plist.get("WorkingDirectory")
-        if not isinstance(wd, str):
+        all_args_str = " ".join(str(a) for a in program_args)
+
+        # T18 original: feature-attached worktree mismatch check.
+        if isinstance(wd, str) and expected_worktrees:
+            for feature, expected_wt in expected_worktrees.items():
+                if f".claude/features/{feature}" in all_args_str:
+                    if not wd.startswith(expected_wt):
+                        findings.append({
+                            "feature": feature,
+                            "severity": "ADVISORY",
+                            "code": "BRANCH_ISOLATION_LAUNCHD_DRIFT",
+                            "message": (
+                                f"{feature}: launchd plist {plist_path.name} "
+                                f"references this feature in ProgramArguments but "
+                                f"WorkingDirectory ({wd}) does not start with the "
+                                f"expected worktree ({expected_wt}). Relative writes "
+                                f"from this job will resolve against the wrong tree. "
+                                f"This is the same failure mode that caused the "
+                                f"HADF Phase 2 incident (2026-04-30)."
+                            ),
+                        })
+
+        # Sub-fix (a): broader path-resolution health checks for any FT2 plist.
+        if not _plist_references_ft2(plist_path, program_args, wd):
             continue
 
-        # Check if any program arg references a feature directory
-        all_args_str = " ".join(str(a) for a in program_args)
-        for feature, expected_wt in expected_worktrees.items():
-            if f".claude/features/{feature}" in all_args_str:
-                if not wd.startswith(expected_wt):
+        # (i) WorkingDirectory exists as a directory.
+        if isinstance(wd, str) and wd:
+            wd_path = Path(wd)
+            if not wd_path.is_dir():
+                findings.append({
+                    "feature": "_launchd",
+                    "severity": "ADVISORY",
+                    "code": "BRANCH_ISOLATION_LAUNCHD_DRIFT",
+                    "message": (
+                        f"launchd plist {plist_path.name}: WorkingDirectory "
+                        f"({wd}) does not resolve to an extant directory. "
+                        f"launchd will silently exit 78 every fire. This is the "
+                        f"2026-05-19 SSD-migration class — `/Volumes/DevSSD 1/...` "
+                        f"vs canonical `/Volumes/DevSSD/...` after a mount swap."
+                    ),
+                })
+
+        # (ii) ProgramArguments[0] script path exists as a file.
+        if program_args:
+            # Skip interpreter prefix; find the first real script/binary path.
+            # `/bin/bash <script>` → check the script.
+            # `python3 <script>` → check the script.
+            first = str(program_args[0])
+            interpreter_prefixes = {
+                "/bin/bash", "/bin/sh", "/usr/bin/env",
+                "python3", "python", "/usr/bin/python3",
+            }
+            target_arg = (
+                str(program_args[1]) if (first in interpreter_prefixes
+                                          and len(program_args) > 1)
+                else first
+            )
+            # Only check absolute paths — interpreter-name forms like "bash"
+            # rely on PATH resolution and are out of scope.
+            if target_arg.startswith("/"):
+                target_path = Path(target_arg)
+                if not target_path.is_file():
                     findings.append({
-                        "feature": feature,
+                        "feature": "_launchd",
                         "severity": "ADVISORY",
                         "code": "BRANCH_ISOLATION_LAUNCHD_DRIFT",
                         "message": (
-                            f"{feature}: launchd plist {plist_path.name} "
-                            f"references this feature in ProgramArguments but "
-                            f"WorkingDirectory ({wd}) does not start with the "
-                            f"expected worktree ({expected_wt}). Relative writes "
-                            f"from this job will resolve against the wrong tree. "
-                            f"This is the same failure mode that caused the "
-                            f"HADF Phase 2 incident (2026-04-30)."
+                            f"launchd plist {plist_path.name}: ProgramArguments "
+                            f"script ({target_arg}) does not resolve to an extant "
+                            f"file. Cron will silently exit 78 every fire. Either "
+                            f"the script moved (post-refactor) or the path "
+                            f"hardcoded a stale mount point."
                         ),
                     })
+
+        # (iii) StandardOutPath + StandardErrorPath parent dir is writable.
+        for key in ("StandardOutPath", "StandardErrorPath"):
+            out_path_str = plist.get(key)
+            if not isinstance(out_path_str, str) or not out_path_str:
+                continue
+            out_parent = Path(out_path_str).parent
+            if not out_parent.exists():
+                findings.append({
+                    "feature": "_launchd",
+                    "severity": "ADVISORY",
+                    "code": "BRANCH_ISOLATION_LAUNCHD_DRIFT",
+                    "message": (
+                        f"launchd plist {plist_path.name}: {key} ({out_path_str}) "
+                        f"parent directory does not exist. launchd cannot write "
+                        f"the log file; daemon may refuse to load entirely."
+                    ),
+                })
+                continue
+            if not os.access(out_parent, os.W_OK):
+                findings.append({
+                    "feature": "_launchd",
+                    "severity": "ADVISORY",
+                    "code": "BRANCH_ISOLATION_LAUNCHD_DRIFT",
+                    "message": (
+                        f"launchd plist {plist_path.name}: {key} parent "
+                        f"({out_parent}) is not writable by current user. "
+                        f"launchd cannot capture stdout/stderr; failures will "
+                        f"be invisible to `launchctl list <label>`."
+                    ),
+                })
+
     return findings
 
 
