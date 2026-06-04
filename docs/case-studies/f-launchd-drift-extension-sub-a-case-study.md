@@ -10,7 +10,11 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs:
+  - "PR #623"
+pr_citation_exempt:
+  - pr_number: 621
+    reason: "Predecessor PR (sub-fixes (b)+(c) — different feature directory `f-launchd-drift-extension`). Cited in body for context but not contributed by this PR."
 dispatch_pattern: serial
 success_metrics:
   - name: ssd_migration_drift_detection_days
