@@ -111,19 +111,19 @@ Source-of-truth fs sweep on 2026-05-24. `[x]` = file/config/policy exists on dis
 | R8 | Configure ruff for ai-engine + `scripts/` | **[x]** Track A + Track B SHIPPED 2026-06-04 | `.ruff.toml` at FT2 root (for `scripts/` — 53 files) + `[tool.ruff]` in `ai-engine/pyproject.toml` shipped 2026-05-24. Track B (Makefile `lint-py` target + `.github/workflows/lint.yml` strict-mode job + `verify-local` chain extension) shipped 2026-06-04 post-Phase-E exit. |
 | R9 | Add coverage instrumentation (Slather + c8 + coverage.py) | **[x]** Track A SHIPPED 2026-05-25 + Track B (FT2 side) SHIPPED 2026-06-04 | iOS `.slather.yml` (FT2) + ai-engine `[tool.coverage.*]` in `pyproject.toml` shipped 2026-05-25 (Track A). Track B (FT2 side) shipped 2026-06-04 post-Phase-E exit: `make coverage-ios` + `make coverage-py` + `make coverage-report` Makefile targets (skip-cleanly-if-absent pattern matching R7/R8/R12) + `.github/workflows/coverage.yml` with two warn-only jobs (iOS Slather on macos-15, Python pytest-cov on ubuntu-latest, both `continue-on-error: true`). Coverage XML uploaded as 14-day-retention artifact so the v8.0 `GATE_TEST_MISSING` meta-gate (T1 in backlog) can calibrate against accumulated data. Web `c8` companion ships in fitme-story repo (separate PR — FT2-only session). |
 | R10 | Migrate daily-checkpoint cron from launchd → GitHub Actions | **[ ]** OPEN | Cron still launchd; calendar-safe **2026-05-22+** (`.github/workflows/*` infra-glob defer). Recommend post-Phase-E for safety |
-| R11 | Add `gitleaks` pre-commit + GH Action | **[ ]** OPEN | No `.gitleaks.toml`; calendar-safe **2026-05-22+** |
+| R11 | Add `gitleaks` pre-commit + GH Action | **[~]** GH Action SHIPPED 2026-06-04 (warn-only baseline) | `.gitleaks.toml` at FT2 root + `.github/workflows/gitleaks.yml` (PR + push + Sunday 03:00 UTC cron; `continue-on-error: true`). Pre-commit hook integration deferred to a later PR to avoid disrupting the existing hook's gate sequence. Companion to External Audit #2 (2026-06-12). |
 | R12 | Add `markdownlint-cli2` to `verify-local` | **[x]** Track A + Track B SHIPPED 2026-06-04 | `.markdownlint-cli2.jsonc` at FT2 root (warn-only; relaxed MD013/MD060/MD040 for project prose style) shipped 2026-05-24 + companion fitme-story config + devDep shipped same day. Track B (Makefile `lint-md` target + `.github/workflows/lint.yml` strict-mode job + `verify-local` chain extension) shipped 2026-06-04 post-Phase-E exit. |
 
 ### Tier 3 — Future-proofing (target 60–90 days post-v7.9)
 
 | ID | Action | Status | Evidence / blocker |
 |---|---|---|---|
-| R13 | Add `pip-audit` to ai-engine CI | **[ ]** OPEN | Not in `dependency-audit-weekly.yml`; **2026-06-05+** |
-| R14 | Add SBOM generation (`syft`) on release tags | **[ ]** OPEN | Not in any workflow; **2026-06-05+** |
+| R13 | Add `pip-audit` to ai-engine CI | **[x]** SHIPPED 2026-06-04 (warn-only baseline) | `.github/workflows/pip-audit.yml` — PR (paths-filtered to `ai-engine/**`) + Monday 07:00 UTC cron. continue-on-error: true; columns + JSON output; JSON uploaded as 14-day artifact. Companion to External Audit #2 (2026-06-12). |
+| R14 | Add SBOM generation (`syft`) on release tags | **[x]** SHIPPED 2026-06-04 (will fire on first v* tag) | `.github/workflows/sbom.yml` — `on: push.tags: v*`. Generates both SPDX-JSON and CycloneDX-JSON via `anchore/sbom-action@v0`. continue-on-error: true. Dormant until first release tag. |
 | R15 | Add Playwright smoke specs for fitme-story | **[ ]** OPEN | No `playwright.config.ts`; precondition for C2 (T6 RICE 200, now CLOSED via fitme-story #137) — Playwright still needed for `/control-room/*` E2E coverage |
 | R16 | Add `@sentry/nextjs` to fitme-story | **[ ]** OPEN | Not in fitme-story package.json; gated on Sentry-integration paused → pre-launch trigger |
-| R17 | Add commitlint for conventional-commits | **[ ]** OPEN | No commitlint config; **2026-06-05+** |
-| R18 | Add `shellcheck` to pre-commit | **[ ]** OPEN | Not in `.githooks/pre-commit`; **2026-06-05+** |
+| R17 | Add commitlint for conventional-commits | **[x]** SHIPPED 2026-06-04 (warn-only baseline) | `commitlint.config.js` at FT2 root (`@commitlint/config-conventional` + relaxed header/body length limits + project-specific type-enum) + `.github/workflows/commitlint.yml` (PR-only). continue-on-error: true; lints every commit in the PR range. |
+| R18 | Add `shellcheck` to pre-commit | **[~]** GH Action SHIPPED 2026-06-04 (warn-only baseline) | `.github/workflows/shellcheck.yml` — PR + push + workflow_dispatch via `ludeeus/action-shellcheck@master` against `scripts/` + `.githooks/pre-commit`. continue-on-error: true; severity=warning. Pre-commit-hook integration deferred to a later PR for the same reason as R11. |
 | R19 | Containerize ai-engine via devcontainer | **[ ]** OPEN | No `.devcontainer/`; **Q3 2026** with ai-engine deployment |
 
 ### Tier 4 — Aspirational (post-launch)

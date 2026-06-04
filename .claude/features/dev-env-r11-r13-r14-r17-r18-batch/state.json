@@ -1,0 +1,89 @@
+{
+  "feature_name": "dev-env-r11-r13-r14-r17-r18-batch",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T16:45:00Z",
+  "updated_at": "2026-06-04T16:45:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Chore",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/dev-env-r11-r13-r14-r17-r18-batch",
+  "scheduled_after": null,
+  "primary_metric": "5 of the remaining 7 Tier-2/Tier-3 dev-env R-items ship in a single batch as warn-only CI workflows + configs (R11 gitleaks + R13 pip-audit + R14 SBOM + R17 commitlint + R18 shellcheck)",
+  "success_metrics": [
+    "R11 gitleaks: .gitleaks.toml + .github/workflows/gitleaks.yml present; warn-only (continue-on-error: true); PR + push + Sunday cron triggers (T1, presence + yaml lint)",
+    "R13 pip-audit: .github/workflows/pip-audit.yml present; paths-filtered to ai-engine/; warn-only; columns + JSON output; 14-day artifact (T1)",
+    "R14 SBOM: .github/workflows/sbom.yml present; fires on v* tag pushes; both SPDX-JSON and CycloneDX-JSON via anchore/sbom-action@v0 (T1; dormant until first release tag)",
+    "R17 commitlint: commitlint.config.js + .github/workflows/commitlint.yml present; @commitlint/config-conventional + relaxed header (150) + body line length (200); warn-only (T1)",
+    "R18 shellcheck: .github/workflows/shellcheck.yml present; via ludeeus/action-shellcheck@master against scripts/ + .githooks/pre-commit; warn-only (T1)",
+    "dev-env-master-plan-2026-05-24.md R-table updated for all 5 items (T1, measured by section presence)"
+  ],
+  "kill_criteria": [
+    "Warn-only baseline gates PRs accidentally \u2014 mitigated by continue-on-error: true on every workflow job; verified by yaml lint",
+    "Workflow path filters miss legitimate changes \u2014 mitigated by including the workflow file itself in every paths: filter so workflow edits trigger their own run",
+    "False-positive findings flood the operator's attention budget \u2014 mitigated by .gitleaks.toml allowlist for docs/ + case-studies/ + observed-patterns.md + test fixtures; commitlint type-enum scoped to project's actual commit types"
+  ],
+  "kill_criteria_resolution": "All 3 mitigated by design. (1) Every new job uses `continue-on-error: true`; lint validated all 5 YAMLs parse. (2) `paths:` filters include `.github/workflows/<name>.yml` for the relevant workflow so a workflow edit auto-tests itself on PR. (3) gitleaks allowlist covers docs/case-studies/observed-patterns/test-fixtures explicitly; commitlint type-enum lists only the 11 conventional types the project actually uses. False-positive surface is bounded.",
+  "dispatch_pattern": "agent-driven (5 new files + 1 config + master-plan update)",
+  "case_study": "docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
+  "case_study_showcase": "",
+  "spec": "docs/master-plan/dev-env-master-plan-2026-05-24.md \u00a73 R11 + R13 + R14 + R17 + R18",
+  "predecessor_case_study": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
+  "scope_summary": "Tier-2/Tier-3 dev-env hygiene batch shipping 5 warn-only baselines in one PR. (1) R11 gitleaks GH Action + .gitleaks.toml (pre-commit hook integration deferred). (2) R13 pip-audit ai-engine workflow (PR-paths-filtered + Monday weekly cron). (3) R14 syft SBOM on v* tag pushes (SPDX-JSON + CycloneDX-JSON; dormant until first release tag). (4) R17 commitlint config + PR workflow (lints every commit in PR range). (5) R18 shellcheck GH Action against scripts/ + .githooks/ (pre-commit hook integration deferred for same reason as R11). All 5 ship continue-on-error: true so a finding produces an annotation but does not gate. Dev-env-master-plan R-table updated accordingly.",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "R11: create .gitleaks.toml allowlist + .github/workflows/gitleaks.yml warn-only workflow",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "R13: create .github/workflows/pip-audit.yml warn-only workflow (PR + Monday cron + 14d artifact)",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "R14: create .github/workflows/sbom.yml warn-only workflow (v* tag pushes; SPDX + CycloneDX)",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "description": "R17: create commitlint.config.js + .github/workflows/commitlint.yml warn-only workflow",
+      "status": "complete"
+    },
+    {
+      "id": "T5",
+      "description": "R18: create .github/workflows/shellcheck.yml warn-only workflow",
+      "status": "complete"
+    },
+    {
+      "id": "T6",
+      "description": "Update dev-env-master-plan-2026-05-24.md R-table for all 5 items",
+      "status": "complete"
+    },
+    {
+      "id": "T7",
+      "description": "Source case study at docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
+      "status": "complete"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T16:45:00Z",
+      "ended_at": null,
+      "notes": "Batch of 5 R-items shipping as warn-only baselines. All net-new files; no existing-file mutations beyond the master-plan R-table updates."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T16:45:00Z"
+      }
+    }
+  }
+}

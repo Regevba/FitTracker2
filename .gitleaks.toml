@@ -1,0 +1,47 @@
+# R11 (dev-env-master-plan §3) — gitleaks config.
+# Spec: docs/master-plan/dev-env-master-plan-2026-05-24.md R11.
+# Shipped: 2026-06-04 (FT2-side; companion to External Audit #2 on 2026-06-12).
+#
+# Posture: warn-only on PRs; the workflow uses continue-on-error: true so a
+# legacy historical leak doesn't block PR merges immediately. Migrate to
+# strict mode after a clean baseline scan + remediation pass.
+#
+# Allowlist: every existing repo path/file/pattern we have already confirmed
+# is intentional (test fixtures, sample credentials in docs, etc.). New
+# entries here MUST cite the audit/finding that confirmed the false-positive.
+
+title = "fittracker2 gitleaks config"
+
+[extend]
+# Inherit the upstream-bundled default rule set so we don't reinvent every
+# pattern. https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+# ────────────────────────────────────────────────────────────────────────────
+# Repo-specific allowlist
+# ────────────────────────────────────────────────────────────────────────────
+[allowlist]
+description = "Repo-wide allowlist for known false-positives"
+
+paths = [
+    # Documentation may reference example/dummy tokens for tutorial purposes.
+    '''docs/setup/.*\.md''',
+    # Case studies may include redacted token excerpts as evidence.
+    '''docs/case-studies/.*\.md''',
+    # The observed-patterns catalog cites example secrets when documenting
+    # W18/W19-class env-var leaks.
+    '''\.claude/integrity/observed-patterns\.md''',
+    # Test fixtures may contain canonical sample tokens (Stripe, OpenAI,
+    # etc.) for parser tests.
+    '''scripts/tests/.*''',
+    '''tests/fixtures/.*''',
+]
+
+regexes = [
+    # Generic placeholder patterns that aren't real secrets.
+    '''(?i)(your[-_]?(api[-_]?)?key|placeholder|example|dummy|fake|sample)[-_]?token''',
+    '''(?i)<.*your[-_]?(api[-_]?)?key.*>''',
+    # The `claude-haiku-4-5-20251001` model ID looks like a token to gitleaks;
+    # it isn't.
+    '''claude-(opus|sonnet|haiku)-\d+-\d+''',
+]

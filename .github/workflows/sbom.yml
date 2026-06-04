@@ -1,0 +1,48 @@
+name: SBOM
+
+# R14 (dev-env-master-plan §3): generate Software Bill of Materials via syft
+# on release tag pushes. Companion to External Audit #2 + future supply-chain
+# attestation work.
+#
+# Posture: produces an artifact; does NOT gate. If syft fails, the release
+# still proceeds — the SBOM is captured best-effort. Strict gating is a
+# future step (operator decides after first 2-3 release tags accumulate a
+# baseline format).
+#
+# All inputs static; no untrusted-input interpolation.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: syft SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Generate SBOM (SPDX JSON)
+        continue-on-error: true
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          artifact-name: sbom-spdx.json
+
+      - name: Generate SBOM (CycloneDX JSON)
+        continue-on-error: true
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          artifact-name: sbom-cyclonedx.json

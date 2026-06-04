@@ -1,0 +1,63 @@
+name: pip-audit
+
+# R13 (dev-env-master-plan §3): Python dependency vulnerability audit for the
+# ai-engine. Complements the existing weekly npm-audit workflow.
+#
+# Posture: warn-only baseline; continue-on-error: true.
+# All inputs are static; no untrusted-input interpolation.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'ai-engine/**'
+      - '.github/workflows/pip-audit.yml'
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: pip-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: pip-audit (ai-engine)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install pip-audit
+        run: pip install --quiet pip-audit
+
+      - name: Run pip-audit (columns)
+        continue-on-error: true
+        working-directory: ai-engine
+        run: pip-audit --strict --format columns
+
+      - name: Run pip-audit (JSON)
+        continue-on-error: true
+        working-directory: ai-engine
+        run: pip-audit --format json --output pip-audit-report.json
+
+      - name: Upload pip-audit JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-engine-pip-audit-report
+          path: ai-engine/pip-audit-report.json
+          if-no-files-found: ignore
+          retention-days: 14
