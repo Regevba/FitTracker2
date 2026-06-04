@@ -55,8 +55,13 @@ jobs:
       - name: Install SwiftLint via Homebrew
         run: brew install swiftlint
 
-      - name: Run SwiftLint (strict — fail on warnings)
-        run: swiftlint lint --strict --config .swiftlint.yml
+      - name: Run SwiftLint (warn-only baseline)
+        # Per master plan: Track A shipped warn-only baseline (.swiftlint.yml).
+        # Track B keeps the same posture in CI — surface findings without
+        # gating PRs. Strict promotion happens at a future calibration step
+        # (similar to F16 advisory→enforced flow).
+        continue-on-error: true
+        run: swiftlint lint --config .swiftlint.yml
 
   lint-py:
     name: lint-py (ruff)
@@ -76,7 +81,10 @@ jobs:
       - name: Install ruff
         run: pip install --quiet ruff
 
-      - name: Run ruff (strict — fail on any finding)
+      - name: Run ruff (warn-only baseline)
+        # Per master plan: Track A shipped warn-only baseline (.ruff.toml).
+        # Surfaces findings without gating PRs at this stage.
+        continue-on-error: true
         run: ruff check scripts/ ai-engine/
 
   lint-md:
@@ -97,5 +105,9 @@ jobs:
       - name: Install markdownlint-cli2
         run: npm install -g markdownlint-cli2
 
-      - name: Run markdownlint-cli2
+      - name: Run markdownlint-cli2 (warn-only baseline)
+        # Per master plan: Track A shipped warn-only baseline
+        # (.markdownlint-cli2.jsonc, relaxed MD013/MD060/MD040). Surfaces
+        # findings without gating PRs at this stage.
+        continue-on-error: true
         run: markdownlint-cli2 'docs/**/*.md' 'CLAUDE.md' 'README.md' 'AGENTS.md'
