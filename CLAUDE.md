@@ -395,6 +395,30 @@ The framework now has **3 layers of gate testing** instead of 2:
 
 **PR provenance:** #607 (Phase 0+1+2 scoping) + #608 (T2+T3 baseline + harness scaffold) + #610 (T4a fixtures + Q6 finding) + #611 (REPO_ROOT_OVERRIDE fix) + #612 (T4a unblock + T4b/c/d + T6 CI + T7 regression proof).
 
+## v7.9.1 F2 — Phase 0 Reality-Check Sub-step (shipped 2026-06-04)
+
+`/pm-workflow` Phase 0 gains a new MANDATORY sub-step (Phase 0.1) right after Phase 0.0's unified preflight. For the active feature, run:
+
+```bash
+make phase-0-reality-check FEATURE=<name>
+```
+
+The check reads `state.json::tasks` and cross-checks each `pending` / `in_progress` / `open` task against the last 30 days of evidence in the codebase:
+
+- **Git log subjects** — has anyone shipped a matching commit?
+- **Merged PR titles** (FT2 + fitme-story) — has either repo merged a matching PR?
+- **Tier 2.2 log events** in `.claude/logs/<feature>.log.json` — has anyone logged an implementation event mentioning the task ID or its keywords?
+
+Output: stdout summary + structured JSON at `.claude/shared/phase-0-reality-check.json`. Advisories surface as "**this task may already be done**" — never blocking, always operator-judgment.
+
+**Why F2 is load-bearing.** The post-squash-merge state-drift pattern was documented across 5 confirmed instances in 2026-06-01 → 2026-06-04 alone (C5 → D1 → C2/C3/C5/C6 batch → trend-alerts-hrv → multiple F16 closure attempts). Each time, `state.json::tasks` said `pending` but the file changes were already on `main` via a prior PR. Without Phase 0.1, the next Phase 0 schedules new work on top of stale state. **F2 is the mechanical defense** — surface the drift BEFORE scheduling, so the task list gets reconciled first (likely via `make close-feature FEATURE=<name>`) and Phase 0 starts against accurate state.
+
+**Threshold:** the gate requires ≥2 distinct evidence items (across git + PRs + log events) to flag a task. Single-item matches are silent — keeps false-positive rate manageable. Words like "the", "test", "implement" are filtered as noise.
+
+**Block phase advancement** if Phase 0.1 flags ≥1 advisory AND the operator has not explicitly acknowledged the finding (via `state.json::phase_0_reality_check_acknowledged: ["T3 reviewed — not the same scope"]` or by flipping the affected task's status).
+
+**Spec:** [`docs/master-plan/infra-master-plan-2026-05-12.md`](docs/master-plan/infra-master-plan-2026-05-12.md) §3.1 Theme A F2 (RICE 42.7).
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:

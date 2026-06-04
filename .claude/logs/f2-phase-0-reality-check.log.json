@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f2-phase-0-reality-check",
+  "title": "f2 phase 0 reality check",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-04T14:26:36Z",
+  "updated_at": "2026-06-04T14:26:36Z",
+  "events": [
+    {
+      "timestamp": "2026-06-04T14:26:36Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "F2 implementation\u2192complete 2026-06-04T15:00Z. Script + 16 tests pass in 0.15s + Makefile target + Phase 0.1 in /pm-workflow SKILL.md + CLAUDE.md + dev-guide row + case study + fitme-story showcase MDX slot 46.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

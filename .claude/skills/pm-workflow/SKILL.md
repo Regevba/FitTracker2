@@ -784,6 +784,32 @@ Block phase advancement if the preflight reports `blocking > 0`.
 
 Cross-reference the freshness output against any operator-gate inventory, status survey, or files you're about to edit. See [W20](.claude/integrity/observed-patterns.md#w20--stale-session-state-inventory-drift-2026-05-28) + [`feedback_cross_layer_freshness_check.md`](../../memory/feedback_cross_layer_freshness_check.md).
 
+### Phase 0.1 — Per-feature reality-check (v7.9.1+ F2, MANDATORY for Enhancement / Fix / Chore)
+
+After Phase 0.0 preflight, run the per-feature reality-check:
+
+```bash
+make phase-0-reality-check FEATURE=<feature-name>
+# or equivalently:
+python3 scripts/phase-0-reality-check.py --feature <feature-name>
+```
+
+This reads the feature's `state.json::tasks` list and cross-checks each `pending` / `in_progress` / `open` task against the last 30 days of:
+
+- **Git log subjects** — has anyone shipped a commit whose subject contains the task's keywords?
+- **Merged PR titles** (FT2 + fitme-story) — has either repo merged a PR matching the task?
+- **Tier 2.2 log events** in `.claude/logs/<feature>.log.json` — has anyone logged an `implementation` or `phase_transition` event mentioning the task ID or keywords?
+
+Output: stdout summary + structured JSON at `.claude/shared/phase-0-reality-check.json`. Advisories surface as "**this task may already be done**" — never blocking, always operator-judgment.
+
+**Why this matters.** I (the agent + operator) repeatedly hit the post-squash-merge state-drift pattern in 2026-06-01 → 2026-06-04: 5 confirmed instances where state.json::tasks said `pending` but the file changes were already on `main` via a prior PR. Phase 0.1 surfaces this BEFORE the new work gets scheduled, so the task list gets reconciled first (likely via `make close-feature FEATURE=<name>`) and the new Phase 0 starts against accurate state.
+
+**When this is mandatory:** for any `Enhancement`, `Fix`, or `Chore` where the parent feature exists. **Optional but recommended:** new `Feature` work where the topic intersects with recent shipped work — false positives are fine since they cost nothing to dismiss.
+
+**Block phase advancement** if Phase 0.1 flags ≥1 advisory AND the operator has not explicitly acknowledged the finding (via `state.json::phase_0_reality_check_acknowledged: ["T3 reviewed — not the same scope"]` or by flipping the affected task's status).
+
+Spec: [`docs/master-plan/infra-master-plan-2026-05-12.md`](../../../docs/master-plan/infra-master-plan-2026-05-12.md) §3.1 Theme A F2 (RICE 42.7).
+
 ### Phase 0 variant by work subtype
 
 | Subtype | Phase 0 primary output | Skills dispatched |
