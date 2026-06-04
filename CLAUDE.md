@@ -455,6 +455,34 @@ The new sub-checks ship in **ADVISORY mode** — no calibration window because t
 
 **F-LAUNCHD-DRIFT-EXTENSION fully closed.** Sub-fixes (b)+(c) shipped via PR #621 (`ed20cbf`, 2026-06-04); sub-fix (a) shipped this PR. All three reinforce the same posture: cron context is a different execution environment than interactive — make its failures loud, bounded, and self-diagnostic.
 
+## Deployed-URL probe (v7.9.1+)
+
+Closes the silent-pass class where **what the deployed HTML SAYS is the URL ≠ what the receiving service can actually fetch + process**. Trigger incidents: W18 (`<meta property="og:image">` pointed at a 404 path for 6 days; LinkedIn/Twitter/HN got no rich preview) + W19 (GA measurement ID had a trailing `\n` from env-var paste residue; Google Measurement Protocol rejected every event silently for 6 days).
+
+Both bugs passed local dev + Vercel preview-deploy inspection because neither runs the receiving-service round-trip. Both manifested only in production.
+
+**Reusable substrate at [`scripts/probe-deployed-url.sh`](scripts/probe-deployed-url.sh).** Bash helper invokable from any GH Actions workflow's `run:` block. 4 assertion modes:
+
+```bash
+# W18 — og:image is reachable
+scripts/probe-deployed-url.sh https://fitme.dev/og.png \
+    --status 200 --content-type "image/"
+
+# W19 — gtag URL has no encoded newline
+scripts/probe-deployed-url.sh "https://www.googletagmanager.com/gtag/js?id=$GA_ID" \
+    --status 200 --body-not-contains "%0A"
+
+# Canonical / sitemap / robots reachability
+scripts/probe-deployed-url.sh https://fitme.dev/sitemap.xml --status 200 --content-type "xml"
+scripts/probe-deployed-url.sh https://fitme.dev/robots.txt --status 200 --body-contains "Sitemap:"
+```
+
+**Exit codes:** 0 (all assertions pass) / 1 (assertion failed) / 2 (usage error) / 3 (curl/network error).
+
+**Test coverage:** [`scripts/tests/test_probe_deployed_url.py`](scripts/tests/test_probe_deployed_url.py) — 12 tests covering all 4 assertion modes + the W18 status-mismatch reproducer + the W19 body-not-contains reproducer + curl-error fallback. Runs in ~1.6s against a stdlib `http.server`-backed test harness (no external network).
+
+**fitme-story integration ships separately.** The shell helper is repo-agnostic; the fitme-story workflow YAML that calls it on each successful Vercel deploy is a fitme-story-side PR (not in scope for the FT2 substrate PR).
+
 ## Soak-window discipline (v7.9.1+)
 
 During any framework-version soak window (Phase E for v7.X, Phase Y for future versions), new features that ship during the soak MUST either (a) freeze adoption metric collection until soak exit, OR (b) backfill adoption metrics in the same PR that introduces the feature's `state.json`.

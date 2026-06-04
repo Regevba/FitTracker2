@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f-deployed-url-probe-ft2",
+  "title": "f deployed url probe ft2",
+  "work_type": "Feature",
+  "current_phase": "implementation",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-04T16:58:17Z",
+  "updated_at": "2026-06-04T16:58:17Z",
+  "events": [
+    {
+      "timestamp": "2026-06-04T16:58:17Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F-DEPLOYED-URL-PROBE FT2 substrate: scripts/probe-deployed-url.sh (111 LOC, 4 assertion modes) + 12 pytest tests passing in 1.60s + CLAUDE.md reference + docket strike. fitme-story integration deferred.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "feature_name": "f-deployed-url-probe-ft2",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T16:55:00Z",
+  "updated_at": "2026-06-04T16:55:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/f-deployed-url-probe-ft2",
+  "scheduled_after": null,
+  "primary_metric": "Reusable shell helper for deployed-URL probing that closes the W18 (og:image 404) + W19 (encoded-newline corruption) silent-pass class \u2014 both repos can integrate it without duplicating logic",
+  "success_metrics": [
+    "scripts/probe-deployed-url.sh exists and is executable; takes URL + 4 assertion flags (--status, --content-type, --body-contains, --body-not-contains) (T1, measured by presence + chmod)",
+    "12-test pytest suite at scripts/tests/test_probe_deployed_url.py covers: usage error, status pass/fail, content-type pass/fail, body-contains pass/fail, body-not-contains pass/fail (W19 reproducer), compound assertions, unknown option, curl-error-on-unreachable-host (T1, measured by `pytest -q`)",
+    "Unit tests pass in <3s using stdlib-only test server (http.server + threading); no external network (T1, measured locally \u2014 12 passed in 1.60s)",
+    "fitme-story side workflow integration can copy-paste an invocation example from the script's docstring + CLAUDE.md reference (T2, narrative \u2014 separate PR in fitme-story repo)"
+  ],
+  "kill_criteria": [
+    "Helper fails to detect a real W18/W19-class bug on a real deploy \u2014 would mean the assertion model is incomplete",
+    "False-positive rate on legitimate URLs is high enough that the workflow gets disabled",
+    "Shell script has injection vulnerabilities through unescaped URL/arg values"
+  ],
+  "kill_criteria_resolution": "All 3 mitigated by design. (1) The 4 assertion modes (status, content-type, body-contains, body-not-contains) match the 2 documented silent-pass classes exactly \u2014 W18 needs status check on the og:image URL; W19 needs body-not-contains for %0A. Tests `test_body_not_contains_fail_on_newline_corruption` and `test_status_mismatch_fail` reproduce both classes. (2) The helper is invoked by the workflow caller, not run autonomously \u2014 the operator's workflow YAML decides which URLs to probe, so false-positive rate is bounded by the workflow author's discretion. (3) The script uses `set -euo pipefail` + double-quoted variable expansions + positional argument parsing (no eval/source/sh -c). curl is invoked with separate --output and --dump-header so the URL is never injected into a shell-interpreted context. Test `test_unknown_option_usage_error` enforces strict option parsing.",
+  "dispatch_pattern": "agent-driven (1 script + 1 test file + docs)",
+  "case_study": "docs/case-studies/f-deployed-url-probe-ft2-case-study.md",
+  "case_study_showcase": "",
+  "spec": ".claude/shared/v7-9-1-candidates.md F-DEPLOYED-URL-PROBE",
+  "predecessor_case_study": "docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
+  "scope_summary": "FT2-side substrate for F-DEPLOYED-URL-PROBE. Closes the silent-pass class where the deployed HTML SAYS a URL is reachable but the receiving service can't actually fetch + process it (W18 og:image 404 + W19 GA_ID encoded-newline). FT2 ships a reusable bash helper (scripts/probe-deployed-url.sh) with 4 assertion modes (--status, --content-type, --body-contains, --body-not-contains) + a 12-test pytest suite that runs against a stdlib http.server (no external network). fitme-story-side workflow integration ships separately in that repo. The helper is callable from any GH Actions workflow `run:` block; CLAUDE.md adds a reference section.",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "scripts/probe-deployed-url.sh \u2014 reusable shell helper with 4 assertion flags, set -euo pipefail, quoted expansions",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "scripts/tests/test_probe_deployed_url.py \u2014 12 tests covering all assertion modes + W18/W19 reproducers + curl-error fallback",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "Smoke-test: pytest -q runs all 12 tests in <3s with no external network",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "description": "CLAUDE.md \u2014 add 'Deployed-URL probe (v7.9.1+)' reference section under Data Integrity Framework",
+      "status": "complete"
+    },
+    {
+      "id": "T5",
+      "description": "Source case study at docs/case-studies/f-deployed-url-probe-ft2-case-study.md",
+      "status": "complete"
+    },
+    {
+      "id": "T6",
+      "description": "Update .claude/shared/v7-9-1-candidates.md F-DEPLOYED-URL-PROBE \u2014 mark FT2 side as closed; fitme-story workflow integration remains open",
+      "status": "complete"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T16:55:00Z",
+      "ended_at": null,
+      "notes": "FT2-side substrate only. Reusable across repos; the workflow integration in fitme-story is a separate PR in that repo (per operator FT2-only directive)."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T16:55:00Z"
+      }
+    }
+  }
+}
