@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "updated": "2026-06-03T17:15:21Z",
+  "updated": "2026-06-04T06:06:12Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 87,
-    "features_scanned": 85,
+    "features_scanned": 87,
     "integrity_snapshot_files": 12,
     "integrity_cycle_snapshots": 10,
     "trend_ready": true,
-    "open_debt_items": 2
+    "open_debt_items": 1
   },
   "coverage": {
     "date_written": {
@@ -42,9 +42,9 @@
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 27,
-      "missing": 60,
-      "percent": 31.0,
+      "present": 28,
+      "missing": 59,
+      "percent": 32.2,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -54,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 17,
-      "missing": 70,
-      "percent": 19.5,
+      "present": 18,
+      "missing": 69,
+      "percent": 20.7,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -66,12 +66,10 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 84,
-      "missing": 1,
-      "percent": 98.8,
-      "examples": [
-        "trend-alerts-hrv"
-      ]
+      "present": 87,
+      "missing": 0,
+      "percent": 100.0,
+      "examples": []
     }
   },
   "integrity_cycle": {
@@ -84,20 +82,10 @@
   },
   "debt_items": [
     {
-      "id": "state_case_study_linkage",
-      "title": "Features missing case-study linkage in state.json",
-      "severity": "low",
-      "count": 1,
-      "examples": [
-        "trend-alerts-hrv"
-      ],
-      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
-    },
-    {
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
       "severity": "low",
-      "count": 60,
+      "count": 59,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
