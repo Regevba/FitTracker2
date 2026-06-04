@@ -1,0 +1,17 @@
+{
+  "_comment": "Transition current_phase=complete WITH case_study link + populated kill_criteria_resolution. Staged case-study.md has all 7 required fields. Gate must NOT fire.",
+  "current_phase": "complete",
+  "case_study": "docs/case-studies/_test-fixture-case-study.md",
+  "kill_criteria_resolution": "all_not_fired_2026-06-04",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T00:00:03Z",
+        "ended_at": "2026-06-04T00:00:04Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T00:00:05Z"
+      }
+    }
+  }
+}

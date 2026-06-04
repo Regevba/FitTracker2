@@ -264,6 +264,13 @@ def stage_fixture(
     make_state_json(overrides, dest)
     _run_git(repo, "add", target_path)
 
+    # Read back the merged state to determine the destination phase — the
+    # auto-generated log event must point at the final current_phase so
+    # PHASE_TRANSITION_NO_LOG finds a matching record.
+    with dest.open("r", encoding="utf-8") as f:
+        merged_state = json.load(f)
+    target_phase = merged_state.get("current_phase") or "implementation"
+
     # Companion files — baseline first, per-fixture overrides last.
     baseline_dir = (
         Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "_baseline"
@@ -277,12 +284,12 @@ def stage_fixture(
         shutil.copy2(src, dest_path)
         _run_git(repo, "add", rel_dest)
 
-    # 1. Generate a baseline log with a fresh-timestamp phase_started event.
-    # PHASE_TRANSITION_NO_LOG requires the matching event to be ≤15 min old.
-    # Static log files in fixtures cannot satisfy this; we generate at
-    # stage time using the current process clock. This is a TEST-ONLY
-    # construction — production logs are written by append-feature-log.py.
-    _write_fresh_baseline_log(repo, ".claude/logs/_test-fixture.log.json")
+    # 1. Generate a baseline log with a fresh-timestamp phase_started event
+    # pointed at the merged state's current_phase. PHASE_TRANSITION_NO_LOG
+    # requires the matching event to be ≤15 min old.
+    _write_fresh_baseline_log(
+        repo, ".claude/logs/_test-fixture.log.json", target_phase=target_phase
+    )
     _run_git(repo, "add", ".claude/logs/_test-fixture.log.json")
     # 2. Baseline case study (only if a baseline copy exists)
     _maybe_copy(
@@ -302,16 +309,18 @@ def stage_fixture(
     return dest
 
 
-def _write_fresh_baseline_log(repo: Path, rel_path: str) -> None:
+def _write_fresh_baseline_log(
+    repo: Path, rel_path: str, target_phase: str = "implementation"
+) -> None:
     """Write a baseline feature.log.json with a current-time phase_started event.
 
     PHASE_TRANSITION_NO_LOG (scripts/check-state-schema.py) requires the
-    matching event to be ≤PHASE_EVENT_FRESHNESS_MIN (15 min) old. Static
-    fixtures cannot satisfy this in long-lived test infra, so we generate
-    at stage time using the current process clock.
+    matching event to be ≤PHASE_EVENT_FRESHNESS_MIN (15 min) old AND have
+    `phase` matching the state's new current_phase. Static fixtures cannot
+    satisfy the timing constraint, so we generate at stage time using the
+    current process clock and the merged state's current_phase.
 
-    Mirrors append-feature-log.py's event shape. The implementation phase
-    matches the baseline state.json's current_phase.
+    Mirrors append-feature-log.py's event shape.
     """
     from datetime import datetime, timezone
 
@@ -321,7 +330,7 @@ def _write_fresh_baseline_log(repo: Path, rel_path: str) -> None:
         "events": [
             {
                 "event_type": "phase_started",
-                "phase": "implementation",
+                "phase": target_phase,
                 "timestamp": now_iso,
                 "summary": "F16 try-repo fixture — fresh phase_started event "
                 "to satisfy PHASE_TRANSITION_NO_LOG freshness window.",

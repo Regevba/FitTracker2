@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:34:52Z",
-  "updated_at": "2026-06-04T06:57:21Z",
+  "updated_at": "2026-06-04T12:09:40Z",
   "events": [
     {
       "timestamp": "2026-06-04T05:34:52Z",
@@ -79,6 +79,17 @@
       "event_type": "implementation",
       "phase": "implementation",
       "summary": "T4a UNBLOCKED + SHIPPED 2026-06-04T07:30Z. Removed pytestmark.skip; added REPO_ROOT_OVERRIDE=str(repo) to env_overrides. Surfaced + fixed 4 more baseline issues during enabling: cu_v2 needed factors+total+tier_class, throwaway repo needed feature/_test-fixture branch, .claude/logs/* gitignore was blocking adds, log file event needs canonical  field not . 39/39 tests pass in 6.23s (T2 12 + T3 17 + T4a 10). T4a fully complete; T4b/c/d next on this branch.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T12:09:40Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T4b SHIPPED 2026-06-04T07:55Z. 3 closure gates exercised end-to-end (FEATURE_CLOSURE_COMPLETENESS, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS) + 1 structurally-skipped (STATE_OWNER_LOCATION_MISMATCH path_neutral throwaway-repo issue). 45/45+1skip in 10.04s.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
