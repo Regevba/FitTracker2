@@ -46,35 +46,12 @@ SCHEMA_GATES = [
     "STATE_OWNER_INVALID",
 ]
 
-# PRD §3.5 Q6 finding (2026-06-04 T4 surfacing): scripts/check-state-schema.py
-# hardcodes `REPO_ROOT = Path(__file__).resolve().parent.parent` (line 58).
-# When the harness runs pre-commit in a throwaway repo, REPO_ROOT still
-# resolves to canonical FT2. The state.json staged at the throwaway-repo
-# path (e.g., `.claude/features/_test-fixture/state.json`) is then looked up
-# at `<FT2-root>/.claude/features/_test-fixture/state.json` which does NOT
-# exist, so `collect_staged_state_files()` returns empty and every gate
-# skips with "No state.json files to validate".
-#
-# This is exactly the integration-surface class of bug F16 was designed to
-# catch — and it caught a real one in the framework's own infrastructure.
-#
-# The fix is a small production change: add `REPO_ROOT_OVERRIDE` env var
-# support to scripts/check-state-schema.py + scripts/check-case-study-preflight.py.
-# Tracked as fix-tier follow-up PR (not in scope for THIS PR, which scoped
-# F16 Phase 4 T2+T3+T4a fixtures).
-#
-# Until the override ships, these positive-fixture tests are SKIPPED with a
-# clear reason. The fixtures themselves and the harness are validated by
-# T2+T3 tests (29 already-passing). When the override lands, remove the
-# `pytestmark` skip and the tests will exercise end-to-end.
-pytestmark = pytest.mark.skip(
-    reason=(
-        "F16 PRD Q6 — gate dispatchers hardcode REPO_ROOT to where the .py "
-        "lives; subprocess-invoked tests cannot redirect it. Fix-tier "
-        "follow-up PR will add REPO_ROOT_OVERRIDE env var. See "
-        ".claude/features/f16-try-repo-harness/prd.md §3.5 Q6."
-    )
-)
+# PRD §3.5 Q6 finding (RESOLVED 2026-06-04 via PR #611): the fix-tier PR
+# added `REPO_ROOT_OVERRIDE` env var support to scripts/check-state-schema.py
+# + scripts/check-case-study-preflight.py. The harness now passes
+# `REPO_ROOT_OVERRIDE=<throwaway_repo>` in env_overrides so the gates look
+# up staged state.json files under the throwaway path instead of canonical
+# FT2. See `_run_fixture` below.
 
 
 def _run_fixture(
@@ -82,12 +59,18 @@ def _run_fixture(
 ) -> tuple[int, str, str]:
     """Bootstrap a throwaway repo, stage the fixture, run pre-commit.
 
+    Sets `REPO_ROOT_OVERRIDE=<throwaway_repo>` so the gate dispatchers'
+    `REPO_ROOT` module constant resolves to the throwaway path (Q6 fix,
+    PR #611). Without this, `collect_staged_state_files()` would look up
+    files under canonical FT2 root and silently drop them.
+
     Returns (returncode, stdout, stderr).
     """
     repo = make_throwaway_repo(tmp_path)
     stage_fixture(fixture_dir, repo)
     env_overrides = {
         "GATE_COVERAGE_LEDGER_DISABLED": "1",
+        "REPO_ROOT_OVERRIDE": str(repo),
         **scrub_home_env(tmp_path),
     }
     result = run_precommit(repo, env_overrides=env_overrides)

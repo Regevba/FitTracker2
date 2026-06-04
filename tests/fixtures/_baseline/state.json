@@ -1,5 +1,5 @@
 {
-  "feature_name": "_baseline-fixture",
+  "feature_name": "_test-fixture",
   "current_phase": "implementation",
   "created_at": "2026-06-04T00:00:00Z",
   "updated_at": "2026-06-04T00:00:00Z",
@@ -11,7 +11,7 @@
   "state_owner": "ft2",
   "isolation_opt_out": false,
   "isolation_opt_out_reason": "",
-  "branch": "feature/_baseline-fixture",
+  "branch": "feature/_test-fixture",
   "scheduled_after": null,
   "primary_metric": "F16 try-repo harness fixture baseline — read by make_state_json() builder",
   "success_metrics": [
@@ -22,7 +22,7 @@
   ],
   "kill_criteria_resolution": "",
   "dispatch_pattern": "n/a (test fixture)",
-  "case_study": "docs/case-studies/_baseline-fixture-case-study.md",
+  "case_study": "docs/case-studies/_test-fixture-case-study.md",
   "spec": "docs/master-plan/infra-master-plan-2026-05-12.md F16",
   "scope_summary": "Minimally-valid state.json that satisfies every write-time gate at v7.9.1. Builder overlays per-fixture deltas on top of this canonical baseline. Mutating this file forces every fixture to re-validate.",
   "related_prs": [],
@@ -60,10 +60,14 @@
     {"event": "Read", "path": "scripts/check-state-schema.py", "ts": "2026-06-04T00:00:04Z"}
   ],
   "cu_v2": {
-    "complexity": 1,
-    "blast_radius": 1,
-    "novelty": 1,
-    "verification_difficulty": 1
+    "factors": {
+      "complexity": 0.25,
+      "blast_radius": 0.25,
+      "novelty": 0.25,
+      "verification_difficulty": 0.25
+    },
+    "total": 1.0,
+    "tier_class": "B_medium"
   },
   "tasks": [
     {"id": "T1", "description": "Baseline fixture stub task", "status": "done", "completed_at": "2026-06-04T00:00:05Z"}

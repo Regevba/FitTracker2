@@ -52,7 +52,7 @@ def test_baseline_is_valid_json():
         data = json.load(f)
     assert isinstance(data, dict)
     assert "feature_name" in data
-    assert data["feature_name"] == "_baseline-fixture"
+    assert data["feature_name"] == "_test-fixture"
 
 
 def test_baseline_has_minimal_required_fields():
