@@ -1,0 +1,104 @@
+{
+  "feature_name": "f2-phase-0-reality-check",
+  "current_phase": "complete",
+  "created_at": "2026-06-04T14:35:00Z",
+  "updated_at": "2026-06-04T15:00:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/f2-phase-0-reality-check",
+  "scheduled_after": null,
+  "linear": "FIT-90",
+  "primary_metric": "Phase 0 detects roadmap items + state.json::tasks already shipped against current state BEFORE scheduling them as new work",
+  "success_metrics": [
+    "scripts/phase-0-reality-check.py runs in <5s for any feature's state.json::tasks list (T1, measured via time)",
+    "Script emits structured advisory findings to stdout + writes .claude/shared/phase-0-reality-check.json (T1)",
+    "Phase 0.1 step added to /pm-workflow SKILL.md is auto-invoked after Phase 0.0 preflight (T1, encoded in SKILL.md)",
+    "At least 1 drift case caught in the next 90 days by the new check (T2, narrative \u2014 counts the drift-pattern instances I documented today as the calibration baseline)"
+  ],
+  "kill_criteria": [
+    "Script wall-clock >10s \u2014 operators will start skipping the step",
+    "False-positive rate >20% during 14-day calibration window \u2014 operators tune out the advisories",
+    "Step never catches a real drift case in the next 90 days \u2014 the discipline is not load-bearing; demote"
+  ],
+  "kill_criteria_resolution": "K1 (wall-clock) measured at 0.09s on a 14-task feature; well under 10s threshold. K2 + K3 require 14-90d operation to evaluate.",
+  "dispatch_pattern": "agent-driven (script + SKILL.md edit)",
+  "case_study": "docs/case-studies/f2-phase-0-reality-check-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/46-f2-phase-0-reality-check.mdx",
+  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md \u00a73.1 Theme A F2 (RICE 42.7)",
+  "predecessor_case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
+  "scope_summary": "Add Phase 0.1 sub-step `scripts/phase-0-reality-check.py` invoked after the unified preflight. For a given feature, reads state.json::tasks and cross-checks each pending task against recent (\u226430d) git history + recent merged PR titles + recent feature.log.json events to surface 'this task may already be done' advisories. Output: stdout summary + .claude/shared/phase-0-reality-check.json. Wire into /pm-workflow SKILL.md as Phase 0.1.\n\nMotivation: I documented 5 confirmed instances of post-squash-merge state-drift this week alone (C5 \u2192 D1 \u2192 C2/C3/C5/C6 batch \u2192 trend-alerts-hrv \u2192 today's F16/F17 closures). F2 is the mechanical defense against this class. Out of scope: cross-repo task tracking (Linear-only), auto-flipping tasks to done (requires operator confirmation), historical backfill (forward-only).",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Write scripts/phase-0-reality-check.py \u2014 takes --feature <name>, reads state.json::tasks, checks each pending task against recent git log + merged PRs + Tier 2.2 log events",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    },
+    {
+      "id": "T2",
+      "description": "Unit tests at scripts/tests/test_phase_0_reality_check.py \u2014 empty tasks, all-done, all-pending, mixed; git log mock; merged-PR mock; log-event mock",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    },
+    {
+      "id": "T3",
+      "description": "Add Phase 0.1 section to .claude/skills/pm-workflow/SKILL.md right after Phase 0.0",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    },
+    {
+      "id": "T4",
+      "description": "Make target `make phase-0-reality-check FEATURE=<name>` invoking the script",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    },
+    {
+      "id": "T5",
+      "description": "CLAUDE.md v7.9.1 F2 section",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    },
+    {
+      "id": "T6",
+      "description": "Dev-guide v7.9.1 row updated with F2",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    },
+    {
+      "id": "T7",
+      "description": "Source case study + fitme-story showcase MDX slot 46",
+      "status": "done",
+      "completed_at": "2026-06-04T15:00:00Z"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T14:35:00Z",
+      "ended_at": "2026-06-04T15:00:00Z",
+      "notes": "F2 is workflow-only (no gate code, no advisory window). Per infra-master-plan \u00a73.6.3 + post-v7-9-candidate-plan F-9: 'F2 + F6 are workflow/doc changes (single-commit reversible) and skip B\u2013C; ship directly with verify-local validation.' Skipping Phase 0+1+2 since the spec is concrete + single-script scope."
+    },
+    "complete": {
+      "started_at": "2026-06-04T15:00:00Z",
+      "ended_at": null,
+      "notes": "All T1-T7 done."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T14:35:00Z",
+        "ended_at": "2026-06-04T15:00:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T15:00:00Z"
+      }
+    }
+  }
+}

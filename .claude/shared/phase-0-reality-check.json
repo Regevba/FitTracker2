@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-06-04T14:17:50Z",
+  "feature": "hadf-phase2bis-replication",
+  "window_days": 30,
+  "task_count": 5,
+  "flagged_count": 1,
+  "findings": [
+    {
+      "id": "A",
+      "status": "done",
+      "description": "",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [],
+        "log_events": [
+          {
+            "event_type": "phase_started",
+            "summary": "HADF Phase 2-bis Feature stub created; Block A scaffolding starts",
+            "timestamp": "2026-05-12T07:22:43Z"
+          },
+          {
+            "event_type": "phase_transition",
+            "summary": "Block A scaffolding complete; entering tasks phase",
+            "timestamp": "2026-05-12T09:44:09Z"
+          },
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
+            "timestamp": "2026-05-28T13:48:23Z"
+          },
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
+            "timestamp": "2026-06-02T00:00:00Z"
+          }
+        ]
+      },
+      "match_score": 4,
+      "advisory": null
+    },
+    {
+      "id": "B13",
+      "status": "done",
+      "description": "",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [],
+        "log_events": [
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
+            "timestamp": "2026-05-28T13:48:23Z"
+          }
+        ]
+      },
+      "match_score": 1,
+      "advisory": null
+    },
+    {
+      "id": "B14",
+      "status": "done",
+      "description": "",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [],
+        "log_events": [
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
+            "timestamp": "2026-05-28T13:48:23Z"
+          },
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
+            "timestamp": "2026-06-02T00:00:00Z"
+          }
+        ]
+      },
+      "match_score": 2,
+      "advisory": null
+    },
+    {
+      "id": "B15",
+      "status": "pending",
+      "description": "",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [],
+        "log_events": [
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
+            "timestamp": "2026-06-02T00:00:00Z"
+          }
+        ]
+      },
+      "match_score": 1,
+      "advisory": null
+    },
+    {
+      "id": "C",
+      "status": "pending",
+      "description": "",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [],
+        "log_events": [
+          {
+            "event_type": "phase_started",
+            "summary": "HADF Phase 2-bis Feature stub created; Block A scaffolding starts",
+            "timestamp": "2026-05-12T07:22:43Z"
+          },
+          {
+            "event_type": "phase_transition",
+            "summary": "Block A scaffolding complete; entering tasks phase",
+            "timestamp": "2026-05-12T09:44:09Z"
+          },
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
+            "timestamp": "2026-05-28T13:48:23Z"
+          },
+          {
+            "event_type": "sub_experiment_closed",
+            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
+            "timestamp": "2026-06-02T00:00:00Z"
+          }
+        ]
+      },
+      "match_score": 4,
+      "advisory": "this task may already be done"
+    }
+  ]
+}
