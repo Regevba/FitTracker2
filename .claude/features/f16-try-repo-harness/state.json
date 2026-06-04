@@ -117,8 +117,9 @@
     },
     {
       "id": "T5",
-      "description": "32 parametrized test functions (16 positive + 16 negative) + Mechanism A canonical-ledger-untouched assertion (Q5 enforcement)",
-      "status": "pending"
+      "description": "32 parametrized test functions (16 positive + 16 negative) + Mechanism A canonical-ledger-untouched assertion (Q5 enforcement) \u2014 SHIPPED: each gate bucket file (test_try_repo_schema_gates.py + _closure_gates.py + _telemetry_gates.py + _isolation_gates.py) uses pytest.mark.parametrize over the gate set; 30 positive + 30 negative test cases + 1 Q5 canonical-ledger-untouched assertion all running.",
+      "status": "done",
+      "completed_at": "2026-06-04T08:50:00Z"
     },
     {
       "id": "T6",
@@ -153,7 +154,9 @@
     {
       "id": "T11",
       "description": "Advisory \u2192 enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window earliest 2026-06-18",
-      "status": "pending"
+      "status": "deferred",
+      "deferred_at": "2026-06-04T08:50:00Z",
+      "deferred_reason": "Calendar-anchored to T+14d soak window (earliest 2026-06-18). Not actionable until then. Re-evaluation gate: kill_criteria_resolution K2 false-positive rate at 2026-06-18."
     }
   ],
   "timing": {

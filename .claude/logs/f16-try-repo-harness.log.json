@@ -6,13 +6,24 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:34:52Z",
-  "updated_at": "2026-06-04T13:04:03Z",
+  "updated_at": "2026-06-04T13:19:20Z",
   "events": [
     {
       "timestamp": "2026-06-04T13:04:03Z",
       "event_type": "phase_transition",
       "phase": "complete",
       "summary": "T4b+T4c+T4d+T6+T7+T8+T9+T10 closure cherry-picked onto feature/f16-closure-t6-t10. implementation\u2192complete.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T13:19:20Z",
+      "event_type": "implementation",
+      "phase": "complete",
+      "summary": "T5 marked done (parametrized tests already shipped across 4 gate bucket files) + T11 marked deferred (calendar-anchored to 2026-06-18 T+14d soak). Closes TASK_LIE finding on PR #616.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
