@@ -102,12 +102,12 @@ To be filled when shipped.
 
 ---
 
-## F-DEPLOYED-URL-PROBE
+## ~~F-DEPLOYED-URL-PROBE~~ — **FT2 SUBSTRATE SHIPPED 2026-06-04**
 
 **Discovered:** 2026-05-27 (DISCO Phase 1 P1.5 operator-verification follow-up — two distinct silent-pass bugs surfaced within minutes: W18 og-image URL hardcoded at a 404 path + W19 env-var trailing newline corrupting the GA measurement ID).
-**Status:** queued.
-**Owner:** TBD (FT2 CI workflow + shared shell helper).
-**Effort:** ~2-3h (workflow YAML + 4-6 probe assertions + 2-3 regression tests).
+**Status:** FT2-side substrate SHIPPED 2026-06-04 via feature `f-deployed-url-probe-ft2` — reusable `scripts/probe-deployed-url.sh` with 4 assertion modes + 12-test pytest suite + CLAUDE.md reference. **fitme-story-side workflow integration remains open** (separate PR in that repo per operator FT2-only directive).
+**Owner:** N/A for FT2 substrate (closed); fitme-story workflow integration TBD.
+**Effort:** ~1h actual for the FT2 substrate (vs ~2-3h budget); fitme-story integration estimate ~1h remaining.
 **Source incidents:** fitme-story PR #156 (og:image fix) + fitme-story PR #157 (GA_ID `.trim()` fix). Catalog entries: W18 + W19 in [`observed-patterns.md`](../integrity/observed-patterns.md).
 
 ### Problem
