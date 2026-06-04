@@ -65,6 +65,40 @@ Before v7.8.6, every skill re-collected the same pre-work data (W1 ssh-agent, in
 
 A consumer skill that finds `summary.blocking > 0` MUST refuse to advance the phase until the operator clears the blocking issues.
 
+## `skill_overlay` (additive, v7.9.1)
+
+The pattern↔skill preflight overlay (`make skill-preflight SKILL=<name>` →
+[`scripts/skill-preflight.py`](../../scripts/skill-preflight.py)) writes an
+**additive** `skill_overlay` key into this same cache file. It never modifies
+the top-level `checks` / `summary` / `blocking_issues` keys, so existing
+consumers are unaffected. The key is a map of skill-name → overlay result:
+
+```json
+{
+  "skill_overlay": {
+    "<skill-name>": {
+      "generated_at": "<ISO-8601 UTC>",
+      "checked":  ["<pattern-id>", "..."],
+      "blocking": ["<pattern-id>", "..."],
+      "advisory": ["<pattern-id>", "..."],
+      "manual":   ["<pattern-id>", "..."]
+    }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `checked` | IDs of the skill's *mechanized* patterns probed (regardless of outcome) |
+| `blocking` | subset of `checked` where a `blocker:true` detector tripped — clear before working |
+| `advisory` | subset of `checked` where a detector tripped but the pattern is non-blocking |
+| `manual` | the skill's manual/compile/discipline patterns — awareness checklist (not probed) |
+
+Pattern IDs (`#1`–`#23`, `W1`–`W28`) and their titles/remediations live in
+[`.claude/shared/pattern-skill-map.json`](../../.claude/shared/pattern-skill-map.json);
+full design in [`pattern-skill-overlay.md`](pattern-skill-overlay.md).
+`skill-preflight.py` exits **1** when `blocking` is non-empty, else **0**.
+
 ## How skills should consume this
 
 ```python

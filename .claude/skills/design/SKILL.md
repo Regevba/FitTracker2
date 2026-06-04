@@ -13,14 +13,21 @@ You are the Design & UX specialist for FitMe. You manage the design system, crea
 
 ## Observed patterns preflight
 
-Before investigating an unexpected design-gate fire or Figma bridge anomaly, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/design` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/design` work — probe the mechanized ones, checklist the rest:
 
-- **#6** `FEATURE_CLOSURE_COMPLETENESS` — `/design pre-merge-review` enforces this on `current_phase=complete`; verifies `figma_node_ids` populated + spec ↔ build parity + PR description cites the node IDs
-- **#16** `CASE_STUDY_MISSING_FIELDS` — design-led case studies must carry full required frontmatter
-- **W4** No auto-merge without explicit approval — never let `/design` work auto-promote past Phase 6 gate
-- **W7** Approval gates are multi-part — `/design preflight` is one of several gates that all must pass; do not interpret one green check as full approval
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#6` | FEATURE_CLOSURE_COMPLETENESS — missing frontmatter on current_phase=complete *(probed)* | yes | Populate the 7 required case-study frontmatter fields + kill_criteria_resolution before the complete-transition commit. |
+| `#8` | TIER_TAG_LIKELY_INCORRECT — heuristic T1/T2/T3 mismatch (advisory permanent) *(probed)* | no | Verify the T1/T2/T3 tag; pin correct T1 values in case-study-t1-references.json or set tier_tags_present:false. |
+| `#14` | CASE_STUDY_MISSING_TIER_TAGS — forward-only on case studies dated >=2026-04-21 *(probed)* | no | Add at least one T1/T2/T3 tier tag to the case study (dated on or after 2026-04-21). |
+| `W14` | Code Connect figma.connect() rejects page frames as targets | yes | Code Connect targets must be components/component-sets; convert page frames or map leaf components only. |
+| `W29` | Inline import in case-study MDX is a no-op under compileMDX; JSX components must be registered in useMDXComponents | yes | Register MDX components in src/mdx-components.tsx useMDXComponents map. Inline `import` lines inside MDX bodies are inert under compileMDX. See observed-patterns.md W29 for silence paths. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel design-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=design` — probes the 3 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

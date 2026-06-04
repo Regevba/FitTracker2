@@ -13,13 +13,23 @@ You are the QA specialist for FitMe. You create test plans, run test suites, mea
 
 ## Preflight — Observed Patterns Catalog (v7.8.5+)
 
-Before investigating a flaky test, surprising gate failure, or unexpected integrity finding, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate-firing patterns + 9 workflow patterns catalogued. Highest-leverage for `/qa` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/qa` work — probe the mechanized ones, checklist the rest:
 
-- **#7** `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` schema-drift silent-pass class — when a gate has high `candidates` but `checked=0`, suspect this pattern
-- **#8** `TIER_TAG_LIKELY_INCORRECT` heuristic narrowing (v7.8.4 fixes)
-- **#20** `GATE_COVERAGE_ZERO` meta-check for silent-pass detection
-- **#22** v7.5 pipeline fixture rot pattern (regression test decay)
-- **W3** Check CI before local-build panic (don't debug locally what's already a CI-only env-flake)
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#22` | v7.5 pipeline regression test decay — fixture rot | no | Update scripts/tests/test-v7-5-pipeline.sh fixtures to satisfy new required gates; run make test-v7-5-pipeline. |
+| `W21` | Swift String.contains("\n") misses CRLF graphemes — scan unicodeScalars | yes | Scan unicodeScalars (not graphemes) for ASCII control chars like CR/LF in Swift. |
+| `W22` | Swift type-checker timeout on heterogeneous array literals >20 elements | yes | Pre-compute each cell as a String local; use .map { String($0) } closure form for Optionals. |
+| `W23` | AnalyticsService.logEvent is private — callers must use a log* method | yes | logEvent is private — add a named log* method, or use #if DEBUG print for can't-happen paths. |
+| `W25` | @MainActor propagates to statics — test class must be @MainActor | yes | Mark test classes that exercise @MainActor types (incl. their statics) with @MainActor. |
+| `W28` | Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required) | no | Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI. |
+| `W30` | Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking # | yes | In case-study related_prs frontmatter, use either string form (- "PR #623") OR inline bracket form (related_prs: [621, 623]). Bare YAML integers under dashed lists get silently dropped by _parse_case_study_frontmatter at scripts/check-state-schema.py:1149. Durable parser patch queued in backlog Framework hygiene. |
+
+At activation run `make skill-preflight SKILL=qa` — probes the 0 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

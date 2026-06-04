@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -291,6 +291,27 @@ observed-patterns:
 		echo "ERROR: .claude/integrity/observed-patterns.md not found. Run from repo root."; \
 		exit 1; \
 	fi
+
+# v7.9.1 pattern↔skill overlay: probe the Observed-Patterns-Catalog patterns
+# that can block THIS skill's kind of work before work begins. Mechanized
+# patterns (integrity-check, pr-cache, ssh-agent, branch-drift, workflow-name)
+# are probed live; manual/compile/discipline patterns are surfaced as a
+# checklist. Writes an additive skill_overlay block to preflight-cache.json.
+# Usage: make skill-preflight SKILL=<pm-workflow|dev|qa|design|ops|release|
+#        marketing|analytics|cx|research|ux|brainstorm-pm>
+skill-preflight:
+	@if [ -z "$(SKILL)" ]; then \
+		echo "ERROR: SKILL required. Usage: make skill-preflight SKILL=<skill-name>"; \
+		exit 2; \
+	fi
+	@python3 scripts/skill-preflight.py --skill $(SKILL)
+
+# v7.9.1 pattern↔skill overlay: regenerate the pattern-preflight block inside
+# every .claude/skills/*/SKILL.md from .claude/shared/pattern-skill-map.json.
+# Idempotent — running twice produces no diff. Pass CHECK=1 for a dry-run that
+# exits 1 if any section is stale.
+gen-skill-preflight:
+	@python3 scripts/generate-skill-preflight-sections.py $(if $(CHECK),--check,)
 
 # Write a snapshot + diff vs the previous one. Used locally when you want to
 # review what a cycle run would record before the next scheduled cycle fires.

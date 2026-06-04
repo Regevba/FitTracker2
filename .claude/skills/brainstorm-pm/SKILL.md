@@ -15,13 +15,19 @@ This skill is **PM-flavored**: every output should be reducible to a PRD section
 
 ## Observed patterns preflight
 
-Before producing a brainstorm output that will be cited downstream (PRDs, case studies, marketing claims), check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/brainstorm-pm` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/brainstorm-pm` work — probe the mechanized ones, checklist the rest:
 
-- **W2** Publish verbatim, then remediate — if a brainstorm output ships as part of a PRD or case study, never silently rewrite history; add a follow-up section
-- **W6** Measurement case-study impartiality — when brainstorming success metrics, apply the same rigor across features; do not selectively lower thresholds for favored ideas
-- **#17** `CU_V2_INVALID` — when brainstorming the complexity score for a candidate task, presence of all four `cu_v2.factors` is gated; magnitude correctness is your responsibility as a human partner
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#17` | CU_V2_INVALID — schema-only check (presence, not magnitude) *(probed)* | yes | Fix cu_v2 schema: 4 factors in [0,1], total within 0.01 of sum, valid tier_class. |
+| `W2` | Publish verbatim, then remediate | no | Never silently rewrite published artifacts; add a Correction Note / §99 addendum instead. |
+| `W6` | Measurement case-study impartiality | no | Backfill/exempt measurement adoption all-or-none; document any exemption explicitly. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel brainstorming-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=brainstorm-pm` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## When to use vs. superpowers:brainstorming
 

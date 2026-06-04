@@ -13,25 +13,42 @@ You are orchestrating the feature **"$ARGUMENTS"** through the complete product 
 
 ## Preflight: Observed Patterns Catalog (v7.8.5+ — added 2026-05-13)
 
-**Before starting the protocol, read `.claude/integrity/observed-patterns.md` once.**
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/pm-workflow` work — probe the mechanized ones, checklist the rest:
 
-That file is the canonical manifest of gate-firing patterns (write-time + cycle-time advisories) that operators must recognize. Each entry documents: trigger, why-expected, signal-vs-noise rule, silence path. When any integrity gate or advisory fires during this protocol run, the FIRST step is always to consult this catalog — match the gate code, apply the documented remediation, only investigate from scratch if no pattern matches.
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#1` | BRANCH_ISOLATION_HISTORICAL — squash-merge + branch-cleanup artifact *(probed)* | no | Confirm squash-merge cleanup-artifact via PR head_ref; set isolation_opt_out + reason only if work was genuinely direct-to-main. |
+| `#2` | CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE — Mechanism C captured, writer-path manual *(probed)* | no | Mid-workflow Reads captured but not yet persisted; log via scripts/log-cache-hit.py (v7.9 auto-writes). |
+| `#3` | BRANCH_ISOLATION_VIOLATION Mode B — infra-only commit on non-feature branch *(probed)* | yes | Move the infra-path commit onto a feature/chore branch (isolated worktree); Mode B ignores isolation_opt_out. |
+| `#4` | BRANCH_ISOLATION_VIOLATION Mode C — state.json current_phase mutation off-branch *(probed)* | yes | Work on the declared feature/chore branch, or set isolation_opt_out + reason when the branch field is legitimately stale. |
+| `#5` | ISOLATION_OPT_OUT_REASON_MISSING — opt-out without justification *(probed)* | yes | Set isolation_opt_out_reason to a non-empty justification, or remove isolation_opt_out. |
+| `#6` | FEATURE_CLOSURE_COMPLETENESS — missing frontmatter on current_phase=complete *(probed)* | yes | Populate the 7 required case-study frontmatter fields + kill_criteria_resolution before the complete-transition commit. |
+| `#7` | CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT — empty cache_hits[] post-v6 *(probed)* | yes | Log Reads via scripts/log-cache-hit.py; features created_at < 2026-05-02 are auto-exempt. |
+| `#8` | TIER_TAG_LIKELY_INCORRECT — heuristic T1/T2/T3 mismatch (advisory permanent) *(probed)* | no | Verify the T1/T2/T3 tag; pin correct T1 values in case-study-t1-references.json or set tier_tags_present:false. |
+| `#9` | SCHEMA_DRIFT_LEGACY_CREATED — legacy `created` key *(probed)* | yes | Rename the legacy `created` key to canonical `created_at` in state.json. |
+| `#10` | FRAMEWORK_VERSION_FORMAT — unprefixed numeric values *(probed)* | yes | Set framework_version to canonical vX.Y format (e.g. v7.9). |
+| `#11` | STATE_OWNER_* (MISSING / INVALID / LOCATION_MISMATCH) — cross-repo schema *(probed)* | yes | Set state_owner to ft2\|fitme-story matching file location; reverse-sync mirrors use state_owner_sync_origin ending -reverse. |
+| `#12` | PR_CACHE_STALE — empty/stale cache → cascading false positives *(probed)* | no | Auto-refreshes via scripts/ensure-pr-cache-fresh.py; run make refresh-pr-cache if findings persist. |
+| `#13` | BROKEN_PR_CITATION — unresolved PR cite (graceful fallback when gh unavailable) *(probed)* | yes | Fix the PR citation or add pr_citation_exempt frontmatter; skipped gracefully when gh is unavailable. |
+| `#15` | PARTIAL_SHIP_TERMINAL — decision fork on completion *(probed)* | yes | Remove partial_ship:true, or downgrade current_phase + add partial_ship_terminal_disposition. |
+| `#16` | CASE_STUDY_MISSING_FIELDS — required frontmatter validation *(probed)* | yes | Fill the required frontmatter fields, or apply the appropriate case_study_type exemption. |
+| `#17` | CU_V2_INVALID — schema-only check (presence, not magnitude) *(probed)* | yes | Fix cu_v2 schema: 4 factors in [0,1], total within 0.01 of sum, valid tier_class. |
+| `#18` | STATE_NO_CASE_STUDY_LINK — terminal phase requires case_study or exemption *(probed)* | yes | Add case_study / parent_case_study path, or case_study_type:no_case_study_required + reason. |
+| `#19` | MECHANISM_C_SHIP_DATE auto-exemption | no | No action — gates auto-exempt features with created_at < 2026-05-02. |
+| `#20` | GATE_COVERAGE_ZERO — meta-check for silent-pass detection *(probed)* | no | Diagnose root cause (predicate too strict / schema drift / never-fires-by-design); fix or document advisory-permanent. |
+| `#21` | case_study_type exemption tags — bypass scope | no | Apply the correct case_study_type tag + case_study_exempt_reason; framework versions cannot use framework_meta_retroactive post-v7.9. |
+| `W2` | Publish verbatim, then remediate | no | Never silently rewrite published artifacts; add a Correction Note / §99 addendum instead. |
+| `W6` | Measurement case-study impartiality | no | Backfill/exempt measurement adoption all-or-none; document any exemption explicitly. |
+| `W20` | Stale-session-state inventory drift | no | Run make freshness-check before any 'what's open' inventory or before editing recently-shipped files. |
+| `W27` | make preflight enhancement_parent false-positive | no | enhancement_parent mis-aims at the enhancement's own prd.md; verify against state.json::parent_feature (now fixed). |
+| `W30` | Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking # | yes | In case-study related_prs frontmatter, use either string form (- "PR #623") OR inline bracket form (related_prs: [621, 623]). Bare YAML integers under dashed lists get silently dropped by _parse_case_study_frontmatter at scripts/check-state-schema.py:1149. Durable parser patch queued in backlog Framework hygiene. |
+| `W32` | scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation → complete directly, no testing phase) | yes | For single-phase framework features (e.g., sub-fixes shipping their own unit tests in-phase), call `python3 scripts/close-feature.py <feature> --force-incomplete` directly. The `make close-feature` target does NOT pass --force-incomplete through. Durable script-heuristic patch queued in backlog Framework hygiene. |
 
-When investigation surfaces a NEW pattern not yet in the catalog, **document it as a new entry at the bottom of `.claude/integrity/observed-patterns.md` before the protocol closes the feature.** This is mandatory, not optional — the catalog grows append-only-by-default and silent omissions break the next operator's ability to diagnose the same issue.
+At activation run `make skill-preflight SKILL=pm-workflow` — probes the 18 mechanized blockers for this work type; clear any before proceeding.
 
-CLI: `make observed-patterns` prints the catalog. Cross-referenced from `.claude/integrity/README.md` § Expected false-positives.
-
-### Branch-drift safety (W9, added 2026-05-13) — real-time alert wired
-
-A `PostToolUse:Bash` hook ([`scripts/check-branch-drift.py`](../../../scripts/check-branch-drift.py)) detects when the current git branch has changed unexpectedly between tool calls within a session — typically caused by **another concurrent Claude session sharing the same working directory** running `git checkout`. The hook emits a LOUD stderr warning on drift; the warning is surfaced back to the assistant via tool output so it can be flagged to the operator in real time.
-
-**When the alert fires during this protocol run:**
-
-1. STOP. Do not commit until you've decided whether the drift was intentional.
-2. If the drift was unintentional → follow the W9 recovery playbook in [`observed-patterns.md`](../../integrity/observed-patterns.md) §W9 (stash + checkout-back + cherry-pick if needed).
-3. If the drift was intentional (you actually wanted to switch) → no action; the hook's internal state has already re-baselined to the new branch.
-
-**Prevention for multi-agent operators:** use isolated git worktrees (`scripts/create-isolated-worktree.py`) — each concurrent session gets its own HEAD so they cannot collide. This is the only robust prevention.
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Skill Loading Protocol (v5.1 — On-Demand + Model Tiering)
 
