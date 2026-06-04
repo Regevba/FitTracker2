@@ -1,0 +1,122 @@
+{
+  "feature_name": "f17-last-fired-at-index",
+  "current_phase": "complete",
+  "created_at": "2026-06-04T13:50:00Z",
+  "updated_at": "2026-06-04T14:30:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/f17-last-fired-at-index",
+  "scheduled_after": null,
+  "linear": "FIT-89",
+  "primary_metric": "Every gate that ever fired has a current `last_fired_at` ISO timestamp in `.claude/shared/gate-last-fired.json`",
+  "success_metrics": [
+    "100% of gates currently in `.claude/logs/gate-coverage.jsonl` appear in `.claude/shared/gate-last-fired.json` after `scripts/refresh-gate-last-fired.py` runs (T1, measured by set difference)",
+    "Index refresh wall-clock <2s for the current ~1900-row gate-coverage.jsonl (T1, measured via time)",
+    "Index is included in the daily `make integrity-check` flow + nightly refresh in `framework-status-weekly.yml`",
+    "Subsequent `GATE_COVERAGE_ZERO` meta-check (planned for v7.10) reads from this O(1) index instead of scanning O(records \u00d7 gates)"
+  ],
+  "kill_criteria": [
+    "Refresh wall-clock >10s on the canonical ledger \u2014 operators won't tolerate the lag in interactive sessions",
+    "Index loses an event class (e.g., advisory-only firings drop from input) \u2014 readers get a false-positive 'gate never fired' signal",
+    "Schema drift between refresh script's expected input and gate_coverage.py output \u2014 silent stale index"
+  ],
+  "kill_criteria_resolution": "K1 (wall-clock) measured at <1s \u2014 well under 10s threshold. K2 + K3 require sustained operation to evaluate; reviewed at quarterly audits.",
+  "dispatch_pattern": "agent-driven (script + integration into integrity-check + daily-checkpoint + weekly cron)",
+  "case_study": "docs/case-studies/f17-last-fired-at-index-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/45-f17-last-fired-at-index.mdx",
+  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md \u00a73.1 Theme G F17 (RICE 66.7)",
+  "predecessor_case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
+  "scope_summary": "Produce `.claude/shared/gate-last-fired.json` \u2014 a per-gate `last_fired_at` + `last_checked_at` + `last_skipped_at` + `total_firings` + `total_skips` index derived from `.claude/logs/gate-coverage.jsonl`. Update via `scripts/refresh-gate-last-fired.py` invoked from (a) `make integrity-check`, (b) `daily-integrity-checkpoint.py`, (c) `framework-status-weekly.yml`. Enables `GATE_COVERAGE_ZERO` meta-check at O(1) \u2014 the planned v7.10 advisory that catches gates which haven't fired in N days despite producing telemetry. Independent of F16 (no calibration window needed; read-only derived artifact). Out of scope: the GATE_COVERAGE_ZERO meta-check itself (separate v7.10 feature); time-series storage (only `last_*` per gate); per-mode breakdown (aggregate across staged + cycle).",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Write scripts/refresh-gate-last-fired.py \u2014 reads gate-coverage.jsonl line-by-line, builds per-gate aggregates, writes .claude/shared/gate-last-fired.json",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T2",
+      "description": "Unit tests at scripts/tests/test_refresh_gate_last_fired.py \u2014 empty input, single-gate, multi-gate, malformed-row resilience, idempotent re-runs",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T3",
+      "description": "Add `make gate-last-fired` Makefile target invoking the refresh script",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T4",
+      "description": "Wire refresh into `make integrity-check` (run before integrity checks)",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T5",
+      "description": "Wire refresh into scripts/daily-integrity-checkpoint.py",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T6",
+      "description": "Wire refresh into .github/workflows/framework-status-weekly.yml (nightly index materialization)",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T7",
+      "description": "Initial materialization of .claude/shared/gate-last-fired.json from current ledger",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T8",
+      "description": "Add F17 section to CLAUDE.md v7.9.1 area",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T9",
+      "description": "Dev-guide \u00a712 v7.9.1 row gets F17 mention",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    },
+    {
+      "id": "T10",
+      "description": "Source case study + fitme-story showcase MDX slot 45",
+      "status": "done",
+      "completed_at": "2026-06-04T14:30:00Z"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T13:50:00Z",
+      "ended_at": "2026-06-04T14:30:00Z",
+      "notes": "Per F17 dependency-graph note (infra-master-plan \u00a73.5): 'F17 is independent \u2014 can start any time; minimal calibration needed since it's a read-only derived artifact.' No advisory window; direct implementation. Skipping Phase 0+1+2 since the spec is concrete + single-file scope."
+    },
+    "complete": {
+      "started_at": "2026-06-04T14:30:00Z",
+      "ended_at": null,
+      "notes": "All T1-T10 done. Read-only derived artifact \u2014 no advisory window."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T13:50:00Z",
+        "ended_at": "2026-06-04T14:30:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-04T14:30:00Z"
+      }
+    }
+  }
+}

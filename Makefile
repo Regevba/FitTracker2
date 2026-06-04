@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -77,9 +77,18 @@ ui-audit-drift:
 # Refresh failure logs to stderr but does not abort the run.
 integrity-check:
 	@python3 scripts/ensure-pr-cache-fresh.py --quiet || true
+	@python3 scripts/refresh-gate-last-fired.py --quiet || true
 	python3 scripts/integrity-check.py --findings-only
 	@python3 scripts/skills-audit.py --advisory --quiet || true
 	@python3 scripts/preflight-fixture-test.py 2>/dev/null || true
+
+# v7.9.1 F17: refresh per-gate `last_fired_at` index from gate-coverage.jsonl.
+# Read-only derived artifact at .claude/shared/gate-last-fired.json.
+# Independent target so operators can refresh on demand without paying the
+# integrity-check cost. Empirical wall-clock: <1s for ~2k rows.
+# Spec: docs/master-plan/infra-master-plan-2026-05-12.md §3.1 Theme G F17.
+gate-last-fired:
+	@python3 scripts/refresh-gate-last-fired.py
 
 # Compare current platform state vs the 2026-05-14 pre-v7.9 baseline anchor.
 # Closes the 96h drift window between weekly cron (Mon 05:00 UTC) and 72h

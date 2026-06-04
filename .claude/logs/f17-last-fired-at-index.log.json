@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f17-last-fired-at-index",
+  "title": "f17 last fired at index",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-04T14:11:10Z",
+  "updated_at": "2026-06-04T14:11:10Z",
+  "events": [
+    {
+      "timestamp": "2026-06-04T14:11:10Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "F17 implementation\u2192complete 2026-06-04T14:30Z. Script + 14 tests + Makefile + CI wiring (integrity-check + framework-status-weekly) + CLAUDE.md + dev-guide row + case study + fitme-story showcase MDX slot 45. 1828 ledger rows \u2192 16 gates indexed. Wall-clock <1s.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
