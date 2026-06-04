@@ -13,15 +13,23 @@ You are the Operations specialist for FitMe. You monitor infrastructure health, 
 
 ## Observed patterns preflight
 
-Before reacting to a health alert, gate fire, or PR-cite false positive, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/ops` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/ops` work — probe the mechanized ones, checklist the rest:
 
-- **#11** `STATE_OWNER_*` (MISSING / INVALID / LOCATION_MISMATCH) — cross-repo state ownership; check before assuming a state.json belongs to FT2
-- **#12** `PR_CACHE_STALE` — empty/stale `.cache/gh-pr-cache.json` cascades into 30+ false-positive BROKEN_PR_CITATION findings; run `scripts/ensure-pr-cache-fresh.py` before declaring an incident
-- **#23** `.gitignore` blocks Mechanism A / Mechanism C remote-agent visibility — `gate-coverage.jsonl` + `_session-*.events.jsonl` are gitignored; remote agents need committed snapshots to see them
-- **W3** Check CI before local-build panic — when a build fails locally, verify CI status first; environment-specific failures are common
-- **W5** No destructive operations without approval — never run `git reset --hard`, `git push --force`, dropping tables, killing prod processes without explicit user approval
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#23` | .gitignore blocks Mechanism A / Mechanism C remote-agent visibility | no | Commit periodic gate-coverage / session-ledger snapshots to non-gitignored paths so remote agents can audit. |
+| `W8` | External audit status is a UI marker | no | Treat the audit-status UI marker as a signal, not a merge gate. |
+| `W11` | Incomplete PR cache (one of two expected repos absent) *(probed)* | no | Run make refresh-pr-cache to repopulate all expected repos; per-repo completeness check auto-detects. |
+| `W12` | vercel env pull returns empty values for Sensitive vars | no | Sensitive Vercel vars pull empty; use the Development env variant or a non-Sensitive CLI admin var. |
+| `W13` | Upstash KV_* vs UPSTASH_REDIS_REST_* naming asymmetry | no | Alias UPSTASH_REDIS_REST_* to KV_REST_API_*, or read either name in code. |
+| `W18` | Default-URL OG image silent-404 | no | Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves. |
+| `W19` | Env-var trailing newline corrupts runtime string | no | Trim string env vars at the boundary (process.env.X?.trim()) to strip trailing newlines. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel ops-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=ops` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

@@ -13,12 +13,19 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 
 ## Observed patterns preflight
 
-Before validating a UX spec or gating a Phase 3 / Phase 6 transition, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/ux` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/ux` work — probe the mechanized ones, checklist the rest:
 
-- **#6** `FEATURE_CLOSURE_COMPLETENESS` — `/ux pre-merge-review` enforces the Q7 sub-step on `current_phase=complete`: when `kill_criteria` is set in state.json, `kill_criteria_resolution` must also be non-empty in the case study; spec ↔ shipped-code parity is part of the same gate
-- **W7** Approval gates are multi-part — `/ux preflight` is one of several Phase 3 gates (with `/design preflight`); a green `/ux preflight` is necessary but not sufficient for Phase 3 approval
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#6` | FEATURE_CLOSURE_COMPLETENESS — missing frontmatter on current_phase=complete *(probed)* | yes | Populate the 7 required case-study frontmatter fields + kill_criteria_resolution before the complete-transition commit. |
+| `#16` | CASE_STUDY_MISSING_FIELDS — required frontmatter validation *(probed)* | yes | Fill the required frontmatter fields, or apply the appropriate case_study_type exemption. |
+| `W16` | Contract-boundary tests must sample from the canonical producer | no | Sample cross-repo test fixtures from the canonical producer; normalize at parse with a nullish fallback. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel UX-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=ux` — probes the 2 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Boundary: /ux vs /design
 

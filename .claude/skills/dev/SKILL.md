@@ -13,13 +13,34 @@ You are the Development specialist for FitMe. You manage branching strategy, cod
 
 ## Preflight — Observed Patterns Catalog (v7.8.5+)
 
-Before debugging any unexpected git, gate, or CI behavior, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns are catalogued. The W-section is especially relevant for `/dev` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/dev` work — probe the mechanized ones, checklist the rest:
 
-- **W1** SSH signing requires `ssh-add` loaded before headless commits
-- **W3** Check CI before local-build panic
-- **W4** No auto-merge without explicit approval
-- **W5** No destructive operations without approval
-- **W9** Branch-drift from concurrent-session `git checkout` collision (real-time alert wired via PostToolUse:Bash hook → if the warning fires, follow the 4-step recovery playbook in the catalog)
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `#12` | PR_CACHE_STALE — empty/stale cache → cascading false positives *(probed)* | no | Auto-refreshes via scripts/ensure-pr-cache-fresh.py; run make refresh-pr-cache if findings persist. |
+| `#13` | BROKEN_PR_CITATION — unresolved PR cite (graceful fallback when gh unavailable) *(probed)* | yes | Fix the PR citation or add pr_citation_exempt frontmatter; skipped gracefully when gh is unavailable. |
+| `#23` | .gitignore blocks Mechanism A / Mechanism C remote-agent visibility | no | Commit periodic gate-coverage / session-ledger snapshots to non-gitignored paths so remote agents can audit. |
+| `W1` | SSH signing requires loaded agent before headless commits *(probed)* | no | Run ssh-add ~/.ssh/id_ed25519 before headless commits; verify with ssh-add -l. |
+| `W3` | Check CI before local-build panic | no | Check CI status (gh run list) before deep local-build debugging. |
+| `W4` | No auto-merge without explicit approval | yes | Never auto-merge; surface PR + checks and wait for explicit approval. |
+| `W5` | No destructive operations without approval | yes | Never delete branches/worktrees/files or force-push without explicit approval; list + propose first. |
+| `W7` | Approval gates are multi-part | yes | Treat each destructive step as a separate approval; prior approval doesn't carry over. |
+| `W9` | Branch drift from concurrent-session git checkout collision *(probed)* | no | If the branch-drift alert fires, stop, stash/cherry-pick, and git checkout the expected branch (W9 playbook). |
+| `W10` | Stale [gone] branches + orphan worktrees surfaced by daily-checkpoint | no | Clean stale [gone] branches / orphan worktrees via commit-commands:clean_gone after confirming merge. |
+| `W17` | Stale-base branches — cherry-pick onto fresh main is ground truth | yes | For stale-base branches, cherry-pick onto fresh origin/main to find ground truth before merging. |
+| `W21` | Swift String.contains("\n") misses CRLF graphemes — scan unicodeScalars | yes | Scan unicodeScalars (not graphemes) for ASCII control chars like CR/LF in Swift. |
+| `W22` | Swift type-checker timeout on heterogeneous array literals >20 elements | yes | Pre-compute each cell as a String local; use .map { String($0) } closure form for Optionals. |
+| `W23` | AnalyticsService.logEvent is private — callers must use a log* method | yes | logEvent is private — add a named log* method, or use #if DEBUG print for can't-happen paths. |
+| `W24` | pbxproj merge conflicts from concurrent PRs at same group/sources position | no | Resolve pbxproj merge conflicts additively — keep all branches' distinct PBXBuildFile/FileReference entries. |
+| `W25` | @MainActor propagates to statics — test class must be @MainActor | yes | Mark test classes that exercise @MainActor types (incl. their statics) with @MainActor. |
+| `W26` | Two workflows sharing name: clash in github.workflow concurrency groups *(probed)* | no | Give each workflow a hardcoded concurrency-group prefix, not ${{ github.workflow }}, when names collide. |
+| `W28` | Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required) | no | Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI. |
+
+At activation run `make skill-preflight SKILL=dev` — probes the 5 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

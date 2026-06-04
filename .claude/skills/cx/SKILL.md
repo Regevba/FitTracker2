@@ -13,15 +13,17 @@ You are the CX specialist for FitMe. You monitor App Store reviews, run NPS surv
 
 ## Observed patterns preflight
 
-Before investigating a CX signal anomaly, dispatch decision, or unexpected gate fire, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/cx` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/cx` work — probe the mechanized ones, checklist the rest:
 
-- **#14** `CASE_STUDY_MISSING_TIER_TAGS` — forward-only; CX digests published as case studies must T1/T2/T3-tag quantitative claims (review counts, rating deltas, sentiment scores)
-- **#16** `CASE_STUDY_MISSING_FIELDS` — required frontmatter validation on every `/cx digest` published as a case study
-- **#18** `STATE_NO_CASE_STUDY_LINK` — terminal-phase features require a case_study link or exemption marker
-- **W2** Publish verbatim, then remediate — when republishing a CX digest after correction, preserve the original then append the correction
-- **W6** Measurement case-study impartiality — when CX feedback signals inform feature-impact claims, treat all features uniformly (no selective backfill)
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `W8` | External audit status is a UI marker | no | Treat the audit-status UI marker as a signal, not a merge gate. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel CX-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=cx` — probes the 0 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

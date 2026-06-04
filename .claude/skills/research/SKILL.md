@@ -13,12 +13,17 @@ You are the Research specialist for FitMe. You conduct market research, competit
 
 ## Observed patterns preflight
 
-Before publishing any research output that will be cited downstream (PRDs, case studies, marketing claims), check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/research` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/research` work — probe the mechanized ones, checklist the rest:
 
-- **#14** `CASE_STUDY_MISSING_TIER_TAGS` — research outputs that become case studies (e.g. `/research feature` reports, competitive analyses) must T1/T2/T3-tag every quantitative claim
-- **W6** Measurement case-study impartiality — when research benchmarks the framework against external products, apply uniform criteria; do not selectively cite favorable comparisons
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `W20` | Stale-session-state inventory drift | no | Run make freshness-check before any 'what's open' inventory or before editing recently-shipped files. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel research-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=research` — probes the 0 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

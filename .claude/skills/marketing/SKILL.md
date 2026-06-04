@@ -13,13 +13,18 @@ You are the Marketing specialist for FitMe. You manage App Store Optimization, c
 
 ## Observed patterns preflight
 
-Before drafting any public-facing claim or campaign asset, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/marketing` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/marketing` work — probe the mechanized ones, checklist the rest:
 
-- **#14** `CASE_STUDY_MISSING_TIER_TAGS` — public marketing copy claiming product metrics must trace each quantitative claim back to a T1/T2/T3-tagged source; never publish a number without a tier in the underlying case study
-- **W2** Publish verbatim, then remediate — once a campaign asset is live, never silently edit it; publish a correction notice
-- **W8** External audit status is a UI marker — when external-audit results are pending or refuted, the UCC and the public site reflect that state; marketing copy may not pre-claim audited status
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `W15` | MDX `<digit` / `<non-letter` breaks page rendering | yes | Escape/avoid `<digit` in MDX (use 'under 5 min', &lt;, or a code-span) to keep prerender green. |
+| `W18` | Default-URL OG image silent-404 | no | Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel marketing-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=marketing` — probes the 0 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 

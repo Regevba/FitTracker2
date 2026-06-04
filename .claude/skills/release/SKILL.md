@@ -13,14 +13,22 @@ You are the Release Management specialist for FitMe. You handle version bumps, c
 
 ## Observed patterns preflight
 
-Before promoting any build or drafting any release note, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/release` work:
+<!-- BEGIN pattern-preflight (generated) -->
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/release` work — probe the mechanized ones, checklist the rest:
 
-- **#6** `FEATURE_CLOSURE_COMPLETENESS` — every feature included in the release notes must have closed cleanly (7 required case-study frontmatter fields, kill_criteria_resolution when kill_criteria set, bidirectional PR-list parity)
-- **#15** `PARTIAL_SHIP_TERMINAL` — features in `partial_ship` status need a decision fork (`complete` or `dropped`); do NOT include partial-ship features in release notes without the fork resolved
-- **W4** No auto-merge without explicit approval — release ceremonies never auto-promote; every TestFlight push and App Store submit needs explicit user approval
-- **W7** Approval gates are multi-part — CI green + ui-audit P0=0 + tokens-check pass + all four `make verify-local` legs must each be confirmed
+| ID | Pattern | Blocker | Remediation |
+|---|---|---|---|
+| `W4` | No auto-merge without explicit approval | yes | Never auto-merge; surface PR + checks and wait for explicit approval. |
+| `W15` | MDX `<digit` / `<non-letter` breaks page rendering | yes | Escape/avoid `<digit` in MDX (use 'under 5 min', &lt;, or a code-span) to keep prerender green. |
+| `W18` | Default-URL OG image silent-404 | no | Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves. |
+| `W19` | Env-var trailing newline corrupts runtime string | no | Trim string env vars at the boundary (process.env.X?.trim()) to strip trailing newlines. |
+| `W26` | Two workflows sharing name: clash in github.workflow concurrency groups *(probed)* | no | Give each workflow a hardcoded concurrency-group prefix, not ${{ github.workflow }}, when names collide. |
+| `W28` | Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required) | no | Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI. |
 
-**Mandatory** per CLAUDE.md §v7.8.5: any novel release-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
+At activation run `make skill-preflight SKILL=release` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
+
+**Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
+<!-- END pattern-preflight -->
 
 ## Shared Data
 
