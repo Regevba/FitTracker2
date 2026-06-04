@@ -1354,3 +1354,45 @@ This is **operator-side only** — the GitHub Actions hosted runners boot fresh 
 - [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — same "trust the explicit error, don't paper over with workarounds" class.
 - HADF launchd setup checklist (memory `feedback-hadf-launchd-setup-checklist`) — adjacent class of "operator-side macOS daemon issues require restart or careful sequence". Both this W28 and the HADF launchd patterns reinforce that fresh-boot daemon state is the reliable recovery path on macOS.
 
+---
+
+### W29 — Inline `import` in a case-study MDX is a no-op under `compileMDX`; JSX components must be registered in `useMDXComponents` (2026-06-04)
+
+**Surfaced by:** fitme-story PR #172 (slot 44, F16 try-repo harness showcase MDX). The squash-merge to `main` broke the production deploy; **6 consecutive deploys failed** (including production `main` at commit `4609aad`) until the fix shipped in [fitme-story PR #175](https://github.com/Regevba/fitme-story/pull/175) (`21da6cf`). The last green production deploy before the break was PR #171.
+
+**Trigger:** A case-study MDX file (`content/04-case-studies/*.mdx`, rendered by `src/app/case-studies/[slug]/page.tsx` via `compileMDX` from `next-mdx-remote/rsc`) references a JSX component and "imports" it inline in the MDX body:
+
+```mdx
+import { Callout } from "@/components/mdx/Callout";
+...
+<Callout type="info">…</Callout>
+```
+
+`next build` then fails at static prerender:
+
+```text
+Error occurred prerendering page "/case-studies/<slug>".
+Error: Expected component `Callout` to be defined: you likely forgot to import, pass, or provide it.
+Export encountered an error on /case-studies/[slug]/page → exiting the build.
+```
+
+**Why expected:** `compileMDX` compiles only the MDX *body* against the components map the caller passes (here `useMDXComponents({})` from `src/mdx-components.tsx`). It does **not** execute `import` statements written inside MDX content — those lines are inert. A component used in the body must therefore be present in the `useMDXComponents` map, irrespective of any inline import. Two independent faults compounded here:
+
+1. The import path `@/components/mdx/Callout` did not even exist (the real component is `@/components/ui/Callout`) — but this is moot, since the inline import is never run.
+2. `Callout` was absent from the `useMDXComponents` map → undefined at render → prerender abort.
+
+Plus a prop mismatch: the MDX passed `type="info"` while `ui/Callout`'s prop is `variant` (which defaults to `'info'`, so it's harmless once the component is registered).
+
+**Silence paths (in order of preference):**
+
+1. **Register the component** in `src/mdx-components.tsx`'s `useMDXComponents` return map (and import it at the top of that file). This is the fix that shipped.
+2. **Use an already-registered component** instead — the case-study callout family (`HonestDisclosure`, `TriggerIncident`, `MemoryRef`, `PredecessorChain`, `KillCriterionResolution`). `ui/Callout`'s own docstring directs MDX bodies to prefer these.
+3. **Delete the dead inline import** and match the component's real prop names (`variant`, not `type`).
+
+**Same silent-pass class as W15:** PR-level CI (`mdx-render`, `gates`, `unit-tests`, `audit`) all pass — only the (non-required) Vercel preview check fails — so the bug merges to `main` and the first loud signal is the production deploy failing. Same prevention action item as W15: make the Vercel preview a required check in branch protection, or add a real `next build`/prerender step to fitme-story CI. (`mdx-render` alone is insufficient — it compiles MDX but does not prerender against the live components map, so it did NOT catch this.)
+
+**Sibling patterns:**
+
+- [W15 — MDX `<digit` breaks page rendering](#w15--mdx-digit-or--followed-by-non-letter-character-breaks-page-rendering-2026-05-21) — same surface (case-study/doc MDX fails only at the Vercel prerender step while every other CI job passes), different cause (JSX lexer reject vs missing component in the map). Both are "MDX content faults that only the production build catches."
+- [W9 — Branch drift from concurrent-session `git checkout` collision](#w9--branch-drift-from-concurrent-session-git-checkout-collision-detected--real-time-alerted) — surfaced again *during* this fix: a concurrent Claude session sharing the fitme-story working tree ran `git checkout` mid-edit and reverted the working-tree changes (the local build had already passed with the edits live, so the empty `git diff` was the tell). The fix was completed in an isolated `git worktree` to escape the shared-tree race.
+
