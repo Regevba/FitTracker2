@@ -1,8 +1,8 @@
 {
   "feature_name": "f16-try-repo-harness",
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "created_at": "2026-06-04T05:30:00Z",
-  "updated_at": "2026-06-04T05:40:00Z",
+  "updated_at": "2026-06-04T05:50:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -42,8 +42,13 @@
     },
     "prd": {
       "started_at": "2026-06-04T05:40:00Z",
-      "ended_at": null,
+      "ended_at": "2026-06-04T05:50:00Z",
       "notes": "PRD at prd.md. Q1-Q5 all LOCKED with recommendations: subprocess invocation, hybrid fixture format (YAML for state.json + canonical .md for content), single CI job + parametrize + JUnit XML, pytest tmp_path auto-cleanup, GATE_COVERAGE_LEDGER env-var override. Frozen constants: THROWAWAY_REPO_INIT_FILES, PRE_COMMIT_TIMEOUT_S=30, FIXTURE_DIR=tests/fixtures, GATE_COVERAGE_LEDGER_ENV. 8 acceptance criteria + 3 kill criteria. Rollback = single-line CI workflow revert."
+    },
+    "tasks": {
+      "started_at": "2026-06-04T05:50:00Z",
+      "ended_at": null,
+      "notes": "Tasks at tasks.md. 16 write-time gates enumerated + bucketed into 4 fixture groups (schema 5 / closure 4 / telemetry 4 / isolation 3). 12-commit breakdown across T2-T10 + advisory→enforced calendar T11. ~1,720 lines new code/docs total. Deliberate-regression test (T7) design locked: monkey-patch CU_V2_INVALID's check function to silently return True; F14 dispatch test still passes (asserts row emission only); F16 try-repo test catches (asserts pre-commit exit code on integration surface). Per-fixture pattern + per-test parametrize pattern + canonical-ledger-untouched assertion (Q5 test) all spelled out as code in tasks.md."
     }
   },
   "calendar_gate": {
@@ -51,17 +56,20 @@
     "rationale": "Cannot start before v7.9 promotion + Phase E exit because the harness exercises the .githooks/pre-commit script end-to-end, which would have generated test-mode gate-coverage telemetry rows during the Phase E calibration window — contaminating the 14-day baseline used to verify the 3 advisory→enforced promotions."
   },
   "tasks": [
-    {"id": "T1", "description": "Decide Q1-Q4 in Phase 0 Research close + write Phase 1 PRD", "status": "pending"},
-    {"id": "T2", "description": "Create tests/fixtures/<gate-id>/{positive,negative}/ directory layout — one pair per gate", "status": "pending"},
-    {"id": "T3", "description": "Write try_repo_harness.py with `make_throwaway_repo()` pytest fixture + `run_precommit(repo, files)` helper", "status": "pending"},
-    {"id": "T4", "description": "Generate fixtures for all 16 write-time gates", "status": "pending"},
-    {"id": "T5", "description": "Write one integration test per gate: `test_try_repo_<gate_id>_fires_on_positive_fixture()` + `test_try_repo_<gate_id>_passes_on_negative_fixture()`", "status": "pending"},
-    {"id": "T6", "description": "Add `.github/workflows/try-repo-harness-nightly.yml` (or extend existing CI workflow with `try-repo` job)", "status": "pending"},
-    {"id": "T7", "description": "Deliberately-introduced regression test — patch one gate to silently no-op, confirm try-repo catches it (success metric #3)", "status": "pending"},
-    {"id": "T8", "description": "Update CLAUDE.md Data Integrity Framework section — note try-repo nightly defense + fixture-creation discipline for new gates", "status": "pending"},
+    {"id": "T1", "description": "Decide Q1-Q5 in Phase 0/1 + write PRD + Tasks", "status": "done", "completed_at": "2026-06-04T05:50:00Z"},
+    {"id": "T2", "description": "Fixture dir layout + tests/fixtures/_baseline/state.json canonical + make_state_json builder", "status": "pending"},
+    {"id": "T3", "description": "scripts/tests/test_try_repo_harness.py skeleton + make_throwaway_repo() + run_precommit() helpers", "status": "pending"},
+    {"id": "T4a", "description": "Schema gate fixtures (5): SCHEMA_DRIFT_LEGACY_PHASE/_CREATED, FRAMEWORK_VERSION_FORMAT, STATE_OWNER_MISSING/_INVALID", "status": "pending"},
+    {"id": "T4b", "description": "Closure gate fixtures (4): STATE_OWNER_LOCATION_MISMATCH, FEATURE_CLOSURE_COMPLETENESS, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS", "status": "pending"},
+    {"id": "T4c", "description": "Telemetry gate fixtures (4): PHASE_TRANSITION_NO_LOG/_TIMING, CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT, CU_V2_INVALID", "status": "pending"},
+    {"id": "T4d", "description": "Isolation gate fixtures (3): ISOLATION_OPT_OUT_REASON_MISSING, BRANCH_ISOLATION_VIOLATION Mode B + Mode C", "status": "pending"},
+    {"id": "T5", "description": "32 parametrized test functions (16 positive + 16 negative) + Mechanism A canonical-ledger-untouched assertion (Q5 enforcement)", "status": "pending"},
+    {"id": "T6", "description": "Extend .github/workflows/ci.yml with try-repo job (parametrize + JUnit XML; <60s wall-clock)", "status": "pending"},
+    {"id": "T7", "description": "Deliberate-regression test — monkey-patch CU_V2_INVALID's check function to silently return success; assert F14 dispatch test still passes; assert F16 try-repo catches", "status": "pending"},
+    {"id": "T8", "description": "Update CLAUDE.md Data Integrity Framework section — try-repo discipline + new-gate fixture rule", "status": "pending"},
     {"id": "T9", "description": "Update docs/architecture/dev-guide-v1-to-v7-7.md §4 gate catalog with try-repo coverage column", "status": "pending"},
-    {"id": "T10", "description": "Source case study + fitme-story showcase MDX (chronological slot per v7.9.1 ship date)", "status": "pending"},
-    {"id": "T11", "description": "Advisory → enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window", "status": "pending"}
+    {"id": "T10", "description": "Source case study at docs/case-studies/f16-try-repo-harness-case-study.md + fitme-story showcase MDX (chronological slot per v7.9.1 ship date)", "status": "pending"},
+    {"id": "T11", "description": "Advisory → enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window earliest 2026-06-18", "status": "pending"}
   ],
   "timing": {
     "phases": {
@@ -70,7 +78,11 @@
         "ended_at": "2026-06-04T05:40:00Z"
       },
       "prd": {
-        "started_at": "2026-06-04T05:40:00Z"
+        "started_at": "2026-06-04T05:40:00Z",
+        "ended_at": "2026-06-04T05:50:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-04T05:50:00Z"
       }
     }
   }
