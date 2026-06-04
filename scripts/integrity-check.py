@@ -1030,6 +1030,71 @@ def audit_case_study_tier_tags() -> list[dict]:
     return findings
 
 
+def check_pattern_skill_unmapped() -> list[dict]:
+    """Advisory: Observed-Patterns-Catalog IDs missing from pattern-skill-map.json.
+
+    v7.9.1 pattern↔skill overlay. Parses every pattern ID from the catalog
+    section headings (`### #N …` gate entries + `### WN …` workflow entries)
+    and flags any that is absent from `.claude/shared/pattern-skill-map.json`
+    OR present but mapped to zero skills. Keeps the overlay map honest as the
+    append-only catalog grows: a new pattern added to observed-patterns.md
+    without a corresponding map entry surfaces here.
+
+    Severity: ADVISORY only — never affects finding_count or exit code.
+    Silent when either file is missing (degrades gracefully).
+    """
+    catalog = REPO_ROOT / ".claude" / "integrity" / "observed-patterns.md"
+    map_path = REPO_ROOT / ".claude" / "shared" / "pattern-skill-map.json"
+    if not catalog.exists() or not map_path.exists():
+        return []
+
+    import re as _re
+    try:
+        text = catalog.read_text()
+    except OSError:
+        return []
+    # Section headings: "### #12 ..." (gate) or "### W9 — ..." (workflow).
+    catalog_ids = set(_re.findall(r"^### (#\d+|W\d+)\b", text, flags=_re.MULTILINE))
+    if not catalog_ids:
+        return []
+
+    try:
+        entries = json.loads(map_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return []
+    mapped = {e.get("id"): e.get("skills", []) for e in entries}
+
+    # Self-doc meta-entries: catalog patterns that document the overlay TOOL
+    # itself (not a work-blocking pattern), intentionally absent from the
+    # work-blocking map. W29 documents the pattern↔skill overlay (v7.9.1).
+    SELF_DOC_EXEMPT = {"W29"}
+
+    findings: list[dict] = []
+    for pid in sorted(catalog_ids - SELF_DOC_EXEMPT, key=lambda x: (x[0] != "#", x)):
+        if pid not in mapped:
+            findings.append({
+                "feature": "pattern-skill-map",
+                "severity": "ADVISORY",
+                "code": "PATTERN_SKILL_UNMAPPED",
+                "message": (
+                    f"catalog pattern {pid} (observed-patterns.md) is absent "
+                    f"from .claude/shared/pattern-skill-map.json — add an entry "
+                    f"+ re-run `make gen-skill-preflight`."
+                ),
+            })
+        elif not mapped[pid]:
+            findings.append({
+                "feature": "pattern-skill-map",
+                "severity": "ADVISORY",
+                "code": "PATTERN_SKILL_UNMAPPED",
+                "message": (
+                    f"catalog pattern {pid} is present in pattern-skill-map.json "
+                    f"but mapped to zero skills — assign >=1 skill."
+                ),
+            })
+    return findings
+
+
 def discover_case_studies() -> list[dict]:
     results = []
     if not CASE_STUDIES_DIR.exists():
@@ -1106,6 +1171,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + check_tier_tags_advisory()
         + check_cache_hits_auto_instrumentation_inactive()
         + pr_cache_failed_advisory  # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b)
+        + check_pattern_skill_unmapped()  # v7.9.1 pattern↔skill overlay advisory
     )
     all_findings = findings + advisory_findings
 
