@@ -1,0 +1,29 @@
+{
+  "feature": "_test-fixture",
+  "events": [
+    {
+      "event_type": "phase_transition",
+      "phase": "research",
+      "ts": "2026-06-04T00:00:00Z",
+      "summary": "Baseline fixture log for F16 try-repo harness — minimum content to satisfy PHASE_TRANSITION_NO_LOG gate."
+    },
+    {
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "ts": "2026-06-04T00:00:01Z",
+      "summary": "Baseline fixture stub."
+    },
+    {
+      "event_type": "phase_transition",
+      "phase": "tasks",
+      "ts": "2026-06-04T00:00:02Z",
+      "summary": "Baseline fixture stub."
+    },
+    {
+      "event_type": "phase_transition",
+      "phase": "implementation",
+      "ts": "2026-06-04T00:00:03Z",
+      "summary": "Baseline fixture stub — current phase."
+    }
+  ]
+}

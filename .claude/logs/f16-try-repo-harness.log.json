@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:34:52Z",
-  "updated_at": "2026-06-04T06:23:16Z",
+  "updated_at": "2026-06-04T06:57:21Z",
   "events": [
     {
       "timestamp": "2026-06-04T05:34:52Z",
@@ -68,6 +68,17 @@
       "event_type": "implementation",
       "phase": "implementation",
       "summary": "T4a fixtures + tests SHIPPED but BLOCKED on Q6 finding. Q6: scripts/check-state-schema.py:58 hardcodes REPO_ROOT to where the .py file lives; the harness's subprocess-invoked gates resolve REPO_ROOT to canonical FT2 (not the throwaway repo). The fixtures' state.json files exist in the throwaway repo but  looks them up under FT2's REPO_ROOT and silently drops them \u2014 'No state.json files to validate' \u2192 gates skip \u2192 pre-commit returns 0 (accept) on every positive fixture. F16 caught the bug F14 monkey-patch could not see. Fix-tier follow-up PR: add REPO_ROOT_OVERRIDE env var (~3 lines \u00d7 2 files). T4a-d marked status=blocked + tests pytest.mark.skip with reason. T2+T3 tests still pass (29/29). PRD \u00a73.5 Q6 documents the finding + the fix path.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T06:57:21Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T4a UNBLOCKED + SHIPPED 2026-06-04T07:30Z. Removed pytestmark.skip; added REPO_ROOT_OVERRIDE=str(repo) to env_overrides. Surfaced + fixed 4 more baseline issues during enabling: cu_v2 needed factors+total+tier_class, throwaway repo needed feature/_test-fixture branch, .claude/logs/* gitignore was blocking adds, log file event needs canonical  field not . 39/39 tests pass in 6.23s (T2 12 + T3 17 + T4a 10). T4a fully complete; T4b/c/d next on this branch.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
