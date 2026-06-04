@@ -1,8 +1,8 @@
 {
   "feature_name": "f16-try-repo-harness",
-  "current_phase": "tasks",
+  "current_phase": "implementation",
   "created_at": "2026-06-04T05:30:00Z",
-  "updated_at": "2026-06-04T05:50:00Z",
+  "updated_at": "2026-06-04T06:10:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -11,7 +11,7 @@
   "state_owner": "ft2",
   "isolation_opt_out": false,
   "isolation_opt_out_reason": "",
-  "branch": "feature/f16-try-repo-harness",
+  "branch": "feature/f16-try-repo-harness-phase-4",
   "scheduled_after": null,
   "linear": "FIT-88",
   "primary_metric": "Every write-time gate has ≥1 try-repo integration test that spawns a real git repo + runs the actual .githooks/pre-commit script + asserts the gate fires/skips per fixture",
@@ -47,8 +47,13 @@
     },
     "tasks": {
       "started_at": "2026-06-04T05:50:00Z",
-      "ended_at": null,
+      "ended_at": "2026-06-04T06:10:00Z",
       "notes": "Tasks at tasks.md. 16 write-time gates enumerated + bucketed into 4 fixture groups (schema 5 / closure 4 / telemetry 4 / isolation 3). 12-commit breakdown across T2-T10 + advisory→enforced calendar T11. ~1,720 lines new code/docs total. Deliberate-regression test (T7) design locked: monkey-patch CU_V2_INVALID's check function to silently return True; F14 dispatch test still passes (asserts row emission only); F16 try-repo test catches (asserts pre-commit exit code on integration surface). Per-fixture pattern + per-test parametrize pattern + canonical-ledger-untouched assertion (Q5 test) all spelled out as code in tasks.md."
+    },
+    "implementation": {
+      "started_at": "2026-06-04T06:10:00Z",
+      "ended_at": null,
+      "notes": "T2 shipped (baseline + builder, 12/12 tests pass in 0.08s). T3-T10 remaining for ~2.3d wall-clock total."
     }
   },
   "calendar_gate": {
@@ -57,7 +62,7 @@
   },
   "tasks": [
     {"id": "T1", "description": "Decide Q1-Q5 in Phase 0/1 + write PRD + Tasks", "status": "done", "completed_at": "2026-06-04T05:50:00Z"},
-    {"id": "T2", "description": "Fixture dir layout + tests/fixtures/_baseline/state.json canonical + make_state_json builder", "status": "pending"},
+    {"id": "T2", "description": "Fixture dir layout + tests/fixtures/_baseline/state.json canonical + make_state_json builder", "status": "done", "completed_at": "2026-06-04T06:10:00Z"},
     {"id": "T3", "description": "scripts/tests/test_try_repo_harness.py skeleton + make_throwaway_repo() + run_precommit() helpers", "status": "pending"},
     {"id": "T4a", "description": "Schema gate fixtures (5): SCHEMA_DRIFT_LEGACY_PHASE/_CREATED, FRAMEWORK_VERSION_FORMAT, STATE_OWNER_MISSING/_INVALID", "status": "pending"},
     {"id": "T4b", "description": "Closure gate fixtures (4): STATE_OWNER_LOCATION_MISMATCH, FEATURE_CLOSURE_COMPLETENESS, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS", "status": "pending"},
@@ -82,7 +87,11 @@
         "ended_at": "2026-06-04T05:50:00Z"
       },
       "tasks": {
-        "started_at": "2026-06-04T05:50:00Z"
+        "started_at": "2026-06-04T05:50:00Z",
+        "ended_at": "2026-06-04T06:10:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-04T06:10:00Z"
       }
     }
   }
