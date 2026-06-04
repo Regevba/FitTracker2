@@ -1354,3 +1354,153 @@ This is **operator-side only** — the GitHub Actions hosted runners boot fresh 
 - [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — same "trust the explicit error, don't paper over with workarounds" class.
 - HADF launchd setup checklist (memory `feedback-hadf-launchd-setup-checklist`) — adjacent class of "operator-side macOS daemon issues require restart or careful sequence". Both this W28 and the HADF launchd patterns reinforce that fresh-boot daemon state is the reliable recovery path on macOS.
 
+---
+
+### W29 — Inline `import` in a case-study MDX is a no-op under `compileMDX`; JSX components must be registered in `useMDXComponents` (2026-06-04)
+
+**Surfaced by:** fitme-story PR #172 (slot 44, F16 try-repo harness showcase MDX). The squash-merge to `main` broke the production deploy; **6 consecutive deploys failed** (including production `main` at commit `4609aad`) until the fix shipped in [fitme-story PR #175](https://github.com/Regevba/fitme-story/pull/175) (`21da6cf`). The last green production deploy before the break was PR #171.
+
+**Trigger:** A case-study MDX file (`content/04-case-studies/*.mdx`, rendered by `src/app/case-studies/[slug]/page.tsx` via `compileMDX` from `next-mdx-remote/rsc`) references a JSX component and "imports" it inline in the MDX body:
+
+```mdx
+import { Callout } from "@/components/mdx/Callout";
+...
+<Callout type="info">…</Callout>
+```
+
+`next build` then fails at static prerender:
+
+```text
+Error occurred prerendering page "/case-studies/<slug>".
+Error: Expected component `Callout` to be defined: you likely forgot to import, pass, or provide it.
+Export encountered an error on /case-studies/[slug]/page → exiting the build.
+```
+
+**Why expected:** `compileMDX` compiles only the MDX *body* against the components map the caller passes (here `useMDXComponents({})` from `src/mdx-components.tsx`). It does **not** execute `import` statements written inside MDX content — those lines are inert. A component used in the body must therefore be present in the `useMDXComponents` map, irrespective of any inline import. Two independent faults compounded here:
+
+1. The import path `@/components/mdx/Callout` did not even exist (the real component is `@/components/ui/Callout`) — but this is moot, since the inline import is never run.
+2. `Callout` was absent from the `useMDXComponents` map → undefined at render → prerender abort.
+
+Plus a prop mismatch: the MDX passed `type="info"` while `ui/Callout`'s prop is `variant` (which defaults to `'info'`, so it's harmless once the component is registered).
+
+**Silence paths (in order of preference):**
+
+1. **Register the component** in `src/mdx-components.tsx`'s `useMDXComponents` return map (and import it at the top of that file). This is the fix that shipped.
+2. **Use an already-registered component** instead — the case-study callout family (`HonestDisclosure`, `TriggerIncident`, `MemoryRef`, `PredecessorChain`, `KillCriterionResolution`). `ui/Callout`'s own docstring directs MDX bodies to prefer these.
+3. **Delete the dead inline import** and match the component's real prop names (`variant`, not `type`).
+
+**Same silent-pass class as W15:** PR-level CI (`mdx-render`, `gates`, `unit-tests`, `audit`) all pass — only the (non-required) Vercel preview check fails — so the bug merges to `main` and the first loud signal is the production deploy failing. Same prevention action item as W15: make the Vercel preview a required check in branch protection, or add a real `next build`/prerender step to fitme-story CI. (`mdx-render` alone is insufficient — it compiles MDX but does not prerender against the live components map, so it did NOT catch this.)
+
+**Sibling patterns:**
+
+- [W15 — MDX `<digit` breaks page rendering](#w15--mdx-digit-or--followed-by-non-letter-character-breaks-page-rendering-2026-05-21) — same surface (case-study/doc MDX fails only at the Vercel prerender step while every other CI job passes), different cause (JSX lexer reject vs missing component in the map). Both are "MDX content faults that only the production build catches."
+- [W9 — Branch drift from concurrent-session `git checkout` collision](#w9--branch-drift-from-concurrent-session-git-checkout-collision-detected--real-time-alerted) — surfaced again *during* this fix: a concurrent Claude session sharing the fitme-story working tree ran `git checkout` mid-edit and reverted the working-tree changes (the local build had already passed with the edits live, so the empty `git diff` was the tell). The fix was completed in an isolated `git worktree` to escape the shared-tree race.
+
+
+---
+
+### W30 — Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking `#` (2026-06-04)
+
+**Surfaced by:** FT2 PR #624 (closure of `f-launchd-drift-extension-sub-a`). Spent **4 commit retries** (~15 min wall) trying to satisfy `FEATURE_CLOSURE_COMPLETENESS` Q6 bidirectional PR-list parity before reading the parser source.
+
+**Trigger:** A case-study frontmatter declares `related_prs:` as a YAML list of bare integers:
+
+```yaml
+related_prs:
+  - 623
+  - 621
+```
+
+The Q6 gate at [`scripts/check-state-schema.py:1215`](../../scripts/check-state-schema.py#L1215) `_collect_case_study_pr_numbers()` calls `_parse_case_study_frontmatter()` (a hand-rolled minimal YAML parser at line 1125) which stores every list item as a **string** (line 1149: `fm[current_list_key].append(line[4:].strip().strip('"').strip("'"))`). Then the PR-number extractor at line 1224 does:
+
+```python
+if isinstance(r, str):
+    m = re.search(r'#(\d+)', r)  # ← requires the `#` prefix
+    if m:
+        prs.add(int(m.group(1)))
+elif isinstance(r, int):
+    prs.add(r)
+```
+
+Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and the PR is silently dropped from the case-study side of the parity check. The gate then reports "In state.json but missing from case study: [623]" even though `related_prs` clearly lists it.
+
+**Why expected:** the parser was designed for the historically-common `related_prs: ["FT2 #234 (foo)", "fitme-story #88"]` mixed-string form (which IS used in some older case studies). The integer branch (`isinstance(r, int)`) handles the inline `[1, 2, 3]` shape (parsed correctly by the bracket-detection at line 1160), but the line-by-line list-item branch (line 1149) hardcodes a string conversion with no integer fallback.
+
+**Silence paths (in order of preference):**
+
+1. **Use the `"PR #NNN"` string form** in YAML list items: `- "PR #623"`. Matches the regex.
+2. **Use the inline `[N, ...]` form** instead of dashed list: `related_prs: [621, 623]`. The bracket branch preserves int types.
+3. **Patch the parser** at line 1149 to attempt `int()` conversion of trimmed list items before storing as string. Filed as durable-fix candidate at the v7.9.1+ docket (see "When to lift this into a docket entry" below).
+
+**Same silent-pass class as W11.b:** a parsing/validation step that returns 0 findings can mean either "all good" OR "the parser couldn't see the data." The W11.b pattern was launchd-cron context producing an empty PR cache; this is a YAML list shape producing an empty PR set. Both required reading the producer code to diagnose, not the consumer's error message.
+
+**When to lift this into a docket entry:** when another operator hits the same 4-retry loop. The current frontend (`"PR #NNN"` form) is documented in the v7.9.1 case-study template at the top of this file's git history, but the empirical evidence is that the gate's error message ("Add the missing PRs to whichever side or list them in case study frontmatter") leads operators to add bare integers first, then bracket-form, then string-form — exactly the order I tried today. Worth a parser patch.
+
+**Sibling patterns:**
+
+- W11.b — empty/stale parser-side data that produces phantom or empty results without any error
+- W18/W19 — silent string-vs-typed-value bugs at I/O boundaries (env-var `\n` corruption; URL hardcode at a 404 path)
+
+---
+
+### W31 — Workflow delivery anomaly: initial `pull_request:opened` event sometimes fires only the dynamic/skip-path workflows; rebase + force-push triggers the full set (2026-06-04)
+
+**Surfaced by:** FT2 PR #623 (F-LAUNCHD-DRIFT-EXTENSION sub-fix (a)). The initial `git push -u origin feature/<name>` + `gh pr create` fired **only** CodeQL (dynamic event) + GitGuardian (external app) — exactly 5 checks. The 7 expected `pull_request`-triggered workflows (CI, Lint, PR Integrity Check, try-repo-harness, …) never started. A close+reopen of the PR did NOT re-trigger them. A subsequent **rebase + force-push** DID trigger the full 12-check set immediately.
+
+**Trigger:** specific sequence of mutations on the PR's HEAD between open and merge-ready states. Empirically observed once (2026-06-04 ~15:50 UTC); not yet reproduced. Possible causes:
+
+- GitHub Actions webhook delivery glitch — transient, retried later, but the retry didn't visibly re-deliver to the path-filtered workflows
+- `concurrency:` group race — both `ci.yml` and `ci-docs-skip.yml` have `name: CI`; if the post-merge `push: main` run of `ci.yml` for the predecessor PR (#621/#622) was still in-progress when #623 opened, the dispatch of `ci-docs-skip.yml` for #623 may have been cancelled. (Documented prevention via per-file hardcoded `concurrency.group:` prefix already in place — see W26 — so this would mean the cancellation crossed groups.)
+- Path-filter evaluation under a particular base-branch state — `ci-docs-skip.yml` uses `paths-ignore`; if the PR's diff base briefly showed an iOS-touching file, the inverse filter would have skipped this workflow
+
+**Why expected:** GitHub Actions webhooks are at-least-once-best-effort, not strictly guaranteed. The PR header's status-check-rollup shows whatever's been delivered, not whatever the workflow definitions theoretically *would* run.
+
+**Silence paths (in order of preference):**
+
+1. **Rebase + force-push.** Empirically forces the `synchronize` event with a clean lineage. The full workflow set fired within 10s on PR #623.
+2. **Manual `gh workflow run <name>.yml --ref <branch>`** dispatches workflows individually via `workflow_dispatch`, but those runs do NOT post check-runs to the PR's status rollup — they confirm code health but don't unblock the merge button.
+3. **Close+reopen the PR.** Should fire `pull_request:reopened` for any workflow listening on that event. Did NOT work in the 2026-06-04 incident; unclear why. May be partially-reliable.
+
+**Same silent-pass class as W26:** workflow non-execution looks identical to workflow-pass at the PR-header level — both produce no failing check. The operator's signal is "the expected check count is lower than usual," which is invisible unless they know what to expect.
+
+**Prevention action item:** add a CI smoke-test or pre-merge sanity check that asserts the expected workflow set has run. The pm-framework PR-integrity bot already does this for its own check; could extend to a "required workflows present" assertion.
+
+**Sibling patterns:**
+
+- W26 — Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups → cross-workflow cancellation
+- W11.b — invisible silent-pass at the cron context level (different layer; same "empty result looks like success" failure mode)
+
+---
+
+### W32 — `scripts/close-feature.py` requires `--force-incomplete` when the merged PR was the only phase (implementation → complete directly, no testing phase) (2026-06-04)
+
+**Surfaced by:** FT2 PR #624 closing `f-launchd-drift-extension-sub-a`. The feature ran as a single-phase `Feature` (work_subtype `framework_feature`) that ships its own unit tests during implementation. At merge time `current_phase` was `implementation`, NOT `testing`. `make close-feature FEATURE=...` aborted with:
+
+```text
+⚠ 'f-launchd-drift-extension-sub-a' is at current_phase=implementation —
+  earlier than 'testing'. This usually means PR #623 was a partial-phase
+  landing and the feature isn't actually done. Closing now would skip the
+  remaining phases. If you still want to close (the PR was the final
+  landing), re-run with --force-incomplete.
+```
+
+**Trigger:** any feature where:
+
+- The work is small enough that implementation + tests ship in one PR (no separate testing phase)
+- The gate ships as ADVISORY so no calibration window applies (no separate "complete" phase needed before the soak)
+- OR the feature is a sub-fix follow-on to a parent that already covered the testing phase
+
+**Why expected:** the script's heuristic protects against the common mistake of "operator merged a partial-phase PR and forgot the remaining phases exist." It assumes `testing` is always between implementation and complete. For framework-internal sub-fixes that are tested in-phase, this is wrong.
+
+**Silence paths (in order of preference):**
+
+1. **Use `python3 scripts/close-feature.py <feature> --force-incomplete`** to bypass. (The `make close-feature` target does NOT pass through this flag — must call the script directly.)
+2. **Pre-set `current_phase` to `testing`** in state.json before merging, then close-feature accepts it. Only correct if a testing phase actually happened.
+3. **Patch `scripts/close-feature.py`** to recognize a state.json field like `single_phase: true` or `work_subtype: framework_feature` + ADVISORY-mode gates as a structural skip. Filed as durable-fix candidate.
+
+**When to lift this into a docket entry:** when another framework feature ships as single-phase. The pattern showed up today on a v7.9.1 sub-fix; will likely show up again on every sub-fix that's mechanical enough to ship in one phase.
+
+**Sibling patterns:**
+
+- W27 — `make preflight` enhancement_parent false-positive: similar shape (heuristic gate firing on a legitimate-but-uncommon work shape)
+- W30 — Q6 PR-list parity gate's YAML parser quirk (same session): both are "framework gate misinterprets a valid input"
