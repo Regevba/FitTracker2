@@ -1,0 +1,71 @@
+{
+  "feature_name": "_baseline-fixture",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T00:00:00Z",
+  "updated_at": "2026-06-04T00:00:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/_baseline-fixture",
+  "scheduled_after": null,
+  "primary_metric": "F16 try-repo harness fixture baseline — read by make_state_json() builder",
+  "success_metrics": [
+    "Baseline survives round-trip through builder unmodified (T1)"
+  ],
+  "kill_criteria": [
+    "Fixture drift detected by Phase 5 round-trip test"
+  ],
+  "kill_criteria_resolution": "",
+  "dispatch_pattern": "n/a (test fixture)",
+  "case_study": "docs/case-studies/_baseline-fixture-case-study.md",
+  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md F16",
+  "scope_summary": "Minimally-valid state.json that satisfies every write-time gate at v7.9.1. Builder overlays per-fixture deltas on top of this canonical baseline. Mutating this file forces every fixture to re-validate.",
+  "related_prs": [],
+  "phases": {
+    "research": {
+      "started_at": "2026-06-04T00:00:00Z",
+      "ended_at": "2026-06-04T00:00:01Z",
+      "notes": "Baseline fixture; no real research phase."
+    },
+    "prd": {
+      "started_at": "2026-06-04T00:00:01Z",
+      "ended_at": "2026-06-04T00:00:02Z",
+      "notes": "Baseline fixture; no real PRD phase."
+    },
+    "tasks": {
+      "started_at": "2026-06-04T00:00:02Z",
+      "ended_at": "2026-06-04T00:00:03Z",
+      "notes": "Baseline fixture; no real tasks phase."
+    },
+    "implementation": {
+      "started_at": "2026-06-04T00:00:03Z",
+      "ended_at": null,
+      "notes": "Baseline fixture stays at implementation phase indefinitely; only deltas push it to terminal phases."
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {"started_at": "2026-06-04T00:00:00Z", "ended_at": "2026-06-04T00:00:01Z"},
+      "prd": {"started_at": "2026-06-04T00:00:01Z", "ended_at": "2026-06-04T00:00:02Z"},
+      "tasks": {"started_at": "2026-06-04T00:00:02Z", "ended_at": "2026-06-04T00:00:03Z"},
+      "implementation": {"started_at": "2026-06-04T00:00:03Z"}
+    }
+  },
+  "cache_hits": [
+    {"event": "Read", "path": "scripts/check-state-schema.py", "ts": "2026-06-04T00:00:04Z"}
+  ],
+  "cu_v2": {
+    "complexity": 1,
+    "blast_radius": 1,
+    "novelty": 1,
+    "verification_difficulty": 1
+  },
+  "tasks": [
+    {"id": "T1", "description": "Baseline fixture stub task", "status": "done", "completed_at": "2026-06-04T00:00:05Z"}
+  ]
+}
