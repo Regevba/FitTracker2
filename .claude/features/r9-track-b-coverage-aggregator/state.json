@@ -1,0 +1,83 @@
+{
+  "feature_name": "r9-track-b-coverage-aggregator",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T16:40:00Z",
+  "updated_at": "2026-06-04T16:40:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Chore",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/r9-track-b-coverage-aggregator",
+  "scheduled_after": null,
+  "primary_metric": "FT2 surfaces iOS Slather + Python pytest-cov coverage via `make coverage-report` + .github/workflows/coverage.yml warn-only CI baseline",
+  "success_metrics": [
+    "make coverage-ios target exists, skips cleanly when slather not installed, runs slather coverage against the most recent .xcresult when available (T1, measured by smoke-test)",
+    "make coverage-py target exists, skips cleanly when pytest-cov not installed, runs pytest --cov in ai-engine/ when available (T1, measured by smoke-test)",
+    "make coverage-report meta-target runs both surfaces and prints a per-target line-rate summary (T1, measured by smoke-test)",
+    ".github/workflows/coverage.yml CI workflow exists with two jobs (coverage-ios on macos-15, coverage-py on ubuntu-latest), both continue-on-error: true (T1, measured by yaml lint + presence)",
+    "Coverage telemetry begins accumulating against which v8.0 GATE_TEST_MISSING meta-gate (backlog T1) can calibrate per-module thresholds (T2, narrative \u2014 depends on 30+ days CI runs)"
+  ],
+  "kill_criteria": [
+    "Coverage workflow flakes on a single iOS test and gates PRs \u2014 mitigated by continue-on-error: true on every job",
+    "Slather aggregation breaks on a future Xcode version \u2014 mitigated by skip-cleanly-if-absent in the Makefile target; workflow falls back to artifact-only upload",
+    "Coverage output bloats CI logs \u2014 mitigated by `| tail -30` on the pytest output + artifact upload for full XML"
+  ],
+  "kill_criteria_resolution": "All 3 mitigated by design. (1) continue-on-error: true on all 3 jobs (build, slather-aggregate, pytest-cov) means a flake produces a `failure` annotation in the run logs but the PR-level check still resolves to success. (2) The Makefile target has explicit `command -v slather` and ls-of-xcresult guards; missing tool prints a skip notice and exits 0. (3) The ai-engine pytest output is piped through `tail -30` for the summary and the full coverage.xml is uploaded as an artifact for 14-day retention.",
+  "dispatch_pattern": "agent-driven (Makefile edit + new workflow YAML + state.json)",
+  "case_study": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
+  "case_study_showcase": "",
+  "spec": "docs/master-plan/dev-env-master-plan-2026-05-24.md \u00a73 R9 Track B",
+  "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+  "scope_summary": "R9 Track B (post-Phase-E hygiene). Track A shipped 2026-05-25 (.slather.yml + [tool.coverage.*]). This PR adds the operator surface \u2014 3 Makefile targets (coverage-ios, coverage-py, coverage-report) + 1 CI workflow (.github/workflows/coverage.yml) with two warn-only jobs (iOS Slather on macos-15, Python pytest-cov on ubuntu-latest). Coverage data flows into upload-artifact for 14-day retention so the v8.0 GATE_TEST_MISSING meta-gate (backlog T1) has data to calibrate against. Web c8 is intentionally out of scope (lives in fitme-story per dev-env-plan).",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Add coverage-ios / coverage-py / coverage-report targets to Makefile with skip-cleanly-if-absent guards",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "Add 3 new targets to PHONY",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "Create .github/workflows/coverage.yml with macos-15 iOS Slather job + ubuntu-latest pytest-cov job, both continue-on-error: true",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "description": "Smoke-test: make coverage-py + make coverage-ios skip cleanly on a machine without pytest-cov/slather",
+      "status": "complete"
+    },
+    {
+      "id": "T5",
+      "description": "Source case study at docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
+      "status": "complete"
+    },
+    {
+      "id": "T6",
+      "description": "Update docs/master-plan/dev-env-master-plan-2026-05-24.md R9 row: [~] Track A SHIPPED \u2192 [x] Track A + Track B SHIPPED",
+      "status": "complete"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T16:40:00Z",
+      "ended_at": null,
+      "notes": "Track B operator surface for R9. No gate; warn-only baseline; data feeds v8.0 GATE_TEST_MISSING meta-gate calibration."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T16:40:00Z"
+      }
+    }
+  }
+}

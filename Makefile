@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check lint lint-ios lint-py lint-md
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -115,6 +115,63 @@ lint-md:
 # Meta-target: run all 3 lint surfaces.
 # Used inside verify-local + the lint.yml CI workflow.
 lint: lint-ios lint-py lint-md
+
+# R9 Track B (dev-env-master-plan §3): code-coverage aggregator + CI hook.
+# Track A shipped 2026-05-25 (`.slather.yml` + `[tool.coverage.*]` config);
+# this is the Track B operator surface — Makefile targets + warn-only baseline
+# so the v8.0 GATE_TEST_MISSING meta-gate (T1 in backlog) has data to
+# calibrate against once 30 days accumulate. Phase-E-safe (no gate; advisory).
+
+# iOS coverage via Slather. Runs against the most recent `.xcresult` bundle
+# at .build/coverage-derived/Logs/Test/*.xcresult (xcodebuild's standard
+# DerivedData location when -derivedDataPath .build/coverage-derived was
+# passed). Requires `xcodebuild test -enableCodeCoverage YES` first.
+# Skip cleanly if slather not installed OR no .xcresult available.
+coverage-ios:
+	@if ! command -v slather >/dev/null 2>&1; then \
+		echo "coverage-ios: slather not installed; skipping (install via 'gem install slather')"; \
+		exit 0; \
+	fi; \
+	XCRESULT=$$(ls -1dt .build/coverage-derived/Logs/Test/*.xcresult 2>/dev/null | head -1); \
+	if [ -z "$$XCRESULT" ]; then \
+		echo "coverage-ios: no .xcresult bundle under .build/coverage-derived/. Run 'make test' with -enableCodeCoverage YES first."; \
+		exit 0; \
+	fi; \
+	echo "coverage-ios: aggregating $$XCRESULT"; \
+	slather coverage --simple-output --scheme FitTracker .
+
+# Python coverage via pytest --cov. Runs the ai-engine test suite with
+# the [tool.coverage.*] config already in ai-engine/pyproject.toml.
+# Skip cleanly if pytest-cov not installed.
+coverage-py:
+	@if ! command -v pytest >/dev/null 2>&1; then \
+		echo "coverage-py: pytest not installed; skipping (install via 'pip install pytest pytest-cov')"; \
+		exit 0; \
+	fi; \
+	if ! python3 -c "import pytest_cov" >/dev/null 2>&1; then \
+		echo "coverage-py: pytest-cov not installed; skipping (install via 'pip install pytest-cov')"; \
+		exit 0; \
+	fi; \
+	echo "coverage-py: running ai-engine pytest --cov"; \
+	cd ai-engine && pytest --cov --cov-report=term-missing --cov-report=xml:coverage.xml -q 2>&1 | tail -30
+
+# Meta-target: run iOS + Python coverage. Web (c8) is intentionally out of
+# scope for FT2 — it lives in the fitme-story repo (per dev-env-master-plan
+# §3 "Web c8 ships via companion fitme-story PR").
+coverage-report: coverage-ios coverage-py
+	@echo ""
+	@echo "=== Coverage summary ==="
+	@if [ -f ai-engine/coverage.xml ]; then \
+		python3 -c "import xml.etree.ElementTree as ET; r=ET.parse('ai-engine/coverage.xml').getroot(); print(f'  ai-engine: {float(r.get(\"line-rate\",0))*100:.1f}% line, {float(r.get(\"branch-rate\",0))*100:.1f}% branch')"; \
+	else \
+		echo "  ai-engine: (no coverage.xml emitted)"; \
+	fi
+	@XCRESULT=$$(ls -1dt .build/coverage-derived/Logs/Test/*.xcresult 2>/dev/null | head -1); \
+	if [ -n "$$XCRESULT" ] && command -v slather >/dev/null 2>&1; then \
+		echo "  iOS: see slather output above for per-target breakdown"; \
+	else \
+		echo "  iOS: (slather skipped — see coverage-ios output)"; \
+	fi
 
 # State.json integrity audit — findings-only (no file writes).
 # Also runs as a 72h GitHub Actions cycle (.github/workflows/integrity-cycle.yml).
