@@ -419,6 +419,24 @@ Output: stdout summary + structured JSON at `.claude/shared/phase-0-reality-chec
 
 **Spec:** [`docs/master-plan/infra-master-plan-2026-05-12.md`](docs/master-plan/infra-master-plan-2026-05-12.md) §3.1 Theme A F2 (RICE 42.7).
 
+## v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fixes (b)+(c) — Cron-context phantom-finding suppression (shipped 2026-06-04)
+
+Closes the W11.b silent-pass class — launchd-cron context where the `gh` CLI cannot reach the macOS keychain ⇒ `refresh-pr-cache.py` produces an empty cache ⇒ every PR citation looks broken ⇒ 319 phantom `BROKEN_PR_CITATION` + `PR_NUMBER_UNRESOLVED` findings on 2026-05-24. Same context caused 5 silently-broken cron days after the 2026-05-19 SSD migration before the drift was noticed.
+
+Three cooperating changes ship together (sub-fix (a) — `BRANCH_ISOLATION_LAUNCHD_DRIFT` advisory→enforced — deferred to a follow-on PR per spec §3 "any subset can ship independently"):
+
+1. **`scripts/ensure-pr-cache-fresh.py`** detects cron context via `LAUNCHD_LABEL` env (set by every launchd job), `CRON_CONTEXT=1` manual override, or `XPC_SERVICE_NAME` containing both `fittracker` and `daily`. When ALL of (cron context, refresh subprocess failure) hold, it writes a JSON sentinel at `.claude/shared/pr-cache-refresh-failed.flag` (`{ts, reason, context}`). The flag-write itself is best-effort — `OSError` is swallowed so the script's existing exit code remains the only failure signal.
+
+2. **`scripts/integrity-check.py`** reads the sentinel at startup via `pr_cache_refresh_failed_recently()`. If the flag exists AND `ts` is within the last 1 hour, the run SKIPS `BROKEN_PR_CITATION` + `PR_NUMBER_UNRESOLVED` and emits a single `PR_CACHE_REFRESH_FAILED` advisory carrying the failure reason and timestamp. Stale flags (>1h old) are ignored — Kill criterion #3 enforcement (the flag cannot indefinitely suppress real findings). Malformed JSON in the flag also falls back to "no skip."
+
+3. **`scripts/daily-integrity-checkpoint.py::precheck_cron_context()`** pre-validates `gh auth status` BEFORE invoking `make integrity-check`. Under cron context + auth missing, it exits 78 (`EX_CONFIG` from `sysexits(3)`) — what launchd interprets as a config error worth surfacing in `launchctl list <label>` without retry-backoff drama. Interactive sessions never trigger this branch.
+
+**Test coverage:** [`scripts/tests/test_launchd_drift_extension.py`](scripts/tests/test_launchd_drift_extension.py) — 16 tests covering interactive happy path, all 3 cron-context detection signals, fresh/stale/malformed flag handling, OSError swallow on flag-write, and the exit-78 paths in `precheck_cron_context`. Runs in 0.05s.
+
+**Failure-mode posture:** the flag-skip mechanism is fail-safer-than-status-quo — under cron auth failure it now produces ONE clearly-labeled advisory instead of 300+ phantoms. Under any other failure mode (write OSError, JSON malformed, ts stale) the system falls back to the pre-v7.9.1 behavior. No new enforcement gates; no advisory window needed.
+
+**Spec:** [`.claude/shared/v7-9-1-candidates.md`](.claude/shared/v7-9-1-candidates.md) F-LAUNCHD-DRIFT-EXTENSION + [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md) E-14. **Case study:** [`docs/case-studies/f-launchd-drift-extension-case-study.md`](docs/case-studies/f-launchd-drift-extension-case-study.md).
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:

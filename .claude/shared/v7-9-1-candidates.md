@@ -159,9 +159,9 @@ To be filled when shipped.
 ## F-LAUNCHD-DRIFT-EXTENSION
 
 **Discovered:** 2026-05-24 (W11.b sub-pattern documented in [`observed-patterns.md`](../integrity/observed-patterns.md) after 2026-05-24 daily cron captured 319 phantom `BROKEN_PR_CITATION` findings due to launchd context lacking keychain access for `gh` CLI; second trigger was the 2026-05-19 SSD migration which silently broke cron for 5 days due to plist hardcoding `/Volumes/DevSSD 1/...` instead of canonical `/Volumes/DevSSD/...`).
-**Status:** queued. Master plan entry: E-14 in [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../../docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md).
-**Owner:** TBD (single-PR FT2 fix at `scripts/` + plist).
-**Effort:** ~3-4h (split across 3 small concerns — see below).
+**Status:** sub-fixes (b)+(c) **SHIPPED 2026-06-04** via feature `f-launchd-drift-extension`. Sub-fix (a) remains queued for follow-on PR. Master plan entry: E-14 in [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../../docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md).
+**Owner:** TBD (sub-fix (a) — single-PR FT2 fix at `scripts/check-state-schema.py` + `scripts/integrity-check.py`).
+**Effort:** ~1h remaining (sub-fix (a) only — (b)+(c) closed in 2h actual / 2-3h budgeted).
 
 ### Problem
 
@@ -199,7 +199,17 @@ if result.returncode != 0:
 
 ### Linked PR closing this thread
 
-To be filled when shipped.
+Sub-fixes (b)+(c) closed via `feature/f-launchd-drift-extension` branch (PR # TBD when push lands). Sub-fix (a) still open — follow-on PR to extend `check_branch_isolation_launchd_drift` advisory to validate plist path resolution.
+
+**What shipped 2026-06-04 (sub-fixes (b)+(c)):**
+
+- `scripts/ensure-pr-cache-fresh.py` — `_is_cron_context()` detects `LAUNCHD_LABEL` / `CRON_CONTEXT=1` / `XPC_SERVICE_NAME` patterns; writes `.claude/shared/pr-cache-refresh-failed.flag` (`{ts, reason, context}`) on subprocess failure under cron context.
+- `scripts/integrity-check.py` — `pr_cache_refresh_failed_recently()` reads the flag (TTL 1h); when fresh, skips `BROKEN_PR_CITATION` + `PR_NUMBER_UNRESOLVED` and emits a single `PR_CACHE_REFRESH_FAILED` advisory in their place.
+- `scripts/daily-integrity-checkpoint.py::precheck_cron_context()` — under cron context, pre-validates `gh auth status`; exits 78 (`EX_CONFIG`) when gh missing or auth-failed.
+- `scripts/tests/test_launchd_drift_extension.py` — 16 unit tests covering all 3 surfaces; runs in 0.05s.
+- `CLAUDE.md` — new v7.9.1 F-LAUNCHD-DRIFT-EXTENSION section.
+
+**Outcome:** the 2026-05-24 phantom-finding class (319 spurious findings) reduces to ONE clearly-labeled `PR_CACHE_REFRESH_FAILED` advisory with explicit failure reason + timestamp + context. Stale flags (>1h old) are ignored — kill criterion #3 enforcement.
 
 ---
 

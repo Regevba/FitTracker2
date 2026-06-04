@@ -697,6 +697,57 @@ def regenerate_ledger_md() -> None:
     LEDGER_MD.write_text("\n".join(md))
 
 
+def _running_under_launchd() -> bool:
+    """True iff we're in cron context (launchd or manually-set CRON_CONTEXT)."""
+    if os.environ.get("LAUNCHD_LABEL"):
+        return True
+    if os.environ.get("CRON_CONTEXT") == "1":
+        return True
+    xpc = os.environ.get("XPC_SERVICE_NAME", "")
+    if xpc and "fittracker" in xpc.lower() and "daily" in xpc.lower():
+        return True
+    return False
+
+
+def precheck_cron_context() -> int | None:
+    """v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (c): pre-validate gh auth.
+
+    Closes the 2026-05-19 SSD-migration drift class: launchd cron silently ran
+    for 5 days without gh keychain access, producing snapshots with phantom
+    BROKEN_PR_CITATION findings (319 in one cycle). The phantom findings hid
+    the real problem (auth missing in cron context) behind a cloud of noise.
+
+    Behavior:
+      - Interactive sessions: never pre-fails (returns None).
+      - Cron context + gh missing: returns 78 (EX_CONFIG) — launchd records the
+        config failure cleanly; LastExit shows a real reason.
+      - Cron context + gh present + auth-fail: returns 78 with explicit stderr.
+      - Cron context + auth OK: returns None (proceed normally).
+
+    Exit 78 is the BSD `sysexits(3)` configuration-error code — what launchd
+    interprets as "the job is broken; don't keep retrying" without backoff drama.
+    """
+    if not _running_under_launchd():
+        return None
+    if shutil.which("gh") is None:
+        print(
+            "[F-LAUNCHD-DRIFT] gh CLI not installed in launchd PATH; "
+            "PR-citation gates would produce phantom findings. Exit 78 (EX_CONFIG).",
+            file=sys.stderr,
+        )
+        return 78
+    rc, out = run(["gh", "auth", "status"], timeout=10)
+    if rc != 0:
+        print(
+            f"[F-LAUNCHD-DRIFT] gh auth status failed under launchd context "
+            f"(rc={rc}). Keychain may be locked or token unavailable. "
+            f"Exit 78 (EX_CONFIG). Output:\n{out}",
+            file=sys.stderr,
+        )
+        return 78
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--force", action="store_true",
@@ -706,6 +757,11 @@ def main():
     ap.add_argument("--quiet", action="store_true",
                     help="Suppress progress output (errors still print)")
     args = ap.parse_args()
+
+    # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (c).
+    cron_precheck_exit = precheck_cron_context()
+    if cron_precheck_exit is not None:
+        sys.exit(cron_precheck_exit)
 
     today = dt.date.today().isoformat()
     local_dir = LOCAL_BACKUP_ROOT / today

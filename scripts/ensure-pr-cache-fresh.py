@@ -33,6 +33,52 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = REPO_ROOT / ".cache" / "gh-pr-cache.json"
 REFRESH_SCRIPT = REPO_ROOT / "scripts" / "refresh-pr-cache.py"
 
+# v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b):
+# When refresh fails AND we're running under launchd (cron context), write a
+# sentinel flag that downstream `integrity-check.py` reads to skip BROKEN_PR_CITATION
+# + PR_NUMBER_UNRESOLVED with explicit messaging instead of producing phantoms.
+# Closes the 2026-05-24 incident class — 319 phantom findings from cron context
+# lacking gh CLI keychain access.
+REFRESH_FAILED_FLAG = REPO_ROOT / ".claude" / "shared" / "pr-cache-refresh-failed.flag"
+
+
+def _is_cron_context() -> bool:
+    """Return True iff we're running under launchd (or another cron context).
+
+    Detection signals (any one is sufficient):
+      - LAUNCHD_LABEL set (launchd sets this for every job it spawns)
+      - CRON_CONTEXT=1 (manual override / our own daily-checkpoint cron)
+      - XPC_SERVICE_NAME set + matches our daily-checkpoint label
+
+    Falls back to False for interactive shells; W11.b silent-pass only
+    triggers in cron context, so false negatives here mean "behave as
+    interactive" which is the safer default.
+    """
+    if os.environ.get("LAUNCHD_LABEL"):
+        return True
+    if os.environ.get("CRON_CONTEXT") == "1":
+        return True
+    xpc = os.environ.get("XPC_SERVICE_NAME", "")
+    if xpc and "fittracker" in xpc.lower() and "daily" in xpc.lower():
+        return True
+    return False
+
+
+def _write_failure_flag(reason: str) -> None:
+    """Write the sentinel flag for downstream consumers (W11.b mitigation)."""
+    payload = {
+        "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "reason": reason[:500],  # cap to keep the flag small
+        "context": "launchd" if _is_cron_context() else "interactive",
+    }
+    try:
+        REFRESH_FAILED_FLAG.parent.mkdir(parents=True, exist_ok=True)
+        REFRESH_FAILED_FLAG.write_text(json.dumps(payload, indent=2) + "\n")
+    except OSError:
+        # If we can't even write the flag, integrity-check will produce its
+        # usual findings — operator will eventually notice the noise.
+        pass
+
 # Keep in sync with REPOS in scripts/refresh-pr-cache.py (v7.8.3 D-3 unified cache).
 # If refresh-pr-cache.py ever adds a third repo, append it here too — otherwise
 # the per-repo completeness check below will perpetually request a refresh.
@@ -170,6 +216,8 @@ def main() -> int:
         )
         if exc.stderr:
             print(exc.stderr.rstrip(), file=sys.stderr)
+        if _is_cron_context():
+            _write_failure_flag(f"refresh subprocess exited {exc.returncode}: {str(exc)[:200]}")
         return 1
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
         print(
@@ -177,6 +225,8 @@ def main() -> int:
             f"Downstream PR-citation gates may produce false positives.",
             file=sys.stderr,
         )
+        if _is_cron_context():
+            _write_failure_flag(f"refresh unavailable: {type(exc).__name__}: {str(exc)[:200]}")
         return 1
 
 
