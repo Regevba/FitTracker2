@@ -1,0 +1,63 @@
+{
+  "feature_name": "f-launchd-drift-extension",
+  "current_phase": "testing",
+  "created_at": "2026-06-04T15:20:00Z",
+  "updated_at": "2026-06-04T16:05:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/f-launchd-drift-extension",
+  "scheduled_after": null,
+  "primary_metric": "Launchd-context cron failures produce a clear sentinel finding instead of 319+ phantom BROKEN_PR_CITATION findings",
+  "success_metrics": [
+    "ensure-pr-cache-fresh.py writes a sentinel flag at .claude/shared/pr-cache-refresh-failed.flag when invoked in launchd context AND refresh fails (T1, measured by flag presence after fault injection)",
+    "integrity-check.py reads the flag (if newer than 1h) and SKIPS BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED with explicit 'cache-refresh-failed' message instead of producing phantoms (T1)",
+    "Daily checkpoint script pre-validates gh auth before invoking make integrity-check; exits 78 (EX_CONFIG) when running under launchd AND gh auth missing (T1)",
+    "Unit tests cover all 3 paths: interactive happy path, launchd-context failure, downstream skip-on-flag (T1, measured via pytest)"
+  ],
+  "kill_criteria": [
+    "Flag mechanism mis-fires and skips PR-citation checks for ordinary interactive sessions — operators lose visibility into real findings",
+    "Cron-context detection uses an unreliable signal that breaks when launchd label format changes — Apple has changed env vars before",
+    "Flag file accumulates without cleanup, eventually skipping checks indefinitely — staleness threshold (1h) must be respected"
+  ],
+  "kill_criteria_resolution": "All 3 kill criteria mitigated by design. (1) `_is_cron_context()` returns False when no env signals are set — interactive sessions never write the flag or trigger the skip. Test `test_is_cron_context_interactive_default` enforces. (2) Three independent detection signals (LAUNCHD_LABEL / CRON_CONTEXT=1 / XPC_SERVICE_NAME pattern) provide redundancy; if Apple removes LAUNCHD_LABEL, the manual override (CRON_CONTEXT=1) remains usable in the plist. Test `test_is_cron_context_unrelated_xpc_ignored` guards against XPC misidentification. (3) 1h TTL on the flag (REFRESH_FAILED_FLAG_TTL_SECONDS=3600); `pr_cache_refresh_failed_recently()` returns False for stale flags. Test `test_flag_stale_returns_false` enforces.",
+  "dispatch_pattern": "agent-driven (3-file edit + test suite)",
+  "case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",
+  "case_study_showcase": "",
+  "spec": ".claude/shared/v7-9-1-candidates.md F-LAUNCHD-DRIFT-EXTENSION + docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md E-14",
+  "predecessor_case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
+  "scope_summary": "Close the W11.b silent-pass class — launchd-cron context where `gh` CLI auth fails (no keychain access) caused 319 phantom BROKEN_PR_CITATION findings on 2026-05-24. Same context also caused 5 silently-broken cron days after the 2026-05-19 SSD migration. This PR ships sub-fixes (b) + (c) of the 3-part F-LAUNCHD-DRIFT-EXTENSION plan: ensure-pr-cache-fresh.py writes a sentinel flag file when launchd context detected + refresh fails; integrity-check.py reads the flag and skips affected gates with clear messaging; daily-integrity-checkpoint.py pre-validates gh auth and exits 78 (EX_CONFIG) on launchd-context failure. Sub-fix (a) — BRANCH_ISOLATION_LAUNCHD_DRIFT plist path-resolution check — deferred to a follow-on PR since it requires gate-coverage-calibration discipline (advisory window).",
+  "related_prs": [],
+  "tasks": [
+    {"id": "T1", "description": "ensure-pr-cache-fresh.py — detect LAUNCHD_LABEL env; write .claude/shared/pr-cache-refresh-failed.flag (JSON) on failure", "status": "complete"},
+    {"id": "T2", "description": "integrity-check.py — at startup, read flag if newer than 1h; if present, skip BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED with explicit skip-reason", "status": "complete"},
+    {"id": "T3", "description": "daily-integrity-checkpoint.py — pre-validate `gh auth status`; exit 78 (EX_CONFIG) if launchd-context + auth missing", "status": "complete"},
+    {"id": "T4", "description": "Unit tests at scripts/tests/test_launchd_drift_extension.py — interactive happy path, launchd-context failure, flag staleness, downstream skip-on-flag", "status": "complete"},
+    {"id": "T5", "description": "CLAUDE.md v7.9.1 F-LAUNCHD-DRIFT-EXTENSION section", "status": "complete"},
+    {"id": "T6", "description": "Source case study + fitme-story showcase MDX slot 47", "status": "deferred", "deferred_reason": "Operator directive 2026-06-04 — fitme-story showcase MDX assigned to companion agent; source case study shipped FT2-side"},
+    {"id": "T7", "description": "Update .claude/shared/v7-9-1-candidates.md to strike F-LAUNCHD-DRIFT-EXTENSION sub-fixes (b)+(c) as closed (sub-fix (a) remains queued)", "status": "complete"}
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T15:20:00Z",
+      "ended_at": "2026-06-04T16:05:00Z",
+      "notes": "Per spec: 'any subset can ship independently.' Shipping sub-fixes (b) + (c) in this PR; sub-fix (a) deferred to follow-on. No advisory window needed — sub-fixes (b)+(c) are bug fixes; the flag-skip mechanism is fail-safer-than-status-quo (skips with explicit message vs producing phantom findings). 16/16 unit tests pass in 0.05s."
+    },
+    "testing": {
+      "started_at": "2026-06-04T16:05:00Z",
+      "ended_at": null,
+      "notes": "Unit tests green. Pending: pre-commit hook validation + integrity baseline confirmation before PR open."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {"started_at": "2026-06-04T15:20:00Z", "ended_at": "2026-06-04T16:05:00Z"},
+      "testing": {"started_at": "2026-06-04T16:05:00Z"}
+    }
+  }
+}

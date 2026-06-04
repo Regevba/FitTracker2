@@ -48,6 +48,36 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
 
+# v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b):
+# When ensure-pr-cache-fresh.py fails in cron context, it writes this sentinel.
+# We read it at startup and skip BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED
+# with explicit messaging — closing the 2026-05-24 incident class (319 phantom
+# findings from cron-context gh auth failure).
+REFRESH_FAILED_FLAG = REPO_ROOT / ".claude" / "shared" / "pr-cache-refresh-failed.flag"
+REFRESH_FAILED_FLAG_TTL_SECONDS = 3600  # 1h — flag expires; stale flag is ignored
+
+
+def pr_cache_refresh_failed_recently() -> tuple[bool, dict | None]:
+    """Return (skip_pr_gates, payload) — True if a fresh sentinel exists.
+
+    Stale flags (>1h old) are ignored so a forgotten flag from a previous
+    cron run doesn't suppress today's real findings. Kill criterion #3
+    enforcement.
+    """
+    if not REFRESH_FAILED_FLAG.exists():
+        return False, None
+    try:
+        payload = json.loads(REFRESH_FAILED_FLAG.read_text())
+        ts = payload.get("ts", "")
+        # ts format: YYYY-MM-DDTHH:MM:SSZ
+        flag_dt = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        age_seconds = (datetime.now(timezone.utc) - flag_dt).total_seconds()
+        if age_seconds > REFRESH_FAILED_FLAG_TTL_SECONDS:
+            return False, payload  # stale; ignore
+        return True, payload
+    except (json.JSONDecodeError, ValueError, OSError):
+        return False, None
+
 # T7: load validate-cu-v2.py (importlib.util — hyphen prevents direct import).
 # Cached at module level so the load happens once per integrity-check run.
 _validate_cu_v2_module = None
@@ -901,11 +931,19 @@ def discover_case_studies() -> list[dict]:
 
 
 def build_snapshot(snapshot_trigger: str) -> dict:
+    # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b):
+    # If ensure-pr-cache-fresh.py wrote a fresh failure flag (within the last
+    # hour, typically from cron context where gh auth is unavailable), the PR
+    # cache is known-stale. Skipping BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED
+    # avoids 300+ phantom findings; the operator sees one explicit advisory
+    # ("PR_CACHE_REFRESH_FAILED") in the report instead.
+    skip_pr_gates, refresh_flag_payload = pr_cache_refresh_failed_recently()
+
     # Load PR cache ONCE, before the per-feature loop, so audit_feature()
     # and audit_case_study_citations() share the same gh call result.
     global _PR_CACHE
-    _PR_CACHE = load_pr_cache()
-    citation_check_ran = _PR_CACHE is not None
+    _PR_CACHE = load_pr_cache() if not skip_pr_gates else None
+    citation_check_ran = _PR_CACHE is not None and not skip_pr_gates
 
     feature_summaries = []
     findings = []
@@ -916,8 +954,28 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         feature_summaries.append(summary)
         findings.extend(feat_findings)
 
-    # Auditor Agent case-study citation checks
-    findings.extend(audit_case_study_citations(_PR_CACHE))
+    pr_cache_failed_advisory: list[dict] = []
+    if skip_pr_gates:
+        # Filter PR_NUMBER_UNRESOLVED out of per-feature findings — the cache
+        # is known-empty so every cite is a false positive.
+        findings = [f for f in findings if f.get("code") != "PR_NUMBER_UNRESOLVED"]
+        ts = (refresh_flag_payload or {}).get("ts", "unknown")
+        ctx = (refresh_flag_payload or {}).get("context", "unknown")
+        reason = (refresh_flag_payload or {}).get("reason", "no reason recorded")
+        pr_cache_failed_advisory.append({
+            "feature": "_meta",
+            "severity": "ADVISORY",
+            "code": "PR_CACHE_REFRESH_FAILED",
+            "message": (
+                f"PR cache refresh failed in {ctx} context at {ts} "
+                f"(reason: {reason[:160]}). Skipped BROKEN_PR_CITATION + "
+                f"PR_NUMBER_UNRESOLVED to avoid phantom findings. "
+                f"Investigate `gh auth status` under cron context."
+            ),
+        })
+    else:
+        # Auditor Agent case-study citation checks
+        findings.extend(audit_case_study_citations(_PR_CACHE))
     findings.extend(audit_case_study_tier_tags())
 
     # v7.7 M3 T18: advisory tier-tag correctness heuristic (14th check code).
@@ -931,6 +989,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + check_feature_closure_completeness_cycle()
         + check_tier_tags_advisory()
         + check_cache_hits_auto_instrumentation_inactive()
+        + pr_cache_failed_advisory  # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b)
     )
     all_findings = findings + advisory_findings
 
