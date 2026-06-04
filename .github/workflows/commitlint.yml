@@ -1,0 +1,53 @@
+name: commitlint
+
+# R17 (dev-env-master-plan §3): conventional-commits enforcement via commitlint.
+# Posture: warn-only baseline. continue-on-error: true so a non-conforming
+# commit message surfaces an annotation but does not gate the PR merge.
+# Strict mode is a future calibration step (operator decides after 30 days).
+#
+# All inputs static. We deliberately do NOT inject any PR body / title /
+# branch into run: commands — commitlint reads the actual commit log via
+# git rev-list, which is safe.
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: commitlint-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  lint:
+    name: lint commits
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # full history so range-lint can walk from base
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: Install commitlint
+        run: npm install --no-save --quiet @commitlint/cli @commitlint/config-conventional
+
+      - name: Lint commit messages
+        continue-on-error: true
+        run: |
+          set -e
+          # Compute the merge base of this PR vs main, then lint every commit
+          # in the PR's range. Safe: BASE/HEAD are computed locally via git,
+          # not interpolated from event payload.
+          git fetch origin main:refs/remotes/origin/main 2>/dev/null || true
+          BASE=$(git merge-base origin/main HEAD)
+          npx commitlint --from="$BASE" --to=HEAD --verbose

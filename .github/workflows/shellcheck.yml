@@ -1,0 +1,49 @@
+name: shellcheck
+
+# R18 (dev-env-master-plan §3): shellcheck on shell scripts under scripts/
+# and .githooks/. Posture: warn-only baseline; continue-on-error: true.
+# Strict mode is a future calibration step.
+#
+# All inputs static.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/**/*.sh'
+      - 'scripts/**'
+      - '.githooks/**'
+      - '.github/workflows/shellcheck.yml'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: shellcheck-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run shellcheck
+        continue-on-error: true
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: "-x -S warning"
+        with:
+          scandir: ./scripts
+          additional_files: ".githooks/pre-commit"
+          severity: warning

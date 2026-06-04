@@ -1,0 +1,50 @@
+name: gitleaks
+
+# R11 (dev-env-master-plan §3): secret-scan via gitleaks.
+#
+# Posture: warn-only baseline. Each job uses `continue-on-error: true` so a
+# legacy historical leak does not block PR merges on day-1. Strict mode is a
+# future calibration step (operator decides after first clean baseline scan +
+# remediation pass).
+#
+# Companion to External Audit #2 (2026-06-12): the audit pack will include the
+# most-recent gitleaks scan result as an artifact.
+#
+# Security posture: ALL inputs are static (no PR title, branch name, or commit
+# message interpolated into run: commands). The workflow only reads the repo at
+# PR HEAD or main and runs the gitleaks action against static config-path.
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+concurrency:
+  group: gitleaks-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: gitleaks scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        continue-on-error: true
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          config-path: .gitleaks.toml
