@@ -6,7 +6,7 @@
   "current_phase": "testing",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T15:33:02Z",
-  "updated_at": "2026-06-04T15:36:13Z",
+  "updated_at": "2026-06-04T15:40:04Z",
   "events": [
     {
       "timestamp": "2026-06-04T15:33:02Z",
@@ -24,6 +24,17 @@
       "event_type": "phase_started",
       "phase": "testing",
       "summary": "Testing phase begun \u2014 16/16 unit tests pass. Pending pre-commit + baseline check before PR open.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T15:40:04Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Phase 9 CLOSED via close-feature.py. PR #621 squashed onto main as ed20cbf01a (operator-merged 2026-06-04T15:39:36Z). state.json testing\u2192complete with full audit transitions + merge metadata.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
