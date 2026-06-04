@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is. Auto-generated log has fresh event matching baseline.current_phase (implementation). Gate skips with no_phase_change because there's no committed state to compare against and the fresh-log mechanism keeps everything timestamp-fresh."
+}

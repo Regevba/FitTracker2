@@ -1,0 +1,4 @@
+{
+  "_comment": "Test invocation initializes throwaway with --initial-branch=main. work_subtype=framework_feature on the baseline already triggers Mode B's per-feature check. With branch=main and infra-eligible feature, Mode B fires. State override matches the throwaway branch so we DON'T trip Mode C (which would also fire and obscure the assertion).",
+  "branch": "main"
+}

@@ -95,20 +95,27 @@ def scrub_home_env(tmp_home: Path) -> dict[str, str]:
     }
 
 
-def make_throwaway_repo(tmp_path: Path) -> Path:
+def make_throwaway_repo(
+    tmp_path: Path, *, initial_branch: str = "feature/_test-fixture"
+) -> Path:
     """Initialize a throwaway git repo at `tmp_path` with bootstrap commit.
 
     Steps:
     1. Write the 3 THROWAWAY_REPO_INIT_FILES to the repo root
-    2. `git init` (suppress branch-name hint)
+    2. `git init --initial-branch=<initial_branch>`
     3. Set local git user.email + user.name (so commits don't fail on
        missing identity in CI)
     4. Set core.hooksPath to `.githooks` so the throwaway repo USES the
        real FT2 pre-commit hook (the whole point of the harness)
-    5. Symlink `.githooks` from the real repo so the hook script can be
-       executed by the throwaway repo's pre-commit driver
-    6. Symlink `scripts/` so the hook can find the Python gate dispatchers
-    7. Initial commit (NOT via the hook — bypass to seed history)
+    5. Symlink `scripts/` so the hook can find the Python gate dispatchers
+    6. Initial commit (NOT via the hook — bypass to seed history)
+
+    Args:
+        tmp_path: pytest tmp_path parent under which the repo is created
+        initial_branch: branch name for the initial commit. Default matches
+            the baseline state.json::branch field. Use "main" or another
+            non-feature/* value to exercise BRANCH_ISOLATION_VIOLATION
+            Mode B (infra-commit-level) tests.
 
     Returns:
         Path to the throwaway repo root.
@@ -122,10 +129,10 @@ def make_throwaway_repo(tmp_path: Path) -> Path:
     for filename, content in THROWAWAY_REPO_INIT_FILES.items():
         (repo / filename).write_text(content, encoding="utf-8")
 
-    # Initial branch matches the baseline state.json::branch field so
-    # BRANCH_ISOLATION_VIOLATION Mode B + Mode C gates can be exercised
-    # in either positive (mismatch) or negative (match) fixtures.
-    _run_git(repo, "init", "--initial-branch=feature/_test-fixture")
+    # Initial branch defaults to feature/_test-fixture (matches baseline
+    # state.json::branch field). Callers can override to "main" to exercise
+    # BRANCH_ISOLATION_VIOLATION Mode B (infra-commit on non-feature branch).
+    _run_git(repo, "init", f"--initial-branch={initial_branch}")
     _run_git(repo, "config", "user.email", "f16-test@example.com")
     _run_git(repo, "config", "user.name", "F16 Test")
     _run_git(repo, "config", "commit.gpgsign", "false")  # CI signing-key absent

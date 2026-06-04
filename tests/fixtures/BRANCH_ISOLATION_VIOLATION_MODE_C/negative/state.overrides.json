@@ -1,0 +1,3 @@
+{
+  "_comment": "Baseline-as-is: state.json::branch=feature/_test-fixture matches the throwaway repo's git branch. Gate must NOT fire."
+}
