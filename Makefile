@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check lint lint-ios lint-py lint-md
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -68,6 +68,53 @@ ui-audit-drift:
 	   echo "ERROR: ui-audit-baseline.md is stale. Run 'make ui-audit-baseline' and commit."; \
 	   exit 1; \
 	 fi
+
+# ────────────────────────────────────────────────────────────────────────────
+# Dev-env Track B — lint integration (R7 SwiftLint + R8 ruff + R12 markdownlint)
+#
+# Track A shipped config files (.swiftlint.yml + .ruff.toml + .markdownlint-cli2.jsonc)
+# on 2026-05-24. Track B (this section) wires them into Makefile + verify-local.
+# Each target SKIPS CLEANLY if the underlying tool is not installed locally —
+# so devs without the toolchain installed don't fail verify-local. CI installs
+# the tools and runs them strictly.
+#
+# Spec: docs/master-plan/dev-env-master-plan-2026-05-24.md Tier 2.
+# Shipped: 2026-06-04 (post-Phase-E-exit per master plan §3).
+# ────────────────────────────────────────────────────────────────────────────
+
+# R7: SwiftLint warn-only across FitTracker/ + FitTrackerTests/.
+# .swiftlint.yml at FT2 root configures ~80 rules (warn-only baseline).
+# Skip cleanly if `swiftlint` not installed (devs without homebrew install).
+lint-ios:
+	@if command -v swiftlint >/dev/null 2>&1; then \
+		swiftlint lint --quiet --config .swiftlint.yml; \
+	else \
+		echo "lint-ios: swiftlint not installed; skipping (install via 'brew install swiftlint')"; \
+	fi
+
+# R8: ruff check across scripts/ + ai-engine/.
+# .ruff.toml at FT2 root + [tool.ruff] in ai-engine/pyproject.toml.
+# Skip cleanly if `ruff` not installed (devs without pip install).
+lint-py:
+	@if command -v ruff >/dev/null 2>&1; then \
+		ruff check scripts/ ai-engine/; \
+	else \
+		echo "lint-py: ruff not installed; skipping (install via 'pip install ruff')"; \
+	fi
+
+# R12: markdownlint across docs/ + CLAUDE.md + README.md.
+# .markdownlint-cli2.jsonc at FT2 root (warn-only; relaxed for project style).
+# Skip cleanly if `markdownlint-cli2` not installed (devs without npm install).
+lint-md:
+	@if command -v markdownlint-cli2 >/dev/null 2>&1; then \
+		markdownlint-cli2 'docs/**/*.md' 'CLAUDE.md' 'README.md' 'AGENTS.md'; \
+	else \
+		echo "lint-md: markdownlint-cli2 not installed; skipping (install via 'npm i -g markdownlint-cli2')"; \
+	fi
+
+# Meta-target: run all 3 lint surfaces.
+# Used inside verify-local + the lint.yml CI workflow.
+lint: lint-ios lint-py lint-md
 
 # State.json integrity audit — findings-only (no file writes).
 # Also runs as a 72h GitHub Actions cycle (.github/workflows/integrity-cycle.yml).
@@ -337,7 +384,7 @@ install:
 # canonical `current_phase` on every state.json write).
 # Any new P0 (raw Color literal, raw animation, raw font, missing colorset)
 # or any SCHEMA_DRIFT introduced by a PR fails the local + CI verify pass.
-verify-local: tokens-check schema-check ui-audit ui-audit-drift verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
+verify-local: tokens-check schema-check ui-audit ui-audit-drift lint verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
 
 # R10 (FIT-176): defensive check that `make verify-local` does NOT mutate
 # tracked repo state. Captures git porcelain before + after; asserts
