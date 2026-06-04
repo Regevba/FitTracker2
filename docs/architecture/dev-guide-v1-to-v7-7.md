@@ -623,12 +623,61 @@ Defined in `.github/workflows/framework-status-weekly.yml` (v7.6 Phase 2c). Cron
 
 When a gate fires, the finding alone does not tell you whether it is a real problem or an expected artifact (a squash-merge leaving no branch attribution, an empty PR cache, a heuristic over-trigger, etc.). The **Observed Patterns Catalog** at [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) is the canonical manifest of every recognized fire-pattern. Each entry carries a **trigger**, a **why-expected** classification (by-design / cleanup-artifact / silent-pass-then-fixed / heuristic-FP / schema-drift), a **distinguishing-real-signal** rule, and a **silence path**.
 
-- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 32 workflow/operational patterns (Section 2, `W1`–`W32`).
+- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 32 workflow/operational patterns (Section 2, `W1`–`W32`) + 1 self-doc entry (`W33` — the pattern↔skill preflight overlay tool itself).
 - **CLI:** `make observed-patterns`.
 - **Preflight-loaded** by `/pm-workflow` and referenced by all spoke skills.
 - **Operator obligation (mandatory):** when any framework gate or advisory fires, the FIRST step is to consult this catalog. Apply the documented remediation if the pattern matches; investigate only if novel; and **append a new entry** to the catalog before the feature that surfaced the novel pattern is closed. The catalog is append-only-by-default.
 
 The catalog is the human-facing companion to the Mechanism A coverage ledger (§2.4): Mechanism A tells you a gate *fired*; the catalog tells you what the firing *means*.
+
+### 10.5a Pattern↔skill preflight overlay (v7.9.1, shipped 2026-06-04)
+
+The Observed Patterns Catalog became **operational** at v7.9.1: each of the 55 work-blocking patterns now carries an explicit `skills[]` mapping in [`.claude/shared/pattern-skill-map.json`](../../.claude/shared/pattern-skill-map.json), and every one of the 12 skill `SKILL.md` files now ships an auto-generated `<!-- BEGIN pattern-preflight (generated) -->` block listing its relevant patterns with detector + remediation + autoheal flags. The wiring is **bidirectional** (catalog ↔ skill), **dual-purpose** (dev-process preempt + 3D Universe overlay input), and **self-auditing** (catalog drift surfaces as a `PATTERN_SKILL_UNMAPPED` advisory in `make integrity-check`).
+
+**Goal:** instead of operators discovering blockers reactively mid-task when a gate fires, each skill **proactively probes its relevant patterns at activation** so blockers clear before work begins.
+
+**Three operator surfaces:**
+
+| Surface | What it does | Producer |
+|---|---|---|
+| `make skill-preflight SKILL=<name>` | Runs the mechanized probes for `<name>`'s relevant patterns + emits awareness checklists for the manual/discipline ones; writes an additive `skill_overlay.<name>` block to `.claude/shared/preflight-cache.json`. Exit codes: 0 (clean) / 1 (blocker probed) / 2 (usage error). | [`scripts/skill-preflight.py`](../../scripts/skill-preflight.py) |
+| `make gen-skill-preflight` | Idempotently regenerates the `<!-- BEGIN/END pattern-preflight (generated) -->` block inside each `SKILL.md` from the map. Re-run produces no diff. | [`scripts/generate-skill-preflight-sections.py`](../../scripts/generate-skill-preflight-sections.py) |
+| `PATTERN_SKILL_UNMAPPED` advisory | Cycle-time check: every pattern ID in `observed-patterns.md` (except `W33` self-doc) must be present in `pattern-skill-map.json` with ≥1 skill. Catches the case where a new W-pattern is appended to the catalog without a corresponding map entry. | [`scripts/integrity-check.py::check_pattern_skill_unmapped`](../../scripts/integrity-check.py) |
+
+**HYBRID detection model:**
+
+| Kind | Count | Treatment |
+|---|---|---|
+| **Mechanized** — a script detects it live | ~23 | `make skill-preflight` runs the detector (e.g. `check-ssh-agent.sh` for W1, `check-branch-drift.py` for W9, `ensure-pr-cache-fresh.py` for #12 + W11) |
+| **Manual / compile-time / discipline** | ~32 | Emitted as an awareness checklist — the operator reads it but no script can probe (e.g. W2 publish-verbatim, W6 measurement impartiality, W24 pbxproj merge conflicts) |
+| **Self-doc** | 1 (W33) | Documents the overlay tool itself; exempt from `PATTERN_SKILL_UNMAPPED` via `SELF_DOC_EXEMPT` |
+
+**Per-skill `SKILL.md` integration:** every spoke + the hub now contains a section like:
+
+```markdown
+<!-- BEGIN pattern-preflight (generated) -->
+## Patterns relevant to /<skill>
+
+| ID | Title | Detector | Blocker | Skills |
+|---|---|---|---|---|
+| #6 | FEATURE_CLOSURE_COMPLETENESS | scripts/check-state-schema.py | ✗ | pm-workflow, cx, ux |
+| W1 | SSH signing requires loaded agent | scripts/check-ssh-agent.sh | ✓ | pm-workflow, dev, ops |
+| ...
+<!-- END pattern-preflight (generated) -->
+```
+
+The block is **regenerated** from `pattern-skill-map.json` by `make gen-skill-preflight`. Operators do not hand-edit it.
+
+**Mandatory operator discipline when adding a NEW catalog pattern:**
+
+1. Append the entry to `.claude/integrity/observed-patterns.md` (existing v7.8.5 rule).
+2. Add it to `.claude/shared/pattern-skill-map.json` with `≥1` `skills[]` entry.
+3. Run `make gen-skill-preflight` to refresh the 12 `SKILL.md` blocks.
+4. Confirm `make integrity-check` shows no new `PATTERN_SKILL_UNMAPPED` advisory.
+
+The `PATTERN_SKILL_UNMAPPED` advisory is the safety net for step 2 — it surfaces a catalog ID that has no corresponding map entry.
+
+**Full reference:** [`docs/skills/pattern-skill-overlay.md`](../skills/pattern-skill-overlay.md) (137-LOC schema + how-to). **Self-doc:** [`observed-patterns.md` W33](../../.claude/integrity/observed-patterns.md#w33--pattern-skill-preflight-overlay-catalog-patterns-mapped-per-skill--probed-at-activation-2026-06-04). **PR provenance:** [#615](https://github.com/Regevba/FitTracker2/pull/615) (originally opened 10:29 UTC by a scheduled remote agent; rebased + extended with W29-W32 mapping + W33 self-doc renumber + 3D PRD CHANGELOG block; merged 19:01 UTC via admin override after W31 stuck-queue blocked the standard merge path).
 
 ### 10.6 Real-time + daily observability surfaces (v7.8.5 → v7.8.6)
 
