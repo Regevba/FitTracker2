@@ -42,13 +42,22 @@ catches anything introduced via bypass.
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+# `REPO_ROOT_OVERRIDE` env var redirects all repo-relative path resolution
+# to a different root — required by the F16 try-repo harness. Production
+# never sets this; fallback is canonical `<file>/../..`.
+# See .claude/features/f16-try-repo-harness/prd.md §3.5 Q6.
+_REPO_ROOT_OVERRIDE = os.environ.get("REPO_ROOT_OVERRIDE")
+if _REPO_ROOT_OVERRIDE:
+    REPO_ROOT = Path(_REPO_ROOT_OVERRIDE).resolve()
+else:
+    REPO_ROOT = Path(__file__).resolve().parent.parent
 CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
 
 EXEMPT_NAMES = {
