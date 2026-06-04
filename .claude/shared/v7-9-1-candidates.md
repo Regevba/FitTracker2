@@ -1,5 +1,7 @@
 # v7.9.1 candidate docket
 
+> **v7.9.1 BUILD WINDOW CLOSED 2026-06-04.** 5 of 7 docket candidates shipped on the same day (F-LAUNCHD-DRIFT-EXTENSION, F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE, F-DEPLOYED-URL-PROBE FT2 substrate, plus the predecessor F16/F17/F2/Dev-env Track B). Two remain open (F-AUTH-LATENCY-SERVER-METRIC + F-CONTRACT-FIXTURE-SAMPLING) — both fitme-story-side or cross-repo, deferred to a fitme-story-focused session. **Synthesis case study:** [`framework-v7-9-1-promotion-case-study.md`](../../docs/case-studies/framework-v7-9-1-promotion-case-study.md). **CLAUDE.md cold-start pointer:** `## v7.9.1 Build Window (shipped 2026-06-04 — 8 ships, 14 PRs)` section.
+>
 > Created 2026-05-27. Successor to the v7.9 promotion (shipped 2026-05-21 via PR #417). Items here are the queued enhancements + bug-fixes for the next framework patch cycle, expected to open after v7.9 Phase E exit (~2026-06-04).
 >
 > **Purpose:** make the v7.9.1 cycle's scope explicit so any item can be promoted into a feature directory (`.claude/features/<name>/`) when the cycle opens. Until then, each candidate is a small spec stub with discovery context + smallest-viable-shape sketch.

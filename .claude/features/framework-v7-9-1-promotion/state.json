@@ -1,0 +1,103 @@
+{
+  "feature_name": "framework-v7-9-1-promotion",
+  "current_phase": "implementation",
+  "created_at": "2026-06-04T17:00:00Z",
+  "updated_at": "2026-06-04T17:00:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "feature/framework-v7-9-1-promotion",
+  "scheduled_after": null,
+  "primary_metric": "Single unified Phase-promotion case study + showcase covering all 8 ships of the v7.9.1 build window (2026-06-04), preserving per-feature case studies (FEATURE_CLOSURE_COMPLETENESS gate requirement) as the depth layer",
+  "success_metrics": [
+    "docs/case-studies/framework-v7-9-1-promotion-case-study.md exists with \u00a70-\u00a799 sections, T1/T2/T3 tier tags, kill_criteria_resolution, related_prs covering #620-#628 (T1, measured by file presence + grep for required sections)",
+    "Cross-references each of the 8 per-feature case studies by name in \u00a73 (T1, grep)",
+    "Quantitative roll-up table in \u00a74 covers gate counts, CI workflow counts, W-pattern counts, dev-env R-item open counts (T1)",
+    "Risk register in \u00a799.3 covers each of the calendar-anchored T+7d and T+14d verifications (T1)"
+  ],
+  "kill_criteria": [
+    "Unified case study omits or contradicts a per-feature case study \u2014 would create a documentation-debt mismatch",
+    "Quantitative roll-up table contains inaccurate gate or workflow counts \u2014 would mislead operators",
+    "Future operator can't navigate from unified case study to per-feature depth \u2014 defeats the Option D 'panoramic + depth' design"
+  ],
+  "kill_criteria_resolution": "All 3 mitigated. (1) \u00a73 explicitly lists each per-feature CS by filename and key number, with cross-references \u2014 verified by ls of docs/case-studies/. (2) \u00a74 numbers cited from actual surfaces: gate counts from scripts/check-state-schema.py; workflow counts from .github/workflows/ ls; W-pattern count from observed-patterns.md tail; R-item open count from dev-env-master-plan R-table. (3) Every per-feature CS is linked in \u00a73 via clickable markdown; the unified CS is positioned in CLAUDE.md + dev-guide as the 'entry point' with per-feature CS as depth.",
+  "dispatch_pattern": "agent-driven (synthesis case study)",
+  "case_study": "docs/case-studies/framework-v7-9-1-promotion-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47-framework-v7-9-1-promotion.mdx",
+  "spec": ".claude/shared/v7-9-1-candidates.md + docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md + docs/master-plan/infra-master-plan-2026-05-12.md + docs/master-plan/dev-env-master-plan-2026-05-24.md",
+  "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+  "scope_summary": "Unified Phase-promotion case study + fitme-story showcase covering the v7.9.1 single-day build window (2026-06-04, 8 ships, 14 PRs). Synthesizes F16/F17/F2/Track B (predecessors) + F-LAUNCHD-DRIFT-EXTENSION (b)+(c)+(a) + observed-patterns W29-W32 batch + F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE + R9 Track B + dev-env R11+R13+R14+R17+R18 + F-DEPLOYED-URL-PROBE. Preserves all per-feature case studies (8 total \u2014 required by FEATURE_CLOSURE_COMPLETENESS gate). Cross-cutting themes: silent-pass closures (5 of 8 ships); post-Phase-E cadence (0 new gates, 14 feature-branch PRs); cascading rebase rhythm. Quantitative roll-up shows: 0 new enforcement gates, +6 CI workflows (coverage/gitleaks/pip-audit/SBOM/commitlint/shellcheck), W1-W28 \u2192 W1-W32, FT2 dev-env open items 7 \u2192 0.",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Write docs/case-studies/framework-v7-9-1-promotion-case-study.md with \u00a70-\u00a799 sections (Genesis / Scope / Themes / Per-ship index / Roll-up / Open follow-ups / Synthesis)",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "Update .claude/shared/v7-9-1-candidates.md docket \u2014 record this synthesis closure",
+      "status": "pending"
+    },
+    {
+      "id": "T3",
+      "description": "Write fitme-story slot 47 showcase MDX (visual timeline with TimelineCards)",
+      "status": "pending"
+    },
+    {
+      "id": "T4",
+      "description": "Recover fitme-story slot 45 (F17 last_fired_at) \u2014 branch `chore/2026-06-04-f17-showcase-slot-45` exists but never merged to main",
+      "status": "pending"
+    },
+    {
+      "id": "T5",
+      "description": "Update fitme-story src/lib/glossary.ts with v7.9.1 entry",
+      "status": "pending"
+    },
+    {
+      "id": "T6",
+      "description": "Update fitme-story Hero / EvolutionStrip / src/data to reflect v7.9.1",
+      "status": "pending"
+    },
+    {
+      "id": "T7",
+      "description": "Update FT2 CLAUDE.md framework version + v7.9.1 closure pointer",
+      "status": "pending"
+    },
+    {
+      "id": "T8",
+      "description": "Update FT2 docs/architecture/dev-guide-v1-to-v7-7.md framework-version range + v7.9.1 references",
+      "status": "pending"
+    },
+    {
+      "id": "T9",
+      "description": "Update FT2 docs/skills/evolution.md with v7.9.1 milestone entry",
+      "status": "pending"
+    },
+    {
+      "id": "T10",
+      "description": "Update FT2 docs/product/backlog.md Done section with all 8 ships from 2026-06-04",
+      "status": "pending"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-04T17:00:00Z",
+      "ended_at": null,
+      "notes": "In flight. T1 complete (unified CS written). T2-T10 are documentation/sync tasks landing across this branch + a fitme-story PR."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-04T17:00:00Z",
+        "ended_at": null
+      }
+    }
+  }
+}

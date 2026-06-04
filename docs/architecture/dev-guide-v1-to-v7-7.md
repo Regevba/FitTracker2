@@ -1,9 +1,9 @@
-# PM Framework — Developer Guide (v1.0 → v7.9)
+# PM Framework — Developer Guide (v1.0 → v7.9.1)
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Current version:** **v7.9** (shipped 2026-05-21) — promotes 3 v7.8.1 advisory gates to enforced via a single-flag flip ([`scripts/check-state-schema.py:138`](../../scripts/check-state-schema.py)). Phase E validation soak runs through 2026-06-04. Total at v7.9: **37 mechanical gates + 5 advisories**. Shipped via [FT2 PR #417](https://github.com/Regevba/FitTracker2/pull/417). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v79). For the full v7.9 outcome see [§2.0](#20-current-version-snapshot-v79-2026-05-21).
-> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.9).
+> **Current version:** **v7.9.1** (build window closed 2026-06-04) — single-day build window that opened at v7.9 Phase E exit and shipped 8 observability surfaces, doc updates, and warn-only CI workflows across 14 PRs. **0 new enforcement gates** (Phase E exit discipline preserved). Synthesis case study: [`framework-v7-9-1-promotion-case-study.md`](../case-studies/framework-v7-9-1-promotion-case-study.md). For v7.9 (the enforcement-flip release shipped 2026-05-21 — 3 advisory gates → enforced via single-flag flip at `scripts/check-state-schema.py:138`) see [§2.0](#20-predecessor-snapshot-v79-shipped-2026-05-21). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v79).
+> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.9.1).
 > **Companion docs:** [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) (event/log/gate catalog with mermaid flow diagrams), [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
 > **Reading order:** §0 is a 90-second tour. §1 is audience and reading hints. §1.5 is the glossary. §§ 2–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs. § 16 is the cross-repo Code Connect bridge. § 17 is references.
 
@@ -14,7 +14,7 @@
 - [§0. TL;DR — 90-second tour](#0-tldr--90-second-tour)
 - [§1. Audience and how to read](#1-audience-and-how-to-read)
 - [§1.5 Glossary](#15-glossary)
-- [§2. Big picture (current state — v7.9, Phase E soak)](#2-big-picture-current-state--v79-phase-e-soak)
+- [§2. Big picture (current state — v7.9.1, build window closed 2026-06-04)](#2-big-picture-current-state--v791-build-window-closed-2026-06-04)
 - [§3. Where the code lives](#3-where-the-code-lives)
 - [§4. The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
 - [§5. `state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
@@ -97,9 +97,51 @@ Cross-cutting terms used throughout this guide and in commit messages, PR descri
 
 ---
 
-## 2. Big picture (current state — v7.9, Phase E soak)
+## 2. Big picture (current state — v7.9.1, build window closed 2026-06-04)
 
-### 2.0 Current version snapshot (v7.9, 2026-05-21)
+### Current version snapshot (v7.9.1, build window closed 2026-06-04)
+
+**v7.9.1 was a single-day build window** that opened at v7.9 Phase E exit (2026-06-04) and closed the same day. **0 new enforcement gates** added — Phase E exit discipline preserved (no new gates for the first 14 days post-promotion). 8 ships across 14 PRs, all observability surfaces, doc updates, reusable substrates, or warn-only CI workflows.
+
+**Ships (cascade order, grouped by theme):**
+
+| Theme | Ships | PRs |
+|---|---|---|
+| **Gate-test depth (Layer 3)** | F16 try-repo harness | #607-#612 |
+| **Derived telemetry materialization** | F17 last_fired_at index | #617 |
+| **Defense against post-squash-merge state drift** | F2 Phase 0 reality-check sub-step | #618 |
+| **Operator-side lint integration (Track B)** | R7 SwiftLint + R8 ruff + R12 markdownlint (Makefile + lint.yml CI workflow) | #619 |
+| **Silent-pass closures** (5 ships) | F-LAUNCHD-DRIFT-EXTENSION (b)+(c) + (a) (cron-context); F-DEPLOYED-URL-PROBE FT2 substrate (W18 og:image + W19 GA_ID); F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE (soak-window denominator dilution); W29-W32 observed-patterns batch | #620 + #621 + #622 + #623 + #624 + #625 + #628 |
+| **Coverage CI telemetry** | R9 Track B (Slather + pytest-cov + coverage.yml) | #626 |
+| **Dev-env hygiene batch** | R11 gitleaks + R13 pip-audit + R14 SBOM + R17 commitlint + R18 shellcheck | #627 |
+
+**Quantitative roll-up:**
+
+| Dimension | Pre-2026-06-04 | Post-2026-06-04 |
+|---|---|---|
+| Write-time gates | 12 enforced | 12 enforced (no new) |
+| Cycle-time gates | 13 enforced + 3 advisories | 13 + 3 (no new) |
+| **CI workflows baseline** | **8** | **14 (+6)** |
+| **Observed-patterns** | **W1-W28 (28 workflow patterns)** | **W1-W32 (32, +4)** |
+| FT2 dev-env open R-items (Tier 2-3) | 7 | **0** |
+| Reusable shell substrates | 0 | 1 (`scripts/probe-deployed-url.sh`) |
+| v7.9.1 docket open candidates | 7 | **2** (both fitme-story-side) |
+
+**Calendar-anchored follow-ups:**
+
+- **2026-06-11** — T+7d verification of F-LAUNCHD-DRIFT-EXTENSION + F-DEPLOYED-URL-PROBE (fault-injection)
+- **2026-06-12** — External Audit #2 (operator-driven; audit pack includes today's gitleaks + pip-audit JSON artifacts + future SBOM)
+- **2026-06-18** — F16 T11 advisory→enforced flip (calibration window ends; same single-line-flip pattern as v7.9)
+- **2026-07-04** — R9 Track B 30-day coverage data read → v8.0 `GATE_TEST_MISSING` calibration
+
+**Cross-references:**
+
+- **Synthesis case study:** [`framework-v7-9-1-promotion-case-study.md`](../case-studies/framework-v7-9-1-promotion-case-study.md) — full §0-§99 narrative including cross-cutting themes (silent-pass closures, post-Phase-E cadence, cascading rebase rhythm), risk register, lessons codified
+- **Per-feature case studies (preserved for FEATURE_CLOSURE_COMPLETENESS gate):** `f16-try-repo-harness-case-study.md`, `f17-last-fired-at-index-case-study.md`, `f2-phase-0-reality-check-case-study.md`, `f-launchd-drift-extension-case-study.md`, `f-launchd-drift-extension-sub-a-case-study.md`, `f-phase-e-adoption-freeze-discipline-case-study.md`, `r9-track-b-coverage-aggregator-case-study.md`, `dev-env-r11-r13-r14-r17-r18-batch-case-study.md`, `f-deployed-url-probe-ft2-case-study.md`
+- **Observed-patterns additions:** [`observed-patterns.md`](../../.claude/integrity/observed-patterns.md) W29 (inline MDX import no-op under compileMDX) + W30 (Q6 PR-list parity gate YAML parser quirk) + W31 (workflow delivery anomaly) + W32 (close-feature.py --force-incomplete)
+- **CLAUDE.md anchor:** `## v7.9.1 Build Window (shipped 2026-06-04 — 8 ships, 14 PRs)` section
+
+### 2.0 Predecessor snapshot (v7.9, shipped 2026-05-21)
 
 v7.9 is the **enforcement-flip release**. No new gate code, no new schema fields, no new observability surfaces. A single-line edit at [`scripts/check-state-schema.py:138`](../../scripts/check-state-schema.py) flipped `BRANCH_ISOLATION_ADVISORY_MODE` from `True` to `False`, promoting 3 v7.8.1 advisory gates simultaneously to enforced.
 
@@ -155,7 +197,7 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Layer 3 — 72h CYCLE (GitHub Actions cron, every 3 days at 04:00Z)  │
 │  Workflow: .github/workflows/integrity-cycle.yml                    │
-│  Script: scripts/integrity-check.py (13 cycle-time + 1 advisory)    │
+│  Script: scripts/integrity-check.py (13 cycle-time + 3 advisories)  │
 │  Snapshots ledger to .claude/integrity/snapshots/.                  │
 │  Opens issue on regression vs prior snapshot.                       │
 └─────────────────────────────────────────────────────────────────────┘
@@ -581,7 +623,7 @@ Defined in `.github/workflows/framework-status-weekly.yml` (v7.6 Phase 2c). Cron
 
 When a gate fires, the finding alone does not tell you whether it is a real problem or an expected artifact (a squash-merge leaving no branch attribution, an empty PR cache, a heuristic over-trigger, etc.). The **Observed Patterns Catalog** at [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) is the canonical manifest of every recognized fire-pattern. Each entry carries a **trigger**, a **why-expected** classification (by-design / cleanup-artifact / silent-pass-then-fixed / heuristic-FP / schema-drift), a **distinguishing-real-signal** rule, and a **silence path**.
 
-- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 29 workflow/operational patterns (Section 2, `W1`–`W29`).
+- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 32 workflow/operational patterns (Section 2, `W1`–`W32`).
 - **CLI:** `make observed-patterns`.
 - **Preflight-loaded** by `/pm-workflow` and referenced by all spoke skills.
 - **Operator obligation (mandatory):** when any framework gate or advisory fires, the FIRST step is to consult this catalog. Apply the documented remediation if the pattern matches; investigate only if novel; and **append a new entry** to the catalog before the feature that surfaced the novel pattern is closed. The catalog is append-only-by-default.
@@ -623,6 +665,8 @@ Both scripts exit non-zero on findings. Emergency bypass: `git commit --no-verif
 
 ### 11.3 GitHub Actions inventory
 
+> **Count:** 8 baseline through v7.8.6 → **14 baseline at v7.9.1** (+6 shipped 2026-06-04). All v7.9.1 additions are warn-only (`continue-on-error: true`) per Phase E exit discipline.
+
 | Workflow | Trigger | Purpose |
 |---|---|---|
 | `ci.yml` | push, PR | Xcode build + XCTest + tokens-check + ui-audit |
@@ -636,6 +680,13 @@ Both scripts exit non-zero on findings. Emergency bypass: `git commit --no-verif
 | `ucc-audit-log-sync.yml` | cron `17 5 * * *` (daily) | Syncs the UCC passkey-auth audit log (Redis → ledger) |
 | `weekly-backup.yml` | cron `0 2 * * 0` (Sun 02:00Z) | Weekly off-repo backup snapshot |
 | `figma-code-connect-publish.yml` | push to main (`*.figma.{swift,tsx}` / config) | Publishes Code Connect mappings (see §16) |
+| `lint.yml` (v7.9.1, PR #619) | PR + push to main + workflow_dispatch | R7 SwiftLint (macos-15) + R8 ruff (ubuntu) + R12 markdownlint (ubuntu) — 3 independent jobs, all `continue-on-error: true` |
+| `coverage.yml` (v7.9.1, PR #626) | PR (path-filtered to FT2 iOS / ai-engine / Makefile / .slather.yml) + push to main + workflow_dispatch | R9 Track B — iOS Slather (macos-15) + Python pytest-cov (ubuntu) — both `continue-on-error: true`; `coverage.xml` uploaded as 14-day-retention artifact for v8.0 `GATE_TEST_MISSING` calibration |
+| `gitleaks.yml` (v7.9.1, PR #627) | PR + push to main + cron `0 3 * * 0` (Sun 03:00Z) + workflow_dispatch | R11 — `gitleaks/gitleaks-action@v2` with `.gitleaks.toml` allowlist; full-history fetch; `continue-on-error: true` |
+| `pip-audit.yml` (v7.9.1, PR #627) | PR (path-filtered `ai-engine/**`) + cron `0 7 * * 1` (Mon 07:00Z) + workflow_dispatch | R13 — `pip-audit` against ai-engine; columns + JSON output; 14-day artifact retention; `continue-on-error: true` |
+| `sbom.yml` (v7.9.1, PR #627) | `push.tags: v*` + workflow_dispatch | R14 — `anchore/sbom-action@v0` generates both SPDX-JSON and CycloneDX-JSON on release tags; dormant until first `v*` tag |
+| `commitlint.yml` (v7.9.1, PR #627) | PR | R17 — `@commitlint/cli` + `@commitlint/config-conventional` lints every commit in PR range; relaxed header (150) + body line length (200); `continue-on-error: true` |
+| `shellcheck.yml` (v7.9.1, PR #627) | PR (path-filtered `scripts/**` + `.githooks/**`) + push to main + workflow_dispatch | R18 — `ludeeus/action-shellcheck@master` with severity=warning; `continue-on-error: true` |
 
 **Local (launchd) cron — not a GitHub Action:**
 
