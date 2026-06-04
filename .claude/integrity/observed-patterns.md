@@ -784,6 +784,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W26 Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups | W26 | 2026-06-01 |
 | W27 `make preflight` enhancement_parent false-positive (was mis-numbered W11) | W27 | 2026-05-19 |
 | W28 Local `xcodebuild` blocked by CoreSimulator out-of-date (Mac restart required) | W28 | 2026-06-01 |
+| W29 Pattern↔skill preflight overlay (catalog ⇄ skill mapping + `make skill-preflight`) | W29 | 2026-06-04 |
 
 ---
 
@@ -793,7 +794,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-06-02 (added W28 — local xcodebuild CoreSimulator-out-of-date — to the index; entry body shipped earlier by a parallel session without an index row). Prior (2026-06-01): index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561.
+Last refreshed: 2026-06-04 (added W29 — pattern↔skill preflight overlay — documenting the catalog⇄skill mapping layer + `make skill-preflight`; see `docs/skills/pattern-skill-overlay.md`). Prior (2026-06-02): added W28 — local xcodebuild CoreSimulator-out-of-date — to the index; entry body shipped earlier by a parallel session without an index row. Prior (2026-06-01): index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561.
 
 ---
 
@@ -1504,3 +1505,29 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 
 - W27 — `make preflight` enhancement_parent false-positive: similar shape (heuristic gate firing on a legitimate-but-uncommon work shape)
 - W30 — Q6 PR-list parity gate's YAML parser quirk (same session): both are "framework gate misinterprets a valid input"
+---
+
+### W33 — Pattern↔skill preflight overlay: catalog patterns mapped per skill + probed at activation (2026-06-04)
+
+**Surfaced by:** the `pattern-skill-preflight-overlay` framework feature (this entry is the mandatory self-doc per the §v7.8.5 append-on-novel rule). Not a failure mode — a tooling addition that operationalizes THIS catalog. Originally numbered W29 in the feature branch (opened 2026-06-04 10:29 UTC); renumbered W33 during rebase because PRs #620/#621/#623/#625 landed W29-W32 the same afternoon with non-overlay content.
+
+**What it is:** before the overlay, each of the 12 skills referenced the catalog generically ("23 gate + 28 workflow patterns; here are a few highest-leverage ones") and operators discovered blockers reactively, mid-work, when a gate fired. The overlay makes the catalog↔skill relationship explicit and proactive:
+
+1. **Source of truth** — [`.claude/shared/pattern-skill-map.json`](../../shared/pattern-skill-map.json) maps each of the **55** work-blocking catalog patterns (23 gate `#1`–`#23` + 32 workflow `W1`–`W32`) to the skill(s) whose work it can block, plus `{detector, blocker, autoheal, remediation}`. Many-to-many — a pattern can block several skills.
+2. **HYBRID probing** — `make skill-preflight SKILL=<name>` (→ [`scripts/skill-preflight.py`](../../../scripts/skill-preflight.py)) selects the skill's mapped patterns, *probes* the mechanized ones (`integrity-check`, `ensure-pr-cache-fresh`, `check-ssh-agent`, `check-branch-drift`, workflow-name collision), and emits an *awareness checklist* for the manual/compile/discipline ones. Writes an additive `skill_overlay.<skill>` block to `.claude/shared/preflight-cache.json`.
+3. **Self-generating docs** — [`scripts/generate-skill-preflight-sections.py`](../../../scripts/generate-skill-preflight-sections.py) (`make gen-skill-preflight`) regenerates the table inside each SKILL.md's preflight section between `<!-- BEGIN pattern-preflight (generated) -->` / `<!-- END pattern-preflight -->` delimiters. Idempotent.
+4. **Self-auditing** — `integrity-check.py`'s `PATTERN_SKILL_UNMAPPED` advisory flags any catalog ID absent from the map (or mapped to zero skills), so the map can't silently fall behind the append-only catalog.
+
+**Why expected:** this is the catalog graduating from a passive reference into an active preflight surface. As the catalog grows, the map + the `PATTERN_SKILL_UNMAPPED` advisory keep them in lockstep.
+
+**Operator obligation:** when you append a NEW catalog pattern, also (a) add it to `pattern-skill-map.json` with ≥1 skill, then (b) run `make gen-skill-preflight`. The `PATTERN_SKILL_UNMAPPED` advisory reminds you if you forget (a).
+
+**Note on this entry's own mapping:** W33 documents the overlay *tool*, not a work-blocking pattern, so it is intentionally NOT in `pattern-skill-map.json` and is exempted from `PATTERN_SKILL_UNMAPPED` (via the `SELF_DOC_EXEMPT` set in `integrity-check.py`). The map tracks the 55 work-blocking patterns only.
+
+**Silence path:** none needed — informational tooling surface.
+
+**First observed:** 2026-06-04 (`feature/pattern-skill-preflight-overlay`). Full how-to: [`docs/skills/pattern-skill-overlay.md`](../../../docs/skills/pattern-skill-overlay.md).
+
+**Sibling patterns:** [W20 — Stale-session-state inventory drift](#w20--stale-session-state-inventory-drift-2026-05-28) (both are "surface the right context BEFORE work, not reactively"); the `make preflight` unified entry point (v7.8.6) — the overlay is its per-skill, pattern-aware companion.
+
+
