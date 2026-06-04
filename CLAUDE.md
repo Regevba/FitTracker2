@@ -359,6 +359,53 @@ v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates tha
 **Honesty ledger entry:** [FT2-FH-003](docs/case-studies/framework-honesty-ledger.md#ft2-fh-003).
 **Per-PR provenance:** PR (TBD) on `feature/v7-9-promotion`.
 
+## v7.9.1 Build Window (shipped 2026-06-04 — 8 ships, 14 PRs)
+
+v7.9.1 is a **single-day build window** that opened at v7.9 Phase E exit (2026-06-04) and closed the same day. **0 new enforcement gates** were added — the window respected Phase E exit discipline (no new gates for the first 14 days post-promotion). All 8 ships are observability surfaces, doc updates, reusable substrates, or warn-only CI workflows.
+
+**Synthesis case study:** [`docs/case-studies/framework-v7-9-1-promotion-case-study.md`](docs/case-studies/framework-v7-9-1-promotion-case-study.md). Per-feature case studies remain authoritative for each gate audit (FEATURE_CLOSURE_COMPLETENESS requirement); this synthesis is the navigation + cross-cutting-theme layer (per the v7.9 promotion case study pattern).
+
+**What shipped** (in cascade order; each subsection below has its own detail):
+
+| Ship | Theme | PR(s) |
+|---|---|---|
+| F16 try-repo harness | Gate-test depth (Layer 3) | #607–#612 |
+| F17 last_fired_at index | Derived telemetry materialization | #617 |
+| F2 Phase 0 reality-check | Defense vs post-squash-merge state drift | #618 |
+| Dev-env Track B (R7+R8+R12 lint trio) | Operator-side lint integration | #619 |
+| F-LAUNCHD-DRIFT-EXTENSION (b)+(c) | Cron-context phantom-finding suppression | #621 (+#622 closure) |
+| F-LAUNCHD-DRIFT-EXTENSION (a) | Plist path-resolution health checks | #623 (+#624 closure) |
+| Observed-patterns W29-W32 catalog batch | v7.8.5 mandatory rule | #620 |
+| F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE | Soak-window adoption-metric discipline | #625 |
+| R9 Track B coverage aggregator | iOS Slather + Python pytest-cov CI telemetry | #626 |
+| Dev-env R11+R13+R14+R17+R18 batch | gitleaks + pip-audit + SBOM + commitlint + shellcheck | #627 |
+| F-DEPLOYED-URL-PROBE (FT2 substrate) | W18 og:image + W19 GA_ID encoded-newline silent-pass | #628 |
+
+**Quantitative roll-up:**
+
+| Dimension | Pre-2026-06-04 | Post-2026-06-04 |
+|---|---|---|
+| Write-time gates | 12 | 12 (no new) |
+| Cycle-time gates | 13 + 3 advisories | 13 + 3 advisories (no new) |
+| CI workflows | 8 baseline | **14** baseline (+6) |
+| Observed-patterns W-entries | W1-W28 | **W1-W32** (+4) |
+| v7.9.1 docket open | 7 candidates | **2** (fitme-story-side only) |
+| FT2 dev-env open R-items | 7 | **0** |
+| Reusable shell substrates | 0 | 1 (`scripts/probe-deployed-url.sh`) |
+
+**Calendar-anchored follow-ups:**
+
+- **2026-06-11** — T+7d verification of F-LAUNCHD-DRIFT-EXTENSION + F-DEPLOYED-URL-PROBE
+- **2026-06-12** — External Audit #2 (operator-driven)
+- **2026-06-18** — F16 T11 advisory→enforced flip (calibration window ends)
+- **2026-07-04** — R9 Track B 30-day coverage data read → v8.0 `GATE_TEST_MISSING` calibration
+
+**Cross-repo follow-ups (fitme-story-side, separate session):**
+
+- F-AUTH-LATENCY-SERVER-METRIC (`duration_ms_server` field on WebAuthn audit event)
+- F-CONTRACT-FIXTURE-SAMPLING (consumer-side adoption + `make sample-contract-fixtures`)
+- F-DEPLOYED-URL-PROBE workflow integration (post-deploy GH Action calling the FT2 substrate)
+
 ## v7.9.1 F17 — Per-gate `last_fired_at` Index (shipped 2026-06-04)
 
 `.claude/shared/gate-last-fired.json` is a derived per-gate index of Mechanism A telemetry. For each gate that ever produced a row in `.claude/logs/gate-coverage.jsonl`, the index records `last_fired_at` (most recent timestamp where `checked >= 1`), `last_checked_at` (most recent of any candidate row), `last_skipped_at` (most recent skip), `first_seen_at`, `total_firings`, `total_skips`, and `total_candidates`.
