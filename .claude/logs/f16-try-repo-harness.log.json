@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:34:52Z",
-  "updated_at": "2026-06-04T05:47:32Z",
+  "updated_at": "2026-06-04T05:52:50Z",
   "events": [
     {
       "timestamp": "2026-06-04T05:34:52Z",
@@ -46,6 +46,17 @@
       "event_type": "phase_transition",
       "phase": "implementation",
       "summary": "Phase 4 Implementation opened 2026-06-04T06:10Z. T2 SHIPPED \u2014 baseline (tests/fixtures/_baseline/state.json) + builder (scripts/tests/_try_repo_fixtures.py) + 12/12 round-trip tests passing in 0.08s. Empty-overrides round-trip is byte-identity; deep-merge preserves siblings; list-override replaces wholesale; None-sentinel deletes (for REQUIRED-field omission gates). T3 next: harness scaffold (make_throwaway_repo + run_precommit + scrub_home_env).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-04T05:52:50Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T3 SHIPPED \u2014 harness scaffold (make_throwaway_repo + run_precommit + scrub_home_env + stage_files + PrecommitResult dataclass). 17/17 tests pass in 2.55s. Q5 mechanism PIVOTED during development: production gates use GATE_COVERAGE_LEDGER as module-level constant (not env var); revised opt-out is GATE_COVERAGE_LEDGER_DISABLED=1 toggle. The Q5 enforcement test caught the original misdesign immediately (caught the contamination, then PASSED on the corrected mechanism). PRD \u00a73.5 updated to reflect reality.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

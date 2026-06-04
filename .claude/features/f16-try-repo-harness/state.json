@@ -63,7 +63,7 @@
   "tasks": [
     {"id": "T1", "description": "Decide Q1-Q5 in Phase 0/1 + write PRD + Tasks", "status": "done", "completed_at": "2026-06-04T05:50:00Z"},
     {"id": "T2", "description": "Fixture dir layout + tests/fixtures/_baseline/state.json canonical + make_state_json builder", "status": "done", "completed_at": "2026-06-04T06:10:00Z"},
-    {"id": "T3", "description": "scripts/tests/test_try_repo_harness.py skeleton + make_throwaway_repo() + run_precommit() helpers", "status": "pending"},
+    {"id": "T3", "description": "scripts/tests/test_try_repo_harness.py skeleton + make_throwaway_repo() + run_precommit() helpers. Q5 mechanism REVISED during dev — production gates use GATE_COVERAGE_LEDGER as module-level constant (not env var); revised opt-out is GATE_COVERAGE_LEDGER_DISABLED=1. PRD §3.5 updated. 17/17 tests pass in 2.55s.", "status": "done", "completed_at": "2026-06-04T06:30:00Z"},
     {"id": "T4a", "description": "Schema gate fixtures (5): SCHEMA_DRIFT_LEGACY_PHASE/_CREATED, FRAMEWORK_VERSION_FORMAT, STATE_OWNER_MISSING/_INVALID", "status": "pending"},
     {"id": "T4b", "description": "Closure gate fixtures (4): STATE_OWNER_LOCATION_MISMATCH, FEATURE_CLOSURE_COMPLETENESS, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS", "status": "pending"},
     {"id": "T4c", "description": "Telemetry gate fixtures (4): PHASE_TRANSITION_NO_LOG/_TIMING, CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT, CU_V2_INVALID", "status": "pending"},
