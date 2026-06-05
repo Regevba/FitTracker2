@@ -10,7 +10,7 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/f-deployed-url-probe-ft2-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs: [628]
 dispatch_pattern: serial
 success_metrics:
   - name: shell_helper_lines
@@ -145,3 +145,7 @@ All 3 pass at commit time.
 - **Trigger incident W19:** [`observed-patterns.md` W19](../../.claude/integrity/observed-patterns.md) — GA_ID encoded newline
 - **Sibling case study (same theme, different layer):** [`f-launchd-drift-extension-case-study.md`](f-launchd-drift-extension-case-study.md) — closes the cron-context-lacks-keychain silent-pass class (W11.b)
 - **Predecessor (same session):** [`dev-env-r11-r13-r14-r17-r18-batch-case-study.md`](dev-env-r11-r13-r14-r17-r18-batch-case-study.md)
+
+---
+
+**Shipped via PR #628** (`feature/f-deployed-url-probe-ft2` → `main`).

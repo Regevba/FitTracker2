@@ -10,7 +10,10 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs: [625]
+pr_citation_exempt:
+  - pr_number: 624
+    reason: "Cross-reference to F-LAUNCHD-DRIFT-EXTENSION (b)+(c) closure PR — historical context for the same-session W30 surfacing, not this feature's own PR"
 dispatch_pattern: serial
 success_metrics:
   - name: rule_codified_in_claude_md
@@ -118,3 +121,7 @@ Both grep counts are 1 at merge time.
 - **Predecessor case study:** [`framework-v7-9-promotion-case-study.md`](framework-v7-9-promotion-case-study.md) §99.4 lesson 2
 - **2026-05-14 measurement anchor:** `~/Documents/FitTracker2-backups/2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14/`
 - **W30 sibling pattern:** [`observed-patterns.md` W30](../../.claude/integrity/observed-patterns.md) — Q6 parity gate's YAML parser quirk (same parser file, different surface)
+
+---
+
+**Shipped via PR #625** (`feature/f-phase-e-adoption-freeze-discipline` → `main`).
