@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T08:13:24Z",
+  "updated_at": "2026-06-05T08:17:43Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
@@ -37,6 +37,30 @@
       "event_type": "phase_started",
       "phase": "prd",
       "summary": "Phase 1 PRD opened after Phase 0 approval. has_ui=false (integration spec, not UX). Scope: calibratable-now surface + on-device harness + tagged priors + \u00a75 schema additions.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:17:43Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 PRD approved. Hardware locked: current machine M4 (D4); iPhone 14 Pro = A16 Bionic (D5). M4 calibration also serves K2 generalization check (Sub-exp 2 was M2).",
+      "artifacts": [
+        ".claude/features/hadf-signature-expansion/prd.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:17:43Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 Tasks opened. 9 tasks: T1 schema v1.1 (foundation) \u2192 T2 reader/attester \u2192 T3 harness \u2192 T4 M4 calib \u2192 T5 A16 path \u2192 T6 cloud calib \u2192 T7 priors \u2192 T8 tests/no-regression \u2192 T9 docs.",
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_8",
