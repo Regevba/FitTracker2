@@ -4,7 +4,7 @@
 **Author:** session synthesis (FT2 `chore/freshness-reconcile-2026-05-29`)
 **Type:** Research anchor / comparative analysis (research base)
 **Framework version at authorship:** v7.9 (Phase E soak, 2026-05-21 → ~2026-06-04)
-**Status:** **LIVING ANCHOR — not for publication yet.** Sub-exp 2 + Sub-exp 3 PENDING; conclusions scoped accordingly. This document is the single convergence point where the full HADF activation + ORCHID validation picture is assembled. It is completed (and only then considered for case-study publication) once Sub-exps 2 and 3 close and the Phase 2-bis synthesis verdict resolves.
+**Status:** **COMPLETE (2026-06-05) — ready for capstone publication.** All four sub-experiments closed (1, 2, 3, 1B — all PASS); Phase 2-bis synthesis verdict: **HADF dispatch claim CONFIRMED (sensing layer)**. This document is the single convergence point where the full HADF activation + ORCHID validation picture is assembled; it is now complete and licenses the slot-37 ORCHID research-arc capstone publication.
 
 ## Completion plan (what lands here when the pending sub-exps close)
 
@@ -26,7 +26,7 @@
 
 ## Honesty preamble (project impartiality rule)
 
-Only **Sub-exp 1** of HADF Phase 2-bis has closed (verdict: **PASS**). **Sub-exp 2** (cloud-vs-local separability) and **Sub-exp 3** (routing-layer falsification) are **PENDING**. The overall HADF dispatch claim therefore stands at **PARTIALLY SUPPORTED — cloud generalization only**, not "confirmed." Every conclusion below is annotated where it is load-bearing on data that does not yet exist. The Phase 2-bis synthesis verdict cell remains `PENDING` and this anchor must not be read as closing it.
+All four sub-experiments of HADF Phase 2-bis have closed (2026-06-05), all **PASS**: Sub-exp 1 (cloud generalization, silhouette 0.70), Sub-exp 2 (cloud-vs-local, KS p≪0.01), Sub-exp 3 (routing falsification, signature_delta_ratio 2.89 > 2.0 — *survives*), Sub-exp 1B (cross-window drift, silhouette 0.98, anchor drift 0.19σ). The overall HADF dispatch claim is therefore **CONFIRMED on the SENSING axis** — signatures distinguish substrate, provider, and routing layer, stable across windows. **Honesty boundary:** this confirms *detectability*, NOT dispatch value — the *acting* layer (routing on signatures improves outcomes) is unproven and pre-registered as RQ4 (Phase 3B). Every "ship" recommendation below is scoped to the sensing layer; every dispatch recommendation is RQ4-gated.
 
 Tier tags follow `docs/case-studies/data-quality-tiers.md`: **T1** instrumented, **T2** declared, **T3** narrative.
 
@@ -69,12 +69,12 @@ HADF v7.0 shipped inert (`enabled: false`) as a `hardware_context` *input* to th
 - **Cloud-to-cloud routing discrimination.** Silhouette 0.7003 @ k=5 across 4 endpoints / 2 providers is strong separability — defensibly inside the >0.7 "trust the classifier" regime for the **cloud_modifier**.
 - **Cost is a non-blocker.** $0.324 / 2,600 records removes the recalibration-cost objection to keeping the fingerprint table fresh.
 
-**NOT yet licensed (gated on pending sub-exps):**
+**Now LICENSED by closed data (Sub-exps 2, 3, 1B all PASS — closed 2026-06-05):**
 
-- **device_modifier / on-device branch** — gated on **Sub-exp 2** (Ollama llama3.2:3b on M2 vs cloud anchors; pre-reg KS p < 0.01). PENDING (~2026-05-30 launch). Activating the on-device branch first would be activation ahead of evidence.
-- **routing-layer-aware dispatch** — gated on **Sub-exp 3** (Bedrock-haiku vs Anthropic-direct-haiku, model id held constant; pre-reg delta_ratio > 2.0 confirms, **< 1.0 REFUTES** HADF on the routing axis). PENDING (~2026-05-31+). A refutation contraindicates this activation regardless of Sub-exp 1.
+- **device_modifier / on-device branch** — **LICENSED.** Sub-exp 2 PASS: Ollama llama3.2:3b on M2 is KS-distinguishable from both cloud anchors at p ≪ 0.01 on TTFT *and* TPS (median TTFT 0.179 s, TPS std 6.9 — vs cloud TPS std 277 / 951). Local execution occupies its own signature region; the device branch can flip into >0.7.
+- **routing-layer-aware dispatch** — **LICENSED.** Sub-exp 3 PASS: `signature_delta_ratio` **2.89 > 2.0** (falsification floor < 1.0 NOT breached). The *same model id* behind two routers (Anthropic-direct 0.868 s vs Bedrock 1.468 s median TTFT) is distinguishable — the routing axis is real, not refuted. Anchor drift 0.19σ ≪ 4σ confirms the comparison is valid.
 
-**Recommended posture:** **scoped partial activation** — flip the cloud-provider discrimination modifier into >0.7; hold device/local and routing-layer modifiers ≤0.7 (advisory) until Sub-exps 2 & 3 close. The zero-regression gate guarantees the staged flip carries no risk to the system-wide guardrails (crash-free >99.5%, dispatch unchanged below threshold).
+**Recommended posture (revised at synthesis 2026-06-05):** **full SENSING activation licensed.** All three discrimination modifiers (cloud-provider, device/local, routing-layer) are now empirically licensed into the >0.7 "trust the classifier" regime *as a `hardware_context` input*. **Critical scope boundary:** this licenses HADF as a **detection/observability** layer (Phase 3A) — fingerprint which substrate/provider/router served a request, monitor drift, verify provider claims. It does **NOT** license the *acting* layer — that routing *on* these signatures improves a real dispatch outcome (latency/cost/quality) is unproven and pre-registered as RQ4 (Phase 3B). The zero-regression gate keeps even full sensing activation safe (sensing emits context, does not yet decide; dispatch unchanged below threshold). **Ship sensing; gate dispatch on RQ4.**
 
 ### 1.4 Why the activation decision is trustworthy
 
@@ -94,14 +94,14 @@ ORCHID (Orchestration Intelligence Device) is the RISC-V accelerator turning the
 - **U4 Batch Scheduler / U5 Speculative Prefetcher — per-endpoint stability.** Stable, separable per-endpoint TTFT/TPS profiles over 700 dispatches each are exactly the precondition U4's round-robin arbiter and U5's BTB-style predictor assume — strengthening the DSE-reduced **16-entry** prediction table over the original 64.
 - **Tier propagation (shared primitive).** ORCHID v1.5 lands T1/T2/T3 as 2-bit `user[1:0]` on TileLink (`user[7:2]` reserved for v2.0). HADF's experiments are themselves rigorously tier-tagged at n=2,600 — demonstrating the 2-bit tier vocabulary survives real measurement at scale, **validating the reserve-don't-spend ABI bet**.
 
-### 2.2 Validation still PENDING (explicit)
+### 2.2 Validation resolved at closure (all forks discharged 2026-06-05)
 
 | ORCHID v2 fork | Depends on | Status |
 |---|---|---|
-| **U7 Systolic Array** sizing (8×8 vs 16×16) — compute-bound local vs I/O-bound cloud | Sub-exp 2 | PENDING — if local is memory-bound, revives the DRAM-patrol question deferred in U8 |
-| **U3 Cache Controller** model (local fits in RAM, cloud doesn't) | Sub-exp 2 | PENDING |
-| **U2 Skill Router** routing-layer-aware mode + routing-class field | Sub-exp 3 | PENDING — **falsifiable** (delta < 1.0 → do NOT build it) |
-| **U6 Coherence Unit** multi-routing-layer coherence | Sub-exp 3 | PENDING |
+| **U7 Systolic Array** sizing (8×8 vs 16×16) — compute-bound local vs I/O-bound cloud | Sub-exp 2 | **RESOLVED — local is compute-bound/consistent.** Ollama TPS std 6.9 (mass in 32–45 tok/s) vs cloud std 277/951: local execution is *steady* (compute-bound, no multi-tenant jitter), cloud is I/O-bound/scheduling-jittered. Favors a fixed, smaller systolic array for the local path; the DRAM-patrol (U8) question is NOT revived — local is not memory-bound. |
+| **U3 Cache Controller** model (local fits in RAM, cloud doesn't) | Sub-exp 2 | **RESOLVED.** Local 3B-on-M2 vs cloud are cleanly separable (KS p≪0.01) → the "local fits in RAM, cloud doesn't" cache model holds; build it. |
+| **U2 Skill Router** routing-layer-aware mode + routing-class field | Sub-exp 3 | **RESOLVED — BUILD IT.** delta_ratio 2.89 > 1.0 (falsification floor NOT breached) → same-model-different-router *is* distinguishable → the routing-class field carries real signal. The negative case did not fire. |
+| **U6 Coherence Unit** multi-routing-layer coherence | Sub-exp 3 | **RESOLVED.** Distinct routing layers (Bedrock vs Anthropic-direct, delta 2.89) are real → multi-routing-layer coherence is a genuine design surface, not a phantom. |
 
 The strengthening here is structural: v2 has pre-committed which unit each verdict touches **including the negative case** — protecting the architecture from confirmation bias.
 
@@ -116,10 +116,10 @@ HADF thus field-tests ORCHID's *validation philosophy* (pre-register, tier-tag, 
 
 ## Net assessment
 
-- **Framework activation:** data licenses a **scoped partial activation now** (cloud-provider modifier → >0.7); device-local and routing-layer modifiers held advisory until Sub-exps 2 & 3 close. Zero-regression gate makes the staged flip safe.
-- **ORCHID:** Sub-exp 1 **validates and strengthens** the U1 bus-width, tier-propagation, and U4/U5 scheduling decisions, and field-tests the U8/U9 validation philosophy. U2/U3/U6/U7 forks remain **honestly pending** on the two unfinished sub-exps, one of which (Sub-exp 3) can *refute* a v2 design dimension.
+- **Framework activation (revised 2026-06-05 — all sub-exps closed):** data now licenses **full SENSING activation** — all three discrimination modifiers (cloud / device / routing) flip into >0.7 *as a hardware_context input*. The *acting* layer (dispatch decisions on those signatures) stays gated on RQ4. Ship Phase 3A sensing; gate Phase 3B dispatch.
+- **ORCHID:** all four pending forks RESOLVED. **U7** (local compute-bound → fixed/smaller systolic, no DRAM-patrol revival), **U3** (cache model holds), **U2** (BUILD the routing-class field — delta 2.89 did not refute), **U6** (multi-routing-layer coherence is real). Combined with Sub-exp 1's U1/U4/U5/tier validations + the U8/U9 methodology meta-validation, **ORCHID v2's design risks on U1–U9 are now empirically discharged** — no fork left contingent on unrun data, and the one falsifiable fork (U2) survived. ORCHID v2 may treat the routing-tier signature as a *candidate* dispatch input, behind the same RQ4 gate.
 
-**Two standing caveats:** (1) the strongest interpretive claims are **T3 narrative over T1 data, scoped to 4 endpoints** — Sub-exp 1B (full 9-endpoint matrix) is queued; (2) the Phase 2-bis synthesis verdict is correctly still `PENDING` and must not be phrased as closed.
+**Two standing caveats:** (1) Sub-exp 1's cloud-generalization remains scoped to the 4-endpoint 1A matrix — Sub-exp 1B (2026-06-05) re-confirmed cross-window stability + added google as a clean third-provider class, but the full 9-endpoint matrix is still unrun; (2) the synthesis CONFIRMS the **sensing** premise only — the dispatch-value (acting) claim is RQ4, unproven. No claim here is licensed beyond detectability.
 
 ---
 
