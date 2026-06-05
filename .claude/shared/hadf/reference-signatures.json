@@ -1,0 +1,378 @@
+{
+  "schema_version": 1,
+  "built_as_of": "2026-06-05",
+  "source": "HADF Phase 2-bis closed collections (Sub-exps 1/2/3/1B, all PASS 2026-06-05)",
+  "note": "Sensing-layer reference baseline. Detection/observability ONLY \u2014 no dispatch decisions (acting layer gated on RQ4 / Phase 3B).",
+  "endpoint_count": 8,
+  "min_n": 50,
+  "max_ttft_s": 30.0,
+  "dropped_implausible_ttft_total": 7,
+  "excluded_low_n": [
+    {
+      "provider": "mistral",
+      "endpoint": "mistral-large-latest",
+      "n": 9
+    },
+    {
+      "provider": "vercel-ai-gateway",
+      "endpoint": "gpt-4o-mini",
+      "n": 5
+    }
+  ],
+  "endpoints": [
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5",
+      "n": 650,
+      "ttft_s": {
+        "p05": 0.724813,
+        "p25": 0.820587,
+        "median": 0.918056,
+        "p75": 1.049679,
+        "p95": 1.503861,
+        "mean": 1.001137,
+        "std": 0.385152
+      },
+      "tps": {
+        "p05": 72.594838,
+        "p25": 101.544373,
+        "median": 152.932183,
+        "p75": 186.624822,
+        "p95": 233.548269,
+        "mean": 246.815923,
+        "std": 1339.059193
+      },
+      "mean": [
+        1.001137,
+        246.815923
+      ],
+      "cov": [
+        [
+          0.148571,
+          -8.07515
+        ],
+        [
+          -8.07515,
+          1795842.35616
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp1"
+        ],
+        "n_source_files": 13,
+        "dropped_implausible_ttft": 0
+      }
+    },
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5-20251001",
+      "n": 1513,
+      "ttft_s": {
+        "p05": 0.696093,
+        "p25": 0.762557,
+        "median": 0.861155,
+        "p75": 1.025145,
+        "p95": 1.705193,
+        "mean": 1.020335,
+        "std": 0.752349
+      },
+      "tps": {
+        "p05": 71.807128,
+        "p25": 101.079365,
+        "median": 151.568815,
+        "p75": 183.444597,
+        "p95": 223.440937,
+        "mean": 274.353223,
+        "std": 3317.235818
+      },
+      "mean": [
+        1.020335,
+        274.353223
+      ],
+      "cov": [
+        [
+          0.566404,
+          275.036274
+        ],
+        [
+          275.036274,
+          11011331.284059
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp1b",
+          "subexp3"
+        ],
+        "n_source_files": 31,
+        "dropped_implausible_ttft": 3
+      }
+    },
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-sonnet-4-6",
+      "n": 647,
+      "ttft_s": {
+        "p05": 0.953775,
+        "p25": 1.176267,
+        "median": 1.378797,
+        "p75": 1.583666,
+        "p95": 2.092393,
+        "mean": 1.454132,
+        "std": 0.578141
+      },
+      "tps": {
+        "p05": 39.079268,
+        "p25": 52.645088,
+        "median": 67.961394,
+        "p75": 77.633871,
+        "p95": 94.168057,
+        "mean": 66.03761,
+        "std": 17.008655
+      },
+      "mean": [
+        1.454132,
+        66.03761
+      ],
+      "cov": [
+        [
+          0.334764,
+          -0.309368
+        ],
+        [
+          -0.309368,
+          289.742168
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp1"
+        ],
+        "n_source_files": 13,
+        "dropped_implausible_ttft": 3
+      }
+    },
+    {
+      "provider": "aws-bedrock",
+      "endpoint": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "n": 750,
+      "ttft_s": {
+        "p05": 1.079637,
+        "p25": 1.261232,
+        "median": 1.468216,
+        "p75": 1.666071,
+        "p95": 2.533305,
+        "mean": 1.61266,
+        "std": 0.865628
+      },
+      "tps": {
+        "p05": 80.774835,
+        "p25": 111.950644,
+        "median": 170.839893,
+        "p75": 207.359268,
+        "p95": 259.148254,
+        "mean": 218.392149,
+        "std": 979.507101
+      },
+      "mean": [
+        1.61266,
+        218.392149
+      ],
+      "cov": [
+        [
+          0.750312,
+          3.263637
+        ],
+        [
+          3.263637,
+          960715.114281
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp3"
+        ],
+        "n_source_files": 15,
+        "dropped_implausible_ttft": 0
+      }
+    },
+    {
+      "provider": "google",
+      "endpoint": "gemini-2.5-flash-lite",
+      "n": 799,
+      "ttft_s": {
+        "p05": 0.472074,
+        "p25": 0.531311,
+        "median": 0.579037,
+        "p75": 0.640776,
+        "p95": 0.826493,
+        "mean": 0.62912,
+        "std": 0.851107
+      },
+      "tps": {
+        "p05": 209.81445,
+        "p25": 325.923751,
+        "median": 437.340482,
+        "p75": 902.607253,
+        "p95": 17461.515947,
+        "mean": 3228.55315,
+        "std": 6195.891071
+      },
+      "mean": [
+        0.62912,
+        3228.55315
+      ],
+      "cov": [
+        [
+          0.725291,
+          -58.880871
+        ],
+        [
+          -58.880871,
+          38437172.759747
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp1b"
+        ],
+        "n_source_files": 16,
+        "dropped_implausible_ttft": 0
+      }
+    },
+    {
+      "provider": "ollama",
+      "endpoint": "llama3.2:3b",
+      "n": 800,
+      "ttft_s": {
+        "p05": 0.142006,
+        "p25": 0.146944,
+        "median": 0.178834,
+        "p75": 0.226703,
+        "p95": 0.356406,
+        "mean": 0.249083,
+        "std": 0.42485
+      },
+      "tps": {
+        "p05": 27.63462,
+        "p25": 32.768131,
+        "median": 43.842352,
+        "p75": 45.067141,
+        "p95": 45.469275,
+        "mean": 39.489544,
+        "std": 6.882132
+      },
+      "mean": [
+        0.249083,
+        39.489544
+      ],
+      "cov": [
+        [
+          0.180723,
+          -0.042636
+        ],
+        [
+          -0.042636,
+          47.423022
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp2"
+        ],
+        "n_source_files": 16,
+        "dropped_implausible_ttft": 0
+      }
+    },
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o",
+      "n": 650,
+      "ttft_s": {
+        "p05": 0.00093,
+        "p25": 0.001133,
+        "median": 0.016316,
+        "p75": 0.045689,
+        "p95": 0.162332,
+        "mean": 0.057656,
+        "std": 0.249533
+      },
+      "tps": {
+        "p05": 35.607127,
+        "p25": 72.60457,
+        "median": 99.542311,
+        "p75": 136.046628,
+        "p95": 214.49074,
+        "mean": 159.832124,
+        "std": 383.092399
+      },
+      "mean": [
+        0.057656,
+        159.832124
+      ],
+      "cov": [
+        [
+          0.062363,
+          -5.444935
+        ],
+        [
+          -5.444935,
+          146985.918321
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp1"
+        ],
+        "n_source_files": 13,
+        "dropped_implausible_ttft": 0
+      }
+    },
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o-mini",
+      "n": 1388,
+      "ttft_s": {
+        "p05": 0.000879,
+        "p25": 0.001189,
+        "median": 0.024126,
+        "p75": 0.052854,
+        "p95": 0.130972,
+        "mean": 0.054553,
+        "std": 0.268917
+      },
+      "tps": {
+        "p05": 30.982594,
+        "p25": 45.256139,
+        "median": 56.424125,
+        "p75": 70.313635,
+        "p95": 93.218863,
+        "mean": 62.866145,
+        "std": 111.961058
+      },
+      "mean": [
+        0.054553,
+        62.866145
+      ],
+      "cov": [
+        [
+          0.072369,
+          -1.243673
+        ],
+        [
+          -1.243673,
+          12544.3162
+        ]
+      ],
+      "provenance": {
+        "sub_exps": [
+          "subexp1",
+          "subexp3"
+        ],
+        "n_source_files": 28,
+        "dropped_implausible_ttft": 1
+      }
+    }
+  ]
+}

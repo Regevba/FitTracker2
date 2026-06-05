@@ -1,0 +1,53 @@
+{
+  "name": "hadf-phase3a-sensing",
+  "state_owner": "ft2",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "work_subtype": "b_medium",
+  "current_phase": "implementation",
+  "isolation_opt_out": false,
+  "created_at": "2026-06-05T00:00:00Z",
+  "timing": {
+    "phases": {
+      "implementation": { "started_at": "2026-06-05T00:00:00Z" }
+    }
+  },
+  "primary_metric": "Sensing-layer coverage: per-endpoint reference distributions materialized + drift monitor operational over all closed Phase 2-bis endpoints (detection only).",
+  "success_metrics": [
+    "reference-signatures.json built from closed Sub-exp 1/2/3/1B raw (>= 8 endpoints, all with n >= min_n)",
+    "attestation correctly maps each endpoint's centroid back to that endpoint (aggregate-level)",
+    "drift monitor distinguishes stable vs >3-sigma-shifted windows against the locked baseline"
+  ],
+  "kill_criteria": [
+    "Attestation presented as authoritative per-request (violates RQ5 honesty boundary) -> revert T2 to advisory-only or pull it.",
+    "Any T1-T3 producer makes a dispatch/routing decision (violates Phase 3A non-goal; acting is gated on RQ4 / Phase 3B)."
+  ],
+  "kill_criteria_resolution": "Not yet at closure (current_phase=implementation). T1-T3 ship advisory/detection-only by construction (every attestation output carries advisory:true + a 'do NOT route' caveat; no producer reads or writes a dispatch decision). Closure deferred until T4 control-room panel + T5 AIOrchestrator-hook decisions are made.",
+  "dispatch_pattern": "operator-driven (post-Phase-2-bis activation build)",
+  "case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+  "spec": "docs/superpowers/specs/2026-06-02-hadf-phase3a-sensing-layer-design.md",
+  "predecessor_case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+  "related_prs": [],
+  "related_prs_notes": "FT2 sensing producers PR (this branch). T4 control-room panel is a fitme-story-side follow-on; T5 AIOrchestrator emit hook is a deferred high-risk-area follow-on.",
+  "tasks": [
+    { "id": "T1", "status": "done", "summary": "reference-store builder + reference-signatures.json (8 endpoints, 7197 valid records, min_n=50, max_ttft=30s)" },
+    { "id": "T2", "status": "done", "summary": "attestation classifier — Mahalanobis + confidence band (strong/weak/uncertain), advisory-only" },
+    { "id": "T3", "status": "done", "summary": "drift monitor — Mahalanobis mean-shift + KS vs locked baseline -> drift-monitor.jsonl" },
+    { "id": "T3b", "status": "done", "summary": "test_hadf_sensing.py — 9 tests (builder/attest/drift, incl. implausible-TTFT ceiling)" },
+    { "id": "T4", "status": "pending", "summary": "control-room HADF panel (fitme-story) — deferred follow-on" },
+    { "id": "T5", "status": "pending", "summary": "AIOrchestrator live-traffic emit hook — deferred high-risk-area follow-on" }
+  ],
+  "phases": {
+    "research": { "status": "complete", "note": "Phase 2-bis (all 4 sub-exps PASS) is the research substrate; sensing layer needs no new research." },
+    "prd": { "status": "skipped", "skip_reason": "work_subtype:b_medium — sensing producers are mechanical materialization of a locked spec (2026-06-02 Phase 3A design); state.json + spec + sibling case study suffice." },
+    "tasks_phase": { "status": "complete", "note": "T1-T5 enumerated in spec §4." },
+    "ux_or_integration": { "status": "skipped", "skip_reason": "work_subtype:b_medium — no user-visible surface in T1-T3 (panel is T4, fitme-story)." },
+    "implement": { "status": "in_progress", "note": "T1-T3 + tests done on this branch; T4/T5 deferred." },
+    "test": { "status": "in_progress" },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending" },
+    "docs": { "status": "pending" },
+    "learn": { "status": "pending" }
+  },
+  "phase_status_note": "Phase 3A is the activate-now (sensing/observability) half of HADF Phase 3. Detection only — no dispatch decisions; the acting/routing layer is pre-registered as RQ4 (Phase 3B), a separate spec. T1-T3 producers + 9 tests shipped this PR; T4 panel + T5 emit-hook deferred."
+}

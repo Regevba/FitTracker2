@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "hadf-phase3a-sensing",
+  "title": "hadf phase3a sensing",
+  "work_type": null,
+  "current_phase": null,
+  "framework_version": null,
+  "started_at": "2026-06-05T05:30:35Z",
+  "updated_at": "2026-06-05T05:30:35Z",
+  "events": [
+    {
+      "timestamp": "2026-06-05T05:30:35Z",
+      "event_type": "phase_transition",
+      "phase": "implementation",
+      "summary": "Phase 3A sensing layer (T1 reference-store + T2 attestation + T3 drift-monitor + 9 tests) built in isolated worktree; reference-signatures.json from closed Sub-exp 1/2/3/1B (8 endpoints, 7197 valid). Detection/observability only \u2014 acting gated on RQ4.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "operator",
+      "status": "in_progress",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
