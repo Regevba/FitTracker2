@@ -306,17 +306,22 @@ Each task block carries:
 
 ## Phase 4.I — Future-extensibility hooks
 
-### T-hadf-sensing-layer-hooks (HADF Phase 3a integration reservation)
+### T-hadf-sensing-layer-hooks (HADF Phase 3a integration — MERGED 2026-06-05)
 
-- **What:** Reserve scene slots + data-contract extension points for the parallel-shipped `hadf-phase3a-sensing` feature (in flight 2026-06-05 on `feat/hadf-phase3a-sensing` worktree — operator's other-agent dispatch). The Phase 3a layer ships **reference store + attestation + drift monitor** (per commit `39cc84a` T1-T3). These can become either:
-  1. **New chambers in Act III Architecture** — if framework integration treats them as new architectural layers
-  2. **A new sub-Act between Act III and Act IV** — if they constitute a distinct "Sensing" phase in the framework's evolution narrative
-- **Concrete reservation in this task:** add a `hadf_phase3a_hooks` block to the locked `feature-roster.json` aggregator contract (optional field; default `null`). When `hadf-phase3a-sensing` closes (post-merge on its branch), T-aggregator emits the block with `{reference_store_present, attestation_present, drift_monitor_present}` booleans. Scene components check for non-null and decide whether to render the new chamber set.
-- **Files touched:** `fitme-story/src/types/framework.ts` (extend `FeatureRosterEntry`); `fitme-story/scripts/sync-from-fittracker2.ts` (extend T-aggregator); placeholder scene component (deferred).
-- **Depends on:** T-aggregator + the `hadf-phase3a-sensing` feature closing (in another session).
-- **Effort:** S (reservation), L (full scene integration deferred to follow-up tasks once Phase 3a closes)
-- **AC anchor:** none yet (forward-looking).
-- **References:** `feat/hadf-phase3a-sensing` branch commit `39cc84a`; the worktree at `/Volumes/DevSSD/FitTracker2-hadf-phase3a/` (operator-managed).
+> **Status update during this PR's open window**: the `hadf-phase3a-sensing` feature MERGED on main as PR #635 (`35fc32d`) while this tasks.md was being drafted. The integration is no longer a forward reservation — it's an actionable follow-up task with concrete dependencies. The companion HADF×ORCHID overlay research anchor closed in PR #634 (`8e1810f`) confirming dispatch behavior across all 4 Block-C sub-experiments.
+
+- **What:** Integrate the now-shipped HADF Phase 3a sensing/observability layer (reference store + attestation + drift monitor — T1-T3 of PR #635) into the 3D Universe. Two integration paths to evaluate at Phase 4 start:
+  1. **New chambers in Act III Architecture** — if framework integration treats sensing as new architectural layers (recommended if reference store + attestation feel like infrastructure additions to the existing 8-region blueprint)
+  2. **A new sub-Act between Act III and Act IV** — if Phase 3a constitutes a distinct "Sensing" phase in the framework's evolution narrative (recommended if drift monitor feels like a temporal-gate stage with its own narrative beat)
+- **Concrete deliverables:**
+  - Extend the locked `feature-roster.json` aggregator contract with a `hadf_phase3a_hooks` block (optional field; default `null`). T-aggregator emits the block as `{reference_store_present, attestation_present, drift_monitor_present, gate_coverage_extras: [...]}` for the `hadf-phase3a-sensing` feature entry.
+  - Scene components consume the block — Act III or new sub-Act renders the new chamber set when non-null.
+  - Documentation pointer in prd.md §Functional Requirements (FR-14 NEW once Phase 4 decides path 1 vs 2).
+- **Files touched:** `fitme-story/src/types/framework.ts` (extend `FeatureRosterEntry`); `fitme-story/scripts/sync-from-fittracker2.ts` (extend T-aggregator); decision pending — either `Act3-Architecture.tsx` (path 1) or a new `Act3a-Sensing.tsx` (path 2).
+- **Depends on:** T-aggregator (contract extension lives there) + operator decision on integration path 1 vs 2 (Phase 2 exit gate question #3 → now actionable, no longer hypothetical).
+- **Effort:** S (contract extension + aggregator emit), M (Act III chamber addition — path 1), L (new sub-Act creation — path 2).
+- **AC anchor:** none yet — Phase 4 may add AC-19 once path is locked.
+- **References:** FT2 PR #635 (`35fc32d`); FT2 PR #634 HADF×ORCHID overlay anchor (`8e1810f`); FT2 `.claude/features/hadf-phase3a-sensing/state.json`.
 
 ## Phase 4.J — Tests + verification
 
@@ -429,6 +434,6 @@ All 17 ACs from prd.md §Acceptance Criteria covered by Phase 4 tasks. Phase 4 c
 
 1. **Hero-asset authoring** — Phase 4.D assumes Blender-authored glTF (~6 pieces). Operator confirms direction OR substitutes alternative source (e.g., commission, library purchase, fully-procedural)?
 2. **Visual direction lock** — T-hero-signature-props subdivision (×4) requires a locked visual-direction reference before tasks can be authored. Operator approves a single-PR visual-direction lock (mood board + 3 reference shots) as a Phase 4.D prerequisite?
-3. **HADF Phase 3a integration timing** — T-hadf-sensing-layer-hooks reserves the slot but defers the full scene integration. Once `hadf-phase3a-sensing` closes (other agent's worktree, in flight today), should the integration be a (a) follow-up task added to this tasks.md, (b) separate v8.x docket entry, or (c) deferred to a future "framework universe v2" pass?
+3. **HADF Phase 3a integration path** — `hadf-phase3a-sensing` MERGED via PR #635 (`35fc32d`) during this PR's open window — the reservation is now actionable. T-hadf-sensing-layer-hooks documents two paths: (1) new chambers in Act III Architecture vs (2) new sub-Act between III and IV. Phase 4 needs an operator pick on (1) vs (2) before T-act3-architecture / T-act4-gate-firings can be authored in detail. Both paths have ~equal effort estimates; choice is narrative/aesthetic.
 
 Phase 2 exits when operator answers 1–3 + approves the task list shape. Phase 4 then opens on the first Phase 4.A task.
