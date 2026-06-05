@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "hadf-signature-expansion",
+  "title": "hadf signature expansion",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-05T08:07:45Z",
+  "updated_at": "2026-06-05T08:07:45Z",
+  "events": [
+    {
+      "timestamp": "2026-06-05T08:07:45Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 Research opened. Reconciling the 2026-04-28 signature-expansion note (pre-experiment, static-TOPS-profile-focused) with the now-CONFIRMED Phase 2-bis empirical streaming-signature results. Isolated worktree off origin/main.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

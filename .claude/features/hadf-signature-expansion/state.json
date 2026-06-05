@@ -1,0 +1,34 @@
+{
+  "feature": "hadf-signature-expansion",
+  "name": "hadf-signature-expansion",
+  "state_owner": "ft2",
+  "framework_version": "v7.9.1",
+  "work_type": "feature",
+  "created_at": "2026-06-05T00:00:00Z",
+  "updated": "2026-06-05T00:00:00Z",
+  "branch": "feature/hadf-signature-expansion",
+  "current_phase": "research",
+  "isolation_opt_out": false,
+  "has_ui": false,
+  "requires_analytics": false,
+  "timing": {
+    "phases": {
+      "research": { "started_at": "2026-06-05T00:00:00Z" }
+    }
+  },
+  "phases": {
+    "research": { "status": "in_progress", "approved_at": null, "sources": [] },
+    "prd": { "status": "pending", "approved_at": null },
+    "tasks": { "status": "pending", "count": 0 },
+    "ux_or_integration": { "status": "pending", "type": "integration" },
+    "implementation": { "status": "pending", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending", "pr_number": null },
+    "documentation": { "status": "pending" }
+  },
+  "predecessor_research": "docs/research/2026-04-28-hadf-signature-expansion.md",
+  "informed_by": "HADF Phase 2-bis (all 4 sub-exps PASS, CONFIRMED) + Phase 3A sensing layer",
+  "tasks": [],
+  "transitions": []
+}
