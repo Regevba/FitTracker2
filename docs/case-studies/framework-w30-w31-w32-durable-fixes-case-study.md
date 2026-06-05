@@ -10,7 +10,12 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs: [637]
+pr_citation_exempt:
+  - {pr_number: 623, reason: "Cross-reference to F-LAUNCHD-DRIFT-EXTENSION (a) feature PR — surfacing-session context for W31 incident, not this Chore's own PR"}
+  - {pr_number: 624, reason: "Cross-reference to F-LAUNCHD-DRIFT-EXTENSION (b)+(c) closure PR — surfacing-session context for W30+W32, not this Chore's own PR"}
+  - {pr_number: 633, reason: "Cross-reference to v7.9.1 4-stuck-features closure PR — same-session retrospective example for W32, not this Chore's own PR"}
+  - {pr_number: 636, reason: "Cross-reference to framework-v7-9-1-promotion closure PR — same-session retrospective example for W32, not this Chore's own PR"}
 dispatch_pattern: serial
 success_metrics:
   - name: w_patterns_resolved
@@ -178,3 +183,7 @@ All 3 verifications pass at commit time.
 - W32: [`observed-patterns.md` W32](../../.claude/integrity/observed-patterns.md) (same)
 - Source surfacing session: `docs/case-studies/framework-v7-9-1-promotion-case-study.md` §3 cascading-rebase rhythm + `docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md` §What changed (backlog hygiene subsection)
 - Same-session v7.9.1 feature closures unblocked retroactively: PR #633 + PR #636 (the manual `--force-incomplete` invocations of yesterday's closure work would now auto-skip)
+
+---
+
+**Shipped via PR #637** (`chore(framework): W30+W31+W32 durable fixes — parser bare-int + workflow-coverage detector + single-phase auto-skip`, merged 2026-06-05 as `a065798`). Closure via the new W32 auto-skip path (eating its own dogfood).
