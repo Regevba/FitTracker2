@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T08:17:43Z",
+  "updated_at": "2026-06-05T08:24:00Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
@@ -62,6 +62,43 @@
       "phase": "tasks",
       "summary": "Phase 2 Tasks opened. 9 tasks: T1 schema v1.1 (foundation) \u2192 T2 reader/attester \u2192 T3 harness \u2192 T4 M4 calib \u2192 T5 A16 path \u2192 T6 cloud calib \u2192 T7 priors \u2192 T8 tests/no-regression \u2192 T9 docs.",
       "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:20:37Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 Tasks approved (9 tasks). Operator chose full integration spec before implementation.",
+      "artifacts": [
+        ".claude/features/hadf-signature-expansion/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:20:37Z",
+      "event_type": "phase_started",
+      "phase": "integration",
+      "summary": "Phase 3b Integration spec opened (has_ui=false). Nails the schema v1.1 contract for 3 files + reader/attester behavior + harness I/O contract + migration + backward-compat before any code.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:24:00Z",
+      "event_type": "integration_spec",
+      "phase": "integration",
+      "summary": "Integration spec written. Reality-check: v1.1 scaffolding (24 profiles, precisions[], compute_axes, vendor_status, enums) ALREADY shipped by prior session. Real delta narrowed to per-row calibration_status (instrumented|prior_unvalidated) across 3 files + reference class field + reader/attester guardrail + on-device harness + migration.",
+      "artifacts": [
+        ".claude/features/hadf-signature-expansion/integration-spec.md"
+      ],
       "metrics": {},
       "actor": "claude_opus_4_8",
       "status": "recorded",
