@@ -3,7 +3,7 @@
   "state_owner": "ft2",
   "framework_version": "v7.8.3",
   "work_type": "Feature",
-  "current_phase": "tasks_phase",
+  "current_phase": "complete",
   "isolation_opt_out": false,
   "created_at": "2026-05-12T07:22:43Z",
   "timing": {
@@ -13,7 +13,12 @@
         "ended_at": "2026-05-12T09:43:57.686580Z"
       },
       "tasks_phase": {
-        "started_at": "2026-05-12T09:43:57.686580Z"
+        "started_at": "2026-05-12T09:43:57.686580Z",
+        "ended_at": "2026-06-05T03:55:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-05T03:55:00Z",
+        "ended_at": "2026-06-05T03:55:00Z"
       }
     }
   },
@@ -29,7 +34,7 @@
     "ANY endpoint changes streaming protocol or model id mid-collection",
     "Wrapper preflight fails 3+ times consecutively"
   ],
-  "kill_criteria_resolution": null,
+  "kill_criteria_resolution": "No kill criterion tripped across any sub-exp. All yield floors cleared; Sub-exp 3 anchor drift 0.19sigma << 2sigma kill; signature_delta_ratio 2.89 > 1.0 (not refuted) and > 2.0 (confirmed). HADF dispatch premise CONFIRMED on all axes (1: silhouette 0.70; 2: KS p<<0.01; 3: delta 2.89; 1B: silhouette 0.98).",
   "dispatch_pattern": "subagent-driven (Block A) + operator-driven (Block B/C)",
   "case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/30-hadf-phase2bis-cross-sub-exp-synthesis.mdx",
@@ -64,8 +69,18 @@
     306,
     313,
     316,
+    490,
     506,
-    507
+    507,
+    520,
+    530,
+    533,
+    534,
+    536,
+    539,
+    542,
+    543,
+    583
   ],
   "related_prs_notes": {
     "506": "chore — Sub-exp 2 prereg pre-ceremony fill-in (B14.2 prep, awaiting ceremony lock ~2026-05-28+)",
@@ -239,7 +254,7 @@
     {
       "id": "B15",
       "title": "Block B Sub-exp 3 — Bedrock haiku-4-5 vs Anthropic-direct haiku-4-5 (1 endpoint each, fingerprint delta check)",
-      "status": "pending",
+      "status": "done",
       "effort_days": 5,
       "blocker": "B14 verdict = PASS",
       "scheduled_start": "~2026-05-31 (gated on Sub-exp 2 PASS)",
@@ -251,7 +266,7 @@
     {
       "id": "C",
       "title": "Block C — Synthesis + closure (cross-sub-exp case study + fitme-story showcase slot 30 + state.json complete + final snapshot)",
-      "status": "pending",
+      "status": "done",
       "effort_days": 3,
       "blocker": "B15 complete",
       "scheduled_start": "~2026-06-04 (after Sub-exp 3 collection closes)",
@@ -261,6 +276,12 @@
         "C18 state.json closure (current_phase=complete; passes FEATURE_CLOSURE_COMPLETENESS)",
         "C19 Final make snapshot-phase",
         "C20 Linear FIT-71 → Done"
+      ],
+      "related_prs": [
+        533,
+        534,
+        542,
+        583
       ]
     }
   ],
