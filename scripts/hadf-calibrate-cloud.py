@@ -31,11 +31,17 @@ DEFAULT_ENV = "/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.loca
 PROMPT = "In one sentence, describe a productive morning routine."
 TIMEOUT = 60
 
-# openai-compatible base URLs (provider -> base_url)
+# openai-compatible base URLs (provider -> base_url). Mistral is routed here too,
+# matching the Sub-exp collector's proven dispatch (api.mistral.ai/v1), not _call_mistral.
 OPENAI_COMPAT = {
     "openai": "https://api.openai.com/v1",
     "xai": "https://api.x.ai/v1",
     "vercel-ai-gateway": "https://ai-gateway.vercel.sh/v1",
+    "mistral": "https://api.mistral.ai/v1",
+}
+OPENAI_COMPAT_KEY = {
+    "openai": "OPENAI_API_KEY", "xai": "XAI_API_KEY",
+    "vercel-ai-gateway": "VERCEL_AI_GATEWAY_API_KEY", "mistral": "MISTRAL_API_KEY",
 }
 
 
@@ -61,15 +67,11 @@ def load_collector():
 def call(mod, provider, model):
     """Dispatch one streaming call; return {ttft_s, tps, ...} or raise."""
     if provider in OPENAI_COMPAT:
-        key = {"openai": "OPENAI_API_KEY", "xai": "XAI_API_KEY",
-               "vercel-ai-gateway": "VERCEL_AI_GATEWAY_API_KEY"}[provider]
-        return mod._call_openai_compat(os.environ[key], OPENAI_COMPAT[provider], model, PROMPT, TIMEOUT)
+        return mod._call_openai_compat(os.environ[OPENAI_COMPAT_KEY[provider]], OPENAI_COMPAT[provider], model, PROMPT, TIMEOUT)
     if provider == "anthropic":
         return mod._call_anthropic(os.environ["ANTHROPIC_API_KEY"], model, PROMPT, TIMEOUT)
     if provider == "google":
         return mod._call_google(os.environ["GOOGLE_API_KEY"], model, PROMPT, TIMEOUT)
-    if provider == "mistral":
-        return mod._call_mistral(os.environ["MISTRAL_API_KEY"], model, PROMPT, TIMEOUT)
     if provider == "aws-bedrock":
         return mod._call_bedrock(model, PROMPT, TIMEOUT, os.environ.get("AWS_REGION", "us-east-1"))
     raise ValueError(f"unknown provider {provider}")

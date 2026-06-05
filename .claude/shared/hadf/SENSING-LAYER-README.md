@@ -125,3 +125,18 @@ python3 scripts/hadf-migrate-calibration-status.py
 **Known limit (RQ5):** single-shot attestation is unreliable on *tight* on-device
 clusters (e.g. apple_m4 TTFT variance ~0.0002) — the recognition claim is
 distribution-level, not per-request. See the signature-expansion case study.
+
+### One-command expansion experiment
+
+Calibrate the device + cloud endpoints in the manifest
+(`.claude/shared/hadf/signature-expansion-endpoints.json`) in a single command:
+
+```bash
+make hadf-expand-signatures DRY_RUN=1   # show the plan, no calls
+make hadf-expand-signatures             # FIRE — device leg (free) + cloud leg (paid API)
+```
+
+The cloud leg pre-probes each candidate and drops bad model-ids / rate-limited
+endpoints, so listing extras is safe. Edit the manifest to change endpoints / n /
+env-file. Individual legs: `make hadf-calibrate-device DEVICE=apple_m4 MODEL=llama3.2:3b`
+and `make hadf-calibrate-cloud ENDPOINT=openai:gpt-4.1-mini`.

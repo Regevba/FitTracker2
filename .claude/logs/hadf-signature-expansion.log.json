@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T09:26:48Z",
+  "updated_at": "2026-06-05T09:37:00Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
@@ -182,6 +182,17 @@
       "event_type": "phase_started",
       "phase": "merge",
       "summary": "Phase 7 Merge \u2014 opening PR for operator review + merge approval (no auto-merge).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T09:37:00Z",
+      "event_type": "implementation",
+      "phase": "merge",
+      "summary": "Packaged the expansion as a one-command experiment: manifest (signature-expansion-endpoints.json) + runner (hadf-signature-expansion-run.sh, --dry-run validated) + Makefile targets (hadf-expand-signatures / hadf-calibrate-device / hadf-calibrate-cloud / hadf-migrate-calibration-status). Mistral routed via openai-compat (matches collector). Ready to fire on cmd; 19 tests pass.",
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_8",

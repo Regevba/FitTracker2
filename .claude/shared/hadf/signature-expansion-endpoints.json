@@ -1,0 +1,18 @@
+{
+  "_doc": "Signature-expansion experiment manifest. Endpoints to calibrate into reference-signatures.json as instrumented rows. Fire with: make hadf-expand-signatures (or scripts/hadf-signature-expansion-run.sh). Cloud calibration makes paid API calls; the cloud calibrator pre-probes each and drops bad model-ids / rate-limited candidates, so listing extra candidates is safe.",
+  "as_of": "2026-06-05",
+  "n_cloud": 80,
+  "n_device": 120,
+  "env_file": "/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+  "out": ".claude/shared/hadf/reference-signatures.json",
+  "device_endpoints": [
+    { "label": "apple_m4", "model": "llama3.2:3b" }
+  ],
+  "cloud_endpoints": [
+    "google:gemini-2.5-flash",
+    "openai:gpt-4.1-mini",
+    "anthropic:claude-3-5-haiku-latest",
+    "xai:grok-3",
+    "mistral:mistral-small-latest"
+  ]
+}
