@@ -46,9 +46,12 @@ calibration_status: "instrumented" | "prior_unvalidated"
   inference on that substrate*. MUST carry a real sample count `n` (≥ a floor, default 250) + `provenance` (source files / sub-exp / harness run). The Phase 3A reference store's 8 existing endpoints are `instrumented`.
 - **`prior_unvalidated`** — a spec-sheet / published-TOPS profile with no measured
   inference. MUST NOT carry a measured `n`. The 24 static `chip-profiles.json` rows + the 7 `hardware-signature-table.json` sigs are `prior_unvalidated` until calibrated.
-- **Default on read:** a row missing `calibration_status` is treated as
-  `prior_unvalidated` (fail-safe — never assume measured). Writers MUST set it
-  explicitly going forward.
+- **Default on read:** the catalog migration sets `calibration_status` on every
+  existing row, and writers MUST set it going forward — so production rows are
+  always explicitly tagged. The attester treats only **explicit
+  `prior_unvalidated`** as excluded; a row with no field stays a candidate (legacy
+  / pre-migration stores were all-measured) for backward-compatibility. The
+  exclusion criterion is the explicit prior tag, not absence.
 
 ### 3.2 `reference-signatures.json` endpoint additions
 

@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T08:24:00Z",
+  "updated_at": "2026-06-05T08:37:04Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
@@ -100,6 +100,44 @@
         ".claude/features/hadf-signature-expansion/integration-spec.md"
       ],
       "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:25:34Z",
+      "event_type": "phase_approved",
+      "phase": "integration",
+      "summary": "Phase 3b Integration spec approved. Reality-check accepted (scaffolding already shipped; scope = calibration_status honesty layer + empirical calibration).",
+      "artifacts": [
+        ".claude/features/hadf-signature-expansion/integration-spec.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:25:34Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 Implementation opened. Building T1 schema migration first (calibration_status across 3 catalogs + class on reference endpoints + memory_topology).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:37:04Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T1-T4+T8 done. Migration stamped calibration_status across 3 catalogs (8 ref->instrumented+class, 24 profiles->prior, 12 sigs->prior, 10 Apple memory_topology). Builder stamps instrumented+class. Attest guardrail excludes explicit priors (backward-compat: untagged stays candidate). On-device harness built + REAL M4 calibration (ttft 0.095s, tps 41, n=80) \u2014 K2 PASS (M2 0.179s vs M4 0.095s = generalizes+discriminates). 18 tests pass (9 new + 9 no-regression). Finding: single-shot attestation unreliable on tight on-device clusters (RQ5); distribution centroids distinct (recognition holds).",
+      "artifacts": [],
+      "metrics": {
+        "tests_passing": 18,
+        "instrumented_signatures": 9
+      },
       "actor": "claude_opus_4_8",
       "status": "recorded",
       "recording_mode": "contemporaneous"
