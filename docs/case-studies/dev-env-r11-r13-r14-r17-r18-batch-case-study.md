@@ -10,7 +10,7 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs: [627]
 dispatch_pattern: serial
 success_metrics:
   - name: r_items_shipped
@@ -151,3 +151,7 @@ After this PR ships, FT2 has **0 immediately-actionable dev-env R-items remainin
 - **Spec:** [`dev-env-master-plan-2026-05-24.md`](../master-plan/dev-env-master-plan-2026-05-24.md) §3 R11 + R13 + R14 + R17 + R18
 - **Predecessor:** [`r9-track-b-coverage-aggregator-case-study.md`](r9-track-b-coverage-aggregator-case-study.md) (same session — R9 Track B shipped first)
 - **Companion downstream consumer:** External Audit #2 (2026-06-12) — audit pack will include this batch's CI artifacts
+
+---
+
+**Shipped via PR #627** (`feature/dev-env-r11-r13-r14-r17-r18-batch` → `main`).
