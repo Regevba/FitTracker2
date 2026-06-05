@@ -1433,6 +1433,8 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 2. **Use the inline `[N, ...]` form** instead of dashed list: `related_prs: [621, 623]`. The bracket branch preserves int types.
 3. **Patch the parser** at line 1149 to attempt `int()` conversion of trimmed list items before storing as string. Filed as durable-fix candidate at the v7.9.1+ docket (see "When to lift this into a docket entry" below).
 
+**Durable fix SHIPPED 2026-06-05** — `_collect_case_study_pr_numbers` at [`scripts/check-state-schema.py:1218`](../../scripts/check-state-schema.py#L1218) now accepts bare-digit strings via `str.isdigit()` fallback after the `#N` regex fails. Operator's natural first attempt (`related_prs:\n  - 623`) now works without retries. Test coverage: `scripts/tests/test_w30_w31_w32_durable_fixes.py::TestW30BareIntFallback` (6 tests). Shipped via feature [`framework-w30-w31-w32-durable-fixes`](../features/framework-w30-w31-w32-durable-fixes/state.json).
+
 **Same silent-pass class as W11.b:** a parsing/validation step that returns 0 findings can mean either "all good" OR "the parser couldn't see the data." The W11.b pattern was launchd-cron context producing an empty PR cache; this is a YAML list shape producing an empty PR set. Both required reading the producer code to diagnose, not the consumer's error message.
 
 **When to lift this into a docket entry:** when another operator hits the same 4-retry loop. The current frontend (`"PR #NNN"` form) is documented in the v7.9.1 case-study template at the top of this file's git history, but the empirical evidence is that the gate's error message ("Add the missing PRs to whichever side or list them in case study frontmatter") leads operators to add bare integers first, then bracket-form, then string-form — exactly the order I tried today. Worth a parser patch.
@@ -1466,6 +1468,8 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 
 **Prevention action item:** add a CI smoke-test or pre-merge sanity check that asserts the expected workflow set has run. The pm-framework PR-integrity bot already does this for its own check; could extend to a "required workflows present" assertion.
 
+**Durable fix SHIPPED 2026-06-05 (operator-side detection, not CI enforcement)** — [`scripts/check-pr-workflow-coverage.py`](../../scripts/check-pr-workflow-coverage.py) compares a curated `ALWAYS_EXPECTED_PATTERNS` list against the PR HEAD SHA's actual check-runs + commit statuses. Surfaces missing always-expected checks with the rebase + force-push remediation hint inline. Validated against PR #636 (14/14 ✓ no false positives) + PR #623 (the W31 incident PR — correctly flags 2 historical missing checks). Test coverage: `scripts/tests/test_w30_w31_w32_durable_fixes.py::TestW31CoverageScriptExists` (3 tests). Operator invocation: `python3 scripts/check-pr-workflow-coverage.py <PR_NUMBER>`. Choice of operator-side detection vs CI enforcement is intentional — the rebase workaround is bounded + reliable; the value is detection + nudge, not a blocking gate.
+
 **Sibling patterns:**
 
 - W26 — Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups → cross-workflow cancellation
@@ -1498,6 +1502,8 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 1. **Use `python3 scripts/close-feature.py <feature> --force-incomplete`** to bypass. (The `make close-feature` target does NOT pass through this flag — must call the script directly.)
 2. **Pre-set `current_phase` to `testing`** in state.json before merging, then close-feature accepts it. Only correct if a testing phase actually happened.
 3. **Patch `scripts/close-feature.py`** to recognize a state.json field like `single_phase: true` or `work_subtype: framework_feature` + ADVISORY-mode gates as a structural skip. Filed as durable-fix candidate.
+
+**Durable fix SHIPPED 2026-06-05** — `close_feature()` at [`scripts/close-feature.py:138`](../../scripts/close-feature.py#L138) auto-skips the `--force-incomplete` requirement when state.json declares a single-phase work shape: `work_subtype=framework_feature` OR `work_type in {Chore, Fix}` OR explicit `single_phase: true`. Operator still gets an audit-trail log line (`ℹ W32 auto-skip: ...`) so the bypass is visible. Regular `Feature` work_type still requires `--force-incomplete` for safety (test `test_regular_feature_still_requires_force_incomplete` enforces). Test coverage: `scripts/tests/test_w30_w31_w32_durable_fixes.py::TestW32SinglePhaseAutoSkip` (7 tests). Same-session retrospective: the 5 v7.9.1 features closed earlier today (PR #633 + PR #636) would have closed cleanly without the `--force-incomplete` flag.
 
 **When to lift this into a docket entry:** when another framework feature ships as single-phase. The pattern showed up today on a v7.9.1 sub-fix; will likely show up again on every sub-fix that's mechanical enough to ship in one phase.
 

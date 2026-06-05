@@ -135,17 +135,40 @@ def close_feature(
     # never finished. Surface this loudly; operator may still proceed with
     # --force-incomplete (escape hatch).
     EARLY_PHASES = {"research", "prd", "tasks_phase", "ux_or_integration", "implementation"}
+    # W32 (v7.9.1+ durable fix): single-phase work types legitimately ship
+    # implementation + tests in one phase (no separate testing phase). Auto-skip
+    # the --force-incomplete requirement for these, but still log so the operator
+    # has an audit trail. See observed-patterns.md W32 for full rationale.
+    SINGLE_PHASE_SUBTYPES = {"framework_feature"}
+    SINGLE_PHASE_WORK_TYPES = {"Chore", "Fix"}
     if state.get("current_phase") in EARLY_PHASES:
-        print(
-            f"⚠ '{feature}' is at current_phase={state['current_phase']} — earlier than 'testing'.\n"
-            f"  This usually means PR #{pr_number} was a partial-phase landing and the feature\n"
-            f"  isn't actually done. Closing now would skip the remaining phases.\n"
-            f"  If you still want to close (the PR was the final landing), re-run with\n"
-            f"  --force-incomplete.",
-            file=sys.stderr,
+        is_single_phase = (
+            state.get("single_phase") is True
+            or state.get("work_subtype") in SINGLE_PHASE_SUBTYPES
+            or state.get("work_type") in SINGLE_PHASE_WORK_TYPES
         )
-        if not getattr(close_feature, "_force_incomplete", False):
-            return 4
+        if is_single_phase:
+            print(
+                f"ℹ W32 auto-skip: '{feature}' at current_phase={state['current_phase']} "
+                f"accepted as single-phase closure "
+                f"(work_type={state.get('work_type')}, "
+                f"work_subtype={state.get('work_subtype')}, "
+                f"single_phase={state.get('single_phase')}). "
+                f"Framework_feature / Chore / Fix subtypes legitimately ship "
+                f"implementation + tests in one phase.",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"⚠ '{feature}' is at current_phase={state['current_phase']} — earlier than 'testing'.\n"
+                f"  This usually means PR #{pr_number} was a partial-phase landing and the feature\n"
+                f"  isn't actually done. Closing now would skip the remaining phases.\n"
+                f"  If you still want to close (the PR was the final landing), re-run with\n"
+                f"  --force-incomplete.",
+                file=sys.stderr,
+            )
+            if not getattr(close_feature, "_force_incomplete", False):
+                return 4
 
     pr_meta = fetch_pr_metadata(pr_number)
     if pr_meta.get("state") != "MERGED":

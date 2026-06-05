@@ -1224,6 +1224,15 @@ def _collect_case_study_pr_numbers(case_study_text: str, frontmatter: dict) -> s
                     m = re.search(r'#(\d+)', r)
                     if m:
                         prs.add(int(m.group(1)))
+                    else:
+                        # W30 (v7.9.1+ durable fix): bare-int from inline YAML list
+                        # (`related_prs:\n  - 623`) is stringified to "623" by
+                        # _parse_case_study_frontmatter at :1149. Accept bare digit
+                        # strings so the operator's natural first attempt works.
+                        # See observed-patterns.md W30 for full rationale.
+                        s = r.strip()
+                        if s.isdigit():
+                            prs.add(int(s))
                 elif isinstance(r, int):
                     prs.add(r)
             except (ValueError, TypeError):
