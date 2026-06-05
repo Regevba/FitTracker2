@@ -584,6 +584,56 @@ To be filled when shipped (or marked CLOSED if operator chooses to retire Sub-ex
 
 ---
 
+## F-W9-DRIFT-TRIGGERED-AUTO-ISOLATION
+
+**Discovered:** 2026-06-06 (data-integrity + system-health session; branch drift struck twice mid-task in a shared checkout with 8 active worktrees + a concurrent session).
+**Status:** queued.
+**Owner:** TBD.
+**Impact tier:** **A_high** — changes default dispatch behavior and extends the *enforced* `BRANCH_ISOLATION_VIOLATION` gate beyond infra paths. Per CLAUDE.md tier table: full `Feature` lifecycle (PRD + tasks NOT optional; any new auto-trigger behavior runs an advisory→enforced calibration window before it acts without confirmation).
+**Effort:** L (multi-phase; design-heavy — see open design questions).
+
+### Problem
+
+Today W9 ([`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py), `PostToolUse:Bash` hook) only **detects** branch drift and prints a warning + 4-step recovery playbook. It is purely **reactive** — by the time it fires, HEAD has already flipped and any commit made in the interim has landed on the wrong branch. Recovery is manual.
+
+Separately, `BRANCH_ISOLATION_VIOLATION` (Mode B/C, enforced at v7.9) only auto-isolates **infra-path** commits and non-feature-branch `state.json` mutations. **Non-infra work — features, enhancements, tasks, chores — shares the working directory and gets NO proactive isolation.** When a concurrent session runs `git checkout` in the same checkout, the unprotected session silently inherits the flipped HEAD.
+
+Empirically witnessed THIS session (2026-06-06): while committing the `dependency-audit` CI fix, a concurrent session flipped HEAD and my commit landed on `feature/3d-universe-phase-4c-act1-threshold` instead of my fix branch. A second flip later moved HEAD to `main`. Recovery required: move the commit to the correct branch (ff-merge), force-restore the concurrent session's branch to its pre-drift commit, and restore HEAD — all manual, all racy, with real risk of cross-contaminating another session's branch. The fix happened to be infra (so it *should* have auto-isolated), but the broader gap is that **any** work in a shared checkout under concurrency is exposed, and isolation is neither proactive nor non-infra-aware.
+
+### Proposed extension (the ask)
+
+Make W9 a **trigger** for branch isolation, proactively and without operator prompting, for ALL work-types (features/enhancements/tasks/chores) — not just infra:
+
+1. **Reactive upgrade (drift-triggered).** When `check-branch-drift.py` detects HEAD changed AND the session has uncommitted or about-to-commit work, escalate from "warn" to **auto-dispatch isolation** — move the current work into its own worktree (via `scripts/create-isolated-worktree.py` / `superpowers:using-git-worktrees`) so further HEAD flips can't reach it. Lowest-risk first increment; builds on existing pieces.
+2. **Proactive upgrade (concurrency-triggered).** When a session begins substantive work (first Edit/Write to non-infra feature code) AND the shared checkout shows concurrency (≥1 other live lease in [`.claude/shared/agent-leases.json`](agent-leases.json) or a second active session lock), auto-isolate *before* any drift can occur — extend `BRANCH_ISOLATION_VIOLATION`'s auto-isolation flow to all work-types **when concurrency is detected** (vs. always, to avoid worktree proliferation).
+3. **Default-on with escape hatch.** Behavior is the default, not operator-prompted. Honor the existing `isolation_opt_out` / `isolation_opt_out_reason` mechanism so a session can decline.
+
+### Smallest viable shape
+
+Phase it to de-risk the "acts without being asked" surface:
+
+- **Phase 1 (advisory→enforced):** drift-triggered reactive auto-isolation OFFER — W9 detects drift, prints the isolation command pre-filled, and (in agent context) dispatches it. Calibration window measures false-trigger rate before it auto-acts.
+- **Phase 2:** lease-based proactive isolation for non-infra work, gated on detected concurrency only, behind its own advisory window.
+
+### Open design questions (why this is A_high, not a chore)
+
+- **Self-racing:** auto-creating a worktree mid-session could itself race a concurrent `git checkout`. The trigger must not worsen the very problem it solves — likely needs an atomic "stash → worktree-add → pop" sequence with a lock.
+- **Trigger threshold:** always-isolate (safest, but 8 worktrees already on disk → proliferation + cleanup load) vs. concurrency-only (needs reliable concurrency detection) vs. drift-only (reactive, post-damage). Lease-file freshness is the most promising concurrency signal.
+- **Interaction with the enforced gate:** extending `BRANCH_ISOLATION_VIOLATION` to non-infra work-types is a behavior change to an *enforced* gate — mandatory advisory→enforced calibration per the A_high rule.
+- **Worktree lifecycle:** auto-created worktrees need auto-cleanup (the `create-isolated-worktree.py` adopt-existing + idempotency already help; cleanup-on-merge is the gap).
+
+### Why now
+
+- Directly closes a failure mode observed **twice in one session** (2026-06-06), with manual recovery each time.
+- The operator runs parallel agents against one SSD checkout (8 worktrees live) — concurrency is the steady-state, so shared-checkout drift is not an edge case here.
+- All building blocks already exist (W9 hook, `create-isolated-worktree.py`, `agent-leases.json`, the auto-isolation flow); this wires them into a proactive trigger rather than building new infra.
+
+### Linked PR closing this thread
+
+To be filled when promoted to an active `.claude/features/<name>/` directory and shipped. New auto-trigger behavior must append/extend the W9 entry in [`observed-patterns.md`](../integrity/observed-patterns.md) per the §v7.8.5 mandatory-append rule.
+
+---
+
 ## How v7.9.1 cycle opens
 
 - **Trigger:** v7.9 Phase E exits cleanly (~2026-06-04, 14 days post-promotion). See [infra master plan §4.1](../../docs/master-plan/infra-master-plan-2026-05-12.md).
