@@ -1,134 +1,1656 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-06-04T14:17:50Z",
-  "feature": "hadf-phase2bis-replication",
+  "checked_at": "2026-06-05T05:28:15Z",
+  "feature": "framework-v7-9-1-promotion",
   "window_days": 30,
-  "task_count": 5,
-  "flagged_count": 1,
+  "task_count": 10,
+  "flagged_count": 7,
   "findings": [
     {
-      "id": "A",
-      "status": "done",
-      "description": "",
+      "id": "T1",
+      "status": "complete",
+      "description": "Write docs/case-studies/framework-v7-9-1-promotion-case-study.md with \u00a70-\u00a799 sections (Genesis / Scope / Themes / Per-ship index / Roll-up / Open follow-ups / Synthesis)",
       "evidence": {
-        "git_commits": [],
-        "merged_prs": [],
+        "git_commits": [
+          {
+            "sha": "8fdccc10",
+            "subject": "feat(f17-last-fired-at-index): refresh script + tests + integration + docs + case study (#617)"
+          },
+          {
+            "sha": "1c9d0000",
+            "subject": "docs(framework): index the W28 catalog entry + bump dev-guide pattern count (#585)"
+          },
+          {
+            "sha": "e07399fd",
+            "subject": "docs(design-system): Dark Mode E2E verification \u2014 47-colorset audit + 5 categorized open items (L352) (#554)"
+          },
+          {
+            "sha": "faee2bd6",
+            "subject": "docs(backlog): iOS Medium Priority dedup \u2014 2 items flipped from open to shipped (#546)"
+          },
+          {
+            "sha": "b1e6f79e",
+            "subject": "docs(hadf-phase2bis): Block C synthesis \u2014 \u00a72 PR chain backfill + \u00a73.A.1 Sub-exp 1B v2 + \u00a73.B/\u00a73.C prereg-locked thresholds (#543)"
+          },
+          {
+            "sha": "52cbf472",
+            "subject": "feat(framework-v7-9-promotion): advance docs \u2192 complete (kill_criteria_resolution passed, \u00a799 synthesis) (#523)"
+          },
+          {
+            "sha": "b9f8fe9f",
+            "subject": "docs(framework): add framework-routines navigation index (#369)"
+          },
+          {
+            "sha": "7f786f70",
+            "subject": "docs(spec): HADF Phase 2-bis hardened cloud replication design \u2014 11 sections + soak gate (#306)"
+          },
+          {
+            "sha": "2975e74e",
+            "subject": "docs(case-studies): dual-outlet pattern contract (T8 / G3) (#260)"
+          }
+        ],
+        "merged_prs": [
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 585,
+            "title": "docs(framework): index the W28 catalog entry + bump dev-guide pattern count"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 554,
+            "title": "docs(design-system): Dark Mode E2E verification \u2014 47-colorset audit + 5 open items (L352)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 546,
+            "title": "docs(backlog): iOS Medium Priority dedup \u2014 2 stale items flipped + 6 confirmed open"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 543,
+            "title": "docs(hadf-phase2bis): Block C synthesis \u2014 PR chain + Sub-exp 1B v2 + locked thresholds"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 523,
+            "title": "feat(framework-v7-9-promotion): advance docs \u2192 complete (kill_criteria_resolution passed, \u00a799 synthesis)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 369,
+            "title": "docs(framework): add framework-routines navigation index"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 337,
+            "title": "docs(analytics-observability): complete spec \u2014 \u00a75.5 status + \u00a714.5 patterns + \u00a715.1-\u00a717 operational sections"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 306,
+            "title": "docs(spec): HADF Phase 2-bis hardened cloud replication design (11 sections + soak gate)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 260,
+            "title": "docs(case-studies): dual-outlet pattern contract (T8 / G3)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 207,
+            "title": "docs(case-studies): split roundup into 3 dedicated CSes + standardize 28 showcase paths"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 136,
+            "title": "docs(case-studies): write Home v2 + Training Plan v2, sync pm-workflow hub to v6.1"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 121,
+            "title": "docs(case-studies): M-3d \u2014 design system completion case study + monitoring entry"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 117,
+            "title": "docs(case-studies): post-stress-test audit remediation \u2014 comprehensive synthesis"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 585,
+            "title": "docs(framework): index the W28 catalog entry + bump dev-guide pattern count"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 554,
+            "title": "docs(design-system): Dark Mode E2E verification \u2014 47-colorset audit + 5 open items (L352)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 546,
+            "title": "docs(backlog): iOS Medium Priority dedup \u2014 2 stale items flipped + 6 confirmed open"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 543,
+            "title": "docs(hadf-phase2bis): Block C synthesis \u2014 PR chain + Sub-exp 1B v2 + locked thresholds"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 523,
+            "title": "feat(framework-v7-9-promotion): advance docs \u2192 complete (kill_criteria_resolution passed, \u00a799 synthesis)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 369,
+            "title": "docs(framework): add framework-routines navigation index"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 337,
+            "title": "docs(analytics-observability): complete spec \u2014 \u00a75.5 status + \u00a714.5 patterns + \u00a715.1-\u00a717 operational sections"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 306,
+            "title": "docs(spec): HADF Phase 2-bis hardened cloud replication design (11 sections + soak gate)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 260,
+            "title": "docs(case-studies): dual-outlet pattern contract (T8 / G3)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 207,
+            "title": "docs(case-studies): split roundup into 3 dedicated CSes + standardize 28 showcase paths"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 136,
+            "title": "docs(case-studies): write Home v2 + Training Plan v2, sync pm-workflow hub to v6.1"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 121,
+            "title": "docs(case-studies): M-3d \u2014 design system completion case study + monitoring entry"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 117,
+            "title": "docs(case-studies): post-stress-test audit remediation \u2014 comprehensive synthesis"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 155,
+            "title": "chore(case-studies): HADF Phase 2-bis synthesis showcase skeleton (slot 22c)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 56,
+            "title": "docs(case-studies): publish ucc-passkey-auth showcase (slot 26)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 19,
+            "title": "docs(case-studies): publish 6 missing showcase MDXs (publication-rule closure)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 18,
+            "title": "docs(case-studies): publish 6 missing showcases (publication-rule closure)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 13,
+            "title": "docs(case-studies): v7.8 bridge showcase (slot 23)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 155,
+            "title": "chore(case-studies): HADF Phase 2-bis synthesis showcase skeleton (slot 22c)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 56,
+            "title": "docs(case-studies): publish ucc-passkey-auth showcase (slot 26)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 19,
+            "title": "docs(case-studies): publish 6 missing showcase MDXs (publication-rule closure)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 18,
+            "title": "docs(case-studies): publish 6 missing showcases (publication-rule closure)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 13,
+            "title": "docs(case-studies): v7.8 bridge showcase (slot 23)"
+          }
+        ],
+        "log_events": []
+      },
+      "match_score": 45,
+      "advisory": null
+    },
+    {
+      "id": "T2",
+      "status": "pending",
+      "description": "Update .claude/shared/v7-9-1-candidates.md docket \u2014 record this synthesis closure",
+      "evidence": {
+        "git_commits": [
+          {
+            "sha": "819aa81d",
+            "subject": "feat(hadf-phase2bis): Block C synthesis closure \u2014 all 4 verdicts PASS, HADF dispatch claim CONFIRMED (#632)"
+          }
+        ],
+        "merged_prs": [
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 102,
+            "title": "fix(framework): F1 \u2014 worktree-isolated agents can write to .claude/{shared,features}"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 102,
+            "title": "fix(framework): F1 \u2014 worktree-isolated agents can write to .claude/{shared,features}"
+          }
+        ],
         "log_events": [
           {
             "event_type": "phase_started",
-            "summary": "HADF Phase 2-bis Feature stub created; Block A scaffolding starts",
-            "timestamp": "2026-05-12T07:22:43Z"
-          },
-          {
-            "event_type": "phase_transition",
-            "summary": "Block A scaffolding complete; entering tasks phase",
-            "timestamp": "2026-05-12T09:44:09Z"
-          },
-          {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
-            "timestamp": "2026-05-28T13:48:23Z"
-          },
-          {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
-            "timestamp": "2026-06-02T00:00:00Z"
+            "summary": "Unified v7.9.1 promotion case study + state.json + docket strike + CLAUDE.md unified section + dev-guide title bump + backlog Done row 120. Deep dev-guide content audit dispatched in parallel via Explore agent.",
+            "timestamp": "2026-06-04T17:26:34Z"
           }
         ]
       },
       "match_score": 4,
-      "advisory": null
+      "advisory": "this task may already be done"
     },
     {
-      "id": "B13",
-      "status": "done",
-      "description": "",
+      "id": "T3",
+      "status": "pending",
+      "description": "Write fitme-story slot 47 showcase MDX (visual timeline with TimelineCards)",
       "evidence": {
         "git_commits": [],
-        "merged_prs": [],
-        "log_events": [
+        "merged_prs": [
           {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
-            "timestamp": "2026-05-28T13:48:23Z"
-          }
-        ]
-      },
-      "match_score": 1,
-      "advisory": null
-    },
-    {
-      "id": "B14",
-      "status": "done",
-      "description": "",
-      "evidence": {
-        "git_commits": [],
-        "merged_prs": [],
-        "log_events": [
-          {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
-            "timestamp": "2026-05-28T13:48:23Z"
+            "repo": "Regevba/FitTracker2",
+            "number": 202,
+            "title": "chore(doc-debt): 100% coverage \u2014 slot-fix, work_type backfill, showcase wiring, TODO cleanup"
           },
           {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
-            "timestamp": "2026-06-02T00:00:00Z"
-          }
-        ]
-      },
-      "match_score": 2,
-      "advisory": null
-    },
-    {
-      "id": "B15",
-      "status": "pending",
-      "description": "",
-      "evidence": {
-        "git_commits": [],
-        "merged_prs": [],
-        "log_events": [
+            "repo": "Regevba/FitTracker2",
+            "number": 161,
+            "title": "chore(smart-reminders): repoint case_study_showcase to slot 23"
+          },
           {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
-            "timestamp": "2026-06-02T00:00:00Z"
+            "repo": "Regevba/FitTracker2",
+            "number": 202,
+            "title": "chore(doc-debt): 100% coverage \u2014 slot-fix, work_type backfill, showcase wiring, TODO cleanup"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 161,
+            "title": "chore(smart-reminders): repoint case_study_showcase to slot 23"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 177,
+            "title": "feat(v7-9-1): publish slot 47 showcase + glossary + src/data sync (supersedes #176)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 174,
+            "title": "feat(case-study): publish F2 Phase 0 reality-check showcase MDX (slot 46)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 173,
+            "title": "feat(case-study): publish F17 last_fired_at index showcase MDX (slot 45)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 172,
+            "title": "feat(case-study): publish F16 try-repo harness showcase MDX (slot 44)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 166,
+            "title": "feat(case-study): publish C5 AI user feedback loop showcase MDX (slot 43)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 162,
+            "title": "feat(case-studies): showcase MDX for C2 + C4 + W26 (slots 40-42)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 155,
+            "title": "chore(case-studies): HADF Phase 2-bis synthesis showcase skeleton (slot 22c)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 149,
+            "title": "docs(case-study): slot 36 \u2014 stale-base branch trap (W17 showcase)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 141,
+            "title": "feat(case-studies): slot 35 \u2014 roadmap-stress-test 2026-05-07 showcase MDX (D-RECON-12)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 99,
+            "title": "feat(case-studies): publish slot 33 \u2014 ui-ux-final-sweep-2026-05-12 showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 96,
+            "title": "feat(case-studies): publish slots 31 + 32 (iOS P1 drift + fitme-story P2 final sweep)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 94,
+            "title": "feat(case-studies): publish slot 30 \u2014 fitme-story-ds-p2-deferred showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 91,
+            "title": "feat(case-studies): publish slot 29 \u2014 cross-repo-state-sync-impl showcase (v7.8.3)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 85,
+            "title": "feat(case-studies): publish slot 28 \u2014 ios-ui-audit-p1-burndown showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 56,
+            "title": "docs(case-studies): publish ucc-passkey-auth showcase (slot 26)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 50,
+            "title": "chore(case-studies): publish import-training-plan showcase at slot 23b"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 41,
+            "title": "docs(case-study): publish UCC showcase at slot 23a (formal feature close)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 13,
+            "title": "docs(case-studies): v7.8 bridge showcase (slot 23)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 9,
+            "title": "feat(case-studies): publish smart-reminders showcase at slot 23"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 6,
+            "title": "feat(case-studies): visuals for 7 prose-heavy studies \u2014 AuditFunnel + RaceTimeline + PRStackDiagram"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 177,
+            "title": "feat(v7-9-1): publish slot 47 showcase + glossary + src/data sync (supersedes #176)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 176,
+            "title": "feat(v7-9-1): showcase slot 47 + slot 45/46 recovery + Hero/EvolutionStrip + glossary + src/data sync"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 174,
+            "title": "feat(case-study): publish F2 Phase 0 reality-check showcase MDX (slot 46)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 173,
+            "title": "feat(case-study): publish F17 last_fired_at index showcase MDX (slot 45)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 172,
+            "title": "feat(case-study): publish F16 try-repo harness showcase MDX (slot 44)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 166,
+            "title": "feat(case-study): publish C5 AI user feedback loop showcase MDX (slot 43)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 162,
+            "title": "feat(case-studies): showcase MDX for C2 + C4 + W26 (slots 40-42)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 155,
+            "title": "chore(case-studies): HADF Phase 2-bis synthesis showcase skeleton (slot 22c)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 149,
+            "title": "docs(case-study): slot 36 \u2014 stale-base branch trap (W17 showcase)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 141,
+            "title": "feat(case-studies): slot 35 \u2014 roadmap-stress-test 2026-05-07 showcase MDX (D-RECON-12)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 99,
+            "title": "feat(case-studies): publish slot 33 \u2014 ui-ux-final-sweep-2026-05-12 showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 96,
+            "title": "feat(case-studies): publish slots 31 + 32 (iOS P1 drift + fitme-story P2 final sweep)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 94,
+            "title": "feat(case-studies): publish slot 30 \u2014 fitme-story-ds-p2-deferred showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 91,
+            "title": "feat(case-studies): publish slot 29 \u2014 cross-repo-state-sync-impl showcase (v7.8.3)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 85,
+            "title": "feat(case-studies): publish slot 28 \u2014 ios-ui-audit-p1-burndown showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 56,
+            "title": "docs(case-studies): publish ucc-passkey-auth showcase (slot 26)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 50,
+            "title": "chore(case-studies): publish import-training-plan showcase at slot 23b"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 41,
+            "title": "docs(case-study): publish UCC showcase at slot 23a (formal feature close)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 13,
+            "title": "docs(case-studies): v7.8 bridge showcase (slot 23)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 9,
+            "title": "feat(case-studies): publish smart-reminders showcase at slot 23"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 6,
+            "title": "feat(case-studies): visuals for 7 prose-heavy studies \u2014 AuditFunnel + RaceTimeline + PRStackDiagram"
           }
-        ]
+        ],
+        "log_events": []
       },
-      "match_score": 1,
-      "advisory": null
+      "match_score": 45,
+      "advisory": "this task may already be done"
     },
     {
-      "id": "C",
+      "id": "T4",
       "status": "pending",
-      "description": "",
+      "description": "Recover fitme-story slot 45 (F17 last_fired_at) \u2014 branch `chore/2026-06-04-f17-showcase-slot-45` exists but never merged to main",
+      "evidence": {
+        "git_commits": [
+          {
+            "sha": "e4bbd6a4",
+            "subject": "chore(f-launchd-drift-extension-sub-a): close out \u2014 state implementation\u2192complete (PR #623 merged) (#624)"
+          },
+          {
+            "sha": "41ea644c",
+            "subject": "chore(f-launchd-drift-extension): close out \u2014 state testing\u2192complete (PR #621 merged) (#622)"
+          },
+          {
+            "sha": "2c326f1e",
+            "subject": "chore(2026-06-03): preserve save-branch unique content + HADF SoT sync + .gitignore harden (#592)"
+          },
+          {
+            "sha": "e709be2e",
+            "subject": "chore(adaptive-intelligence-next-pass): close out D1 \u2014 testing \u2192 complete (PR #576 merged) (#587)"
+          },
+          {
+            "sha": "ea113c0b",
+            "subject": "docs(observed-patterns): W17 \u2014 stale-base unmerged branches (cherry-pick = ground truth) (#492)"
+          },
+          {
+            "sha": "72966456",
+            "subject": "chore(audit-2026-05-23-v2): close remaining drifts \u2014 Tier 1 + Tier 2 sweep (#458)"
+          },
+          {
+            "sha": "99448196",
+            "subject": "chore(framework-v7-9-promotion): T7.9.0.6 rollback rehearsal completed \u2014 Tier 2.2 event appended (recovered after merge-driver regression) (#404)"
+          },
+          {
+            "sha": "aaab08f9",
+            "subject": "chore(framework): patch BRANCH_ISOLATION_HISTORICAL heuristic + regression flag display (#385)"
+          },
+          {
+            "sha": "ac43757f",
+            "subject": "chore(framework): v7.8.6 P2 polish \u2014 W10 stale-branch pattern + GA4 anomaly checklist + C1 deferral (#370)"
+          },
+          {
+            "sha": "8967e079",
+            "subject": "chore(framework): nice-to-have cadence batch \u2014 dep audit weekly + stale-branch + PR babysit (#365)"
+          },
+          {
+            "sha": "75c2137b",
+            "subject": "chore(fitme-story-ds-p2-final-sweep): closure \u2014 current_phase=complete + case study (#310)"
+          },
+          {
+            "sha": "53759087",
+            "subject": "chore(fitme-story-ds-p2-deferred): closure \u2014 current_phase=complete + case study + state.json (#308)"
+          },
+          {
+            "sha": "810a60c8",
+            "subject": "chore(fitme-story-website-design-system): Phase 8 + 9 closure \u2014 current_phase=complete (#288)"
+          },
+          {
+            "sha": "febba77a",
+            "subject": "chore(fitme-story-public-enhancements): reconcile T20 \u2192 done (23/24) (#275)"
+          },
+          {
+            "sha": "5c12f58b",
+            "subject": "chore(fitme-story-public-enhancements): capture 17 Figma component node IDs (T20 unblocked) (#272)"
+          },
+          {
+            "sha": "998ad7ed",
+            "subject": "chore(fitme-story-public-enhancements): reconcile T10 + T12 to done (rollup 20\u219222/24) (#269)"
+          },
+          {
+            "sha": "2f1ac2cb",
+            "subject": "chore(fitme-story-public-enhancements): invoke v7.8.1 retroactively + midstream case study (#267)"
+          },
+          {
+            "sha": "ab8d5fa2",
+            "subject": "chore(fitme-story-public-enhancements): reconcile state.json (7\u219217 done) (#266)"
+          },
+          {
+            "sha": "a4b357fe",
+            "subject": "chore(hadf-phase2): land final summary + scripts in main (closes citation gap) (#264)"
+          },
+          {
+            "sha": "fe873c9f",
+            "subject": "chore(unified-control-center): T35 redirect fit-tracker2 -> fitme-story/control-room (307 temporary) (#229)"
+          }
+        ],
+        "merged_prs": [
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 624,
+            "title": "chore(f-launchd-drift-extension-sub-a): close out \u2014 state implementation\u2192complete (PR #623 merged)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 622,
+            "title": "chore(f-launchd-drift-extension): close out \u2014 state testing\u2192complete (PR #621 merged)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 605,
+            "title": "chore(backlog): style-dictionary v5 migration deferred to v8.x \u2014 PR #596 closed unmerged"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 592,
+            "title": "chore(2026-06-03): HADF SoT sync + save-branch preservation + .gitignore harden"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 587,
+            "title": "chore(adaptive-intelligence-next-pass): close out D1 \u2014 testing \u2192 complete (PR #576 merged)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 579,
+            "title": "Revert \"chore(deps)(deps-dev): Bump style-dictionary 3.9.2 \u2192 5.4.2 (#577)\" \u2014 main is broken"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 492,
+            "title": "docs(observed-patterns): W17 \u2014 stale-base unmerged branches (cherry-pick = ground truth)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 458,
+            "title": "chore(audit-2026-05-23-v2): close remaining drifts \u2014 Tier 1 + Tier 2 sweep"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 385,
+            "title": "chore(framework): patch BRANCH_ISOLATION_HISTORICAL heuristic + regression flag display"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 370,
+            "title": "chore(framework): v7.8.6 P2 polish \u2014 W10 stale-branch pattern + GA4 anomaly checklist + C1 deferral"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 365,
+            "title": "chore(framework): nice-to-have cadence batch \u2014 dep audit + stale-branch + PR babysit"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 310,
+            "title": "chore(fitme-story-ds-p2-final-sweep): closure \u2014 current_phase=complete + case study"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 308,
+            "title": "chore(fitme-story-ds-p2-deferred): closure \u2014 current_phase=complete + case study + state.json"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 288,
+            "title": "chore(fitme-story-website-design-system): Phase 8+9 closure \u2014 current_phase=complete"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 275,
+            "title": "chore(fitme-story-public-enhancements): reconcile T20 \u2192 done (23/24)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 272,
+            "title": "chore(fitme-story-public-enhancements): capture 17 Figma component node IDs (T20 unblocked)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 269,
+            "title": "chore(fitme-story-public-enhancements): reconcile T10 + T12 to done (rollup 20\u219222/24)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 267,
+            "title": "chore(fitme-story-public-enhancements): invoke v7.8.1 retroactively + midstream case study"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 266,
+            "title": "chore(fitme-story-public-enhancements): reconcile state.json (7\u219217 done)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 264,
+            "title": "chore(hadf-phase2): land final summary + scripts in main (closes citation gap)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 229,
+            "title": "chore(ucc): T35 redirect fit-tracker2 -> fitme-story/control-room (307 temporary)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 223,
+            "title": "chore(unified-control-center): reconcile T24/T25/T27/T28 done \u2014 fitme-story PRs #27 + #28"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 203,
+            "title": "chore(framework): close all remaining audit gaps \u2014 cron persistence + tier-tag advisories"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 202,
+            "title": "chore(doc-debt): 100% coverage \u2014 slot-fix, work_type backfill, showcase wiring, TODO cleanup"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 175,
+            "title": "chore(repo): untrack .claude/settings.local.json (stop the cross-branch drift)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 161,
+            "title": "chore(smart-reminders): repoint case_study_showcase to slot 23"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 624,
+            "title": "chore(f-launchd-drift-extension-sub-a): close out \u2014 state implementation\u2192complete (PR #623 merged)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 622,
+            "title": "chore(f-launchd-drift-extension): close out \u2014 state testing\u2192complete (PR #621 merged)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 605,
+            "title": "chore(backlog): style-dictionary v5 migration deferred to v8.x \u2014 PR #596 closed unmerged"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 592,
+            "title": "chore(2026-06-03): HADF SoT sync + save-branch preservation + .gitignore harden"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 587,
+            "title": "chore(adaptive-intelligence-next-pass): close out D1 \u2014 testing \u2192 complete (PR #576 merged)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 579,
+            "title": "Revert \"chore(deps)(deps-dev): Bump style-dictionary 3.9.2 \u2192 5.4.2 (#577)\" \u2014 main is broken"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 492,
+            "title": "docs(observed-patterns): W17 \u2014 stale-base unmerged branches (cherry-pick = ground truth)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 458,
+            "title": "chore(audit-2026-05-23-v2): close remaining drifts \u2014 Tier 1 + Tier 2 sweep"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 385,
+            "title": "chore(framework): patch BRANCH_ISOLATION_HISTORICAL heuristic + regression flag display"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 370,
+            "title": "chore(framework): v7.8.6 P2 polish \u2014 W10 stale-branch pattern + GA4 anomaly checklist + C1 deferral"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 365,
+            "title": "chore(framework): nice-to-have cadence batch \u2014 dep audit + stale-branch + PR babysit"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 310,
+            "title": "chore(fitme-story-ds-p2-final-sweep): closure \u2014 current_phase=complete + case study"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 308,
+            "title": "chore(fitme-story-ds-p2-deferred): closure \u2014 current_phase=complete + case study + state.json"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 291,
+            "title": "chore(fitme-story-design-system-p2-cleanup): Phase 8 closure \u2014 current_phase=complete"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 288,
+            "title": "chore(fitme-story-website-design-system): Phase 8+9 closure \u2014 current_phase=complete"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 275,
+            "title": "chore(fitme-story-public-enhancements): reconcile T20 \u2192 done (23/24)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 272,
+            "title": "chore(fitme-story-public-enhancements): capture 17 Figma component node IDs (T20 unblocked)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 269,
+            "title": "chore(fitme-story-public-enhancements): reconcile T10 + T12 to done (rollup 20\u219222/24)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 267,
+            "title": "chore(fitme-story-public-enhancements): invoke v7.8.1 retroactively + midstream case study"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 266,
+            "title": "chore(fitme-story-public-enhancements): reconcile state.json (7\u219217 done)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 264,
+            "title": "chore(hadf-phase2): land final summary + scripts in main (closes citation gap)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 229,
+            "title": "chore(ucc): T35 redirect fit-tracker2 -> fitme-story/control-room (307 temporary)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 223,
+            "title": "chore(unified-control-center): reconcile T24/T25/T27/T28 done \u2014 fitme-story PRs #27 + #28"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 203,
+            "title": "chore(framework): close all remaining audit gaps \u2014 cron persistence + tier-tag advisories"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 202,
+            "title": "chore(doc-debt): 100% coverage \u2014 slot-fix, work_type backfill, showcase wiring, TODO cleanup"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 175,
+            "title": "chore(repo): untrack .claude/settings.local.json (stop the cross-branch drift)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 161,
+            "title": "chore(smart-reminders): repoint case_study_showcase to slot 23"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 173,
+            "title": "feat(case-study): publish F17 last_fired_at index showcase MDX (slot 45)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 155,
+            "title": "chore(case-studies): HADF Phase 2-bis synthesis showcase skeleton (slot 22c)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 149,
+            "title": "docs(case-study): slot 36 \u2014 stale-base branch trap (W17 showcase)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 143,
+            "title": "chore(infra): C8b \u2014 mirror FT2 vercel-link-check + SessionStart hook into fitme-story"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 124,
+            "title": "fix(mdx): recover Pullquote line-height fix from dangling branch (audit findings)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 96,
+            "title": "feat(case-studies): publish slots 31 + 32 (iOS P1 drift + fitme-story P2 final sweep)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 94,
+            "title": "feat(case-studies): publish slot 30 \u2014 fitme-story-ds-p2-deferred showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 54,
+            "title": "chore(ucc): resync src/data from FT2 main @ 0a0ec25 (v7.8.1)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 50,
+            "title": "chore(case-studies): publish import-training-plan showcase at slot 23b"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 176,
+            "title": "feat(v7-9-1): showcase slot 47 + slot 45/46 recovery + Hero/EvolutionStrip + glossary + src/data sync"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 173,
+            "title": "feat(case-study): publish F17 last_fired_at index showcase MDX (slot 45)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 155,
+            "title": "chore(case-studies): HADF Phase 2-bis synthesis showcase skeleton (slot 22c)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 149,
+            "title": "docs(case-study): slot 36 \u2014 stale-base branch trap (W17 showcase)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 143,
+            "title": "chore(infra): C8b \u2014 mirror FT2 vercel-link-check + SessionStart hook into fitme-story"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 124,
+            "title": "fix(mdx): recover Pullquote line-height fix from dangling branch (audit findings)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 96,
+            "title": "feat(case-studies): publish slots 31 + 32 (iOS P1 drift + fitme-story P2 final sweep)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 94,
+            "title": "feat(case-studies): publish slot 30 \u2014 fitme-story-ds-p2-deferred showcase"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 54,
+            "title": "chore(ucc): resync src/data from FT2 main @ 0a0ec25 (v7.8.1)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 50,
+            "title": "chore(case-studies): publish import-training-plan showcase at slot 23b"
+          }
+        ],
+        "log_events": []
+      },
+      "match_score": 92,
+      "advisory": "this task may already be done"
+    },
+    {
+      "id": "T5",
+      "status": "pending",
+      "description": "Update fitme-story src/lib/glossary.ts with v7.9.1 entry",
       "evidence": {
         "git_commits": [],
         "merged_prs": [],
+        "log_events": []
+      },
+      "match_score": 0,
+      "advisory": null
+    },
+    {
+      "id": "T6",
+      "status": "pending",
+      "description": "Update fitme-story Hero / EvolutionStrip / src/data to reflect v7.9.1",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 171,
+            "title": "chore(phase-e-exit): Hero + EvolutionStrip + src/data sync \u2014 Phase E held 2026-06-04"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 176,
+            "title": "feat(v7-9-1): showcase slot 47 + slot 45/46 recovery + Hero/EvolutionStrip + glossary + src/data sync"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 171,
+            "title": "chore(phase-e-exit): Hero + EvolutionStrip + src/data sync \u2014 Phase E held 2026-06-04"
+          }
+        ],
+        "log_events": []
+      },
+      "match_score": 3,
+      "advisory": "this task may already be done"
+    },
+    {
+      "id": "T7",
+      "status": "pending",
+      "description": "Update FT2 CLAUDE.md framework version + v7.9.1 closure pointer",
+      "evidence": {
+        "git_commits": [],
+        "merged_prs": [],
+        "log_events": []
+      },
+      "match_score": 0,
+      "advisory": null
+    },
+    {
+      "id": "T8",
+      "status": "pending",
+      "description": "Update FT2 docs/architecture/dev-guide-v1-to-v7-7.md framework-version range + v7.9.1 references",
+      "evidence": {
+        "git_commits": [
+          {
+            "sha": "58205bc7",
+            "subject": "docs(architecture): dev-guide v7.9 readability pass (TL;DR + Glossary + \u00a715 checklist + \u00a716/17 restructure) (#473)"
+          },
+          {
+            "sha": "6fcca163",
+            "subject": "docs(architecture): C13 ai-engine deployment doc + cadence-followups closeouts + DISCO P2.1 README link (#465)"
+          },
+          {
+            "sha": "31760381",
+            "subject": "docs(design-system): fitme-story design architecture (T21 / FIG-W6) (#261)"
+          },
+          {
+            "sha": "d16715bd",
+            "subject": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web) (#252)"
+          }
+        ],
+        "merged_prs": [
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 473,
+            "title": "docs(architecture): dev-guide v7.9 readability pass (TL;DR + Glossary + \u00a715 checklist + \u00a716/17 restructure)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 465,
+            "title": "docs(architecture): C13 ai-engine deployment doc + cadence closeouts + DISCO P2.1 README link"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 261,
+            "title": "docs(design-system): fitme-story design architecture (T21 / FIG-W6)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 252,
+            "title": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 211,
+            "title": "docs(claudemd): correct outdated 27-P0 ui-audit baseline references"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 473,
+            "title": "docs(architecture): dev-guide v7.9 readability pass (TL;DR + Glossary + \u00a715 checklist + \u00a716/17 restructure)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 465,
+            "title": "docs(architecture): C13 ai-engine deployment doc + cadence closeouts + DISCO P2.1 README link"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 261,
+            "title": "docs(design-system): fitme-story design architecture (T21 / FIG-W6)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 252,
+            "title": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 211,
+            "title": "docs(claudemd): correct outdated 27-P0 ui-audit baseline references"
+          }
+        ],
+        "log_events": []
+      },
+      "match_score": 14,
+      "advisory": "this task may already be done"
+    },
+    {
+      "id": "T9",
+      "status": "pending",
+      "description": "Update FT2 docs/skills/evolution.md with v7.9.1 milestone entry",
+      "evidence": {
+        "git_commits": [
+          {
+            "sha": "8a4e2571",
+            "subject": "docs(brainstorm-pm-3-option): sweep README + CHANGELOG + evolution + pm-workflow SKILL + dev-guide (#598)"
+          },
+          {
+            "sha": "1c9d0000",
+            "subject": "docs(framework): index the W28 catalog entry + bump dev-guide pattern count (#585)"
+          },
+          {
+            "sha": "ea0037be",
+            "subject": "docs(plans): defer Skills Activity aggregator to post-Phase-E (\u2265 2026-06-04) (#502)"
+          },
+          {
+            "sha": "0b4823f6",
+            "subject": "docs(evolution): update v7.8.6 row to reflect /brainstorm-pm teal color recovery (#373)"
+          },
+          {
+            "sha": "b0973571",
+            "subject": "docs(skills): add brainstorm-pm.md docs page + sweep stale skill-count refs across canonical docs (#368)"
+          },
+          {
+            "sha": "4117ac7d",
+            "subject": "docs(planning): commit 2026-05-13 planning docs (skills-review + test-coverage master plan) (#346)"
+          },
+          {
+            "sha": "0e4b4ffb",
+            "subject": "docs(code-connect): roll up v4.X+CC across CLAUDE.md + skills + dev-guide + DS contract (#284)"
+          }
+        ],
+        "merged_prs": [
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 598,
+            "title": "docs(brainstorm-pm-3-option): sweep README + CHANGELOG + evolution + pm-workflow + dev-guide"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 585,
+            "title": "docs(framework): index the W28 catalog entry + bump dev-guide pattern count"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 502,
+            "title": "docs(plans): defer Skills Activity aggregator to post-Phase-E (\u2265 2026-06-04)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 373,
+            "title": "docs(evolution): update v7.8.6 row to reflect /brainstorm-pm teal color (#14B8A6) recovery"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 368,
+            "title": "docs(skills): add brainstorm-pm.md docs page + sweep stale skill-count refs across canonical docs"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 346,
+            "title": "docs(planning): commit 2026-05-13 planning docs (skills-review + test-coverage master plan)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 284,
+            "title": "docs(code-connect): roll up v4.X+CC across CLAUDE.md + skills + dev-guide + DS contract"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 194,
+            "title": "docs(framework-v7.8): PR-7 \u2014 cold-start entrypoint + honesty ledger entry FT2-FH-001"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 177,
+            "title": "docs(framework+setup): manifest 7.6\u21927.7 + recover ssd/sentry setup-guide updates"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 135,
+            "title": "docs: rescue pm-hub-evolution.md before branch cleanup"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 130,
+            "title": "docs(m-2): M-2d \u2014 case study + monitoring entry + UI-004 closure"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 125,
+            "title": "docs(m-1): M-1d \u2014 case study + monitoring entry + UI-002 closure"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 121,
+            "title": "docs(case-studies): M-3d \u2014 design system completion case study + monitoring entry"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 598,
+            "title": "docs(brainstorm-pm-3-option): sweep README + CHANGELOG + evolution + pm-workflow + dev-guide"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 585,
+            "title": "docs(framework): index the W28 catalog entry + bump dev-guide pattern count"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 502,
+            "title": "docs(plans): defer Skills Activity aggregator to post-Phase-E (\u2265 2026-06-04)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 373,
+            "title": "docs(evolution): update v7.8.6 row to reflect /brainstorm-pm teal color (#14B8A6) recovery"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 368,
+            "title": "docs(skills): add brainstorm-pm.md docs page + sweep stale skill-count refs across canonical docs"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 346,
+            "title": "docs(planning): commit 2026-05-13 planning docs (skills-review + test-coverage master plan)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 284,
+            "title": "docs(code-connect): roll up v4.X+CC across CLAUDE.md + skills + dev-guide + DS contract"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 194,
+            "title": "docs(framework-v7.8): PR-7 \u2014 cold-start entrypoint + honesty ledger entry FT2-FH-001"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 177,
+            "title": "docs(framework+setup): manifest 7.6\u21927.7 + recover ssd/sentry setup-guide updates"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 135,
+            "title": "docs: rescue pm-hub-evolution.md before branch cleanup"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 130,
+            "title": "docs(m-2): M-2d \u2014 case study + monitoring entry + UI-004 closure"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 125,
+            "title": "docs(m-1): M-1d \u2014 case study + monitoring entry + UI-002 closure"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 121,
+            "title": "docs(case-studies): M-3d \u2014 design system completion case study + monitoring entry"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 113,
+            "title": "docs: complete v7.8.6 mirror \u2014 dev-guide body + /pm-flow skills count + /control-room/skills"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 109,
+            "title": "docs(framework): sync /framework page to v7.8.5+S (skills-review execution)"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 113,
+            "title": "docs: complete v7.8.6 mirror \u2014 dev-guide body + /pm-flow skills count + /control-room/skills"
+          },
+          {
+            "repo": "Regevba/fitme-story",
+            "number": 109,
+            "title": "docs(framework): sync /framework page to v7.8.5+S (skills-review execution)"
+          }
+        ],
+        "log_events": []
+      },
+      "match_score": 37,
+      "advisory": "this task may already be done"
+    },
+    {
+      "id": "T10",
+      "status": "pending",
+      "description": "Update FT2 docs/product/backlog.md Done section with all 8 ships from 2026-06-04",
+      "evidence": {
+        "git_commits": [
+          {
+            "sha": "d774dc2c",
+            "subject": "chore(backlog): close E4 drift \u2014 onboarding-v2 retroactive refactor ALREADY DONE 2026-04-09 (#575)"
+          },
+          {
+            "sha": "228430a4",
+            "subject": "docs(backlog): E1 RICE refresh \u2014 replace 2026-04-02 Phase 0 table with current 21-item ranking (#559)"
+          },
+          {
+            "sha": "059d08c0",
+            "subject": "docs(design-system): Dynamic Type @ScaledMetric audit \u2014 backlog L353 reframed (text auto-scales; 84 icons are real gap) (#555)"
+          },
+          {
+            "sha": "faee2bd6",
+            "subject": "docs(backlog): iOS Medium Priority dedup \u2014 2 items flipped from open to shipped (#546)"
+          },
+          {
+            "sha": "a47fcbc3",
+            "subject": "docs(ui-ux-master-plan): \u00a73.3 freshness reconcile \u2014 4 features moved In-flight \u2192 Done (#545)"
+          },
+          {
+            "sha": "f648cf87",
+            "subject": "docs(backlog): row #118 \u2014 2026-05-30/31 9-PR comprehensive sync batch (#544)"
+          },
+          {
+            "sha": "c65f401d",
+            "subject": "docs(backlog): add design-tokens-pipeline-v5-migration to v8.x icebox + close PR #440 (#471)"
+          },
+          {
+            "sha": "401d632e",
+            "subject": "docs(hygiene): A1+A2+A4+A5+B1+B2+B3 batch \u2014 PHASE_LIE fix, drift backlog, catalog readability, audit substrate dry-run (#474)"
+          },
+          {
+            "sha": "36b9a8c0",
+            "subject": "docs(backlog + master-plan): post-v7.9 catch-up \u2014 A1 + A2-current (#421)"
+          },
+          {
+            "sha": "5e6aa4b9",
+            "subject": "docs(v7-7): flip Section 99 banner to shipped \u2014 both B1+B2 trend modes verified (#364)"
+          },
+          {
+            "sha": "22690776",
+            "subject": "docs(skill): add /analytics SKILL.md preflight section for observed-patterns catalog (#348)"
+          },
+          {
+            "sha": "c737eb89",
+            "subject": "docs(skill): add qa SKILL.md preflight section for observed-patterns catalog (#344)"
+          },
+          {
+            "sha": "5edb2644",
+            "subject": "docs(plan): full v7.8.5 \u2192 v8.2 implementation plan + product-framework concurrency + external audit cadence (#321)"
+          },
+          {
+            "sha": "77d2ffe3",
+            "subject": "docs(infra-plan + backlog): consolidate PR #317 + #318 findings into forward plan v7.8.5 \u2192 v8.2 (#319)"
+          },
+          {
+            "sha": "7f786f70",
+            "subject": "docs(spec): HADF Phase 2-bis hardened cloud replication design \u2014 11 sections + soak gate (#306)"
+          },
+          {
+            "sha": "4f40306d",
+            "subject": "docs(v7.8.3): sync framework docs + master plan + backlog to v7.8.3 release umbrella (#305)"
+          },
+          {
+            "sha": "1e91ec2f",
+            "subject": "docs(bucket-h): DS lens audit (45 findings) + 4 P1 follow-up backlog items (#289)"
+          },
+          {
+            "sha": "7bfc8f2e",
+            "subject": "docs(backlog): mark \"Refine case-study presentation/readability\" SHIPPED (#276)"
+          },
+          {
+            "sha": "044c8ee0",
+            "subject": "docs(backlog): add fitme-story website design system as separate item (#274)"
+          },
+          {
+            "sha": "d16715bd",
+            "subject": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web) (#252)"
+          },
+          {
+            "sha": "be9abc8a",
+            "subject": "docs(master-plan+backlog): sync to v7.8.1 reality (push-notifications-v2 + branch-isolation shipped 2026-05-07) (#247)"
+          },
+          {
+            "sha": "6c9bdca4",
+            "subject": "docs(backlog): close /ux + /design preflight task (shipped via FT2 #235 + fitme-story #48) (#236)"
+          },
+          {
+            "sha": "dc98b176",
+            "subject": "docs(backlog): strike CI parallel-clone hang \u2014 resolved 2026-05-05 via PR #225 (#233)"
+          }
+        ],
+        "merged_prs": [
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 575,
+            "title": "chore(backlog): close E4 drift \u2014 onboarding-v2 retroactive refactor ALREADY DONE 2026-04-09"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 559,
+            "title": "docs(backlog): E1 RICE refresh \u2014 replace 2026-04-02 Phase 0 table with current 21-item ranking"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 546,
+            "title": "docs(backlog): iOS Medium Priority dedup \u2014 2 stale items flipped + 6 confirmed open"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 545,
+            "title": "docs(ui-ux-master-plan): \u00a73.3 freshness reconcile \u2014 4 features moved In-flight \u2192 Done"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 544,
+            "title": "docs(backlog): row #118 \u2014 2026-05-30/31 9-PR comprehensive sync batch + 5-item dedup sweep"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 474,
+            "title": "docs(hygiene): A1+A2+A4+A5+B1+B2+B3 batch \u2014 PHASE_LIE fix, drift backlog, catalog readability, audit substrate dry-run"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 471,
+            "title": "docs(backlog): add design-tokens-pipeline-v5-migration to v8.x icebox + close #440"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 421,
+            "title": "docs(backlog + master-plan): post-v7.9 catch-up \u2014 A1 + A2-current"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 364,
+            "title": "docs(v7-7): flip Section 99 banner to shipped \u2014 rebased from #357"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 348,
+            "title": "docs(skill): add /analytics SKILL.md preflight section for observed-patterns catalog"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 344,
+            "title": "docs(skill): add qa SKILL.md preflight section for observed-patterns catalog"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 337,
+            "title": "docs(analytics-observability): complete spec \u2014 \u00a75.5 status + \u00a714.5 patterns + \u00a715.1-\u00a717 operational sections"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 321,
+            "title": "docs(plan): full v7.8.5 \u2192 v8.2 implementation plan + product-framework concurrency + external audits"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 319,
+            "title": "docs(infra-plan + backlog): consolidate PR #317 + #318 findings into forward plan v7.8.5 \u2192 v8.2"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 306,
+            "title": "docs(spec): HADF Phase 2-bis hardened cloud replication design (11 sections + soak gate)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 305,
+            "title": "docs(v7.8.3): sync framework docs + master plan + backlog to v7.8.3 release umbrella"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 289,
+            "title": "docs(bucket-h): DS lens audit (45 findings) + 4 P1 follow-up backlog items"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 276,
+            "title": "docs(backlog): mark \"Refine case-study presentation/readability\" SHIPPED"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 274,
+            "title": "docs(backlog): add fitme-story website design system as separate item"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 252,
+            "title": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 236,
+            "title": "docs(backlog): close /ux + /design preflight task (shipped via #235)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 233,
+            "title": "docs(backlog): strike CI parallel-clone hang \u2014 resolved via PR #225"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 196,
+            "title": "docs(framework-v7.8): final doc sweep \u2014 CLAUDE.md header + backlog row 74.5"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 176,
+            "title": "docs(backlog): sync In Progress \u2192 Done for 7 shipped items + correct stale pause claims"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 575,
+            "title": "chore(backlog): close E4 drift \u2014 onboarding-v2 retroactive refactor ALREADY DONE 2026-04-09"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 559,
+            "title": "docs(backlog): E1 RICE refresh \u2014 replace 2026-04-02 Phase 0 table with current 21-item ranking"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 546,
+            "title": "docs(backlog): iOS Medium Priority dedup \u2014 2 stale items flipped + 6 confirmed open"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 545,
+            "title": "docs(ui-ux-master-plan): \u00a73.3 freshness reconcile \u2014 4 features moved In-flight \u2192 Done"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 544,
+            "title": "docs(backlog): row #118 \u2014 2026-05-30/31 9-PR comprehensive sync batch + 5-item dedup sweep"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 474,
+            "title": "docs(hygiene): A1+A2+A4+A5+B1+B2+B3 batch \u2014 PHASE_LIE fix, drift backlog, catalog readability, audit substrate dry-run"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 471,
+            "title": "docs(backlog): add design-tokens-pipeline-v5-migration to v8.x icebox + close #440"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 421,
+            "title": "docs(backlog + master-plan): post-v7.9 catch-up \u2014 A1 + A2-current"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 371,
+            "title": "docs(ga4): 3-path Access Binding Recovery section in GA4 anomaly checklist"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 364,
+            "title": "docs(v7-7): flip Section 99 banner to shipped \u2014 rebased from #357"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 348,
+            "title": "docs(skill): add /analytics SKILL.md preflight section for observed-patterns catalog"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 344,
+            "title": "docs(skill): add qa SKILL.md preflight section for observed-patterns catalog"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 337,
+            "title": "docs(analytics-observability): complete spec \u2014 \u00a75.5 status + \u00a714.5 patterns + \u00a715.1-\u00a717 operational sections"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 321,
+            "title": "docs(plan): full v7.8.5 \u2192 v8.2 implementation plan + product-framework concurrency + external audits"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 319,
+            "title": "docs(infra-plan + backlog): consolidate PR #317 + #318 findings into forward plan v7.8.5 \u2192 v8.2"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 306,
+            "title": "docs(spec): HADF Phase 2-bis hardened cloud replication design (11 sections + soak gate)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 305,
+            "title": "docs(v7.8.3): sync framework docs + master plan + backlog to v7.8.3 release umbrella"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 290,
+            "title": "docs(backlog): correct BHF attribution + add 'Apply DS web to /control-room/*' P2 deferred"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 289,
+            "title": "docs(bucket-h): DS lens audit (45 findings) + 4 P1 follow-up backlog items"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 276,
+            "title": "docs(backlog): mark \"Refine case-study presentation/readability\" SHIPPED"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 274,
+            "title": "docs(backlog): add fitme-story website design system as separate item"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 252,
+            "title": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 236,
+            "title": "docs(backlog): close /ux + /design preflight task (shipped via #235)"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 233,
+            "title": "docs(backlog): strike CI parallel-clone hang \u2014 resolved via PR #225"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 224,
+            "title": "docs(backlog): quarantine AuthPolishV2UITests against parallel-clone sim hang"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 196,
+            "title": "docs(framework-v7.8): final doc sweep \u2014 CLAUDE.md header + backlog row 74.5"
+          },
+          {
+            "repo": "Regevba/FitTracker2",
+            "number": 176,
+            "title": "docs(backlog): sync In Progress \u2192 Done for 7 shipped items + correct stale pause claims"
+          }
+        ],
         "log_events": [
           {
             "event_type": "phase_started",
-            "summary": "HADF Phase 2-bis Feature stub created; Block A scaffolding starts",
-            "timestamp": "2026-05-12T07:22:43Z"
-          },
-          {
-            "event_type": "phase_transition",
-            "summary": "Block A scaffolding complete; entering tasks phase",
-            "timestamp": "2026-05-12T09:44:09Z"
-          },
-          {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
-            "timestamp": "2026-05-28T13:48:23Z"
-          },
-          {
-            "event_type": "sub_experiment_closed",
-            "summary": "Sub-exp 2 closed PASS: Ollama (llama3.2:3b on M2) streaming signature KS-distinguishable from BOTH Sub-exp 1 cloud anchors (openai/gpt-4o-mini + anthropic/claude-haiku-4-5) on BOTH metrics at p<<0.01 (ttft KS 0.94/0.98; tps KS 0.75/0.91). n_valid=800/900 (88.9% valid) vs 200 kill floor / 250 suggested pass-yield / 375 nominal expected. Medians: Ollama ttft 0.179s tps 43.8 vs openai 0.021s/65.4 vs anthropic 1.099s/83.3. 18 fires 2026-05-30T04:50Z to 2026-06-02T02:00Z, cost $0. Collection stopped via launchctl disable + plist Disabled=true. B14 -> done. B14.6 (case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 Bedrock access).",
-            "timestamp": "2026-06-02T00:00:00Z"
+            "summary": "Unified v7.9.1 promotion case study + state.json + docket strike + CLAUDE.md unified section + dev-guide title bump + backlog Done row 120. Deep dev-guide content audit dispatched in parallel via Explore agent.",
+            "timestamp": "2026-06-04T17:26:34Z"
           }
         ]
       },
-      "match_score": 4,
+      "match_score": 75,
       "advisory": "this task may already be done"
     }
   ]

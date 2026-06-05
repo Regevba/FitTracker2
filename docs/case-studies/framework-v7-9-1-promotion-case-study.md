@@ -34,6 +34,16 @@ pr_citation_exempt:
   - {pr_number: 416, reason: "v7.9 promotion side-effects — referenced in §0 Genesis for v7.9 → v7.9.1 transition context."}
   - {pr_number: 417, reason: "v7.9 promotion main flip — same disposition as #416."}
   - {pr_number: 503, reason: "B12 UCC hardening — referenced in §99 for predecessor calibration context."}
+  - {pr_number: 172, reason: "Cross-reference to fitme-story slot publication PR (separate repo) — referenced in W29 context, not this synthesis feature's own PR"}
+  - {pr_number: 621, reason: "Constituent v7.9.1 ship — F-LAUNCHD-DRIFT-EXTENSION (b)+(c) feature PR; each ship retains its own state.json + closure case study; this synthesis cites by reference"}
+  - {pr_number: 622, reason: "Constituent v7.9.1 closure PR for F-LAUNCHD-DRIFT-EXTENSION (b)+(c); cited by reference"}
+  - {pr_number: 623, reason: "Constituent v7.9.1 ship — F-LAUNCHD-DRIFT-EXTENSION (a) feature PR; cited by reference"}
+  - {pr_number: 624, reason: "Constituent v7.9.1 closure PR for F-LAUNCHD-DRIFT-EXTENSION (a); cited by reference"}
+  - {pr_number: 625, reason: "Constituent v7.9.1 ship — F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE feature PR; cited by reference"}
+  - {pr_number: 626, reason: "Constituent v7.9.1 ship — R9 Track B coverage aggregator PR; cited by reference"}
+  - {pr_number: 627, reason: "Constituent v7.9.1 ship — dev-env R11+R13+R14+R17+R18 batch PR; cited by reference"}
+  - {pr_number: 628, reason: "Constituent v7.9.1 ship — F-DEPLOYED-URL-PROBE FT2 substrate PR; cited by reference"}
+  - {pr_number: 620, reason: "Constituent v7.9.1 ship — observed-patterns W29-W32 catalog batch PR; cited by reference"}
 case_study_showcase: "fitme-story/content/04-case-studies/47-framework-v7-9-1-promotion.mdx"
 external_audit_status: pending  # External Audit #2 scheduled 2026-06-12
 status: live
@@ -252,3 +262,7 @@ The economics validate the rebase-cascade-with-operator-approval rhythm for sub-
 - **Predecessor case study:** [`framework-v7-9-promotion-case-study.md`](framework-v7-9-promotion-case-study.md)
 - **Observed patterns:** [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) W29-W32
 - **Honesty ledger:** future FT2-FH-004 (this build window's `external_audit_status: pending` → `corrected` after 2026-06-12)
+
+---
+
+**Shipped via PR #629** (`feat(v7-9-1): unified promotion case study + comprehensive doc sweep`, `a79aebe`) + follow-on **PR #630** (`feat(3d-universe): Phase 1 → Phase 2 advancement + dev-guide §10.5a pattern↔skill overlay reflection`, `ef31ba8`). Synthesis closure of the v7.9.1 build window. Closure PR (this state.json mutation): see `chore/v7-9-1-promotion-close` (this commit's PR).
