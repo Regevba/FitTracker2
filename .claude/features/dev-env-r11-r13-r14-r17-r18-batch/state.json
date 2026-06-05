@@ -1,6 +1,6 @@
 {
   "feature_name": "dev-env-r11-r13-r14-r17-r18-batch",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-06-04T16:45:00Z",
   "updated_at": "2026-06-04T16:45:00Z",
   "framework_version": "v7.9.1",
@@ -9,9 +9,9 @@
   "has_ui": false,
   "requires_analytics": false,
   "state_owner": "ft2",
-  "isolation_opt_out": false,
-  "isolation_opt_out_reason": "",
-  "branch": "feature/dev-env-r11-r13-r14-r17-r18-batch",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Bundled multi-feature post-merge closure in chore/v7-9-1-close-stuck-features \u2014 all 4 features were v7.9.1 build-window ships (PRs #625-#628) that landed yesterday and stuck at implementation phase due to FEATURE_CLOSURE_COMPLETENESS pr_list_parity_mismatch firing pre-PR-list-citation; chore bundling reduces PR overhead vs 4 separate post-merge-closure branches per close-feature.py default pattern",
+  "branch": "chore/dev-env-r11-r13-r14-r17-r18-batch-post-merge-closure",
   "scheduled_after": null,
   "primary_metric": "5 of the remaining 7 Tier-2/Tier-3 dev-env R-items ship in a single batch as warn-only CI workflows + configs (R11 gitleaks + R13 pip-audit + R14 SBOM + R17 commitlint + R18 shellcheck)",
   "success_metrics": [
@@ -76,14 +76,90 @@
     "implementation": {
       "started_at": "2026-06-04T16:45:00Z",
       "ended_at": null,
-      "notes": "Batch of 5 R-items shipping as warn-only baselines. All net-new files; no existing-file mutations beyond the master-plan R-table updates."
+      "notes": "Batch of 5 R-items shipping as warn-only baselines. All net-new files; no existing-file mutations beyond the master-plan R-table updates.",
+      "approved_by": "operator",
+      "approval_signal": "(implicit \u2014 operator merged PR #627)"
+    },
+    "review": {
+      "started_at": "2026-06-04T17:03:42Z",
+      "ended_at": "2026-06-04T17:03:42Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-04T17:03:42Z",
+      "ended_at": "2026-06-04T17:03:42Z",
+      "pr_number": 627,
+      "merge_commit_sha": "8f3524f56dcf09db588cc7ea2bfd5022c3b30087",
+      "merged_at": "2026-06-04T17:03:42Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-04T17:03:42Z",
+      "ended_at": "2026-06-05T05:04:14Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-05T05:04:14Z",
+      "ended_at": "2026-06-05T05:04:14Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-06-04T16:45:00Z"
+        "started_at": "2026-06-04T16:45:00Z",
+        "ended_at": "2026-06-04T17:03:42Z"
+      },
+      "review": {
+        "started_at": "2026-06-04T17:03:42Z",
+        "ended_at": "2026-06-04T17:03:42Z"
+      },
+      "merge": {
+        "started_at": "2026-06-04T17:03:42Z",
+        "ended_at": "2026-06-04T17:03:42Z"
+      },
+      "docs": {
+        "started_at": "2026-06-04T17:03:42Z",
+        "ended_at": "2026-06-05T05:04:14Z"
+      },
+      "complete": {
+        "started_at": "2026-06-05T05:04:14Z",
+        "ended_at": "2026-06-05T05:04:14Z"
       }
     }
-  }
+  },
+  "merge_pr_number": 627,
+  "merge_commit_sha": "8f3524f56dcf09db588cc7ea2bfd5022c3b30087",
+  "merged_at": "2026-06-04T17:03:42Z",
+  "feature_branch_merged": "feature/dev-env-r11-r13-r14-r17-r18-batch",
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-04T17:03:42Z",
+      "reason": "PR #627 squashed onto main as 8f3524f56d (operator-merged 2026-06-04T17:03:42Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-04T17:03:42Z",
+      "reason": "PR #627 squashed onto main as 8f3524f56d (operator-merged 2026-06-04T17:03:42Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-04T17:03:42Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-05T05:04:14Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/dev-env-r11-r13-r14-r17-r18-batch-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ]
 }
