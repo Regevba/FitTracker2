@@ -1,5 +1,7 @@
 # HADF Signature Library Expansion — April 2026 Research Note
 
+> **UPDATE 2026-06-05.** The "Phase 2 has not yet been run / cloud sigs uncalibrated" caveats below (§1, §6) are partly resolved: **HADF Phase 2 + Phase 2-bis have since run and the streaming-signature premise is CONFIRMED** (all 4 Phase 2-bis sub-exps PASS — see [`HADF-SOURCE-OF-TRUTH.md` §-1](../../.claude/shared/hadf/HADF-SOURCE-OF-TRUTH.md)). That validates the *cloud-endpoint* signature axis + Phase 3A's reference-store. **This chip-family expansion (Apple A19/M5, Intel Core Ultra, AMD Ryzen AI / EPYC, RISC-V, datacenter) remains a PROPOSED research track — not yet implemented**; it expands the on-device `chip-profiles.json` + datacenter `hardware-signature-table.json` catalogs and is independent of the cloud-fingerprinting experiments.
+
 > **Status:** RESEARCH (2026-04-28). Baseline: 17 mobile/desktop profiles + 7 cloud signatures shipped in PR #82 (2026-04-16). This note proposes a delta against that baseline based on three research passes covering Apple/Android/Datacenter/RISC-V, Intel, and AMD.
 >
 > **Out of scope:** spec writing, schema changes, RTL changes. This note collects the candidate profiles, flags architectural primitives that don't fit the current schema, and proposes a prioritization. Implementation lands as a follow-up PR against `.claude/shared/chip-profiles.json` and `.claude/shared/hadf/hardware-signature-table.json`.
