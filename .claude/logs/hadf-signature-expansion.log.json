@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T09:26:16Z",
+  "updated_at": "2026-06-05T09:26:48Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
@@ -151,6 +151,39 @@
       "metrics": {
         "tests_passing": 19
       },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T09:26:48Z",
+      "event_type": "phase_started",
+      "phase": "testing",
+      "summary": "Phase 5 Testing \u2014 19/19 tests pass (10 feature + 9 Phase 3A no-regression); real M4 calibration verified; no high-risk files touched.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T09:26:48Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Phase 6 Review \u2014 diff touches scripts/ + .claude/shared/hadf catalogs + chip-profiles.json; no Swift/auth/sync/AI high-risk files; guardrail + no-regression test-enforced.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T09:26:48Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Phase 7 Merge \u2014 opening PR for operator review + merge approval (no auto-merge).",
+      "artifacts": [],
+      "metrics": {},
       "actor": "claude_opus_4_8",
       "status": "recorded",
       "recording_mode": "contemporaneous"
