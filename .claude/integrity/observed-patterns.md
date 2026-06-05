@@ -1536,4 +1536,29 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 
 **Sibling patterns:** [W20 — Stale-session-state inventory drift](#w20--stale-session-state-inventory-drift-2026-05-28) (both are "surface the right context BEFORE work, not reactively"); the `make preflight` unified entry point (v7.8.6) — the overlay is its per-skill, pattern-aware companion.
 
+### W34 — PR cache window truncation past the 500-PR limit (2026-06-05)
+
+**Surfaced by:** the 2026-06-05 data-integrity health check. The SessionStart regression flag reported **39 integrity findings** (52 total at the 2026-06-04 daily checkpoint) where the prior day had 0. Every finding was a `BROKEN_PR_CITATION` or `PR_NUMBER_UNRESOLVED` citing an *old, legitimately-merged* low-numbered PR (#12, #59, #61, #65, #67, #74, #76, #78, #80–#92).
+
+**Root cause:** [`scripts/refresh-pr-cache.py`](../../../scripts/refresh-pr-cache.py) fetched each state bucket with `gh pr list --limit 500`. FT2 crossed **500 merged PRs**, so the merged window's floor rose to **#93** and the closed window's to **#116**. Every citation below the floor fell out of the cache and read as "does not resolve." This is the THIRD variant of the PR-cache failure class, distinct from its siblings:
+
+- **#12 `PR_CACHE_STALE`** — cache empty / missing / >24h old.
+- **W11** — cache present + fresh but one expected *repo* absent.
+- **W34 (this)** — cache present, fresh, both repos populated, but the *most-recent-N window* no longer reaches old PR numbers because the repo grew past the per-state `--limit`.
+
+**Why the freshness gate missed it:** `ensure-pr-cache-fresh.py` checks emptiness, repo-presence, and age — NOT whether the numeric window still covers historically-cited PRs. The cache was 10h old, non-empty, both repos present → freshness check passed → truncated window served stale-floor lookups.
+
+**Detection / artifact (skip):** ALL false findings cite PR numbers *below a sharp floor* (here #93) while every citation above resolves fine. Confirm with:
+```bash
+python3 -c "import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; \
+ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))"
+# floor far above 1 (e.g. 93) while the repo's true min PR is 1 ⇒ window truncation
+```
+
+**Remediation:** raised the per-state limit to `--limit 2000` (covers FT2's 571 PRs + headroom; re-refresh writes 1465 PRs across both repos). After refresh, `make integrity-check` returned to **0 findings + 5 advisory**. The cap should be revisited if either repo approaches 2000 PRs.
+
+**Silence path:** none — the fix removes the false floor. Going forward the limit must exceed each repo's total PR count.
+
+**First observed:** 2026-06-05 (data-integrity health check). **Sibling patterns:** [#12 `PR_CACHE_STALE`](#12-pr_cache_stale-v784--emptystale-cache--cascading-false-positives), [W11 — Incomplete PR cache](#w11--incomplete-pr-cache-one-of-two-expected-repos-absent).
+
 
