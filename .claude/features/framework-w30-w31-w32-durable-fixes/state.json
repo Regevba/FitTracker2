@@ -13,7 +13,7 @@
   "isolation_opt_out_reason": "",
   "branch": "chore/framework-w30-w31-w32-durable-fixes-post-merge-closure",
   "scheduled_after": null,
-  "primary_metric": "3 W-pattern durable fixes shipped in a single Chore PR with passing test suite — W30 parser bare-int fallback, W31 operator-side workflow-coverage detector, W32 close-feature.py single-phase auto-skip",
+  "primary_metric": "3 W-pattern durable fixes shipped in a single Chore PR with passing test suite \u2014 W30 parser bare-int fallback, W31 operator-side workflow-coverage detector, W32 close-feature.py single-phase auto-skip",
   "success_metrics": [
     "scripts/check-state-schema.py _collect_case_study_pr_numbers extracts bare-int strings from related_prs (T1, 6 unit tests pass)",
     "scripts/check-pr-workflow-coverage.py runs against any PR + reports always-expected vs actual delta (T1, 3 unit tests pass + smoke test against PR #636 + #623)",
@@ -21,62 +21,65 @@
     "Same-session use case: F-DEPLOYED-URL-PROBE + dev-env-R-batch + R9 + F-PHASE-E closures from PR #633 would have auto-skipped without --force-incomplete (T2, retrospective)"
   ],
   "kill_criteria": [
-    "W30 fallback accidentally matches a non-PR-number string and inflates the parity count — would create false positive findings",
+    "W30 fallback accidentally matches a non-PR-number string and inflates the parity count \u2014 would create false positive findings",
     "W31 detector false-positive rate too high to be useful operationally",
     "W32 auto-skip masks a real partial-phase landing that should have been blocked"
   ],
-  "kill_criteria_resolution": "All 3 mitigated by design + tests. (1) W30 fallback only fires after the `#N` regex has already failed AND the string is `str.isdigit()` — non-digit strings short-circuit; test `test_non_digit_strings_silently_skipped` enforces. (2) W31 detector uses a curated `ALWAYS_EXPECTED_PATTERNS` list (path-filtered and schedule-only workflows are intentionally excluded), validated by smoke test against PR #636 reporting 14/14 with 0 false positives. (3) W32 auto-skip is restricted to 3 work-shape signals (work_subtype=framework_feature OR work_type in {Chore,Fix} OR explicit single_phase: true) — regular Feature work_type still requires --force-incomplete; test `test_regular_feature_still_requires_force_incomplete` enforces. Operator still sees an audit-trail log message when auto-skip fires.",
+  "kill_criteria_resolution": "All 3 mitigated by design + tests. (1) W30 fallback only fires after the `#N` regex has already failed AND the string is `str.isdigit()` \u2014 non-digit strings short-circuit; test `test_non_digit_strings_silently_skipped` enforces. (2) W31 detector uses a curated `ALWAYS_EXPECTED_PATTERNS` list (path-filtered and schedule-only workflows are intentionally excluded), validated by smoke test against PR #636 reporting 14/14 with 0 false positives. (3) W32 auto-skip is restricted to 3 work-shape signals (work_subtype=framework_feature OR work_type in {Chore,Fix} OR explicit single_phase: true) \u2014 regular Feature work_type still requires --force-incomplete; test `test_regular_feature_still_requires_force_incomplete` enforces. Operator still sees an audit-trail log message when auto-skip fires.",
   "dispatch_pattern": "agent-driven (3 surgical script patches + 1 new diagnostic script + 16-test unit suite)",
   "case_study": "docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md",
   "case_study_showcase": "",
   "spec": ".claude/integrity/observed-patterns.md W30 + W31 + W32 + saved-memory 'Tomorrow's queue' from project_session_2026_06_04_observed_patterns_overlay_and_3d_phase_2.md",
   "predecessor_case_study": "docs/case-studies/framework-v7-9-1-promotion-case-study.md",
-  "scope_summary": "3-in-1 durable-fix Chore for W-patterns surfaced during the 2026-06-04 v7.9.1 build window. W30 patches `_collect_case_study_pr_numbers` to extract bare-int strings (`['623','621']`) the natural YAML inline form produces, closing the 4-commit-retry loop documented in W30's own surfacing. W31 ships an operator-side detector `scripts/check-pr-workflow-coverage.py` that compares the always-expected check-run set against the PR HEAD's actual check-runs + statuses — nudges the operator toward the rebase+force-push remediation when the GitHub Actions webhook delivery anomaly fires. W32 patches `close-feature.py` to auto-skip the `--force-incomplete` requirement when state.json declares a single-phase work shape (work_subtype=framework_feature OR work_type in {Chore,Fix} OR explicit single_phase: true) — same shape as the 5 v7.9.1 features that hit this barrier today.",
+  "scope_summary": "3-in-1 durable-fix Chore for W-patterns surfaced during the 2026-06-04 v7.9.1 build window. W30 patches `_collect_case_study_pr_numbers` to extract bare-int strings (`['623','621']`) the natural YAML inline form produces, closing the 4-commit-retry loop documented in W30's own surfacing. W31 ships an operator-side detector `scripts/check-pr-workflow-coverage.py` that compares the always-expected check-run set against the PR HEAD's actual check-runs + statuses \u2014 nudges the operator toward the rebase+force-push remediation when the GitHub Actions webhook delivery anomaly fires. W32 patches `close-feature.py` to auto-skip the `--force-incomplete` requirement when state.json declares a single-phase work shape (work_subtype=framework_feature OR work_type in {Chore,Fix} OR explicit single_phase: true) \u2014 same shape as the 5 v7.9.1 features that hit this barrier today.",
   "related_prs": [],
   "tasks": [
     {
       "id": "T1",
-      "description": "W30 — patch scripts/check-state-schema.py _collect_case_study_pr_numbers to accept bare-int strings (str.isdigit() fallback after the #N regex fails)",
+      "description": "W30 \u2014 patch scripts/check-state-schema.py _collect_case_study_pr_numbers to accept bare-int strings (str.isdigit() fallback after the #N regex fails)",
       "status": "complete"
     },
     {
       "id": "T2",
-      "description": "W31 — create scripts/check-pr-workflow-coverage.py operator-side detector (curated ALWAYS_EXPECTED_PATTERNS list; combines /check-runs + /status endpoints; surfaces missing checks with rebase remediation hint)",
+      "description": "W31 \u2014 create scripts/check-pr-workflow-coverage.py operator-side detector (curated ALWAYS_EXPECTED_PATTERNS list; combines /check-runs + /status endpoints; surfaces missing checks with rebase remediation hint)",
       "status": "complete"
     },
     {
       "id": "T3",
-      "description": "W32 — patch scripts/close-feature.py to auto-skip --force-incomplete for single-phase work shapes (framework_feature subtype / Chore-Fix work_type / explicit single_phase flag)",
+      "description": "W32 \u2014 patch scripts/close-feature.py to auto-skip --force-incomplete for single-phase work shapes (framework_feature subtype / Chore-Fix work_type / explicit single_phase flag)",
       "status": "complete"
     },
     {
       "id": "T4",
-      "description": "scripts/tests/test_w30_w31_w32_durable_fixes.py — 16 unit tests covering W30 (6), W31 (3), W32 (7) — all passing under `python3 -m unittest`",
+      "description": "scripts/tests/test_w30_w31_w32_durable_fixes.py \u2014 16 unit tests covering W30 (6), W31 (3), W32 (7) \u2014 all passing under `python3 -m unittest`",
       "status": "complete"
     },
     {
       "id": "T5",
       "description": "Append durable-fix references to W30 + W31 + W32 entries in .claude/integrity/observed-patterns.md (the W-pattern entries themselves stay as historical incident records; durable-fix lines added inline)",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #637 \u2014 observed-patterns.md W30/W31/W32 entries each got \"Durable fix SHIPPED 2026-06-05\" annotation"
     },
     {
       "id": "T6",
       "description": "Source case study at docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #637 \u2014 docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md created"
     },
     {
       "id": "T7",
-      "description": "Update docs/product/backlog.md — strike W30 + W31 + W32 entries from 'Framework hygiene' subsection (they were queued there by F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE's same-session surfacing)",
-      "status": "pending"
+      "description": "Update docs/product/backlog.md \u2014 strike W30 + W31 + W32 entries from 'Framework hygiene' subsection (they were queued there by F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE's same-session surfacing)",
+      "status": "complete",
+      "close_note": "PR #637 \u2014 docs/product/backlog.md Framework hygiene W30 entry struck"
     }
   ],
   "phases": {
     "implementation": {
       "started_at": "2026-06-05T06:00:00Z",
       "ended_at": null,
-      "notes": "In flight on feature/framework-w30-w31-w32-durable-fixes. Single-phase Chore (work_subtype=framework_feature — same shape as the v7.9.1 ships this closure unblocks). W32 itself eats its own dogfood: this feature will close via the new auto-skip path.",
+      "notes": "In flight on feature/framework-w30-w31-w32-durable-fixes. Single-phase Chore (work_subtype=framework_feature \u2014 same shape as the v7.9.1 ships this closure unblocks). W32 itself eats its own dogfood: this feature will close via the new auto-skip path.",
       "approved_by": "operator",
-      "approval_signal": "(implicit — operator merged PR #637)"
+      "approval_signal": "(implicit \u2014 operator merged PR #637)"
     },
     "review": {
       "started_at": "2026-06-05T06:37:20Z",
@@ -97,7 +100,7 @@
       "started_at": "2026-06-05T06:37:20Z",
       "ended_at": "2026-06-05T06:38:25Z",
       "approved_by": "operator",
-      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
     },
     "complete": {
       "started_at": "2026-06-05T06:38:25Z",
@@ -157,7 +160,7 @@
       "from": "docs",
       "to": "complete",
       "at": "2026-06-05T06:38:25Z",
-      "reason": "Feature CLOSED via close-feature.py on chore/framework-w30-w31-w32-durable-fixes-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+      "reason": "Feature CLOSED via close-feature.py on chore/framework-w30-w31-w32-durable-fixes-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
   ]
 }
