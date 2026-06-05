@@ -290,28 +290,30 @@
       "status": "complete"
     },
     "prd": {
-      "status": "pending"
+      "status": "complete"
     },
     "tasks_phase": {
-      "status": "in_progress"
+      "status": "complete"
     },
     "implement": {
-      "status": "pending"
+      "status": "complete"
     },
     "test": {
-      "status": "pending"
+      "status": "complete"
     },
     "review": {
-      "status": "pending"
+      "status": "complete"
     },
     "merge": {
-      "status": "pending"
+      "status": "complete"
     },
     "docs": {
-      "status": "pending"
+      "status": "complete"
     },
     "learn": {
-      "status": "pending"
+      "status": "complete"
     }
-  }
+  },
+  "work_subtype": "measurement_study_synthesis",
+  "phase_status_note": "measurement_study_synthesis: prd=preregistrations (4 locked prereg JSONs serve as the hypothesis/spec); implement=Blocks A/B/C data collection (60 fires across 4 sub-exps); test=verdict-script runs; docs=this synthesis case study; learn=synthesis verdict (HADF dispatch CONFIRMED)."
 }
