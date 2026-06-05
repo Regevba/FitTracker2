@@ -1,6 +1,6 @@
 {
   "feature_name": "framework-v7-9-1-promotion",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-06-04T17:00:00Z",
   "updated_at": "2026-06-04T17:00:00Z",
   "framework_version": "v7.9.1",
@@ -9,9 +9,9 @@
   "has_ui": false,
   "requires_analytics": false,
   "state_owner": "ft2",
-  "isolation_opt_out": false,
-  "isolation_opt_out_reason": "",
-  "branch": "feature/framework-v7-9-1-promotion",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Single-feature post-merge closure in chore/v7-9-1-promotion-close \u2014 the unified case study + comprehensive doc sweep shipped via PR #629 already completed FT2-side T2 + T7-T10; cross-repo T3/T4/T5/T6 closed via fitme-story PRs #171 + #173 + #177. Closure PR distinct from #629 to keep the merge PR (#629) free of recursive state.json edits.",
+  "branch": "chore/framework-v7-9-1-promotion-post-merge-closure",
   "scheduled_after": null,
   "primary_metric": "Single unified Phase-promotion case study + showcase covering all 8 ships of the v7.9.1 build window (2026-06-04), preserving per-feature case studies (FEATURE_CLOSURE_COMPLETENESS gate requirement) as the depth layer",
   "success_metrics": [
@@ -32,72 +32,161 @@
   "spec": ".claude/shared/v7-9-1-candidates.md + docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md + docs/master-plan/infra-master-plan-2026-05-12.md + docs/master-plan/dev-env-master-plan-2026-05-24.md",
   "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "scope_summary": "Unified Phase-promotion case study + fitme-story showcase covering the v7.9.1 single-day build window (2026-06-04, 8 ships, 14 PRs). Synthesizes F16/F17/F2/Track B (predecessors) + F-LAUNCHD-DRIFT-EXTENSION (b)+(c)+(a) + observed-patterns W29-W32 batch + F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE + R9 Track B + dev-env R11+R13+R14+R17+R18 + F-DEPLOYED-URL-PROBE. Preserves all per-feature case studies (8 total \u2014 required by FEATURE_CLOSURE_COMPLETENESS gate). Cross-cutting themes: silent-pass closures (5 of 8 ships); post-Phase-E cadence (0 new gates, 14 feature-branch PRs); cascading rebase rhythm. Quantitative roll-up shows: 0 new enforcement gates, +6 CI workflows (coverage/gitleaks/pip-audit/SBOM/commitlint/shellcheck), W1-W28 \u2192 W1-W32, FT2 dev-env open items 7 \u2192 0.",
-  "related_prs": [],
+  "related_prs": [
+    630
+  ],
   "tasks": [
     {
       "id": "T1",
       "description": "Write docs/case-studies/framework-v7-9-1-promotion-case-study.md with \u00a70-\u00a799 sections (Genesis / Scope / Themes / Per-ship index / Roll-up / Open follow-ups / Synthesis)",
-      "status": "complete"
+      "status": "complete",
+      "related_prs": [
+        630
+      ]
     },
     {
       "id": "T2",
       "description": "Update .claude/shared/v7-9-1-candidates.md docket \u2014 record this synthesis closure",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #629 \u2014 docket strike via .claude/shared/v7-9-1-candidates.md edit"
     },
     {
       "id": "T3",
       "description": "Write fitme-story slot 47 showcase MDX (visual timeline with TimelineCards)",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "fitme-story PR #177 \u2014 slot 47 showcase MDX"
     },
     {
       "id": "T4",
       "description": "Recover fitme-story slot 45 (F17 last_fired_at) \u2014 branch `chore/2026-06-04-f17-showcase-slot-45` exists but never merged to main",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "fitme-story PR #173 \u2014 slot 45 F17 last_fired_at showcase recovered"
     },
     {
       "id": "T5",
       "description": "Update fitme-story src/lib/glossary.ts with v7.9.1 entry",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "fitme-story PR #177 \u2014 glossary.ts v7.9.1 Build Window entry"
     },
     {
       "id": "T6",
       "description": "Update fitme-story Hero / EvolutionStrip / src/data to reflect v7.9.1",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "fitme-story PRs #171 + #177 \u2014 Hero v7.9.1 build window banner + glossary + src/data sync (EvolutionStrip closure-row update is a residual fitme-story-side polish)"
     },
     {
       "id": "T7",
       "description": "Update FT2 CLAUDE.md framework version + v7.9.1 closure pointer",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #629 \u2014 CLAUDE.md gains v7.9.1 closure pointer (47 insertions)"
     },
     {
       "id": "T8",
       "description": "Update FT2 docs/architecture/dev-guide-v1-to-v7-7.md framework-version range + v7.9.1 references",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #629 (67 insertions) + PR #630 (\u00a710.5a pattern\u2194skill overlay reflection)"
     },
     {
       "id": "T9",
       "description": "Update FT2 docs/skills/evolution.md with v7.9.1 milestone entry",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #629 \u2014 docs/skills/evolution.md v7.9.1 milestone entry (2 new rows)"
     },
     {
       "id": "T10",
       "description": "Update FT2 docs/product/backlog.md Done section with all 8 ships from 2026-06-04",
-      "status": "pending"
+      "status": "complete",
+      "close_note": "PR #629 \u2014 docs/product/backlog.md Done section row 120"
     }
   ],
   "phases": {
     "implementation": {
       "started_at": "2026-06-04T17:00:00Z",
-      "ended_at": null,
-      "notes": "In flight. T1 complete (unified CS written). T2-T10 are documentation/sync tasks landing across this branch + a fitme-story PR."
+      "ended_at": "2026-06-05T05:45:00Z",
+      "notes": "In flight. T1 complete (unified CS written). T2-T10 are documentation/sync tasks landing across this branch + a fitme-story PR.",
+      "approved_by": "operator",
+      "approval_signal": "(implicit \u2014 operator merged PR #629)"
+    },
+    "review": {
+      "started_at": "2026-06-04T18:35:19Z",
+      "ended_at": "2026-06-04T18:35:19Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-04T18:35:19Z",
+      "ended_at": "2026-06-04T18:35:19Z",
+      "pr_number": 629,
+      "merge_commit_sha": "a79aebeeb116c44c95c7f59e33a50afb220a397d",
+      "merged_at": "2026-06-04T18:35:19Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-04T18:35:19Z",
+      "ended_at": "2026-06-05T05:30:46Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-05T05:45:00Z",
+      "ended_at": "2026-06-05T05:30:46Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "timing": {
     "phases": {
       "implementation": {
         "started_at": "2026-06-04T17:00:00Z",
-        "ended_at": null
+        "ended_at": "2026-06-05T05:45:00Z"
+      },
+      "review": {
+        "started_at": "2026-06-04T18:35:19Z",
+        "ended_at": "2026-06-04T18:35:19Z"
+      },
+      "merge": {
+        "started_at": "2026-06-04T18:35:19Z",
+        "ended_at": "2026-06-04T18:35:19Z"
+      },
+      "docs": {
+        "started_at": "2026-06-04T18:35:19Z",
+        "ended_at": "2026-06-05T05:30:46Z"
+      },
+      "complete": {
+        "started_at": "2026-06-05T05:45:00Z",
+        "ended_at": "2026-06-05T05:30:46Z"
       }
     }
-  }
+  },
+  "merge_pr_number": 629,
+  "merge_commit_sha": "a79aebeeb116c44c95c7f59e33a50afb220a397d",
+  "merged_at": "2026-06-04T18:35:19Z",
+  "feature_branch_merged": "feature/framework-v7-9-1-promotion",
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-04T18:35:19Z",
+      "reason": "PR #629 squashed onto main as a79aebeeb1 (operator-merged 2026-06-04T18:35:19Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-04T18:35:19Z",
+      "reason": "PR #629 squashed onto main as a79aebeeb1 (operator-merged 2026-06-04T18:35:19Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-04T18:35:19Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-05T05:30:46Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/framework-v7-9-1-promotion-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ]
 }
