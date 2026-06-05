@@ -10,7 +10,7 @@ tier_tags_required: true
 status: shipped
 case_study: docs/case-studies/r9-track-b-coverage-aggregator-case-study.md
 case_study_showcase: ""
-related_prs: []
+related_prs: [626]
 dispatch_pattern: serial
 success_metrics:
   - name: make_targets_added
@@ -142,3 +142,7 @@ All 3 pass locally at commit time.
 - **Sibling Track B ships today (2026-06-04):** [`framework-v7-9-promotion-case-study.md`](framework-v7-9-promotion-case-study.md) → F16 + F17 + F2 + Dev-env Track B (R7/R8/R12 lint trio) PRs #607-#619
 - **Downstream consumer (calibration target):** `docs/product/backlog.md` v8.0 candidates → `GATE_TEST_MISSING` meta-gate T1
 - **Out-of-scope (fitme-story):** Web c8 surface — separate PR, separate repo
+
+---
+
+**Shipped via PR #626** (`feature/r9-track-b-coverage-aggregator` → `main`).

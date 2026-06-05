@@ -1,42 +1,42 @@
 {
   "version": "1.0",
-  "updated": "2026-06-04T14:20:20Z",
+  "updated": "2026-06-05T03:53:45Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 88,
-    "features_post_v6": 54,
+    "features_total": 96,
+    "features_post_v6": 62,
     "features_pre_v6": 34,
     "fully_adopted": 3,
-    "partial_adopted": 47,
-    "zero_adopted": 38,
+    "partial_adopted": 51,
+    "zero_adopted": 42,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 17,
-      "overall_percent": 19.3,
+      "overall_percent": 17.7,
       "post_v6_present": 17,
-      "post_v6_percent": 31.5
+      "post_v6_percent": 27.4
     },
     "per_phase_timing": {
-      "overall_present": 50,
-      "overall_percent": 56.8,
-      "post_v6_present": 47,
-      "post_v6_percent": 87.0
+      "overall_present": 54,
+      "overall_percent": 56.2,
+      "post_v6_present": 51,
+      "post_v6_percent": 82.3
     },
     "cache_hits": {
       "overall_present": 26,
-      "overall_percent": 29.5,
+      "overall_percent": 27.1,
       "post_v6_present": 25,
-      "post_v6_percent": 46.3
+      "post_v6_percent": 40.3
     },
     "cu_v2": {
       "overall_present": 14,
-      "overall_percent": 15.9,
+      "overall_percent": 14.6,
       "post_v6_present": 14,
-      "post_v6_percent": 25.9
+      "post_v6_percent": 22.6
     }
   },
   "fully_adopted_features": [
@@ -145,7 +145,43 @@
       }
     },
     {
+      "feature": "f-launchd-drift-extension",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "f-launchd-drift-extension-sub-a",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
       "feature": "f16-try-repo-harness",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "f17-last-fired-at-index",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "f2-phase-0-reality-check",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -521,6 +557,11 @@
       "post_v6": false
     },
     {
+      "feature": "dev-env-r11-r13-r14-r17-r18-batch",
+      "created": "2026-06-04",
+      "post_v6": true
+    },
+    {
       "feature": "development-dashboard",
       "created": "2026-04-02",
       "post_v6": false
@@ -531,7 +572,12 @@
       "post_v6": true
     },
     {
-      "feature": "f2-phase-0-reality-check",
+      "feature": "f-deployed-url-probe-ft2",
+      "created": "2026-06-04",
+      "post_v6": true
+    },
+    {
+      "feature": "f-phase-e-adoption-freeze-discipline",
       "created": "2026-06-04",
       "post_v6": true
     },
@@ -553,6 +599,11 @@
     {
       "feature": "framework-v7-8-bridge",
       "created": "2026-05-04",
+      "post_v6": true
+    },
+    {
+      "feature": "framework-v7-9-1-promotion",
+      "created": "2026-06-04",
       "post_v6": true
     },
     {
@@ -611,6 +662,11 @@
       "post_v6": true
     },
     {
+      "feature": "r9-track-b-coverage-aggregator",
+      "created": "2026-06-04",
+      "post_v6": true
+    },
+    {
       "feature": "readiness-score-v2",
       "created": "2026-04-10",
       "post_v6": false
@@ -666,7 +722,7 @@
       "feature": "3d-interactive-framework-flow-diagram",
       "created": "2026-05-11",
       "post_v6": true,
-      "current_phase": "prd",
+      "current_phase": "tasks_phase",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -957,6 +1013,20 @@
       "any_adopted": false
     },
     {
+      "feature": "dev-env-r11-r13-r14-r17-r18-batch",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
       "feature": "development-dashboard",
       "created": "2026-04-02",
       "post_v6": false,
@@ -999,7 +1069,77 @@
       "any_adopted": true
     },
     {
+      "feature": "f-deployed-url-probe-ft2",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "f-launchd-drift-extension",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "f-launchd-drift-extension-sub-a",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "f-phase-e-adoption-freeze-discipline",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
       "feature": "f16-try-repo-harness",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "f17-last-fired-at-index",
       "created": "2026-06-04",
       "post_v6": true,
       "current_phase": "complete",
@@ -1016,15 +1156,15 @@
       "feature": "f2-phase-0-reality-check",
       "created": "2026-06-04",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "fitme-story-design-system-p2-cleanup",
@@ -1227,6 +1367,20 @@
       "created": "2026-05-04",
       "post_v6": true,
       "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-v7-9-1-promotion",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": false,
@@ -1571,6 +1725,20 @@
       },
       "fully_adopted": false,
       "any_adopted": true
+    },
+    {
+      "feature": "r9-track-b-coverage-aggregator",
+      "created": "2026-06-04",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
     },
     {
       "feature": "readiness-aware-training-alert",
