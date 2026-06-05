@@ -5,20 +5,22 @@
   "framework_version": "v7.9.1",
   "work_type": "feature",
   "created_at": "2026-06-05T00:00:00Z",
-  "updated": "2026-06-05T00:00:00Z",
+  "updated": "2026-06-05T01:00:00Z",
   "branch": "feature/hadf-signature-expansion",
-  "current_phase": "research",
+  "current_phase": "prd",
   "isolation_opt_out": false,
   "has_ui": false,
   "requires_analytics": false,
+  "reachable_substrates": ["cloud_api_endpoints", "operator_m_series_macs", "iphone_a_series"],
   "timing": {
     "phases": {
-      "research": { "started_at": "2026-06-05T00:00:00Z" }
+      "research": { "started_at": "2026-06-05T00:00:00Z", "ended_at": "2026-06-05T01:00:00Z" },
+      "prd": { "started_at": "2026-06-05T01:00:00Z" }
     }
   },
   "phases": {
-    "research": { "status": "in_progress", "approved_at": null, "sources": [] },
-    "prd": { "status": "pending", "approved_at": null },
+    "research": { "status": "approved", "approved_at": "2026-06-05T01:00:00Z", "sources": ["docs/research/2026-04-28-hadf-signature-expansion.md", "HADF-SOURCE-OF-TRUTH.md §-1", "Sub-exp 2 (on-device proof)"] },
+    "prd": { "status": "in_progress", "approved_at": null },
     "tasks": { "status": "pending", "count": 0 },
     "ux_or_integration": { "status": "pending", "type": "integration" },
     "implementation": { "status": "pending", "commits": [] },
@@ -30,5 +32,7 @@
   "predecessor_research": "docs/research/2026-04-28-hadf-signature-expansion.md",
   "informed_by": "HADF Phase 2-bis (all 4 sub-exps PASS, CONFIRMED) + Phase 3A sensing layer",
   "tasks": [],
-  "transitions": []
+  "transitions": [
+    { "from": "research", "to": "prd", "timestamp": "2026-06-05T01:00:00Z", "approved_by": "user", "note": "Approach B (empirical-first) approved; reachable substrates locked." }
+  ]
 }

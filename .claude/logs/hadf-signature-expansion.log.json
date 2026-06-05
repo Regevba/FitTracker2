@@ -6,13 +6,37 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T08:07:45Z",
+  "updated_at": "2026-06-05T08:13:24Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
       "event_type": "phase_started",
       "phase": "research",
       "summary": "Phase 0 Research opened. Reconciling the 2026-04-28 signature-expansion note (pre-experiment, static-TOPS-profile-focused) with the now-CONFIRMED Phase 2-bis empirical streaming-signature results. Isolated worktree off origin/main.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:13:24Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 Research approved (Approach B empirical-first). Reachable-now substrates: cloud/API endpoints + operator M-series Macs (ollama) + iPhone A-series; Snapdragon/Intel/AMD \u2192 harness+priors.",
+      "artifacts": [
+        ".claude/features/hadf-signature-expansion/research.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T08:13:24Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 PRD opened after Phase 0 approval. has_ui=false (integration spec, not UX). Scope: calibratable-now surface + on-device harness + tagged priors + \u00a75 schema additions.",
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_8",
