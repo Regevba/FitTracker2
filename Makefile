@@ -823,3 +823,22 @@ audit-prompts-self-check:
 
 memory-check:
 	@python3 scripts/check-memory-staleness.py
+
+# --- HADF Phase 3A sensing layer (detection/observability only — no dispatch; acting gated on RQ4) ---
+.PHONY: hadf-reference-store hadf-attest hadf-drift-monitor
+
+hadf-reference-store:
+	python3 scripts/hadf-build-reference-store.py \
+		--raw-dir .claude/shared/hadf \
+		$(if $(EXTRA_RAW),--raw-dir $(EXTRA_RAW),) \
+		--out .claude/shared/hadf/reference-signatures.json $(if $(AS_OF),--as-of $(AS_OF),)
+
+hadf-attest:
+	@if [ -z "$(TTFT)" ] || [ -z "$(TPS)" ]; then \
+		echo "Usage: make hadf-attest TTFT=<s> TPS=<tok/s>   (advisory — never route on this)"; exit 1; fi
+	python3 scripts/hadf-attest.py --ttft $(TTFT) --tps $(TPS)
+
+hadf-drift-monitor:
+	@if [ -z "$(WINDOW)" ]; then \
+		echo "Usage: make hadf-drift-monitor WINDOW=<raw.jsonl>"; exit 1; fi
+	python3 scripts/hadf-drift-monitor.py --window $(WINDOW) $(if $(AS_OF),--as-of $(AS_OF),)
