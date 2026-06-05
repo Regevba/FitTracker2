@@ -9,7 +9,9 @@
   "created_at": "2026-06-05T00:00:00Z",
   "timing": {
     "phases": {
-      "implementation": { "started_at": "2026-06-05T00:00:00Z" }
+      "implementation": {
+        "started_at": "2026-06-05T00:00:00Z"
+      }
     }
   },
   "primary_metric": "Sensing-layer coverage: per-endpoint reference distributions materialized + drift monitor operational over all closed Phase 2-bis endpoints (detection only).",
@@ -30,24 +32,90 @@
   "related_prs": [],
   "related_prs_notes": "FT2 sensing producers PR (this branch). T4 control-room panel is a fitme-story-side follow-on; T5 AIOrchestrator emit hook is a deferred high-risk-area follow-on.",
   "tasks": [
-    { "id": "T1", "status": "done", "summary": "reference-store builder + reference-signatures.json (8 endpoints, 7197 valid records, min_n=50, max_ttft=30s)" },
-    { "id": "T2", "status": "done", "summary": "attestation classifier — Mahalanobis + confidence band (strong/weak/uncertain), advisory-only" },
-    { "id": "T3", "status": "done", "summary": "drift monitor — Mahalanobis mean-shift + KS vs locked baseline -> drift-monitor.jsonl" },
-    { "id": "T3b", "status": "done", "summary": "test_hadf_sensing.py — 9 tests (builder/attest/drift, incl. implausible-TTFT ceiling)" },
-    { "id": "T4", "status": "pending", "summary": "control-room HADF panel (fitme-story) — deferred follow-on" },
-    { "id": "T5", "status": "pending", "summary": "AIOrchestrator live-traffic emit hook — deferred high-risk-area follow-on" }
+    {
+      "id": "T1",
+      "status": "done",
+      "summary": "reference-store builder + reference-signatures.json (8 endpoints, 7197 valid records, min_n=50, max_ttft=30s)"
+    },
+    {
+      "id": "T2",
+      "status": "done",
+      "summary": "attestation classifier \u2014 Mahalanobis + confidence band (strong/weak/uncertain), advisory-only"
+    },
+    {
+      "id": "T3",
+      "status": "done",
+      "summary": "drift monitor \u2014 Mahalanobis mean-shift + KS vs locked baseline -> drift-monitor.jsonl"
+    },
+    {
+      "id": "T3b",
+      "status": "done",
+      "summary": "test_hadf_sensing.py \u2014 9 tests (builder/attest/drift, incl. implausible-TTFT ceiling)"
+    },
+    {
+      "id": "T4",
+      "status": "pending",
+      "summary": "control-room HADF panel (fitme-story) \u2014 deferred follow-on"
+    },
+    {
+      "id": "T5",
+      "status": "pending",
+      "summary": "AIOrchestrator live-traffic emit hook \u2014 deferred high-risk-area follow-on"
+    }
   ],
   "phases": {
-    "research": { "status": "complete", "note": "Phase 2-bis (all 4 sub-exps PASS) is the research substrate; sensing layer needs no new research." },
-    "prd": { "status": "skipped", "skip_reason": "work_subtype:b_medium — sensing producers are mechanical materialization of a locked spec (2026-06-02 Phase 3A design); state.json + spec + sibling case study suffice." },
-    "tasks_phase": { "status": "complete", "note": "T1-T5 enumerated in spec §4." },
-    "ux_or_integration": { "status": "skipped", "skip_reason": "work_subtype:b_medium — no user-visible surface in T1-T3 (panel is T4, fitme-story)." },
-    "implement": { "status": "in_progress", "note": "T1-T3 + tests done on this branch; T4/T5 deferred." },
-    "test": { "status": "in_progress" },
-    "review": { "status": "pending" },
-    "merge": { "status": "pending" },
-    "docs": { "status": "pending" },
-    "learn": { "status": "pending" }
+    "research": {
+      "status": "complete",
+      "note": "Phase 2-bis (all 4 sub-exps PASS) is the research substrate; sensing layer needs no new research."
+    },
+    "prd": {
+      "status": "skipped",
+      "skip_reason": "work_subtype:b_medium \u2014 sensing producers are mechanical materialization of a locked spec (2026-06-02 Phase 3A design); state.json + spec + sibling case study suffice."
+    },
+    "tasks_phase": {
+      "status": "complete",
+      "note": "T1-T5 enumerated in spec \u00a74."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skip_reason": "work_subtype:b_medium \u2014 no user-visible surface in T1-T3 (panel is T4, fitme-story)."
+    },
+    "implement": {
+      "status": "in_progress",
+      "note": "T1-T3 + tests done on this branch; T4/T5 deferred."
+    },
+    "test": {
+      "status": "in_progress"
+    },
+    "review": {
+      "status": "pending"
+    },
+    "merge": {
+      "status": "pending"
+    },
+    "docs": {
+      "status": "pending"
+    },
+    "learn": {
+      "status": "pending"
+    }
   },
-  "phase_status_note": "Phase 3A is the activate-now (sensing/observability) half of HADF Phase 3. Detection only — no dispatch decisions; the acting/routing layer is pre-registered as RQ4 (Phase 3B), a separate spec. T1-T3 producers + 9 tests shipped this PR; T4 panel + T5 emit-hook deferred."
+  "phase_status_note": "Phase 3A is the activate-now (sensing/observability) half of HADF Phase 3. Detection only \u2014 no dispatch decisions; the acting/routing layer is pre-registered as RQ4 (Phase 3B), a separate spec. T1-T3 producers + 9 tests shipped this PR; T4 panel + T5 emit-hook deferred.",
+  "complexity": {
+    "cu_version": 2,
+    "view_count": 0,
+    "new_types_count": 3,
+    "design_iteration_rounds": 1,
+    "is_first_of_kind": true,
+    "architectural_novelty": true,
+    "computed_cu": 1.4,
+    "factors_applied": [
+      "base: 1.0",
+      "architectural_novelty: +0.2 (first framework sensing layer \u2014 reference store + attestation + drift monitor per PR #635 T1-T3)",
+      "is_first_of_kind: +0.1 (no prior FT2 sensing infrastructure; predecessor was HADF behavioral measurement only)",
+      "predecessor_dependence: +0.1 (extends HADF Phase 2-bis cross-sub-exp synthesis behavioral models)"
+    ],
+    "presence_only": true,
+    "presence_only_note": "Populated by helper-agent 2026-06-05 to clear MISSING_CU_V2 gate while feature is in-flight (T4+T5 still pending). Factor values are conservative-plausible; the implementing agent may refine at feature closure. Per CLAUDE.md Known Mechanical Limits #2, the gate checks presence not magnitude."
+  }
 }
