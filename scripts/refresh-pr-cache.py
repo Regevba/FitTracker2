@@ -35,7 +35,7 @@ def fetch_repo_prs(repo: str) -> dict | None:
         try:
             result = subprocess.check_output(
                 ["gh", "pr", "list", "--repo", repo, "--state", state,
-                 "--json", "number,title,state", "--limit", "500"],
+                 "--json", "number,title,state", "--limit", "2000"],
                 stderr=subprocess.PIPE,
                 timeout=30,
             )
