@@ -176,6 +176,33 @@ def test_harness_upsert_idempotent(tmp_path, mock_server):
 
 # ---------- distribution-level distinctness (the real recognition claim) ----------
 
+def test_cloud_calibrator_aggregates_and_skips(tmp_path, monkeypatch):
+    """Cloud calibrator (T6): with the live call mocked, a reachable endpoint
+    yields an instrumented class:cloud row; an endpoint whose pre-probe raises is
+    skipped (no fabricated row). No network."""
+    cloud = _load("hadf_calibrate_cloud", "hadf-calibrate-cloud.py")
+
+    def fake_call(mod, provider, model):
+        if provider == "broken":
+            raise RuntimeError("bad model id")
+        return {"ttft_s": 0.3 + 0.01 * (hash(model) % 5), "tps": 90.0, "output_tokens": 40}
+
+    monkeypatch.setattr(cloud, "call", fake_call)
+    monkeypatch.setattr(cloud, "load_collector", lambda: object())
+    monkeypatch.setattr(cloud, "load_env", lambda path: None)
+    out = tmp_path / "ref.json"
+    monkeypatch.setattr(sys, "argv", [
+        "x", "--endpoint", "openai:good-model", "--endpoint", "broken:nope",
+        "--n", "60", "--out", str(out), "--min-valid", "50", "--env-file", "/dev/null"])
+    cloud.main()
+    eps = json.load(open(out))["endpoints"]
+    assert len(eps) == 1                                   # broken endpoint skipped
+    row = eps[0]
+    assert row["provider"] == "openai" and row["endpoint"] == "good-model"
+    assert row["calibration_status"] == "instrumented" and row["class"] == "cloud"
+    assert row["n"] == 60
+
+
 def test_real_store_centroids_distinct():
     """The actual recognition claim: M4, M2-ollama, and a cloud endpoint have
     distinct distribution centroids (NOT a single-shot accuracy claim — that's RQ5)."""

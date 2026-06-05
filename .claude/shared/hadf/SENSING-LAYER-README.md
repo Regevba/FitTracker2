@@ -101,3 +101,27 @@ unseen-substrate uncertainty, advisory-flag invariant), and drift monitor
 - Spec: `docs/superpowers/specs/2026-06-02-hadf-phase3a-sensing-layer-design.md`
 - Acting layer (RQ4): `docs/superpowers/specs/2026-06-02-hadf-phase3b-rq4-decision-value-design.md`
 - Source of truth: `.claude/shared/hadf/HADF-SOURCE-OF-TRUTH.md` §10
+
+## Signature expansion (v7.9.1+) — calibration_status + calibration harnesses
+
+Every recognition row now carries **`calibration_status`**: `instrumented`
+(measured, real `n`) or `prior_unvalidated` (spec-sheet, no measurement). The
+attester (`hadf-attest.py`) **never** returns a `prior_unvalidated` row as a
+confident match. Reference endpoints also carry `class` (`cloud` | `on_device`).
+
+Grow the catalog with REAL measured signatures (never fabricate a spec-sheet row):
+
+```bash
+# on-device (any chip you physically have, via local ollama)
+python3 scripts/hadf-calibrate-device.py --device-label apple_m4 --model llama3.2:3b --n 250
+
+# cloud endpoints (live, paid API calls — operator-run; pre-probes + drops bad model-ids)
+python3 scripts/hadf-calibrate-cloud.py --endpoint openai:gpt-4.1-mini --endpoint google:gemini-2.5-flash --n 80
+
+# re-tag catalogs (idempotent)
+python3 scripts/hadf-migrate-calibration-status.py
+```
+
+**Known limit (RQ5):** single-shot attestation is unreliable on *tight* on-device
+clusters (e.g. apple_m4 TTFT variance ~0.0002) — the recognition claim is
+distribution-level, not per-request. See the signature-expansion case study.

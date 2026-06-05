@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-05T08:07:45Z",
-  "updated_at": "2026-06-05T08:37:04Z",
+  "updated_at": "2026-06-05T09:26:16Z",
   "events": [
     {
       "timestamp": "2026-06-05T08:07:45Z",
@@ -137,6 +137,19 @@
       "metrics": {
         "tests_passing": 18,
         "instrumented_signatures": 9
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-05T09:26:16Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T5/T6/T7/T9 done. T5 A16 documented as harness target (no local-inference route). T6 cloud calibrator hadf-calibrate-cloud.py shipped + mock-tested (live run is operator-paid). T7 priors already present, migration-tagged. T9 case study + README harness section. 19 tests pass.",
+      "artifacts": [],
+      "metrics": {
+        "tests_passing": 19
       },
       "actor": "claude_opus_4_8",
       "status": "recorded",
