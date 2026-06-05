@@ -5,7 +5,7 @@
   "framework_version": "v7.9.1",
   "work_type": "feature",
   "created_at": "2026-06-05T00:00:00Z",
-  "updated": "2026-06-05T07:00:00Z",
+  "updated": "2026-06-05T07:30:00Z",
   "branch": "feature/hadf-signature-expansion",
   "current_phase": "merge",
   "isolation_opt_out": false,
@@ -309,5 +309,20 @@
     "instrumented_signatures": 9,
     "target": 12,
     "note": "M4 real-calibrated (+1); cloud+iPhone are credential/hardware-gated \u2014 calibrator ships ready (feature thesis: calibrate what you can reach)"
+  },
+  "experiment_ready_for_execution": {
+    "ready": true,
+    "marked_at": "2026-06-05T07:30:00Z",
+    "command": "make hadf-expand-signatures",
+    "preview": "make hadf-expand-signatures DRY_RUN=1",
+    "manifest": ".claude/shared/hadf/signature-expansion-endpoints.json",
+    "runner": "scripts/hadf-signature-expansion-run.sh",
+    "legs": {
+      "device": "free (local ollama, apple_m4)",
+      "cloud": "paid API (5 pre-probed candidates) \u2014 operator-run"
+    },
+    "effect": "grows instrumented signatures from 9 toward >=12 (cloud) + re-tags catalogs",
+    "validated": "--dry-run wiring confirmed; 19 tests pass; mistral routed via openai-compat",
+    "all_tasks_done": true
   }
 }
