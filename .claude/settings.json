@@ -226,6 +226,16 @@
             "command": "[ -f scripts/check-branch-drift.py ] && python3 scripts/check-branch-drift.py || true"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "_comment": "W9 Phase 2 (added 2026-06-06, feature w9-drift-triggered-auto-isolation T8): concurrency-proactive first-edit trigger. On the FIRST Edit/Write of a session, checks agent-leases.json for another live session on this shared checkout and surfaces a concurrency advisory (ADVISORY mode — telemetry only; never blocks, never acts unless CLAUDE_W9_AUTO_ISOLATE=1 AND CLAUDE_W9_CONCURRENCY_ENFORCE=1). Once-per-session via a session-state marker. Silent no-op when script absent (cross-repo guard). Disable with CLAUDE_W9_DISABLE_CONCURRENCY_CHECK=1. Calibration: .claude/features/w9-drift-triggered-auto-isolation/calibration.md.",
+            "command": "[ -f scripts/w9_concurrency_check.py ] && python3 scripts/w9_concurrency_check.py || true"
+          }
+        ]
       }
     ],
     "Stop": [
