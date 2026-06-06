@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-06T04:29:18Z",
-  "updated_at": "2026-06-06T04:36:49Z",
+  "updated_at": "2026-06-06T04:51:25Z",
   "events": [
     {
       "timestamp": "2026-06-06T04:29:18Z",
@@ -63,6 +63,63 @@
       "summary": "Phase 2 (tasks) opened. 12 tasks across Phase 1 (drift-reactive T1-T5,T11,T12) + Phase 2 (concurrency T6-T10).",
       "artifacts": [],
       "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:39:28Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Tasks approved (12). Advancing through integration spec to implementation.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:39:28Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Integration spec (no UI) opened.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:39:28Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "integration-spec.md written: isolation-primitive + hook-escalation + telemetry contracts.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:39:28Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 opened. Building Phase 1 slice T1-T5 + T12.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:51:25Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "Phase 1 slice implemented: T1 w9_auto_isolate.py primitive (atomic stash->worktree->apply->verify->drop, data-loss-safe), T2 check-branch-drift.py escalation (offer/auto-isolate), T3 w9.auto_isolate telemetry, T5 make w9-isolation-status, T4 11 tests pass, T12 W9 observed-patterns upgrade. T11 deferred; T6-T10 Phase 2 pending.",
+      "artifacts": [],
+      "metrics": {
+        "tests_passing": 11
+      },
       "actor": "claude_opus_4_8",
       "status": "recorded",
       "recording_mode": "contemporaneous"
