@@ -280,6 +280,116 @@ def _resolve_worktree_path(feature: str) -> Path | None:
     return None
 
 
+# ── Phase 2: concurrency-proactive isolation (T6 + T7) — ADVISORY at ship ────
+#
+# These extend the drift-reactive trigger (Phase 1) with a PROACTIVE one: detect
+# that another session is live on this shared checkout BEFORE drift can occur.
+# Ships advisory (telemetry-only); acting unprompted is gated on a v7.9-style
+# advisory->enforced calibration window (CLAUDE_W9_CONCURRENCY_ENFORCE=1).
+
+def _agent_leases_path() -> Path:
+    return _repo_root() / ".claude" / "shared" / "agent-leases.json"
+
+
+def _parse_iso(ts: str) -> float | None:
+    """Parse an ISO-8601 'Z' timestamp to epoch seconds. None on failure."""
+    if not ts:
+        return None
+    import datetime as _dt
+    try:
+        s = ts.replace("Z", "+00:00")
+        return _dt.datetime.fromisoformat(s).timestamp()
+    except ValueError:
+        return None
+
+
+def another_session_live(ttl_seconds: int = 3600, *, self_feature: str | None = None,
+                         now_epoch: float | None = None) -> bool:
+    """T6 — is another session holding a FRESH lease on this checkout?
+
+    Reads agent-leases.json. Returns True iff some lease (a) is for a feature
+    other than `self_feature` (defaults to the active feature), (b) has
+    status == active, and (c) has a `last_heartbeat` within `ttl_seconds`.
+    Stale leases (heartbeat older than TTL) are treated as ABSENT — this is the
+    safety valve against a crashed session's lingering lease forcing isolation.
+    """
+    self_feature = self_feature if self_feature is not None else active_feature()
+    leases = _load_leases()
+    if not leases:
+        return False
+    if now_epoch is None:
+        now_epoch = _now_epoch()
+    for lease in leases:
+        if lease.get("feature") == self_feature:
+            continue
+        if lease.get("status") != "active":
+            continue
+        hb = _parse_iso(lease.get("last_heartbeat", ""))
+        if hb is None:
+            continue
+        if (now_epoch - hb) <= ttl_seconds:
+            return True
+    return False
+
+
+def _load_leases() -> list[dict]:
+    try:
+        data = json.loads(_agent_leases_path().read_text())
+    except (OSError, ValueError):
+        return []
+    leases = data.get("leases")
+    return leases if isinstance(leases, list) else []
+
+
+def _now_epoch() -> float:
+    override = os.environ.get("W9_FAKE_NOW_EPOCH")
+    if override:
+        try:
+            return float(override)
+        except ValueError:
+            pass
+    import datetime as _dt
+    return _dt.datetime.now(_dt.timezone.utc).timestamp()
+
+
+def concurrency_isolation_decision(ttl_seconds: int = 3600) -> IsolationResult:
+    """T7 — proactive concurrency-gated isolation decision (ADVISORY).
+
+    If another session is live AND the current session is NOT already in an
+    isolated worktree for its feature, emit a `w9.auto_isolate` advisory row.
+    Acts (auto-isolates) ONLY when BOTH opt-ins are set:
+        CLAUDE_W9_AUTO_ISOLATE=1 AND CLAUDE_W9_CONCURRENCY_ENFORCE=1
+    Otherwise it is telemetry-only (the advisory posture until T+14d calibration).
+    """
+    feature = active_feature()
+    if not feature:
+        return IsolationResult(result="skipped", reason="no_active_feature")
+
+    if not another_session_live(ttl_seconds, self_feature=feature):
+        emit_telemetry(candidates=1, checked=0, skipped=1,
+                       skip_reasons=["no_concurrency"], outcome="no_concurrency")
+        return IsolationResult(result="noop", reason="no_concurrency")
+
+    # Already isolated? If the current branch is this feature's branch in its own
+    # worktree, we're fine — concurrency can't hurt us.
+    if _current_branch() == f"feature/{feature}" and _resolve_worktree_path(feature):
+        emit_telemetry(candidates=1, checked=0, skipped=1,
+                       skip_reasons=["already_isolated"], outcome="already_isolated")
+        return IsolationResult(result="noop", reason="already_isolated")
+
+    acting = (os.environ.get("CLAUDE_W9_AUTO_ISOLATE") == "1"
+              and os.environ.get("CLAUDE_W9_CONCURRENCY_ENFORCE") == "1")
+    if not acting:
+        # Advisory: record the concurrency signal but DO NOT act.
+        emit_telemetry(candidates=1, checked=0, skipped=1,
+                       skip_reasons=["advisory_concurrency"], outcome="concurrency_offer")
+        return IsolationResult(result="skipped", reason="advisory_concurrency")
+
+    res = isolate_current_work(reason="w9_concurrency")
+    emit_telemetry(candidates=1, checked=1, skipped=0, skip_reasons=[], outcome=res.result)
+    return res
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="W9 auto-isolation primitive (T1)")
     ap.add_argument("--reason", default="w9_drift")

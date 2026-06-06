@@ -397,7 +397,7 @@ Each entry follows the format:
 
 ### #22 v7.5 pipeline regression test decay — late-discovered fixture rot
 
-**Trigger:** `scripts/tests/test-v7-5-pipeline.sh` fixtures fail because new gates require fields the fixtures don't have.
+**Trigger:** `scripts/test-v7-5-pipeline.sh` fixtures fail because new gates require fields the fixtures don't have.
 
 **Why expected:** Pre-v7.7, fixtures didn't include v7.7-required gates (`STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`). Test broke silently because pipeline only ran on framework-PR opens, not nightly.
 
@@ -605,7 +605,11 @@ W9 is no longer detection-only. When the hook detects drift AND the working tree
 - **Honored escape hatches:** `state.json::isolation_opt_out` (warn-only) and the existing `CLAUDE_W9_DISABLE_DRIFT_CHECK=1`.
 - **Status readout:** `make w9-isolation-status` summarizes recent drift events, isolations, offers, and the S2 false-trigger rate.
 
-Ships **advisory-first**; promotes to default-act at T+7d once the false-trigger rate calibrates. Phase 2 (concurrency-proactive isolation, gated on `agent-leases.json` freshness) is built behind an advisory flag and runs a v7.9-style advisory→enforced calibration before acting unprompted. Full chain: [`.claude/features/w9-drift-triggered-auto-isolation/`](../features/w9-drift-triggered-auto-isolation/) (research + PRD + integration-spec).
+Ships **advisory-first**; promotes to default-act at T+7d once the false-trigger rate calibrates.
+
+**Phase 2 — concurrency-proactive (2026-06-06, ADVISORY):** a `PostToolUse:Edit|Write` hook ([`scripts/w9_concurrency_check.py`](../../scripts/w9_concurrency_check.py)) fires once per session on the first edit and checks [`agent-leases.json`](../shared/agent-leases.json) for another **live** lease (TTL-fresh `last_heartbeat`) via `another_session_live()`. If concurrency is detected and the session isn't already isolated, it surfaces a concurrency advisory + emits a `w9.auto_isolate` `concurrency_offer` row — but does **not** act unless BOTH `CLAUDE_W9_AUTO_ISOLATE=1` and `CLAUDE_W9_CONCURRENCY_ENFORCE=1` are set. Stale leases (heartbeat > TTL) are treated as absent (safety valve against a crashed session's lingering lease). Runs a v7.9-style advisory→enforced calibration before the enforce flag defaults on (T+14d) — see [`calibration.md`](../features/w9-drift-triggered-auto-isolation/calibration.md). Disable: `CLAUDE_W9_DISABLE_CONCURRENCY_CHECK=1`.
+
+Full chain: [`.claude/features/w9-drift-triggered-auto-isolation/`](../features/w9-drift-triggered-auto-isolation/) (research + PRD + integration-spec + calibration).
 
 **First observed:** 2026-05-13 across three separate sessions today (analytics spec completion → spec planning batch → this very session creating W9). Hit the same pattern three times in one day. Detection script + real-time alert hook shipped this session to ensure it never costs investigative time again. **Recurred 3+ times on 2026-06-05/06** (the #645 CI-fix commit landed on a sibling's branch; HEAD flipped to main twice) — that recurrence motivated the drift-triggered auto-isolation upgrade above.
 

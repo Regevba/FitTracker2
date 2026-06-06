@@ -270,7 +270,7 @@
     "skills": [
       "qa"
     ],
-    "remediation": "Update scripts/tests/test-v7-5-pipeline.sh fixtures to satisfy new required gates; run make test-v7-5-pipeline."
+    "remediation": "Update scripts/test-v7-5-pipeline.sh fixtures to satisfy new required gates; run make test-v7-5-pipeline."
   },
   {
     "id": "#23",

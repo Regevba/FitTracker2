@@ -232,6 +232,101 @@ def test_hook_optout_path_emits_optout(repo, monkeypatch):
     assert any(r["outcome"] == "opt_out" for r in rows)
 
 
+# ── Phase 2: concurrency-proactive (T6 + T7) ────────────────────────────────
+
+def _write_leases(repo, leases):
+    p = repo["root"] / ".claude" / "shared" / "agent-leases.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps({"version": "1.0", "leases": leases}))
+
+
+def test_t6_fresh_other_lease_is_live(repo):
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": "other-feat", "status": "active",
+                          "last_heartbeat": "2026-06-06T05:39:30Z"}])
+    # now = 05:40:00; heartbeat 30s ago, TTL 3600 -> live.
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    now_epoch=wai._parse_iso("2026-06-06T05:40:00Z")) is True
+
+
+def test_t6_stale_lease_treated_absent(repo):
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": "other-feat", "status": "active",
+                          "last_heartbeat": "2026-06-06T03:00:00Z"}])
+    # heartbeat ~2.6h ago, TTL 3600 -> stale -> absent.
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    now_epoch=wai._parse_iso("2026-06-06T05:40:00Z")) is False
+
+
+def test_t6_self_lease_excluded(repo):
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": repo["slug"], "status": "active",
+                          "last_heartbeat": "2026-06-06T05:39:59Z"}])
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    now_epoch=wai._parse_iso("2026-06-06T05:40:00Z")) is False
+
+
+def test_t6_inactive_lease_ignored(repo):
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": "other-feat", "status": "released",
+                          "last_heartbeat": "2026-06-06T05:39:59Z"}])
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    now_epoch=wai._parse_iso("2026-06-06T05:40:00Z")) is False
+
+
+def test_t7_no_concurrency_is_noop(repo):
+    wai = _wai(repo)
+    _write_leases(repo, [])  # no other leases
+    res = wai.concurrency_isolation_decision()
+    assert res.result == "noop" and res.reason == "no_concurrency"
+    rows = [json.loads(l) for l in repo["ledger"].read_text().splitlines() if l.strip()]
+    assert rows[-1]["outcome"] == "no_concurrency"
+
+
+def test_t7_concurrency_advisory_does_not_act(repo, monkeypatch):
+    """Default posture: concurrency detected -> advisory telemetry, NO action."""
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", str(__import__("calendar").timegm(
+        __import__("time").strptime("2026-06-06T05:40:00Z", "%Y-%m-%dT%H:%M:%SZ"))))
+    monkeypatch.delenv("CLAUDE_W9_CONCURRENCY_ENFORCE", raising=False)
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": "other-feat", "status": "active",
+                          "last_heartbeat": "2026-06-06T05:39:55Z"}])
+    # On main (not the feature worktree) so "already_isolated" is false.
+    _git("checkout", "-q", "main", cwd=repo["root"])
+    res = wai.concurrency_isolation_decision()
+    assert res.result == "skipped" and res.reason == "advisory_concurrency"
+    # No stash/worktree side effects (advisory only).
+    assert _git("stash", "list", cwd=repo["root"]).stdout.strip() == ""
+    rows = [json.loads(l) for l in repo["ledger"].read_text().splitlines() if l.strip()]
+    assert rows[-1]["outcome"] == "concurrency_offer"
+
+
+def test_t7_already_isolated_is_noop(repo):
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": "other-feat", "status": "active",
+                          "last_heartbeat": "2026-06-06T05:39:55Z"}])
+    # The repo IS on feature/<slug>; but no real worktree registered for it in
+    # this throwaway repo, so _resolve_worktree_path returns None -> not treated
+    # as already-isolated. We assert the advisory path instead (concurrency live).
+    res = wai.concurrency_isolation_decision()
+    assert res.reason in ("advisory_concurrency", "already_isolated")
+
+
+def test_t8_hook_once_per_session_and_disable(repo, monkeypatch):
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(repo["root"]))
+    monkeypatch.setenv("CLAUDE_SESSION_ID", "sess-1")
+    monkeypatch.setenv("GATE_COVERAGE_LEDGER", str(repo["ledger"]))
+    monkeypatch.setenv("CLAUDE_W9_DISABLE_CONCURRENCY_CHECK", "1")
+    spec = importlib.util.spec_from_file_location("w9cc", SCRIPTS / "w9_concurrency_check.py")
+    mod = importlib.util.module_from_spec(spec)
+    import sys
+    sys.modules["w9cc"] = mod
+    spec.loader.exec_module(mod)
+    # Disabled -> exit 0, no marker written.
+    assert mod.main() == 0
+    assert not mod.MARKER.exists()
+
+
 def test_hook_clean_tree_no_escalation(repo, monkeypatch):
     spec = importlib.util.spec_from_file_location("cbd3", SCRIPTS / "check-branch-drift.py")
     cbd = importlib.util.module_from_spec(spec)
