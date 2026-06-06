@@ -1,16 +1,50 @@
 # HADF — Single Source of Truth (consolidated status ledger)
 
-> **As-of: 2026-06-03.** This file is the **authoritative, machine-and-human-readable
+> **As-of: 2026-06-05.** This file is the **authoritative, machine-and-human-readable
 > status** for the Hardware-Aware Dispatch Framework experimental program. It
 > consolidates and **supersedes** scattered claims across memory, PR descriptions,
 > per-sub-exp prereg JSONs, the cross-sub-exp synthesis case study, and the
-> operator runbooks — reconciling the discrepancies found during the 2026-06-02
-> consolidation pass (see §6).
+> operator runbooks.
 >
 > When this file and any other doc disagree, **this file + the locked prereg JSONs +
 > the raw `.jsonl` data + git tags are the ground truth**; narrative docs are
 > downstream. Each quantitative number carries a tier tag: T1 (instrumented), T2
 > (declared), T3 (narrative/interpretation).
+>
+> **Reading note:** §-1 (immediately below) is the FINAL status. §5/§8/§8.1 are
+> the 2026-06-02→03 mid-collection narrative, retained as **HISTORICAL** (each is
+> banner-marked); they describe the program *while it was running* and are
+> superseded by §-1 + §1 + §2.
+
+---
+
+## §-1 FINAL STATUS (2026-06-05) — Phase 2-bis CLOSED · all 4 sub-exps PASS · dispatch CONFIRMED (sensing) · Phase 3A SHIPPED
+
+**HADF Phase 2-bis is COMPLETE. All four sub-experiments passed their pre-registered
+thresholds → the HADF dispatch premise is CONFIRMED at the SENSING layer.**
+
+| Sub-exp | Question | Verdict | Key number [T1] | n_valid |
+|---|---|---|---|---|
+| **1 (1A)** | Cloud signature generalizes beyond OpenAI? | ✅ **PASS** | silhouette **0.7003** @ k=5 (≥0.5) | 2,600 |
+| **2** | Local (Ollama) distinguishable from cloud? | ✅ **PASS** | KS TTFT p=9.3e-136, TPS p=5.9e-322 (≪0.01) | 800 |
+| **3** | Bedrock haiku ≠ Anthropic-direct haiku (routing layer)? | ✅ **PASS** (falsification **survived**) | signature_delta_ratio **2.89** (>2.0); Bedrock TTFT 1.468s vs Anthropic-direct 0.868s | 2,239 |
+| **1B** | Cross-window anchor drift re-check (2 clean endpoints) | ✅ **PASS** | silhouette **0.98** @ k=2; anchor drift **0.19σ** | 1,465 |
+
+- **Total program cost ≈ $1.74 [T1].** No kill criterion fired on any sub-exp.
+- **Honesty boundary (load-bearing):** this CONFIRMS the **SENSING** layer (signatures are detectable, provider-general, substrate-discriminating, short-term-stable). It does **NOT** confirm the **ACTING** layer (does routing on a signature improve outcomes?) — that is pre-registered as **RQ4 / Phase 3B**, unstarted. Per-request single-shot accuracy is **RQ5**, also open. See §9.
+- **Synthesis (Block C):** CLOSED — case study fully populated, `hadf-phase2bis-replication` `current_phase = complete`. Published showcase: fitme-story `22c` (slot 30) [PR #179]. Source: [`docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md`](../../../docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md) [PR #632].
+- **Collectors torn down:** both Sub-exp 3 + 1B launchd collectors auto-closed after their 15th fire (Sub-exp 3 2026-06-04 23:30Z / 1B 2026-06-05 02:41Z); plists moved to `~/.fittracker/concluded-plists/`; caffeinate auto-released. Data backed up dual-location.
+
+**Phase 3A (sensing/observability layer) is SHIPPED** [FT2 PR #635, 2026-06-05]:
+
+- T1 reference-store builder → `reference-signatures.json` (8 endpoints, 7,197 valid records).
+- T2 attestation (advisory, Mahalanobis confidence-band) + T3 drift monitor (advisory) → `drift-monitor.jsonl`.
+- 9 tests; Makefile targets; operator runbook [`SENSING-LAYER-README.md`](SENSING-LAYER-README.md).
+- **Detection/observability ONLY — no dispatch decisions.** Feature `hadf-phase3a-sensing` (b_medium, `current_phase=implementation`; T4 control-room panel + T5 AIOrchestrator emit-hook deferred follow-ons).
+
+**ORCHID overlay** [FT2 PR #634] — all 4 v2 unit forks RESOLVED by the verdicts: U7 systolic array **8×8 compute-bound** (Sub-exp 2 SEPARABLE), U3 cache model **local-fits-RAM**, **BUILD** U2 routing-class field + U6 multi-routing coherence (Sub-exp 3 SURVIVED). Capstone published: fitme-story `37-orchid-research-arc.mdx` (CONFIRMED) [PR #180].
+
+**Next:** Phase 3B / RQ4 (acting-layer decision-value experiment) — separate spec [`2026-06-02-hadf-phase3b-rq4-decision-value-design.md`](../../../docs/superpowers/specs/2026-06-02-hadf-phase3b-rq4-decision-value-design.md), NOT started. T4/T5 Phase 3A follow-ons. External Audit #2 (2026-06-12) re-checks raw verdicts.
 
 ---
 
@@ -20,9 +54,10 @@
 |---|---|---|---|---|
 | **Phase 1** | v1.0 | HADF infrastructure (17 chips, 7 cloud sigs) | shipped | PR #82 (2026-04-16) |
 | **Phase 2** | v7.0 | Cloud fingerprinting (single endpoint) | silhouette **0.5566** @ k=5, n=700, openai/gpt-4o-mini [T1] | PR #170/#264 (2026-05-01) |
-| **Phase 2-bis** | v7.8.3 | Hardened cloud replication — 3 sub-exps + synthesis | **in progress** (see §1–§4) | PR #306 spec / #313 plan / #316 Block A |
+| **Phase 2-bis** | v7.8.3 | Hardened cloud replication — 4 sub-exps + synthesis | ✅ **CLOSED — all 4 PASS, CONFIRMED** (see §-1) | #306 spec / #313 plan / #316 Block A / #543+#632 synthesis / #583 SoT |
+| **Phase 3A** | v7.9.1 | Sensing/observability layer (detection-only) | ✅ **SHIPPED** | PR #635 (2026-06-05) |
 
-Feature dir: [`.claude/features/hadf-phase2bis-replication/`](../../features/hadf-phase2bis-replication/). State: `current_phase = tasks_phase`.
+Feature dirs: [`hadf-phase2bis-replication/`](../../features/hadf-phase2bis-replication/) (`current_phase = complete`) · [`hadf-phase3a-sensing/`](../../features/hadf-phase3a-sensing/) (`current_phase = implementation`; T4/T5 deferred).
 
 ---
 
@@ -30,11 +65,11 @@ Feature dir: [`.claude/features/hadf-phase2bis-replication/`](../../features/had
 
 | Sub-exp | Question | Endpoints | Metric | Status | Verdict | n_valid |
 |---|---|---|---|---|---|---|
-| **1 (1A)** | Cloud signature generalizes beyond OpenAI? | 4 cloud (openai ×2 + anthropic ×2) | silhouette @ k=5 ≥ 0.5 | ✅ **CLOSED** | **PASS** | 2,600 [T1] |
-| **1B** | Cross-window drift re-check (v2: 2 clean endpoints) | 2 (anthropic haiku + google gemini-flash-lite) | silhouette @ k=2 | 🔄 **ACTIVELY COLLECTING** (since 2026-06-02 08:41Z; 5 fires landed) | — | 500 raw (466 OK + 34 err = 93.2%) [T1, in-progress] |
-| **2** | Local (Ollama) distinguishable from cloud? | 1 (ollama/llama3.2:3b) | KS p ≤ 0.01 vs Sub-exp 1 anchor | ✅ **CLOSED 2026-06-02** | **PASS** | 800 [T1] |
-| **3** | Bedrock haiku ≠ Anthropic-direct haiku? (routing-layer signature) | 3 (bedrock haiku + anthropic haiku + openai anchor) | signature_delta_ratio > 2.0 | 🔄 **ACTIVELY COLLECTING** (since 2026-06-02 07:42Z; 6 fires landed) | — | 900 raw (889 OK + 11 err = 98.8%) [T1, in-progress] |
-| **Synthesis (Block C)** | Does the program confirm the HADF dispatch premise? | — | Sub-exp 3 ratio > 2.0 (primary) | ⏳ pending Sub-exp 3 | — | — |
+| **1 (1A)** | Cloud signature generalizes beyond OpenAI? | 4 cloud (openai ×2 + anthropic ×2) | silhouette @ k=5 ≥ 0.5 | ✅ **CLOSED** | **PASS** (0.7003) | 2,600 [T1] |
+| **1B** | Cross-window drift re-check (v2: 2 clean endpoints) | 2 (anthropic haiku + google gemini-flash-lite) | silhouette @ k=2 | ✅ **CLOSED 2026-06-05** (15 fires) | **PASS** (0.98; drift 0.19σ) | 1,465 [T1] |
+| **2** | Local (Ollama) distinguishable from cloud? | 1 (ollama/llama3.2:3b) | KS p ≤ 0.01 vs Sub-exp 1 anchor | ✅ **CLOSED 2026-06-02** | **PASS** (p≪0.01) | 800 [T1] |
+| **3** | Bedrock haiku ≠ Anthropic-direct haiku? (routing-layer signature) | 3 (bedrock haiku + anthropic haiku + openai anchor) | signature_delta_ratio > 2.0 | ✅ **CLOSED 2026-06-04** (15 fires) | **PASS** (2.89 — falsification survived) | 2,239 [T1] |
+| **Synthesis (Block C)** | Does the program confirm the HADF dispatch premise? | — | Sub-exp 3 ratio > 2.0 (primary) | ✅ **CLOSED 2026-06-05** | **CONFIRMED** (sensing layer) | — |
 
 ---
 
@@ -60,30 +95,23 @@ KS TPS  vs anthropic/claude-haiku-4-5: KS=0.9100, p = 9.88e-324   ✅   →  VER
 - **Interpretation [T3]:** local M2 execution produces a streaming signature trivially separable from cloud — cloud-vs-local separability confirmed; **Sub-exp 3 is unblocked.**
 - ⚠️ **The full Sub-exp 2 closure is committed on `feat/hadf-phase2bis-impl` but UNMERGED to main.** Commits `8da3297` (subexp2 lock), `5981676` (state.json B14 close + 15 raw data files + heartbeat/log), `c21966c` (synthesis §3.B verdict PASS). Main still shows the DRAFT skeleton (§3.B "TBD", state.json B14 `prep_in_progress`). **Reconciling this to main is the central pre-ceremony integrity action (§5/§6).**
 
-### Sub-exp 3 — ACTIVELY COLLECTING (verdict pending) [T1, in-progress]
-- Smoke-test on Sub-exp 1A anchors gave signature_delta_ratio = **6.62** (correct PASS) [T1, smoke only]. Real run **started 2026-06-02T07:42Z** under the autonomous launchd.
-- **6 fires landed 2026-06-02 07:42Z → 2026-06-03 02:00Z** (every ~4h pattern). 900 raw rows = 300 × 3 endpoints. 889 OK + 11 err = 98.8% success.
-- Endpoint matrix per prereg (`preregistration-phase2bis-subexp3.json`, sha256=`521f0f45f14d`):
-  - `openai/gpt-4o-mini` (anchor) — 300 rows
-  - `anthropic/claude-haiku-4-5-20251001` (direct) — 300 rows
-  - `aws-bedrock/us.anthropic.claude-haiku-4-5-20251001-v1:0` (routed) — 300 rows
-- Cost: ~$0.1215 USD (6 × $0.02025/fire). Daily budget ~$0.122.
-- Verdict computation deferred until operator confirms target yield (commits land via `exp/hadf-subexp3` branch tagged `hadf-subexp3-data-preservation-2026-06-03`).
-- ⚠️ **The autonomous launchd was bootstrapped between SoT-write 2026-06-02 and now (2026-06-03).** The earlier SoT entry said "READY TO LAUNCH, prereg not locked" — but the data + commit `1a43130` (resolve subexp3 bedrock model-id + lock prereg sha256=`521f0f45f14d`) prove the lock happened. The "prereg not locked" claim was stale at write-time.
+### Sub-exp 3 — PASS (falsification survived) [T1]
+- **signature_delta_ratio = 2.89** (threshold > 2.0): inter-endpoint Mahalanobis **1.043** / intra-anchor noise **0.361**. The pre-registered refutation case (ratio < 1.0 → premise falsified on the routing axis) did **NOT** fire.
+- Bedrock-haiku vs Anthropic-direct-haiku — **same `claude-haiku-4-5` model id**, differing only in serving substrate — fingerprint apart: median TTFT **1.468s** (Bedrock) vs **0.868s** (Anthropic-direct); silhouette **0.547** @ k=3; anchor drift **0.19σ**.
+- Window 2026-06-02T07:42Z → 2026-06-04T23:30Z, **15 fires** (collector auto-closed after 15th). n_valid **2,239** (2,250 dispatched). Prereg locked sha256=`521f0f45f14d` (`…subexp3-locked-2026-06-02`).
+- Per-provider medians [T1]: bedrock TTFT 1.468s/TPS 170.8 · anthropic-direct 0.868s/149.1 · openai 0.021s/63 · google 0.579s/437.
+- **Interpretation [T3]:** the routing layer carries real signal → licenses Orchid v2 **U2 routing-class field + U6 multi-routing coherence** (the BUILD branch). Provider-claim verification (detect silent model/region/hardware swaps behind a stable model id) is the directly-useful operationalization.
 
-### Sub-exp 1B v2 — ACTIVELY COLLECTING (verdict pending) [T1, in-progress]
-- Real run **started 2026-06-02T08:41Z** under the autonomous launchd (v2 scope = 2 clean endpoints).
-- **5 fires landed 2026-06-02 08:41Z → 23:00Z**. 500 raw rows = 250 × 2 endpoints. 466 OK + 34 err = 93.2% success.
-- Endpoint matrix per v2 prereg:
-  - `anthropic/claude-haiku-4-5-20251001` — 250 rows
-  - `google/gemini-2.5-flash-lite` — 250 rows
-- Cost: ~$0.0675 USD (5 × $0.0135/fire).
-- Verdict computation deferred (commits land via `exp/hadf-subexp1b` branch tagged `hadf-subexp1b-data-preservation-2026-06-03`).
-- ⚠️ **Same staleness story as Sub-exp 3:** v2 was described as "prereg NOT locked" but the autonomous launchd has been firing since 2026-06-02. Either operator locked v2 between sessions, or v2's prereg was never actually unlocked. Source-of-truth state to be confirmed against the v2 lock tag (if it exists).
+### Sub-exp 1B v2 — PASS [T1]
+- Silhouette **0.98** @ k=2 (cross-window anchor stability); anchor drift **0.19σ** (Mahalanobis). n_valid **1,465**.
+- Window 2026-06-02T08:41Z → 2026-06-05T02:41Z, **15 fires** (collector auto-closed after 15th). 2-endpoint v2 scope: `anthropic/claude-haiku-4-5-20251001` + `google/gemini-2.5-flash-lite` (mistral/vercel deferred per v1 429 lesson). Prereg locked sha256=`653b3f17` (`…subexp1b-locked-2026-06-02`).
+- **Interpretation [T3]:** per-endpoint signatures are short-term stable across windows — the precondition the drift monitor (Phase 3A T3) assumes. Low drift (0.19σ) over the ~3-day window; production drift over weeks/months remains RQ6.
 
 ---
 
 ## §3 Infrastructure state (2026-06-03)
+
+> **HISTORICAL (2026-06-03).** Mid-collection infra snapshot. Both Sub-exp 3 + 1B collectors + the backup job have since auto-closed / been booted out; plists moved to `~/.fittracker/concluded-plists/`. AWS Bedrock IAM remains provisioned. Current state is in §-1.
 
 **launchd jobs** (`gui/501`):
 | Job | State | Action needed |
@@ -123,6 +151,8 @@ KS TPS  vs anthropic/claude-haiku-4-5: KS=0.9100, p = 9.88e-324   ✅   →  VER
 ---
 
 ## §5 Open tasks & ceremonies
+
+> **HISTORICAL (2026-06-02→03).** All ceremonies below COMPLETED — Sub-exp 2 closure merged (#583), Sub-exp 3 + 1B launched, fired their full 15-fire windows, and auto-closed (see §-1). Retained for provenance.
 
 ### Sub-exp 2 closure (do first)
 - [ ] **A2** Refresh impl worktree from main (`git pull origin main`) — unblocks verdict scripts + v2 prereg
@@ -164,6 +194,8 @@ Phase 1–2: #82, #170, #171, #264, #265, #268. Phase 2-bis: #306 (spec), #313 (
 
 ## §8 Reassessment
 
+> **HISTORICAL (2026-06-03).** Written when only Sub-exps 1+2 were closed and 3+1B were mid-collection. The "everything is GO / keystone pending" framing is superseded by §-1 (all 4 closed PASS, CONFIRMED). Retained for provenance.
+
 **Two of three sub-experiments are CLOSED and both PASS.** Sub-exp 1 (cloud generalization, silhouette 0.7003) and Sub-exp 2 (cloud-vs-local, KS p ≪ 0.01) both confirm the HADF streaming-signature premise on their respective axes. Neither tripped any kill criterion.
 
 **Sub-exp 3 is the keystone and everything is GO.** It tests the sharpest claim — whether a *routing layer* (AWS Bedrock) injects a signature distinguishable from the same model served direct. The historical blocker (AWS access) is cleared, the smoke ratio (6.62) is promising, and Sub-exp 2's close frees the shared launchd slot. The only work between here and launch is mechanical: worktree refresh → smoke-fire → prereg lock → bootstrap.
@@ -177,6 +209,8 @@ Phase 1–2: #82, #170, #171, #264, #265, #268. Phase 2-bis: #306 (spec), #313 (
 ---
 
 ## §8.1 Live status (2026-06-02) — Sub-exp 3 + 1B v2 ACTIVATED in parallel
+
+> **HISTORICAL (2026-06-02).** "Live status" snapshot at launch. Both collectors have since fired their full 15-fire windows and auto-closed (Sub-exp 3 2026-06-04, 1B 2026-06-05) — verdicts in §-1/§2. Retained for provenance.
 
 Both remaining sub-exps launched in parallel, each in a **dedicated isolated worktree off main**:
 
@@ -192,7 +226,7 @@ Both remaining sub-exps launched in parallel, each in a **dedicated isolated wor
 
 ---
 
-## §9 Activation extrapolation — can HADF be "fully activated" as a live framework? (assuming 1B + 3 PASS)
+## §9 Activation extrapolation — can HADF be "fully activated" as a live framework? (1B + 3 now CONFIRMED PASS)
 
 **Honest verdict: NO to "fully activated dispatch"; YES to a staged activation beginning with the sensing layer.** The four sub-exps validate the **sensing layer** (can we *detect* the substrate from streaming latency?). A live *dispatch* framework also needs the **acting layer** (does *routing on* that signal improve a real outcome?) — and **no experiment to date measures the acting layer.** Distinguishability ≠ actionability.
 
@@ -209,8 +243,8 @@ Both remaining sub-exps launched in parallel, each in a **dedicated isolated wor
 
 ## §10 HADF Phase 3 — staged activation + next testing phase (defined 2026-06-02)
 
-### Phase 3A — ACTIVATE NOW (sensing / observability layer; T1-backed, no acting-layer claim)
-Incorporate HADF into the live framework as a **passive detection layer** — uses only what the experiments prove:
+### Phase 3A — ✅ SHIPPED (sensing / observability layer; T1-backed, no acting-layer claim) [PR #635, 2026-06-05]
+Incorporated HADF into the framework as a **passive detection layer** — uses only what the experiments prove. Producers: `scripts/hadf-build-reference-store.py` (T1) → `reference-signatures.json`, `scripts/hadf-attest.py` (T2, advisory), `scripts/hadf-drift-monitor.py` (T3, advisory) → `drift-monitor.jsonl`; 9 tests; runbook [`SENSING-LAYER-README.md`](SENSING-LAYER-README.md). Capabilities delivered:
 - **Backend attestation** — fingerprint which substrate served a request (cloud vs local; which provider / routing layer).
 - **Routing-change / drift alerts** — flag when a known endpoint's live signature departs from its locked baseline (operationalizes Sub-exp 1B's drift check as a standing monitor).
 - **Provider-claim verification** — detect silent model/region/hardware swaps behind a stable model id (operationalizes the Sub-exp 3 capability).
@@ -225,8 +259,8 @@ Incorporate HADF into the live framework as a **passive detection layer** — us
 ### Gate between 3A → full activation
 Full *dispatch* activation requires **RQ4 PASS** (acting layer proven). Until then only Phase 3A (sensing) ships to production — ship what's proven (sensing), gate what's inferred (dispatch) behind a falsifiable experiment, consistent with the program's pre-registration/kill-criteria discipline.
 
-### Status
-Phase 2-bis closes when Sub-exp 3 + 1B verdicts land (~2026-06-05) + Block C synthesis. **Phase 3 is defined here; not yet scaffolded** — 3A needs a build spec + the RQ4 experiment needs a pre-registration (design pass + operator confirmation before any lock).
+### Status (updated 2026-06-05)
+Phase 2-bis is **CLOSED** (all 4 sub-exps PASS, Block C synthesis published — see §-1). **Phase 3A is SHIPPED** [PR #635]: the 3A build spec ([`2026-06-02-hadf-phase3a-sensing-layer-design.md`](../../../docs/superpowers/specs/2026-06-02-hadf-phase3a-sensing-layer-design.md)) is implemented as T1–T3 producers + tests (detection-only). **Phase 3B / RQ4 is NOT started** — its pre-registration ([`2026-06-02-hadf-phase3b-rq4-decision-value-design.md`](../../../docs/superpowers/specs/2026-06-02-hadf-phase3b-rq4-decision-value-design.md)) is drafted but needs a design pass + operator confirmation before any lock. Phase 3A T4 (control-room panel, fitme-story) + T5 (AIOrchestrator emit-hook, high-risk-area) remain deferred follow-ons.
 
 ### Data-isolation guarantee (Phase 3 design phase)
 Phase 3 is currently a **doc-only research/design phase** and is **physically isolated from the live experiment data**:

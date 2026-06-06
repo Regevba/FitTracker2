@@ -1,0 +1,423 @@
+{
+  "feature": "w9-drift-triggered-auto-isolation",
+  "created_at": "2026-06-06T04:30:00Z",
+  "updated": "2026-06-06T07:10:00Z",
+  "branch": "chore/w9-auto-isolation-closure",
+  "current_phase": "complete",
+  "work_type": "feature",
+  "work_subtype": "framework_feature",
+  "state_owner": "ft2",
+  "framework_version": "v7.9.1",
+  "impact_tier": "A_high",
+  "has_ui": false,
+  "requires_analytics": false,
+  "phase_0_decision": "Phased rollout 1->2: PRD targets Option 1 (drift-reactive auto-isolation) for Phase 1 + Option 2 (concurrency-proactive, advisory->enforced calibration) for Phase 2. Option 3 (always-isolate) deferred as end-state. Operator-approved at Phase 0 gate 2026-06-06.",
+  "timing": {
+    "session_start": "2026-06-06T04:30:00Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-06-06T04:30:00Z",
+        "ended_at": "2026-06-06T04:48:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-06T04:48:00Z",
+        "ended_at": "2026-06-06T05:05:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-06T05:05:00Z",
+        "ended_at": "2026-06-06T05:20:00Z"
+      },
+      "ux_or_integration": {
+        "started_at": "2026-06-06T05:20:00Z",
+        "ended_at": "2026-06-06T05:30:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-06T05:30:00Z",
+        "ended_at": "2026-06-06T07:10:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-06T07:10:00Z"
+      }
+    }
+  },
+  "predecessor_case_studies": [
+    ".claude/shared/v7-9-1-candidates.md#f-w9-drift-triggered-auto-isolation"
+  ],
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-06-06T04:48:00Z",
+      "sources": [
+        "research.md",
+        "state.json::brainstorm"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-06-06T05:05:00Z",
+      "analytics_spec_complete": false
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-06-06T05:20:00Z",
+      "count": 12
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "type": "integration",
+      "approved_at": "2026-06-06T05:30:00Z",
+      "preflight_passed": null,
+      "spec": "integration-spec.md"
+    },
+    "implementation": {
+      "status": "approved",
+      "commits": [
+        "229d703 (Phase 1, PR #648)",
+        "844eff1 (Phase 2, PR #649)"
+      ],
+      "approved_at": "2026-06-06T07:10:00Z"
+    },
+    "testing": {
+      "status": "approved",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false,
+      "approved_at": "2026-06-06T07:10:00Z"
+    },
+    "review": {
+      "status": "approved",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false,
+      "approved_at": "2026-06-06T07:10:00Z"
+    },
+    "merge": {
+      "status": "approved",
+      "pr_number": 649,
+      "analytics_regression_passed": null,
+      "approved_at": "2026-06-06T07:10:00Z",
+      "related_prs": [
+        648,
+        649
+      ]
+    },
+    "documentation": {
+      "status": "approved",
+      "approved_at": "2026-06-06T07:10:00Z"
+    },
+    "metrics": {
+      "primary": {
+        "name": "manual_drift_recoveries_per_parallel_session_day",
+        "baseline": 3,
+        "target": 0,
+        "current": null
+      },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": "2026-06-13",
+      "kill_criteria": "KC1 drift not dropping in 14d -> revert advisory; KC2 false-trigger >25% or kill-switch >=2x -> narrow predicate; KC3 any uncommitted-work loss -> immediate revert (hard stop).",
+      "kill_criteria_resolution": "Not triggered. Advisory-first both phases; KC3 structurally prevented + tested (stash never dropped until apply verified) across 19 tests. KC1/KC2 evaluated at T+7d/T+14d calibration; revert is a single flag flip."
+    }
+  },
+  "brainstorm": {
+    "modes_run": [
+      "problem",
+      "three_option"
+    ],
+    "started_at": "2026-06-06T04:32:00Z",
+    "completed_at": "2026-06-06T04:45:00Z",
+    "frameworks_used": [
+      "first_principles"
+    ],
+    "problem_statement": "Branch isolation today triggers only on file PATH (infra-path globs, via BRANCH_ISOLATION_VIOLATION Mode B/C) and is only REACTIVELY DETECTED after drift has already flipped HEAD (W9 alert). There is no trigger keyed on concurrency or on drift itself, and non-infra work (features/enhancements/tasks/chores) gets NO proactive isolation. In the operator's dominant workflow \u2014 multiple concurrent Claude sessions sharing one SSD checkout \u2014 a sibling session's `git checkout` flips the shared HEAD, so an unprotected session's commits land on the wrong branch.",
+    "problem_alternatives": [
+      "User-stated: W9 only warns; make it auto-isolate so the operator stops recovering drift by hand.",
+      "Behavioral: concurrent sessions on one shared checkout flip shared HEAD via git checkout; non-infra work isn't isolated so commits land on the wrong branch.",
+      "Underlying need: each concurrent agent needs a private, stable repo view so its commits land where intended regardless of sibling HEAD changes.",
+      "Strategic: the isolation defense was built for single-session path-based risk; the operator's actual parallel-agent/shared-checkout workflow is a different threat model the defense silently doesn't cover."
+    ],
+    "empirical_evidence": "Branch drift struck 3+ times on 2026-06-05/06 in one session: the #645 CI-fix commit landed on feature/3d-universe-phase-4c-act1-threshold; HEAD later flipped to main twice; 8 live worktrees + \u22651 concurrent session sharing the main checkout. Each recovery was manual (move commit to correct branch, restore sibling branch, restore HEAD).",
+    "three_option_matrix": {
+      "axis": "trigger-timing (reactive -> proactive -> unconditional)",
+      "dimensions_note": "Infra feature (no UI). UX dimension = operator experience/ergonomics; Design dimension = integration surface with existing hooks/gates/config; Dev dimension = implementation footprint + risk.",
+      "options": [
+        {
+          "id": "1",
+          "name": "drift-triggered (reactive)",
+          "outcome": "When W9's PostToolUse:Bash hook detects HEAD changed AND the session has uncommitted/about-to-commit work, auto-dispatch isolation (move work into its own worktree via create-isolated-worktree.py) so the next commit can't land on the wrong branch.",
+          "ux": "Operator sees a one-line 'drift detected -> isolating into worktree X' notice. Acts only after drift, so there is a (small) window between flip and detection. Lowest interruption \u2014 fires rarely, only on actual drift. May prompt a Touch ID tap if it commits/stashes.",
+          "design": "Smallest integration surface: extends the EXISTING W9 hook (scripts/check-branch-drift.py) + reuses create-isolated-worktree.py + agent-leases.json. No change to the enforced BRANCH_ISOLATION_VIOLATION gate. No new settings.json hook.",
+          "dev": "Add an isolation-dispatch branch to check-branch-drift.py; needs an atomic stash->worktree-add->pop sequence with a lock to avoid self-racing. ~1 script + tests. Reversible via env flag (CLAUDE_W9_DISABLE_DRIFT_CHECK already exists).",
+          "defer_to_v2": "Proactive/concurrency-based isolation; non-infra extension of the enforced gate.",
+          "failure_modes": [
+            "Reactive: a commit could still land wrong if it happens in the same tool-call as the flip (before the next PostToolUse fires).",
+            "Self-race: auto-creating a worktree mid-session could itself collide with a concurrent checkout.",
+            "Stash/pop of a dirty tree mid-edit could surprise the operator."
+          ],
+          "effort": "M"
+        },
+        {
+          "id": "2",
+          "name": "concurrency-triggered (proactive, lease-gated)",
+          "outcome": "On first Edit/Write to feature code, check agent-leases.json for another LIVE lease on the same checkout; if concurrency is detected, auto-isolate BEFORE any drift can occur \u2014 extending BRANCH_ISOLATION_VIOLATION's auto-isolation flow to all work-types when (and only when) concurrency is present.",
+          "ux": "Zero drift window \u2014 isolation happens before the first risky edit. Operator gets a worktree from the start of substantive work. Slightly more upfront friction (a worktree per concurrent session) but only when actually running in parallel; solo sessions are untouched.",
+          "design": "Larger surface: extends the ENFORCED BRANCH_ISOLATION_VIOLATION gate to non-infra work-types gated on concurrency detection. Needs a reliable 'is another session live?' signal \u2014 lease-file freshness in agent-leases.json. Touches a load-bearing enforced gate -> mandatory advisory->enforced calibration window.",
+          "dev": "Lease-freshness reader + gate extension + a PreToolUse/first-edit hook. Bigger test surface (concurrency simulation). Rollback = advisory-mode flag on the new trigger. Risk: false-negative if leases aren't refreshed, false-positive if stale leases linger.",
+          "defer_to_v2": "Unconditional always-on isolation; auto-cleanup of spawned worktrees on merge.",
+          "failure_modes": [
+            "Lease signal unreliable: stale lease -> false isolation; missing lease -> missed isolation (the failure we're trying to fix).",
+            "Extending an enforced gate risks blocking legitimate solo work if concurrency detection misfires.",
+            "Worktree proliferation when many short parallel sessions run."
+          ],
+          "effort": "L"
+        },
+        {
+          "id": "3",
+          "name": "always-isolate (unconditional)",
+          "outcome": "Every session auto-isolates into its own worktree at session start, regardless of concurrency or work-type. Shared-checkout drift becomes structurally impossible.",
+          "ux": "Maximal safety, zero drift ever. But maximal friction: every session \u2014 even a one-line solo chore \u2014 spins up + later cleans up a worktree. 8 worktrees already exist; this multiplies on-disk footprint and cleanup load on the SSD.",
+          "design": "Largest surface: a SessionStart hook that always isolates, superseding both the path-based and concurrency-based triggers. Changes default dispatch behavior for ALL work unconditionally \u2014 highest blast radius.",
+          "dev": "SessionStart auto-worktree + lifecycle/cleanup machinery (auto-remove on merge, GC orphans). Heaviest test + ops surface. Rollback = global disable flag. Risk: SSD disk pressure, worktree GC bugs, slower session starts (~200-500ms + disk per worktree).",
+          "defer_to_v2": "N/A \u2014 this IS the end-state; nothing deferred.",
+          "failure_modes": [
+            "Worktree proliferation + SSD disk pressure (SanDisk Extreme disconnect bug already a known hazard).",
+            "Cleanup debt: orphaned worktrees accumulate without robust GC.",
+            "Friction tax on every solo session may push the operator to disable it entirely -> worse than a targeted trigger."
+          ],
+          "effort": "L"
+        }
+      ],
+      "recommendation": "NONE \u2014 per three-option contract, the matrix is the output; operator picks. (Author's note for the gate: options compose as a phased rollout \u2014 1 then 2 \u2014 rather than being mutually exclusive.)"
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Atomic isolation primitive: stash->worktree-add->pop with lock; no data loss",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "phase": 1,
+      "completed_at": "2026-06-06T06:00:00Z",
+      "related_prs": [
+        646,
+        648,
+        649
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Extend check-branch-drift.py: warn->offer/auto-isolate (CLAUDE_W9_AUTO_ISOLATE)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T1"
+      ],
+      "phase": 1,
+      "completed_at": "2026-06-06T06:00:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "Mechanism A telemetry: w9.auto_isolate -> gate-coverage.jsonl",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T2"
+      ],
+      "phase": 1,
+      "completed_at": "2026-06-06T06:00:00Z"
+    },
+    {
+      "id": "T4",
+      "title": "Tests: drift->offer, dirty-tree no-data-loss, false-trigger, lock contention, kill-switch",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "phase": 1,
+      "completed_at": "2026-06-06T06:00:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "make w9-isolation-status readout (false-trigger rate S2)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T3"
+      ],
+      "phase": 1,
+      "completed_at": "2026-06-06T06:00:00Z"
+    },
+    {
+      "id": "T6",
+      "title": "Lease-freshness (TTL) reader over agent-leases.json: is-another-session-live signal",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "phase": 2,
+      "completed_at": "2026-06-06T06:30:00Z"
+    },
+    {
+      "id": "T7",
+      "title": "Extend BRANCH_ISOLATION_VIOLATION flow to all work-types, concurrency-gated, ADVISORY",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.5,
+      "depends_on": [
+        "T1",
+        "T6"
+      ],
+      "phase": 2,
+      "completed_at": "2026-06-06T06:30:00Z"
+    },
+    {
+      "id": "T8",
+      "title": "First-edit trigger to run the concurrency check",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T7"
+      ],
+      "phase": 2,
+      "completed_at": "2026-06-06T06:30:00Z"
+    },
+    {
+      "id": "T9",
+      "title": "Tests: concurrency sim (live vs stale lease), advisory telemetry, no-solo-isolation",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T7",
+        "T8"
+      ],
+      "phase": 2,
+      "completed_at": "2026-06-06T06:30:00Z"
+    },
+    {
+      "id": "T10",
+      "title": "Calibration wiring: advisory->enforced 4-criteria doc + T+14d review hook",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T7"
+      ],
+      "phase": 2,
+      "completed_at": "2026-06-06T06:30:00Z"
+    },
+    {
+      "id": "T11",
+      "title": "(Open-Q2, if cheap) cleanup-on-merge worktree hook; else defer to GC track",
+      "type": "infra",
+      "skill": "dev",
+      "status": "deferred",
+      "priority": "low",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "phase": 1,
+      "completed_at": null,
+      "defer_reason": "open-Q2: cleanup-on-merge bundled with Phase 2 worktree-lifecycle work"
+    },
+    {
+      "id": "T12",
+      "title": "Docs + v7.8.5: extend W9 observed-patterns + pattern-skill-map.json; gen-skill-preflight",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T2",
+        "T7"
+      ],
+      "phase": 1,
+      "completed_at": "2026-06-06T06:00:00Z"
+    }
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-06-06T04:48:00Z",
+      "approved_by": "user",
+      "note": "Phased 1->2 scope approved at Phase 0 gate."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-06-06T05:05:00Z",
+      "approved_by": "user",
+      "note": "PRD approved as-is with 3 default open-question answers."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-06-06T05:20:00Z",
+      "approved_by": "user",
+      "note": "12-task breakdown approved; operator pre-approved driving to implementation."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-06-06T05:30:00Z",
+      "approved_by": "user",
+      "note": "Integration spec written (no UI); building Phase 1 slice T1-T5+T12."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-06-06T07:10:00Z",
+      "approved_by": "user",
+      "note": "Both phases merged (#648,#649); case study + calibration written."
+    }
+  ],
+  "case_study": "docs/case-studies/w9-drift-triggered-auto-isolation-case-study.md",
+  "case_study_showcase": "",
+  "related_prs": [
+    646,
+    648,
+    649
+  ]
+}

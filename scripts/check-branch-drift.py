@@ -83,6 +83,95 @@ def current_branch() -> str | None:
         return None
 
 
+def _working_tree_dirty() -> bool:
+    """True if there is uncommitted (tracked or untracked) work to protect."""
+    try:
+        r = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=5,
+        )
+        return bool(r.stdout.strip())
+    except (subprocess.SubprocessError, FileNotFoundError, OSError):
+        return False
+
+
+def _active_feature() -> str | None:
+    f = REPO_ROOT / ".claude" / "active-feature"
+    try:
+        name = f.read_text().strip()
+        return name or None
+    except OSError:
+        return None
+
+
+def _isolation_opt_out(feature: str | None) -> bool:
+    """Read state.json::isolation_opt_out for the active feature (honored, warn-only)."""
+    if not feature:
+        return False
+    state = REPO_ROOT / ".claude" / "features" / feature / "state.json"
+    try:
+        import json
+        return bool(json.loads(state.read_text()).get("isolation_opt_out"))
+    except (OSError, ValueError):
+        return False
+
+
+def _escalate_on_drift(expected: str, branch: str) -> None:
+    """W9 drift-triggered auto-isolation escalation (feature T2).
+
+    Fail-safe: any error here degrades to W9's prior warn-only behavior. Never
+    raises; the caller already printed the drift warning + recovery playbook.
+    """
+    if not _working_tree_dirty():
+        return  # nothing uncommitted to protect — warning alone suffices
+
+    feature = _active_feature()
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import w9_auto_isolate as wai
+    except Exception:
+        return  # primitive unavailable — warn-only
+
+    drift = {"from_branch": expected, "to_branch": branch}
+
+    if _isolation_opt_out(feature):
+        wai.emit_telemetry(candidates=1, checked=0, skipped=1,
+                           skip_reasons=["opt_out"], outcome="opt_out", drift=drift)
+        return
+
+    if os.environ.get("CLAUDE_W9_AUTO_ISOLATE") == "1":
+        # Advisory->enforced: act only on explicit opt-in until the T+7d promotion.
+        try:
+            res = wai.isolate_current_work(reason="w9_drift")
+        except Exception:
+            wai.emit_telemetry(candidates=1, checked=1, skipped=0,
+                               skip_reasons=[], outcome="error", drift=drift)
+            return
+        wai.emit_telemetry(candidates=1, checked=1, skipped=0,
+                           skip_reasons=[], outcome=res.result, drift=drift)
+        print("", file=sys.stderr)
+        if res.result == "isolated":
+            print(f"   ✅ W9 auto-isolated your uncommitted work into: {res.worktree}", file=sys.stderr)
+            print(f"      cd {res.worktree}  — your changes are there, on the correct branch.", file=sys.stderr)
+        else:
+            print(f"   ⚠️  W9 auto-isolation did not complete: {res.result} ({res.reason}).", file=sys.stderr)
+            if res.stash_ref:
+                print(f"      Your work is preserved in {res.stash_ref} — recover with: git stash apply {res.stash_ref}", file=sys.stderr)
+        print("", file=sys.stderr)
+        return
+
+    # Default advisory: OFFER (don't act). Print the exact pre-filled command.
+    wai.emit_telemetry(candidates=1, checked=0, skipped=1,
+                       skip_reasons=["offer_not_acted"], outcome="offer", drift=drift)
+    feat = feature or "<active-feature>"
+    print("", file=sys.stderr)
+    print("   💡 W9 can auto-isolate this work into its own worktree so the drift", file=sys.stderr)
+    print("      can't reach it. Run either:", file=sys.stderr)
+    print(f"        CLAUDE_W9_AUTO_ISOLATE=1  (then re-run any command — auto-isolates)", file=sys.stderr)
+    print(f"        python3 scripts/create-isolated-worktree.py --feature {feat} --create-if-missing", file=sys.stderr)
+    print("", file=sys.stderr)
+
+
 def main() -> int:
     if os.environ.get("CLAUDE_W9_DISABLE_DRIFT_CHECK") == "1":
         return 0
@@ -120,6 +209,13 @@ def main() -> int:
     print("", file=sys.stderr)
     print("   Full playbook: .claude/integrity/observed-patterns.md (W9)", file=sys.stderr)
     print("", file=sys.stderr)
+
+    # W9 drift-triggered auto-isolation (feature w9-drift-triggered-auto-isolation, T2).
+    # Fail-safe: never raises; degrades to warn-only on any error.
+    try:
+        _escalate_on_drift(expected, branch)
+    except Exception:
+        pass
 
     # Update the state to current to avoid spamming on subsequent calls
     STATE_FILE.write_text(branch + "\n")
