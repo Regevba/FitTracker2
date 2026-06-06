@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-06T04:29:18Z",
-  "updated_at": "2026-06-06T05:19:11Z",
+  "updated_at": "2026-06-06T07:11:11Z",
   "events": [
     {
       "timestamp": "2026-06-06T04:29:18Z",
@@ -133,6 +133,19 @@
       "metrics": {
         "tests_passing": 19
       },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T07:11:11Z",
+      "event_type": "phase_approved",
+      "phase": "complete",
+      "summary": "Feature complete. Phase 1 (#648 drift-reactive) + Phase 2 (#649 concurrency-proactive advisory) merged. 19/19 tests; case study + calibration written; kill_criteria_resolution recorded.",
+      "artifacts": [
+        "docs/case-studies/w9-drift-triggered-auto-isolation-case-study.md"
+      ],
+      "metrics": {},
       "actor": "claude_opus_4_8",
       "status": "recorded",
       "recording_mode": "contemporaneous"
