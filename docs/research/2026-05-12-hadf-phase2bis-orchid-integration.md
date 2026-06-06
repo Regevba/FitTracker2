@@ -1,5 +1,7 @@
 # HADF Phase 2-bis ↔ ORCHID Integration + Framework-Plan Alignment
 
+> **UPDATE 2026-06-05 — forks RESOLVED.** This is the 2026-05-12 *planning* note; the per-sub-exp "most-likely-touched units" / "expected delta" forks below are now resolved by the closed verdicts (all 4 sub-exps PASS): Sub-exp 2 SEPARABLE → **U7 8×8 compute-bound** + **U3 local-fits-RAM**; Sub-exp 3 SURVIVED (delta_ratio 2.89) → **BUILD U2 routing-class field + U6 multi-routing coherence**. Authoritative resolution: [`2026-05-29-hadf-activation-orchid-validation-analysis.md`](2026-05-29-hadf-activation-orchid-validation-analysis.md) (CONFIRMED overlay) + [`HADF-SOURCE-OF-TRUTH.md` §-1](../../.claude/shared/hadf/HADF-SOURCE-OF-TRUTH.md). Capstone: fitme-story `37-orchid-research-arc.mdx`.
+
 **Status:** consolidation note · supplementary to the v7.8.5 → v8.2 implementation plan
 **Created:** 2026-05-12 (evening, post-PR #316/#317/#318/#319/#320/#321)
 **Purpose:** (1) align the HADF Phase 2-bis project with the [Calibration Protocol](../master-plan/infra-master-plan-2026-05-12.md#35-calibration-protocol-for-new-layers) + external audit cadence introduced 2026-05-12; (2) add a per-phase **ORCHID analysis report** template so HADF's empirical hardware-fingerprinting evidence feeds ORCHID v2 design decisions phase-by-phase, not just at the synthesis stage; (3) document current hardware constraints (Chisel toolchain not installed → RTL blocked) and the research-advancement strategy that works within them.
