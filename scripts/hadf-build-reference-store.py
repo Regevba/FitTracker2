@@ -85,6 +85,9 @@ def main():
                         "retry artifacts (NOT streaming-latency samples). Default 30s drops only "
                         "the Sub-exp 1B Fire-0 launch-probe stalls (995s/886s/124s) whose variance "
                         "would otherwise swallow the per-endpoint covariance.")
+    p.add_argument("--class", dest="substrate_class", choices=["cloud", "on_device"], default="cloud",
+                   help="substrate class stamped on every emitted endpoint (on_device for the "
+                        "calibration harness; default cloud). See integration-spec.md §3.2.")
     args = p.parse_args()
 
     ttft = defaultdict(list)
@@ -126,6 +129,9 @@ def main():
                     [round(float(cov[1][0]), 6), round(float(cov[1][1]), 6)]],
             "provenance": {"sub_exps": sorted(subexps[key]), "n_source_files": len(sources[key]),
                            "dropped_implausible_ttft": dropped.get(key, 0)},
+            # signature-expansion T2: rows produced by this builder are MEASURED.
+            "calibration_status": "instrumented",
+            "class": args.substrate_class,
         })
 
     store = {

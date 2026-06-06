@@ -3,7 +3,7 @@
   "built_as_of": "2026-06-05",
   "source": "HADF Phase 2-bis closed collections (Sub-exps 1/2/3/1B, all PASS 2026-06-05)",
   "note": "Sensing-layer reference baseline. Detection/observability ONLY \u2014 no dispatch decisions (acting layer gated on RQ4 / Phase 3B).",
-  "endpoint_count": 8,
+  "endpoint_count": 9,
   "min_n": 50,
   "max_ttft_s": 30.0,
   "dropped_implausible_ttft_total": 7,
@@ -62,7 +62,9 @@
         ],
         "n_source_files": 13,
         "dropped_implausible_ttft": 0
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
     },
     {
       "provider": "anthropic",
@@ -107,7 +109,9 @@
         ],
         "n_source_files": 31,
         "dropped_implausible_ttft": 3
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
     },
     {
       "provider": "anthropic",
@@ -151,7 +155,9 @@
         ],
         "n_source_files": 13,
         "dropped_implausible_ttft": 3
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
     },
     {
       "provider": "aws-bedrock",
@@ -195,7 +201,9 @@
         ],
         "n_source_files": 15,
         "dropped_implausible_ttft": 0
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
     },
     {
       "provider": "google",
@@ -239,7 +247,9 @@
         ],
         "n_source_files": 16,
         "dropped_implausible_ttft": 0
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
     },
     {
       "provider": "ollama",
@@ -282,8 +292,11 @@
           "subexp2"
         ],
         "n_source_files": 16,
-        "dropped_implausible_ttft": 0
-      }
+        "dropped_implausible_ttft": 0,
+        "note": "Sub-exp 2 host: M2 (on-device)"
+      },
+      "calibration_status": "instrumented",
+      "class": "on_device"
     },
     {
       "provider": "openai",
@@ -327,7 +340,9 @@
         ],
         "n_source_files": 13,
         "dropped_implausible_ttft": 0
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
     },
     {
       "provider": "openai",
@@ -372,7 +387,56 @@
         ],
         "n_source_files": 28,
         "dropped_implausible_ttft": 1
-      }
+      },
+      "calibration_status": "instrumented",
+      "class": "cloud"
+    },
+    {
+      "provider": "on-device",
+      "endpoint": "apple_m4",
+      "n": 80,
+      "ttft_s": {
+        "p05": 0.090006,
+        "p25": 0.091489,
+        "median": 0.094915,
+        "p75": 0.104317,
+        "p95": 0.128498,
+        "mean": 0.100251,
+        "std": 0.014286
+      },
+      "tps": {
+        "p05": 39.065017,
+        "p25": 40.487123,
+        "median": 41.018401,
+        "p75": 41.464304,
+        "p95": 41.843429,
+        "mean": 40.764991,
+        "std": 1.076785
+      },
+      "mean": [
+        0.100251,
+        40.764991
+      ],
+      "cov": [
+        [
+          0.000207,
+          -0.00745
+        ],
+        [
+          -0.00745,
+          1.174142
+        ]
+      ],
+      "provenance": {
+        "method": "hadf-calibrate-device",
+        "host": "apple_m4",
+        "model": "llama3.2:3b",
+        "as_of": "2026-06-05",
+        "n_requested": 80,
+        "n_valid": 80
+      },
+      "calibration_status": "instrumented",
+      "class": "on_device"
     }
   ]
 }
