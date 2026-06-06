@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-06T04:29:18Z",
-  "updated_at": "2026-06-06T04:51:25Z",
+  "updated_at": "2026-06-06T05:19:11Z",
   "events": [
     {
       "timestamp": "2026-06-06T04:29:18Z",
@@ -119,6 +119,19 @@
       "artifacts": [],
       "metrics": {
         "tests_passing": 11
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T05:19:11Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "Phase 2 implemented (advisory): T6 another_session_live() lease-freshness (TTL); T7 concurrency_isolation_decision() advisory; T8 w9_concurrency_check.py PostToolUse:Edit|Write hook wired in settings.json; T9 8 concurrency tests; T10 calibration.md (T+14d 4-criteria). 19/19 tests pass.",
+      "artifacts": [],
+      "metrics": {
+        "tests_passing": 19
       },
       "actor": "claude_opus_4_8",
       "status": "recorded",

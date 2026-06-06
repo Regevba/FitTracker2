@@ -289,3 +289,5 @@ When an item closes, strike through the row + add `**Closed YYYY-MM-DD** via <ac
 - **Adding an item:** drop a row in the right table + a short section. Keep the doc under 200 lines.
 - **Closing an item:** strike through the row + add `**Closed YYYY-MM-DD** via <PR or commit ref>`. Do NOT delete — historical visibility matters.
 - **Cron link:** daily-checkpoint surfaces upcoming dates from this file (≤14 days). Update [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py) if you add new date fields not following the table schema.
+
+- **W9 Phase 2 concurrency calibration (T+14d)** — review the 4 advisory→enforced criteria for `CLAUDE_W9_CONCURRENCY_ENFORCE` default-on. See `.claude/features/w9-drift-triggered-auto-isolation/calibration.md`. Target window: ~2026-06-20.
