@@ -36,8 +36,25 @@ def mahalanobis(point, mean, cov):
 
 
 def attest(ttft, tps, store):
+    # Guardrail (signature-expansion T2): a `prior_unvalidated` row (spec-sheet
+    # profile) is NEVER a candidate — it must never be returned as a confident
+    # match. Rows that are explicitly instrumented OR untagged (legacy/pre-migration
+    # stores, which were all-measured) remain candidates; the catalog migration
+    # ensures every production row is explicitly tagged. See integration-spec §4.2.
+    candidates = [e for e in store["endpoints"]
+                  if e.get("calibration_status") != "prior_unvalidated"]
+    excluded_priors = len(store["endpoints"]) - len(candidates)
+    if not candidates:
+        return {
+            "observed": {"ttft_s": ttft, "tps": tps},
+            "attestation": "no measured reference available",
+            "confidence_band": "uncertain",
+            "advisory": True,
+            "excluded_priors": excluded_priors,
+            "caveat": "Reference store has no instrumented rows — nearest priors are not measured matches.",
+        }
     scored = []
-    for e in store["endpoints"]:
+    for e in candidates:
         d = mahalanobis([ttft, tps], e["mean"], e["cov"])
         scored.append((d, e["provider"], e["endpoint"]))
     scored.sort()
@@ -57,6 +74,7 @@ def attest(ttft, tps, store):
         "best_distance_sigma": round(best_d, 3),
         "second_best_sigma": round(second_d, 3),
         "advisory": True,
+        "excluded_priors": excluded_priors,
         "caveat": "Single-shot accuracy unvalidated (RQ5). Do NOT route on this. Detection-only.",
     }
 

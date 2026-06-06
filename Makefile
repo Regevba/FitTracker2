@@ -842,3 +842,23 @@ hadf-drift-monitor:
 	@if [ -z "$(WINDOW)" ]; then \
 		echo "Usage: make hadf-drift-monitor WINDOW=<raw.jsonl>"; exit 1; fi
 	python3 scripts/hadf-drift-monitor.py --window $(WINDOW) $(if $(AS_OF),--as-of $(AS_OF),)
+
+# --- signature expansion (v7.9.1+): grow recognition with REAL measured signatures ---
+.PHONY: hadf-migrate-calibration-status hadf-calibrate-device hadf-calibrate-cloud hadf-expand-signatures
+
+hadf-migrate-calibration-status:
+	python3 scripts/hadf-migrate-calibration-status.py
+
+hadf-calibrate-device:
+	@if [ -z "$(DEVICE)" ] || [ -z "$(MODEL)" ]; then \
+		echo "Usage: make hadf-calibrate-device DEVICE=apple_m4 MODEL=llama3.2:3b [N=250]   (local ollama)"; exit 1; fi
+	python3 scripts/hadf-calibrate-device.py --device-label $(DEVICE) --model $(MODEL) --n $(or $(N),250) $(if $(AS_OF),--as-of $(AS_OF),)
+
+hadf-calibrate-cloud:
+	@if [ -z "$(ENDPOINT)" ]; then \
+		echo "Usage: make hadf-calibrate-cloud ENDPOINT=openai:gpt-4.1-mini [N=80] [ENV_FILE=...]   (live, paid)"; exit 1; fi
+	python3 scripts/hadf-calibrate-cloud.py --endpoint $(ENDPOINT) --n $(or $(N),80) $(if $(ENV_FILE),--env-file $(ENV_FILE),) $(if $(AS_OF),--as-of $(AS_OF),)
+
+# One-command experiment: device + cloud endpoints from the manifest. Cloud = paid.
+hadf-expand-signatures:
+	bash scripts/hadf-signature-expansion-run.sh $(if $(DRY_RUN),--dry-run,)

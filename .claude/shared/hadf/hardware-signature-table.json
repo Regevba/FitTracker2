@@ -1,141 +1,285 @@
 {
   "version": "1.1",
   "updated": "2026-05-02",
-  "description": "Cloud inference hardware signatures for HADF Layer 2 classification. Values are illustrative ranges requiring empirical calibration. v1.1 (2026-05-02) adds 4 Tier-1 datacenter signatures (B300, Trainium3, TPU v7 Ironwood, MI350X) + Groq LPU with vendor_status='acquired_by:nvidia' (Dec 2025 acquisition), and adds a vendor_status field to every existing signature. See docs/research/2026-04-28-hadf-signature-expansion.md §3 for the source landscape and §6 for known classification-schema gaps (precision_class, bandwidth_probe_ratio, container_vs_bare_metal_variance) that remain open.",
+  "description": "Cloud inference hardware signatures for HADF Layer 2 classification. Values are illustrative ranges requiring empirical calibration. v1.1 (2026-05-02) adds 4 Tier-1 datacenter signatures (B300, Trainium3, TPU v7 Ironwood, MI350X) + Groq LPU with vendor_status='acquired_by:nvidia' (Dec 2025 acquisition), and adds a vendor_status field to every existing signature. See docs/research/2026-04-28-hadf-signature-expansion.md \u00a73 for the source landscape and \u00a76 for known classification-schema gaps (precision_class, bandwidth_probe_ratio, container_vs_bare_metal_variance) that remain open.",
   "calibration_status": "uncalibrated",
-  "calibration_notes": "Phase 2 (silhouette 0.5566 at k=5, 700 valid records, 2026-05-01) validated that mechanical clustering on (TTFT, TPS, COV, batch-scaling) discriminates endpoints — but only directly exercised 2 model endpoints (openai gpt-4o-mini, anthropic claude-haiku-4-5), which map to ~2-3 of these signatures. The remaining signatures here are still uncalibrated. Phase 2-bis (Track 5) with a broader endpoint matrix is gated on the architectural fixes in project_post_hadf_phase2_followup_tracks.md.",
+  "calibration_notes": "Phase 2 (silhouette 0.5566 at k=5, 700 valid records, 2026-05-01) validated that mechanical clustering on (TTFT, TPS, COV, batch-scaling) discriminates endpoints \u2014 but only directly exercised 2 model endpoints (openai gpt-4o-mini, anthropic claude-haiku-4-5), which map to ~2-3 of these signatures. The remaining signatures here are still uncalibrated. Phase 2-bis (Track 5) with a broader endpoint matrix is gated on the architectural fixes in project_post_hadf_phase2_followup_tracks.md.",
   "signatures": {
     "nvidia_h100_class": {
       "vendor": "nvidia",
       "vendor_status": "independent",
       "chip": "H100 SXM",
       "generation": "hopper",
-      "ttft_per_1k_tokens_ms": { "min": 45, "max": 65 },
-      "tps_median": { "min": 80, "max": 120 },
-      "tps_cov": { "max": 0.08 },
-      "batch_scaling_factor": { "min": 0.92, "max": 0.98 },
-      "notes": "Dominant cloud GPU. High throughput, low variance, excellent batch scaling. FP8 Transformer Engine."
+      "ttft_per_1k_tokens_ms": {
+        "min": 45,
+        "max": 65
+      },
+      "tps_median": {
+        "min": 80,
+        "max": 120
+      },
+      "tps_cov": {
+        "max": 0.08
+      },
+      "batch_scaling_factor": {
+        "min": 0.92,
+        "max": 0.98
+      },
+      "notes": "Dominant cloud GPU. High throughput, low variance, excellent batch scaling. FP8 Transformer Engine.",
+      "calibration_status": "prior_unvalidated"
     },
     "nvidia_a100_class": {
       "vendor": "nvidia",
       "vendor_status": "independent",
       "chip": "A100",
       "generation": "ampere",
-      "ttft_per_1k_tokens_ms": { "min": 70, "max": 100 },
-      "tps_median": { "min": 55, "max": 80 },
-      "tps_cov": { "max": 0.10 },
-      "batch_scaling_factor": { "min": 0.88, "max": 0.95 },
-      "notes": "Previous gen cloud GPU. Still common in cost-optimized deployments."
+      "ttft_per_1k_tokens_ms": {
+        "min": 70,
+        "max": 100
+      },
+      "tps_median": {
+        "min": 55,
+        "max": 80
+      },
+      "tps_cov": {
+        "max": 0.1
+      },
+      "batch_scaling_factor": {
+        "min": 0.88,
+        "max": 0.95
+      },
+      "notes": "Previous gen cloud GPU. Still common in cost-optimized deployments.",
+      "calibration_status": "prior_unvalidated"
     },
     "nvidia_b300_class": {
       "vendor": "nvidia",
       "vendor_status": "independent",
       "chip": "B300",
       "generation": "blackwell-ultra",
-      "ttft_per_1k_tokens_ms": { "min": 25, "max": 45 },
-      "tps_median": { "min": 150, "max": 250 },
-      "tps_cov": { "max": 0.06 },
-      "batch_scaling_factor": { "min": 0.95, "max": 0.99 },
-      "notes": "Shipping since Jan 2026. 288 GB HBM3e, 15 PFLOPS dense FP4, 1400W. GB300 NVL72 racks. Expected to be ~4x B200 cloud volume by mid-2026."
+      "ttft_per_1k_tokens_ms": {
+        "min": 25,
+        "max": 45
+      },
+      "tps_median": {
+        "min": 150,
+        "max": 250
+      },
+      "tps_cov": {
+        "max": 0.06
+      },
+      "batch_scaling_factor": {
+        "min": 0.95,
+        "max": 0.99
+      },
+      "notes": "Shipping since Jan 2026. 288 GB HBM3e, 15 PFLOPS dense FP4, 1400W. GB300 NVL72 racks. Expected to be ~4x B200 cloud volume by mid-2026.",
+      "calibration_status": "prior_unvalidated"
     },
     "google_tpu_v5e_class": {
       "vendor": "google",
       "vendor_status": "independent",
       "chip": "TPU v5e",
       "generation": "v5e",
-      "ttft_per_1k_tokens_ms": { "min": 50, "max": 75 },
-      "tps_median": { "min": 70, "max": 100 },
-      "tps_cov": { "max": 0.12 },
-      "batch_scaling_factor": { "min": 0.95, "max": 0.99 },
-      "notes": "Anthropic primary inference hardware. Excellent batch scaling due to systolic array architecture."
+      "ttft_per_1k_tokens_ms": {
+        "min": 50,
+        "max": 75
+      },
+      "tps_median": {
+        "min": 70,
+        "max": 100
+      },
+      "tps_cov": {
+        "max": 0.12
+      },
+      "batch_scaling_factor": {
+        "min": 0.95,
+        "max": 0.99
+      },
+      "notes": "Anthropic primary inference hardware. Excellent batch scaling due to systolic array architecture.",
+      "calibration_status": "prior_unvalidated"
     },
     "google_tpu_v4_class": {
       "vendor": "google",
       "vendor_status": "independent",
       "chip": "TPU v4",
       "generation": "v4",
-      "ttft_per_1k_tokens_ms": { "min": 60, "max": 90 },
-      "tps_median": { "min": 50, "max": 75 },
-      "tps_cov": { "max": 0.15 },
-      "batch_scaling_factor": { "min": 0.90, "max": 0.96 },
-      "notes": "Previous gen TPU. Higher variance than v5e."
+      "ttft_per_1k_tokens_ms": {
+        "min": 60,
+        "max": 90
+      },
+      "tps_median": {
+        "min": 50,
+        "max": 75
+      },
+      "tps_cov": {
+        "max": 0.15
+      },
+      "batch_scaling_factor": {
+        "min": 0.9,
+        "max": 0.96
+      },
+      "notes": "Previous gen TPU. Higher variance than v5e.",
+      "calibration_status": "prior_unvalidated"
     },
     "google_tpu_v7_ironwood_class": {
       "vendor": "google",
       "vendor_status": "independent",
       "chip": "TPU v7 Ironwood",
       "generation": "v7",
-      "ttft_per_1k_tokens_ms": { "min": 30, "max": 55 },
-      "tps_median": { "min": 120, "max": 180 },
-      "tps_cov": { "max": 0.08 },
-      "batch_scaling_factor": { "min": 0.96, "max": 0.99 },
-      "notes": "GA Nov 2025. Inference-optimized (distinct from Trillium training role). Anthropic committed >1M units in 2026 — expected to dominate Anthropic cloud inference by H2 2026."
+      "ttft_per_1k_tokens_ms": {
+        "min": 30,
+        "max": 55
+      },
+      "tps_median": {
+        "min": 120,
+        "max": 180
+      },
+      "tps_cov": {
+        "max": 0.08
+      },
+      "batch_scaling_factor": {
+        "min": 0.96,
+        "max": 0.99
+      },
+      "notes": "GA Nov 2025. Inference-optimized (distinct from Trillium training role). Anthropic committed >1M units in 2026 \u2014 expected to dominate Anthropic cloud inference by H2 2026.",
+      "calibration_status": "prior_unvalidated"
     },
     "aws_trainium2_class": {
       "vendor": "aws",
       "vendor_status": "independent",
       "chip": "Trainium 2",
       "generation": "trn2",
-      "ttft_per_1k_tokens_ms": { "min": 55, "max": 80 },
-      "tps_median": { "min": 65, "max": 90 },
-      "tps_cov": { "max": 0.10 },
-      "batch_scaling_factor": { "min": 0.91, "max": 0.97 },
-      "notes": "AWS custom silicon. Used by Anthropic on AWS deployments."
+      "ttft_per_1k_tokens_ms": {
+        "min": 55,
+        "max": 80
+      },
+      "tps_median": {
+        "min": 65,
+        "max": 90
+      },
+      "tps_cov": {
+        "max": 0.1
+      },
+      "batch_scaling_factor": {
+        "min": 0.91,
+        "max": 0.97
+      },
+      "notes": "AWS custom silicon. Used by Anthropic on AWS deployments.",
+      "calibration_status": "prior_unvalidated"
     },
     "aws_trainium3_class": {
       "vendor": "aws",
       "vendor_status": "independent",
       "chip": "Trainium 3",
       "generation": "trn3",
-      "ttft_per_1k_tokens_ms": { "min": 35, "max": 60 },
-      "tps_median": { "min": 110, "max": 170 },
-      "tps_cov": { "max": 0.08 },
-      "batch_scaling_factor": { "min": 0.94, "max": 0.99 },
-      "notes": "GA Dec 2025, EC2 Trn3 UltraServers. Native MXFP8 + MXFP4 + structured sparsity. 144 GB HBM3e. First non-Nvidia chip with both microscaled formats."
+      "ttft_per_1k_tokens_ms": {
+        "min": 35,
+        "max": 60
+      },
+      "tps_median": {
+        "min": 110,
+        "max": 170
+      },
+      "tps_cov": {
+        "max": 0.08
+      },
+      "batch_scaling_factor": {
+        "min": 0.94,
+        "max": 0.99
+      },
+      "notes": "GA Dec 2025, EC2 Trn3 UltraServers. Native MXFP8 + MXFP4 + structured sparsity. 144 GB HBM3e. First non-Nvidia chip with both microscaled formats.",
+      "calibration_status": "prior_unvalidated"
     },
     "amd_mi300x_class": {
       "vendor": "amd",
       "vendor_status": "independent",
       "chip": "MI300X",
       "generation": "cdna3",
-      "ttft_per_1k_tokens_ms": { "min": 50, "max": 70 },
-      "tps_median": { "min": 75, "max": 105 },
-      "tps_cov": { "max": 0.09 },
-      "batch_scaling_factor": { "min": 0.93, "max": 0.98 },
-      "notes": "High memory bandwidth. Competitive with H100 on large models. 192 GB HBM3."
+      "ttft_per_1k_tokens_ms": {
+        "min": 50,
+        "max": 70
+      },
+      "tps_median": {
+        "min": 75,
+        "max": 105
+      },
+      "tps_cov": {
+        "max": 0.09
+      },
+      "batch_scaling_factor": {
+        "min": 0.93,
+        "max": 0.98
+      },
+      "notes": "High memory bandwidth. Competitive with H100 on large models. 192 GB HBM3.",
+      "calibration_status": "prior_unvalidated"
     },
     "amd_mi350x_class": {
       "vendor": "amd",
       "vendor_status": "independent",
       "chip": "MI350X",
       "generation": "cdna4",
-      "ttft_per_1k_tokens_ms": { "min": 35, "max": 60 },
-      "tps_median": { "min": 110, "max": 170 },
-      "tps_cov": { "max": 0.08 },
-      "batch_scaling_factor": { "min": 0.94, "max": 0.99 },
-      "notes": "H2 2025 GA. First AMD chip with FP4 + FP6 + FP8 (MX) + OCP FP8. 288 GB HBM3E @ 8 TB/s. ROCm 7 unifies datacenter + consumer + Windows stacks."
+      "ttft_per_1k_tokens_ms": {
+        "min": 35,
+        "max": 60
+      },
+      "tps_median": {
+        "min": 110,
+        "max": 170
+      },
+      "tps_cov": {
+        "max": 0.08
+      },
+      "batch_scaling_factor": {
+        "min": 0.94,
+        "max": 0.99
+      },
+      "notes": "H2 2025 GA. First AMD chip with FP4 + FP6 + FP8 (MX) + OCP FP8. 288 GB HBM3E @ 8 TB/s. ROCm 7 unifies datacenter + consumer + Windows stacks.",
+      "calibration_status": "prior_unvalidated"
     },
     "groq_lpu_class": {
       "vendor": "groq",
       "vendor_status": "acquired_by:nvidia",
       "chip": "LPU",
       "generation": "lpu",
-      "ttft_per_1k_tokens_ms": { "min": 15, "max": 35 },
-      "tps_median": { "min": 200, "max": 500 },
-      "tps_cov": { "max": 0.05 },
-      "batch_scaling_factor": { "min": 0.88, "max": 0.95 },
-      "notes": "Deterministic-streaming dataflow architecture; very low TTFT and very high TPS for small/medium models. Nvidia acquired Groq Dec 2025 ($20B). Independent target uncertain going forward — dispatch should treat Groq endpoints as Nvidia-controlled and decay weight on long-term independence assumptions."
+      "ttft_per_1k_tokens_ms": {
+        "min": 15,
+        "max": 35
+      },
+      "tps_median": {
+        "min": 200,
+        "max": 500
+      },
+      "tps_cov": {
+        "max": 0.05
+      },
+      "batch_scaling_factor": {
+        "min": 0.88,
+        "max": 0.95
+      },
+      "notes": "Deterministic-streaming dataflow architecture; very low TTFT and very high TPS for small/medium models. Nvidia acquired Groq Dec 2025 ($20B). Independent target uncertain going forward \u2014 dispatch should treat Groq endpoints as Nvidia-controlled and decay weight on long-term independence assumptions.",
+      "calibration_status": "prior_unvalidated"
     },
     "cpu_fallback_class": {
       "vendor": "generic",
       "vendor_status": "independent",
       "chip": "CPU",
       "generation": "any",
-      "ttft_per_1k_tokens_ms": { "min": 200, "max": 999 },
-      "tps_median": { "min": 10, "max": 30 },
-      "tps_cov": { "max": 999 },
-      "batch_scaling_factor": { "min": 0.60, "max": 0.80 },
-      "notes": "Catch-all for non-accelerated inference. Very slow. Should trigger quality concerns. Distinct from 'CPU with matrix unit' (Granite Rapids AMX, EPYC Turin AVX-512+VNNI) which is faster — see docs/research/2026-04-28-hadf-signature-expansion.md §4 for the proposed server_cpu_profiles bucket (deferred to a future PR)."
+      "ttft_per_1k_tokens_ms": {
+        "min": 200,
+        "max": 999
+      },
+      "tps_median": {
+        "min": 10,
+        "max": 30
+      },
+      "tps_cov": {
+        "max": 999
+      },
+      "batch_scaling_factor": {
+        "min": 0.6,
+        "max": 0.8
+      },
+      "notes": "Catch-all for non-accelerated inference. Very slow. Should trigger quality concerns. Distinct from 'CPU with matrix unit' (Granite Rapids AMX, EPYC Turin AVX-512+VNNI) which is faster \u2014 see docs/research/2026-04-28-hadf-signature-expansion.md \u00a74 for the proposed server_cpu_profiles bucket (deferred to a future PR).",
+      "calibration_status": "prior_unvalidated"
     }
   },
   "classification": {
@@ -143,7 +287,7 @@
     "min_calls_to_classify": 5,
     "confident_at_calls": 15,
     "reclassify_trigger": {
-      "tps_drop_pct": 0.20,
+      "tps_drop_pct": 0.2,
       "ttft_spike_multiplier": 2.0
     }
   }
