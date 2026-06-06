@@ -18,7 +18,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
-| `#22` | v7.5 pipeline regression test decay — fixture rot | no | Update scripts/tests/test-v7-5-pipeline.sh fixtures to satisfy new required gates; run make test-v7-5-pipeline. |
+| `#22` | v7.5 pipeline regression test decay — fixture rot | no | Update scripts/test-v7-5-pipeline.sh fixtures to satisfy new required gates; run make test-v7-5-pipeline. |
 | `W21` | Swift String.contains("\n") misses CRLF graphemes — scan unicodeScalars | yes | Scan unicodeScalars (not graphemes) for ASCII control chars like CR/LF in Swift. |
 | `W22` | Swift type-checker timeout on heterogeneous array literals >20 elements | yes | Pre-compute each cell as a String local; use .map { String($0) } closure form for Optionals. |
 | `W23` | AnalyticsService.logEvent is private — callers must use a log* method | yes | logEvent is private — add a named log* method, or use #if DEBUG print for can't-happen paths. |

@@ -397,7 +397,7 @@ Each entry follows the format:
 
 ### #22 v7.5 pipeline regression test decay — late-discovered fixture rot
 
-**Trigger:** `scripts/tests/test-v7-5-pipeline.sh` fixtures fail because new gates require fields the fixtures don't have.
+**Trigger:** `scripts/test-v7-5-pipeline.sh` fixtures fail because new gates require fields the fixtures don't have.
 
 **Why expected:** Pre-v7.7, fixtures didn't include v7.7-required gates (`STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`). Test broke silently because pipeline only ran on framework-PR opens, not nightly.
 
