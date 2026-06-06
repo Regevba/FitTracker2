@@ -26,8 +26,9 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `W18` | Default-URL OG image silent-404 | no | Point the default OG image URL at the Next.js convention route; unit-test that the URL resolves. |
 | `W19` | Env-var trailing newline corrupts runtime string | no | Trim string env vars at the boundary (process.env.X?.trim()) to strip trailing newlines. |
 | `W31` | Workflow delivery anomaly: initial pull_request:opened sometimes fires only the dynamic/skip-path workflows; rebase + force-push triggers full set | no | If a PR open fires fewer than the usual 11-12 checks, run `git rebase origin/main` + `git push --force-with-lease`. close+reopen does NOT reliably re-trigger. Workaround documented as a PR-flow protocol; durable fix queued (CI assertion of expected workflow set). |
+| `W34` | PR cache window truncation past the 500-PR limit *(probed)* | yes | Verify the cache window covers the historically-cited PR range: `python3 -c "import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 — covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set). |
 
-At activation run `make skill-preflight SKILL=ops` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
+At activation run `make skill-preflight SKILL=ops` — probes the 2 mechanized blockers for this work type; clear any before proceeding.
 
 **Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
 <!-- END pattern-preflight -->

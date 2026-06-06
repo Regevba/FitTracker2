@@ -690,5 +690,18 @@
       "pm-workflow"
     ],
     "remediation": "For single-phase framework features (e.g., sub-fixes shipping their own unit tests in-phase), call `python3 scripts/close-feature.py <feature> --force-incomplete` directly. The `make close-feature` target does NOT pass --force-incomplete through. Durable script-heuristic patch queued in backlog Framework hygiene."
+  },
+  {
+    "id": "W34",
+    "title": "PR cache window truncation past the 500-PR limit",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "mechanized",
+    "autoheal": true,
+    "skills": [
+      "dev",
+      "ops"
+    ],
+    "remediation": "Verify the cache window covers the historically-cited PR range: `python3 -c \"import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))\"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 \u2014 covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set)."
   }
 ]

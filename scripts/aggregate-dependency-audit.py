@@ -141,8 +141,13 @@ def main() -> int:
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
 
-    Path(args.output_md).write_text(render_markdown(by_subdir, totals, swift))
-    Path(args.output_json).write_text(json.dumps(payload, indent=2))
+    # Trailing newline is REQUIRED: the consuming workflow pipes this file into
+    # $GITHUB_ENV via a heredoc (`cat audit-summary.md; echo "DIGEST_EOF"`). Without
+    # it, the closing delimiter glues onto the last markdown line and GitHub's
+    # env-file parser fails with "Matching delimiter not found" — failing the step
+    # on every run regardless of vulnerability count.
+    Path(args.output_md).write_text(render_markdown(by_subdir, totals, swift) + "\n")
+    Path(args.output_json).write_text(json.dumps(payload, indent=2) + "\n")
 
     print(render_markdown(by_subdir, totals, swift))
     return 0
