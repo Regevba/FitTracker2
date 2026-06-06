@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-06-05T03:53:45Z",
+  "updated": "2026-06-05T06:06:22Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 97,
@@ -54,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 21,
-      "missing": 76,
-      "percent": 21.6,
+      "present": 23,
+      "missing": 74,
+      "percent": 23.7,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
