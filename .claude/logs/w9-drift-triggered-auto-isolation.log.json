@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "feature": "w9-drift-triggered-auto-isolation",
+  "title": "w9 drift triggered auto isolation",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-06T04:29:18Z",
+  "updated_at": "2026-06-06T04:31:29Z",
+  "events": [
+    {
+      "timestamp": "2026-06-06T04:29:18Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 opened. Ran brainstorm-pm problem mode (locked system-problem framing) + three-option mode (trigger-threshold trade-off: drift-reactive / concurrency-proactive / always-isolate). Wrote research.md + brainstorm block to state.json.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:31:29Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (research) approved. Operator picked phased rollout 1->2 (Option 1 drift-reactive + Option 2 concurrency-proactive; Option 3 deferred). Advancing to PRD.",
+      "artifacts": [
+        ".claude/features/w9-drift-triggered-auto-isolation/research.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-06T04:31:29Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened after Phase 0 approval.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
