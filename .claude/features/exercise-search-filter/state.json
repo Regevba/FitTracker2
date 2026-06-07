@@ -3,6 +3,8 @@
   "description": "Add a searchable + filterable exercise library surface on top of the existing TrainingProgramData.allExercises catalog (~50 exercises in the v1 program; ~87 unique post-import-training-plan v1 mapper). Today the catalog is consumed silently — TrainingPlanView shows the day's exercises but there's no UI to discover all available exercises, filter by muscle/equipment/category, or search by name. C3 builds a sheet-based ExerciseLibraryView with: (a) live text search across name + muscle keywords, (b) horizontal scrolling filter chips for muscle group + equipment + category, (c) one-tap exercise detail with coaching cue + sets/reps/rest, (d) optional 'add to today' affordance gated on the v2 training surface. Closes backlog L347 (RICE 8.0, 2-3d Feature 9-phase).",
   "work_type": "feature",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-06-01T19:30:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",

@@ -1,6 +1,8 @@
 {
   "feature_name": "framework-w30-w31-w32-durable-fixes",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-05T06:00:00Z",
   "updated_at": "2026-06-05T06:00:00Z",
   "framework_version": "v7.9.1",

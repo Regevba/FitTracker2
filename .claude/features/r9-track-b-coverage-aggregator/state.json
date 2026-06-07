@@ -1,6 +1,8 @@
 {
   "feature_name": "r9-track-b-coverage-aggregator",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-04T16:40:00Z",
   "updated_at": "2026-06-04T16:40:00Z",
   "framework_version": "v7.9.1",

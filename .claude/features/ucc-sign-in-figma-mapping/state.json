@@ -9,6 +9,8 @@
   "branch": "chore/ucc-sign-in-figma-mapping-reconcile-2026-05-20",
   "state_owner": "ft2",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": true, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "has_ui": true,
   "requires_analytics": false,
   "isolation_opt_out": true,
