@@ -1,0 +1,10 @@
+{
+  "subexp": "subexp3",
+  "closed_at": "2026-06-04T23:30:04Z",
+  "trigger": "15th_fire_reached (auto-close)",
+  "fires": 15,
+  "records": 2250,
+  "collector": "com.fitme.hadf-phase2bis-subexp3",
+  "bootout_rc": 0,
+  "note": "Auto-closed at the post-15th-fire gap midpoint. Collector stopped; data in this worktree + backed up. Verdict + Block C to follow."
+}
