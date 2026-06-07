@@ -7,6 +7,42 @@
 > T-act-iv-pattern-hover) from §Data Contracts + §Acceptance Criteria, plus
 > ~30 additional implementation tasks derived from the 12 FRs + 11 ACs.
 
+## Implementation status (as of 2026-06-07)
+
+**Shipped: 20 of 36 tasks**. The block descriptions below remain the authoritative scope spec; the table here is the rolling status overlay. For PR-level provenance, see `state.json::related_prs`.
+
+| Task | Status | Shipping PR(s) |
+|---|---|---|
+| T-aggregator | ✅ shipped + extended | fitme-story #182 (base) + #203 (HADF Phase 3a hooks block) |
+| T-versions-mirror, T-adoption-mirror, T-pattern-skill-mirror | ✅ shipped | fitme-story #183 |
+| T-snapshot-loader | ✅ shipped | fitme-story #184 |
+| T-primitive-chambers, T-primitive-terrain, T-primitive-signage, T-primitive-motion | ✅ shipped | fitme-story #185 (4.B pipeline) |
+| T-act1-threshold, T-act2-emergence, T-act3-architecture, T-act4-gate-firings, T-act5-measurement, T-act6-legacy | ✅ shipped | fitme-story #186–#191 (Acts I–VI) |
+| T-overlay-wiring | ✅ shipped | fitme-story #192 + #193 |
+| T-act-iv-pattern-hover | ✅ shipped | fitme-story #194 (via HoverCard) |
+| T-glossary-tooltips | ✅ shipped | fitme-story #195 |
+| T-pr-link-click | ✅ shipped | fitme-story #194 (via HoverCard `prNumber` prop) |
+| T-fallback-cascade | ✅ shipped | fitme-story #199 |
+| T-route-framework, T-route-control-room | ✅ shipped | fitme-story #196 + #197 |
+| T-bundle-size-check | ✅ shipped | fitme-story #197 |
+| T-ga4-events | ✅ shipped (helpers + scene wiring) | fitme-story #198 (typed helpers) + #201 (ActSequencer wiring) + #202 (scene-side analytics props) |
+| T-comprehension-panel | ✅ shipped | fitme-story #200 |
+| T-hadf-sensing-layer-hooks (aggregator half) | ✅ shipped (path-agnostic) | fitme-story #203 |
+| T-lighthouse-perf URL list | ✅ shipped | fitme-story #204 |
+| T-hero-gate-machinery, T-hero-telemetry-instruments, T-hero-signature-props (×4) | 🔒 gated | visual-direction lock + Blender authoring decision |
+| T-scrub-pause-timedilation | 🔒 gated | Theatre.js v9 compatibility OR alternative path |
+| T-rive-tier-2 | 🔒 gated | operator Rive asset |
+| T-poster-tier-3 | 🔒 gated | operator hero PNG/WebP capture |
+| T-hadf-sensing-layer-hooks (scene consumer half) | 🔒 gated | operator path 1 (Act III chambers) vs path 2 (new sub-Act) decision |
+| T-playwright-ac10, T-playwright-ac11, T-mobile-60fps | 🔒 gated | Playwright browser binary install approval (~200 MB) |
+| T-lighthouse-perf assertion promotion | 🔒 gated | calibration window (currently `warn` @ minScore 0.8; AC-16 target ≥0.95) |
+
+### Production status (2026-06-06)
+
+`/framework/universe` is **temporarily 404'd** in production pending animation polish (operator decision 2026-06-06, shipped via fitme-story PR #205). The R3F scene tree + every shipped task above stays on `main` for iteration; only the user-facing entry point is gated. Re-launch checklist captured inline at [`fitme-story/src/app/framework/universe/page.tsx`](../../../../fitme-story/src/app/framework/universe/page.tsx) (3 steps).
+
+`/control-room/framework/universe` (operator route) stays mounted as the iteration surface.
+
 ## Task structure
 
 Each task block carries:

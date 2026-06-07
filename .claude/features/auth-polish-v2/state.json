@@ -4,6 +4,8 @@
   "updated": "2026-05-02T08:56:10Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "v7.6",

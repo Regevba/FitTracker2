@@ -2,6 +2,8 @@
   "feature": "framework-v7-1-integrity-cycle",
   "feature_name": "framework-v7-1-integrity-cycle",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
   "framework_version": "v7.1",
   "work_type": "Feature",
   "case_study_type": "framework_meta_retroactive",

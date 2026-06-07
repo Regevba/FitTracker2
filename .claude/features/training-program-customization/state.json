@@ -3,6 +3,8 @@
   "description": "Replace the fixed 6-day Push/Pull/Legs split (Models/TrainingProgramData.swift) with a user-defined custom training program. Users can: (a) pick a starting template from the gallery (current PPL, Upper/Lower, Full-body 3x/week, Bro split), (b) edit days (rename / change DayType / reorder), (c) add/remove/reorder exercises within each day from the catalog (depends on C3 read-only library), (d) save multiple programs and switch between them. Existing users keep current PPL until they explicitly create or import a different program — migration is implicit, not destructive. Closes backlog L348 (RICE 7.0, 4-6d Feature 9-phase — LARGEST in tier C carryover).",
   "work_type": "feature",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-06-01T19:50:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",

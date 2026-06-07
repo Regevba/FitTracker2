@@ -9,6 +9,8 @@
   "branch": "chore/ucc-hardening-b12-promote-2026-05-27",
   "state_owner": "ft2",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": false, "backend": true, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "related_prs": [
     410,
     411,

@@ -113,6 +113,18 @@
     "launch_window": "Track A (ship pre-v8.0)"
   },
   "tasks": [],
+  "related_prs": [
+    {"repo": "fitme-story", "n": 198, "title": "T-ga4-events: typed framework_universe_* GA4 helpers", "phase": "4.H", "status": "merged"},
+    {"repo": "fitme-story", "n": 199, "title": "T-fallback-cascade: FR-4 capability detection + tier resolution", "phase": "4.F", "status": "merged"},
+    {"repo": "fitme-story", "n": 200, "title": "T-comprehension-panel: operator dashboard for GA4 Universe events", "phase": "4.H", "status": "merged"},
+    {"repo": "fitme-story", "n": 201, "title": "Phase 4.H wire act_enter + label_hover GA4 events in ActSequencer + HoverCard", "phase": "4.H", "status": "merged", "sha": "ace1cde"},
+    {"repo": "fitme-story", "n": 202, "title": "Phase 4.H propagate analytics props to Act 3 + Act 4 HoverCards", "phase": "4.H", "status": "merged", "sha": "fd02fce"},
+    {"repo": "fitme-story", "n": 203, "title": "Phase 4.I T-aggregator extension — HADF Phase 3a hooks block (path-agnostic)", "phase": "4.I", "status": "merged", "sha": "e7c1b51"},
+    {"repo": "fitme-story", "n": 204, "title": "lighthouse-ci: add /framework + /framework/universe", "phase": "4.J", "status": "merged", "sha": "50e1983"},
+    {"repo": "fitme-story", "n": 205, "title": "temporarily 404 /framework/universe pending animation polish", "phase": "4-disable", "status": "merged", "sha": "3d46664"}
+  ],
+  "prod_status": "temporarily_404 (2026-06-06)",
+  "prod_status_reason": "Operator decision 2026-06-06: animation polish needed before re-launching to the public. R3F scene tree, all primitives, scenes, fallback cascade, analytics wiring, and operator route stay on main so iteration continues. /framework/universe returns notFound(); /framework discovery card removed; /framework/universe dropped from lighthouse-ci URL list. Re-launch checklist captured inline at src/app/framework/universe/page.tsx (3 steps).",
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {
@@ -188,5 +200,5 @@
       "deferred_at": "2026-06-04T19:30:00Z"
     }
   },
-  "updated_at": "2026-06-04T19:30:00Z"
+  "updated_at": "2026-06-07T00:00:00Z"
 }

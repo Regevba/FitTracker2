@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -343,6 +343,26 @@ schema-check:
 # Generate the baseline documentation-debt report used by the control room.
 documentation-debt:
 	python3 scripts/documentation-debt-report.py --output .claude/shared/documentation-debt.json
+
+# Tracking-drift-check (Dev-Env track, 2026-05-24): surface planning rows that
+# claim OPEN (`[ ]` / un-struck RICE row) while their evidence is already on
+# disk (feature state.json == complete, or a self-contradicting ship marker in
+# the row's own title). Advisory only — never blocks. Writes structured
+# findings with --json. Empirically tuned to 0 false positives.
+tracking-drift-check:
+	@python3 scripts/tracking-drift-check.py --json .claude/shared/tracking-drift.json
+
+# F-CONTRACT-FIXTURE-SAMPLING: sample cross-repo data contracts from the
+# CANONICAL producer so consumer tests can't silently drift (closes the W16
+# 2026-05-24 incident class). `sample-contract-fixtures` regenerates the
+# fixtures under tests/fixtures/contracts/; `check-contract-fixtures` is the CI
+# gate (fixtures fresh < manifest max_age_days + still carry required keys).
+# Manifest: .claude/shared/contract-manifest.json.
+sample-contract-fixtures:
+	@python3 scripts/sample-contract-fixtures.py
+
+check-contract-fixtures:
+	@python3 scripts/sample-contract-fixtures.py --check
 
 # T22 (framework-v7-8-branch-isolation): system-wide branch-isolation status
 # readout. Lists every active feature with declared branch + worktree path +

@@ -6,18 +6,6 @@
   "current_phase": "research",
   "framework_version": "v7.9.1",
   "started_at": "2026-06-04T05:22:50Z",
-  "updated_at": "2026-06-04T05:22:50Z",
-  "events": [
-    {
-      "timestamp": "2026-06-04T05:22:50Z",
-      "event_type": "phase_transition",
-      "phase": "research",
-      "summary": "Stub created 2026-06-04 (v7.9.1 build window opens). T14 RICE 160.0 Theme H. Linear FIT-162. Research phase open with Q1+Q2+Q3 outstanding (backfill heuristic + framework-meta exemption + advisory window length).",
-      "artifacts": [],
-      "metrics": {},
-      "actor": "human_or_agent",
-      "status": "recorded",
-      "recording_mode": "contemporaneous"
-    }
-  ]
+  "updated_at": "2026-06-07T16:49:02Z",
+  "events": []
 }

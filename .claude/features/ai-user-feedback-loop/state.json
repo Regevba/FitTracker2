@@ -3,6 +3,8 @@
   "description": "Wire the existing AI feedback signal (thumbs up/down in AIInsightCard + AIIntelligenceSheet AIFeedbackView) into a real reinforcement loop. RecommendationMemory storage layer already exists (record/outcomes/acceptanceRate/frequentlyDismissedSignals/clearAll) and has unit tests, but is per-AIOrchestrator-instance — not wired into views. C5 closes the deferred audit UI-024 by promoting RecommendationMemory to an injectable EnvironmentObject, wiring the actual record() call from AIInsightCard.recordFeedback (replacing the existing no-op comment block), feeding back into AIOrchestrator's recommendation pipeline (suppress signals with high dismiss-count + boost segments with high acceptance-rate), and surfacing a Settings → AI Feedback row showing history + GDPR clear-all. Pairs with D1 (adaptive-intelligence next pass).",
   "work_type": "feature",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-06-01T16:22:20Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
