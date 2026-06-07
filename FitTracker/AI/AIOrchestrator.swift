@@ -90,6 +90,12 @@ public final class AIOrchestrator: ObservableObject {
         let goalProfile = GoalProfile.forGoal(goalMode())
         let bands = extractBands(segment: segment, snapshot: userSnapshot)
         let localRecommendation = AIRecommendation.localFallback(for: segment, snapshot: userSnapshot, goalProfile: goalProfile)
+        // HADF Phase 3A T5a — honest client-side inference observability. We
+        // measure end-to-end wall-time + which substrate produced the final
+        // recommendation. We do NOT measure ttft/tps (no client streaming
+        // boundary; provider/model are server-side) — that is T5b (server-side).
+        let inferenceStart = Date()
+        var inferenceSourceTier = "local_fallback"
         let baseRecommendation: AIRecommendation
         if let jwt, jwt.looksLikeJWT, let bands {
             do {
@@ -98,6 +104,7 @@ public final class AIOrchestrator: ObservableObject {
                     payload: bands,
                     jwt: jwt
                 )
+                inferenceSourceTier = "cloud"
             } catch AIEngineError.rateLimited {
                 lastError = .rateLimited
                 baseRecommendation = localRecommendation
@@ -127,13 +134,28 @@ public final class AIOrchestrator: ObservableObject {
                     recommendation: baseRecommendation,
                     snapshot: userSnapshot
                 )
-                finalRecommendation = confidence >= personalisationThreshold ? adapted : baseRecommendation
+                if confidence >= personalisationThreshold {
+                    finalRecommendation = adapted
+                    inferenceSourceTier = "on_device"
+                } else {
+                    finalRecommendation = baseRecommendation
+                }
             } catch {
                 finalRecommendation = baseRecommendation
             }
         } else {
             finalRecommendation = baseRecommendation
         }
+
+        // HADF Phase 3A T5a — emit honest inference observability (advisory;
+        // optional-chained so it no-ops when analytics isn't wired, preserving
+        // existing test paths). duration_ms = end-to-end wall-time; source_tier
+        // = terminal substrate (cloud / on_device / local_fallback).
+        analytics?.logAiInferenceCompleted(
+            segment: segment.rawValue,
+            sourceTier: inferenceSourceTier,
+            durationMs: Int(Date().timeIntervalSince(inferenceStart) * 1000)
+        )
 
         // C5 ai-user-feedback-loop reinforcement-loop block — apply per-segment
         // confidence-tier adjustment from RecommendationMemory before publishing.

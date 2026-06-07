@@ -578,6 +578,21 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    /// AI inference completed — HADF Phase 3A (T5a) observability emit.
+    /// Records honest, client-measurable end-to-end inference wall-time
+    /// (`duration_ms`) + the substrate that produced the recommendation
+    /// (`source_tier` ∈ cloud / on_device / local_fallback). Deliberately does
+    /// NOT emit ttft_s/tps — those are not capturable on the client (no
+    /// streaming boundary; provider/model are server-side) and are deferred to
+    /// a server-side metric (T5b) per the T4+T5 data-integrity risk assessment.
+    func logAiInferenceCompleted(segment: String, sourceTier: String, durationMs: Int) {
+        logEvent(AnalyticsEvent.aiInferenceCompleted, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.sourceTier: sourceTier,
+            AnalyticsParam.durationMs: durationMs,
+        ])
+    }
+
     /// User taps AI insight card
     func logAiInsightTap(segment: String) {
         logEvent(AnalyticsEvent.homeAiInsightTap, parameters: [

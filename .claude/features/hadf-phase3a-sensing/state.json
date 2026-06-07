@@ -54,13 +54,18 @@
     },
     {
       "id": "T4",
-      "status": "pending",
-      "summary": "control-room HADF panel (fitme-story) \u2014 deferred follow-on"
+      "status": "done",
+      "summary": "control-room HADF panel (fitme-story) \u2014 shipped via fitme-story PR #207; advisory observability surface, W16 producer-schema-pinned loader"
     },
     {
       "id": "T5",
-      "status": "pending",
-      "summary": "AIOrchestrator live-traffic emit hook \u2014 deferred high-risk-area follow-on"
+      "status": "done",
+      "summary": "AIOrchestrator emit hook \u2014 T5a shipped: honest ai_inference_completed (duration_ms + source_tier), descoped per t4-t5-risk-assessment.md (ttft/tps not client-capturable); 3 emit tests pass, build green"
+    },
+    {
+      "id": "T5b",
+      "status": "deferred",
+      "summary": "server-side real ttft_s/tps + provider/model \u2014 requires AIEngineClient streaming rewrite + Railway contract; backlog sibling to F-AUTH-LATENCY-SERVER-METRIC (per risk assessment R4)"
     }
   ],
   "phases": {
