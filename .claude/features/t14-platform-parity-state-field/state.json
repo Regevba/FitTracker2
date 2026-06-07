@@ -1,8 +1,8 @@
 {
   "feature_name": "t14-platform-parity-state-field",
-  "current_phase": "research",
+  "current_phase": "tasks_phase",
   "created_at": "2026-06-04T05:00:00Z",
-  "updated_at": "2026-06-04T05:00:00Z",
+  "updated_at": "2026-06-07T08:30:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -15,7 +15,15 @@
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-04T05:00:00Z"
+        "started_at": "2026-06-04T05:00:00Z",
+        "ended_at": "2026-06-07T08:00:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-07T08:00:00Z",
+        "ended_at": "2026-06-07T08:30:00Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-07T08:30:00Z"
       }
     }
   },
@@ -43,8 +51,18 @@
   "phases": {
     "research": {
       "started_at": "2026-06-04T05:00:00Z",
+      "ended_at": "2026-06-07T08:00:00Z",
+      "notes": "Stub created 2026-06-04 (Phase E exit batch). Research completed 2026-06-07 in research.md: Q1 — deterministic file-glob backfill heuristic + provenance flag (0 mandatory manual review); Q2 — framework-meta features EXEMPT via existing work_subtype/work_type/case_study_type predicate (no all-false); Q3 — 14-day advisory→enforced calibration per v7.9 precedent."
+    },
+    "prd": {
+      "started_at": "2026-06-07T08:00:00Z",
+      "ended_at": "2026-06-07T08:30:00Z",
+      "notes": "PRD authored at prd.md — field spec locked ({ios,web,backend,ai} booleans + platforms_tested_provenance), success metrics + kill criteria pre-registered, 9-task plan with F16 try-repo fixture discipline for T3's new advisory sub-check."
+    },
+    "tasks_phase": {
+      "started_at": "2026-06-07T08:30:00Z",
       "ended_at": null,
-      "notes": "Stub created during 2026-06-04 Phase E exit batch. Research phase opens with the FIT-162 ticket body (already specs scope + RICE 160.0). Outstanding research questions: (Q1) backfill heuristic for 85 existing features — derive platforms_tested from file-path globs in PR diffs? from case-study text? mark all as TBD and require operator review? (Q2) framework-meta features (e.g., framework-v7-9-promotion) — do they get empty array, or new {none} value, or are they exempt? (Q3) advisory window length — default 14d per v7.9 precedent, or shorter since the field is non-breaking?"
+      "notes": "T1 done (Q1/Q2/Q3 resolved). T2-T9 pending: schema field, advisory closure sub-check + Mechanism A emission, automatic backfill script + unit tests, dev-guide/CLAUDE.md/glossary updates, case study + showcase, 14d calibration. Implementation (Phase 4) not started — gated on operator go."
     }
   },
   "calendar_gate": {
@@ -52,7 +70,7 @@
     "rationale": "Cannot start before v7.9 promotion + Phase E exit because the gate to extend (FEATURE_CLOSURE_COMPLETENESS) was advisory before 2026-05-21 and stayed in soak through 2026-06-04. Extending an advisory gate would have added telemetry noise during the v7.9 calibration window."
   },
   "tasks": [
-    {"id": "T1", "description": "Decide Q1+Q2+Q3 in Phase 1 PRD", "status": "pending"},
+    {"id": "T1", "description": "Decide Q1+Q2+Q3 in Phase 1 PRD", "status": "done"},
     {"id": "T2", "description": "Add platforms_tested field to state.json schema (defaults to empty object)", "status": "pending"},
     {"id": "T3", "description": "Extend scripts/check-state-schema.py with advisory-mode FEATURE_CLOSURE_COMPLETENESS check on platforms_tested at current_phase=complete", "status": "pending"},
     {"id": "T4", "description": "Single-commit backfill: 85 existing complete features get platforms_tested populated", "status": "pending"},
