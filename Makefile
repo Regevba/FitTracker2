@@ -344,6 +344,14 @@ schema-check:
 documentation-debt:
 	python3 scripts/documentation-debt-report.py --output .claude/shared/documentation-debt.json
 
+# Tracking-drift-check (Dev-Env track, 2026-05-24): surface planning rows that
+# claim OPEN (`[ ]` / un-struck RICE row) while their evidence is already on
+# disk (feature state.json == complete, or a self-contradicting ship marker in
+# the row's own title). Advisory only — never blocks. Writes structured
+# findings with --json. Empirically tuned to 0 false positives.
+tracking-drift-check:
+	@python3 scripts/tracking-drift-check.py --json .claude/shared/tracking-drift.json
+
 # F-CONTRACT-FIXTURE-SAMPLING: sample cross-repo data contracts from the
 # CANONICAL producer so consumer tests can't silently drift (closes the W16
 # 2026-05-24 incident class). `sample-contract-fixtures` regenerates the

@@ -439,12 +439,12 @@ To be filled when shipped.
 
 ---
 
-## F-LOCK-INTRODUCING-COMMIT-PERMIT
+## ~~F-LOCK-INTRODUCING-COMMIT-PERMIT~~ — **CLOSED 2026-06-07**
 
 **Discovered:** 2026-05-30 (Sub-exp 2 lock ceremony + Sub-exp 1B lock ceremony during HADF Phase 2-bis replication launch).
-**Status:** queued.
-**Owner:** TBD.
-**Effort:** ~1h (pre-commit hook conditional check + 1 test).
+**Status:** **SHIPPED 2026-06-07** via PR (this PR, branch `fix/lock-introducing-commit-permit`). Lock check extracted from `.githooks/pre-commit` into a dedicated, unit-tested script `scripts/check-prereg-lock.sh` with the lock-introducing exemption added; 5 isolation tests in `scripts/tests/test_check_prereg_lock.py` (lock-introducing permit / sha-mismatch block / forward-edit block / unlock permit / unrelated no-op) all pass. The next lock ceremony (Sub-exp 3 etc.) no longer requires `--no-verify`.
+**Owner:** N/A (closed).
+**Effort:** ~1h actual (matched estimate).
 
 ### Problem
 

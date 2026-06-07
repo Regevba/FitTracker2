@@ -1,6 +1,8 @@
 {
   "feature_name": "code-connect-automation",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-05-10T05:32:33Z",
   "updated_at": "2026-05-10T13:56:52Z",
   "framework_version": "v7.8.1",
