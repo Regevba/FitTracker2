@@ -553,6 +553,16 @@ These were **process regressions** — added features moved into the denominator
 
 **See also.** [v7.9 promotion case study §99.4 lesson 2](docs/case-studies/framework-v7-9-promotion-case-study.md) for the original measurement; [`f-phase-e-adoption-freeze-discipline-case-study.md`](docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md) for this rule's source case study.
 
+## Platform-test parity — `platforms_tested` field (T14, advisory, shipped 2026-06-07)
+
+`state.json` carries a `platforms_tested: {ios, web, backend, ai}` boolean object recording **which platforms a feature's tests actually exercised** — making platform-test parity a queryable, gate-able property of every completed feature (not just "tests passed somewhere"). Platform semantics: `ios`=SwiftUI app, `web`=fitme-story/website/dashboard, `backend`=sync/Supabase/Railway, `ai`=ai-engine cohort. A sibling `platforms_tested_provenance` string records origin (`authored` / `backfill-heuristic-<date>` / `backfill-heuristic-low-confidence` / `exempt:framework_meta`).
+
+**Gate (advisory):** the `PLATFORMS_TESTED` write-time sub-check (in [`scripts/check-state-schema.py`](scripts/check-state-schema.py)) fires on `current_phase=complete` transitions when no platform key is `true`, and validates field shape at any phase. It uses its own `PLATFORMS_TESTED_ADVISORY_MODE` flag + an isolated Mechanism A coverage key, so its **advisory→enforced flip (~v7.10, after a 14-day calibration window)** is independent of the enforced `FEATURE_CLOSURE_COMPLETENESS` gate it fires alongside.
+
+**Q2 exemption:** framework-meta features (`work_type=chore` / `work_subtype=framework_feature` / `provenance exempt:*`) are skipped — they ship no product-platform code.
+
+**Backfill:** [`scripts/backfill-platforms-tested.py`](scripts/backfill-platforms-tested.py) populated all pre-T14 complete features from offline text signals (25 exempt, 61 inferred, 8 low-confidence flagged for optional spot-check; 0 mandatory review). **Out of scope:** per-platform coverage *percentages* (T15+, gated on R9 Track B data). Spec: `docs/master-plan/test-coverage-master-plan-2026-05-13.md` §4 T14. Source case study: [`docs/case-studies/t14-platform-parity-state-field-case-study.md`](docs/case-studies/t14-platform-parity-state-field-case-study.md).
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:
