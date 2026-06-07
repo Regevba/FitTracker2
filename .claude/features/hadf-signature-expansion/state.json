@@ -8,6 +8,8 @@
   "updated": "2026-06-05T07:30:00Z",
   "branch": "chore/hadf-signature-expansion-post-merge-closure",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
   "isolation_opt_out": false,
   "has_ui": false,
   "requires_analytics": false,

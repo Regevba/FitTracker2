@@ -9,6 +9,8 @@
   "branch": "feature/ucc-passkey-auth-audit-log-redis-fix",
   "state_owner": "ft2",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": false, "backend": true, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": true,

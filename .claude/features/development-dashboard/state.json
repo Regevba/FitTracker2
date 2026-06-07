@@ -8,6 +8,8 @@
   "updated": "2026-04-03T00:00:00Z",
   "branch": "feature/development-dashboard",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "framework_version": "pre-v5.0",
   "agent_manifest": {
     "reads": [],
