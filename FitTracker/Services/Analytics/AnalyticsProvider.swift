@@ -243,6 +243,13 @@ enum AnalyticsEvent {
     static let aiFeedbackSubmitted             = "home_ai_feedback_submitted"
     /// AI avatar animation state changes
     static let aiAvatarStateChanged            = "home_ai_avatar_state_changed"
+    /// AI inference completed — GLOBAL cross-screen lifecycle event (NOT
+    /// screen-scoped, per the Analytics Naming Convention). Emits honest,
+    /// client-measurable round-trip latency + source tier for HADF Phase 3A
+    /// observability. Does NOT carry ttft_s/tps (not capturable client-side —
+    /// the LLM streaming boundary + provider/model are server-side only; true
+    /// per-token timing is deferred to a server-side metric, T5b). screen_scope=global.
+    static let aiInferenceCompleted            = "ai_inference_completed"
     // Removed 2026-05-13 (analytics-observability Phase 1.A.3):
     // aiRecommendationAccepted + aiRecommendationDismissed were declared but
     // never fired in production. Their semantics duplicate `homeAiFeedbackSubmitted`

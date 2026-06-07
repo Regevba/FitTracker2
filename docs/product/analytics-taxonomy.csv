@@ -68,6 +68,7 @@ Home,home_metric_tile_tap,Custom,Home Screen,metric_type (hrv/resting_heart_rate
 AI,home_ai_avatar_state_changed,Custom,Home Screen,from_state (breathe/rotate/pulse/shimmer),to_state (breathe/rotate/pulse/shimmer),,,,No,home,AI avatar animation state transition
 AI,home_ai_feedback_submitted,Custom,AI sheet,segment,rating (positive/negative),reason (optional),,,No,home,Recommendation feedback captured
 AI,home_ai_insight_shown,Custom,Home Screen,segment,confidence (low/medium/high),source_tier (local/cloud/foundation),,,No,home,AI insight card impression
+AI,ai_inference_completed,Custom,Global (AI pipeline),segment,source_tier (cloud/on_device/local_fallback),duration_ms (int ms),,,No,global,HADF Phase 3A T5a — honest end-to-end inference latency + terminal substrate; NO ttft/tps (server-side T5b)
 AI,home_ai_insight_tap,Custom,Home Screen,segment,confidence,,,,No,home,AI insight card tap → expand
 AI,home_ai_recommendation_viewed,Custom,AI sheet,segment,confidence,,,,No,home,Recommendation viewed in sheet
 AI,home_ai_sheet_opened,Custom,Home Screen,entry_point (insight_card/readiness_tap/more_button),,,,,No,home,AI sheet opened from home

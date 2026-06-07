@@ -147,6 +147,90 @@ final class AIOrchestratorTests: XCTestCase {
         XCTAssertNil(orchestrator.lastError, "Successful cloud call should leave lastError nil")
     }
 
+    // ── HADF Phase 3A T5a — inference observability emit ─────────────────────
+
+    /// Cloud path with on-device model unavailable → exactly one
+    /// `ai_inference_completed` event with source_tier=cloud + duration_ms + segment.
+    func testProcess_cloudPath_emitsInferenceCompleted_cloudTier() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(),
+            foundationModel: ConfigurableFoundationModel(isAvailable: false),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let events = mockAdapter.capturedEvents.filter { $0.name == AnalyticsEvent.aiInferenceCompleted }
+        XCTAssertEqual(events.count, 1, "Exactly one ai_inference_completed per process() call")
+        XCTAssertEqual(events.first?.name, "ai_inference_completed")
+        XCTAssertEqual(events.first?.parameters?[AnalyticsParam.sourceTier] as? String, "cloud")
+        XCTAssertEqual(events.first?.parameters?[AnalyticsParam.segment] as? String, "training")
+        XCTAssertNotNil(events.first?.parameters?[AnalyticsParam.durationMs],
+                        "duration_ms must be present (honest client-measurable latency)")
+    }
+
+    /// On-device adapt accepted (confidence ≥ threshold) → terminal tier is on_device.
+    func testProcess_onDeviceAdapt_emitsOnDeviceTier() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(),
+            foundationModel: ConfigurableFoundationModel(isAvailable: true, confidence: 0.8),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let tier = mockAdapter.capturedEvents
+            .first { $0.name == AnalyticsEvent.aiInferenceCompleted }?
+            .parameters?[AnalyticsParam.sourceTier] as? String
+        XCTAssertEqual(tier, "on_device", "Accepted on-device adapt is the terminal substrate")
+    }
+
+    /// Nil JWT → no cloud call → tier must never be "cloud" (no fabricated signal).
+    func testProcess_nilJWT_tierIsNeverCloud() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(),
+            foundationModel: ConfigurableFoundationModel(isAvailable: false),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: nil,
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let tier = mockAdapter.capturedEvents
+            .first { $0.name == AnalyticsEvent.aiInferenceCompleted }?
+            .parameters?[AnalyticsParam.sourceTier] as? String
+        XCTAssertEqual(tier, "local_fallback", "No cloud + no on-device → honest local_fallback tier")
+    }
+
     func testProcess_withMalformedJWT_skipsCloud() async {
         let engine = StubAIEngineClient()
         let orchestrator = AIOrchestrator(
