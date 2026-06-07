@@ -148,6 +148,14 @@ _INFRA_PATH_GLOBS = (
 # docs/case-studies/framework-v7-9-promotion-case-study.md.
 BRANCH_ISOLATION_ADVISORY_MODE = False
 
+# T14 (t14-platform-parity-state-field): platforms_tested parity sub-check.
+# Records which platforms a feature's tests exercised. Ships ADVISORY for a
+# 14-day Mechanism A calibration window (Q3); flip to enforced at ~v7.10 once
+# the §2.2 promotion criteria hold. Distinct flag from BRANCH_ISOLATION_*
+# so the calibration telemetry is isolated and the flip is independent.
+PLATFORMS_TESTED_ADVISORY_MODE = True
+PLATFORMS_TESTED_KEYS = ("ios", "web", "backend", "ai")
+
 # Canonical `framework_version` form. Accepts `v<major>.<minor>` and
 # `pre-v<major>.<minor>` (for features that predate framework versioning
 # but want to record their lineage). Bare numbers like "7.6" are rejected
@@ -191,8 +199,13 @@ def _load_pr_cache() -> set[int] | None:
         return _PR_CACHE
     _PR_CACHE_LOADED = True
     try:
+        # --limit 2000 (was 500): a commit touching an OLD complete feature
+        # re-validates its merge pr_number, so the window must span the full
+        # PR history, not just the most-recent 500. Same W34 truncation class
+        # PR #631 closed for the integrity-check cache reader — this live
+        # reader was the second instance. Empirically ~1-2s for ~660 PRs.
         out = subprocess.check_output(
-            ["gh", "pr", "list", "--state", "all", "--limit", "500",
+            ["gh", "pr", "list", "--state", "all", "--limit", "2000",
              "--json", "number"],
             text=True, stderr=subprocess.DEVNULL,
         )
@@ -827,6 +840,27 @@ def validate_file(
                 f"{finding['remediation']}"
             )
 
+    # Check 10 (T14, t14-platform-parity-state-field): platforms_tested parity
+    # sub-check. Shape validation any phase + non-empty requirement at
+    # current_phase=complete (Q2-exempt features skipped). ADVISORY during the
+    # 14-day calibration window (PLATFORMS_TESTED_ADVISORY_MODE); prints to
+    # stderr, does not block. Flip to enforced at ~v7.10 adds findings to errors.
+    for finding in check_platforms_tested(
+        d, path, coverage=coverage, enforce_transition=enforce_transition
+    ):
+        if finding.get("advisory"):
+            print(
+                f"[ADVISORY] {finding['code']}: {finding.get('feature', '?')}\n"
+                f"  Violation: {finding.get('violation')}\n"
+                f"  Remediation: {finding['remediation']}",
+                file=sys.stderr,
+            )
+        else:
+            errors.append(
+                f"{path}: [{finding['code']}] {finding.get('violation', 'unknown')}: "
+                f"{finding['remediation']}"
+            )
+
     # Check 8 Mode C (T6, framework-v7-8-branch-isolation): per-state.json
     # BRANCH_ISOLATION_VIOLATION check. Fires when non-infra feature's
     # state.json mutates current_phase from a branch other than the expected
@@ -1415,6 +1449,115 @@ def check_feature_closure_completeness(
             ),
         })
 
+    return findings
+
+
+def _platforms_tested_exempt(state: dict) -> str | None:
+    """Q2: framework-meta features ship no product-platform code → exempt from
+    the non-empty requirement. Returns a skip-reason string when exempt, else
+    None. Uses state-level signals only (no case-study read needed)."""
+    if str(state.get("work_type", "")).lower() == "chore":
+        return "exempt_work_type_chore"
+    if state.get("work_subtype") == "framework_feature":
+        return "exempt_work_subtype_framework_feature"
+    prov = state.get("platforms_tested_provenance")
+    if isinstance(prov, str) and prov.startswith("exempt:"):
+        return "exempt_provenance"
+    return None
+
+
+def check_platforms_tested(
+    state: dict, path: Path, *, coverage: GateCoverage | None = None,
+    enforce_transition: bool = True,
+) -> list[dict]:
+    """T14 (t14-platform-parity-state-field): platforms_tested parity sub-check.
+
+    Two responsibilities, both ADVISORY during the calibration window:
+      1. Shape validation (whenever the field is present, any phase):
+         platforms_tested must be an object with keys ⊆ {ios,web,backend,ai}
+         and boolean values; platforms_tested_provenance must be a string.
+      2. Non-empty requirement at current_phase=complete transition: ≥1
+         platform key must be true, unless the feature is Q2-exempt
+         (framework-meta). Fires on the same transition as
+         FEATURE_CLOSURE_COMPLETENESS but kept separate so its advisory→enforced
+         flip is independent (PLATFORMS_TESTED_ADVISORY_MODE).
+    """
+    findings: list[dict] = []
+    GATE = "PLATFORMS_TESTED"
+    if coverage is not None:
+        coverage.candidate(GATE)
+    feature_slug = _feature_slug_from_path(path)
+
+    pt = state.get("platforms_tested")
+    prov = state.get("platforms_tested_provenance")
+
+    # 1. Shape validation (independent of phase; only when the field is present).
+    if pt is not None:
+        if not isinstance(pt, dict):
+            findings.append({
+                "code": GATE, "feature": feature_slug,
+                "violation": "malformed_shape",
+                "advisory": PLATFORMS_TESTED_ADVISORY_MODE,
+                "remediation": ("platforms_tested must be an object like "
+                                '{"ios": false, "web": false, "backend": false, "ai": false}.'),
+            })
+        else:
+            bad_keys = sorted(k for k in pt if k not in PLATFORMS_TESTED_KEYS)
+            bad_vals = sorted(k for k, v in pt.items() if not isinstance(v, bool))
+            if bad_keys or bad_vals:
+                findings.append({
+                    "code": GATE, "feature": feature_slug,
+                    "violation": "malformed_shape",
+                    "advisory": PLATFORMS_TESTED_ADVISORY_MODE,
+                    "remediation": (
+                        f"platforms_tested has unknown keys {bad_keys} and/or "
+                        f"non-boolean values for {bad_vals}. Allowed keys: "
+                        f"{list(PLATFORMS_TESTED_KEYS)}; all values must be booleans."),
+                })
+    if prov is not None and not isinstance(prov, str):
+        findings.append({
+            "code": GATE, "feature": feature_slug,
+            "violation": "malformed_provenance",
+            "advisory": PLATFORMS_TESTED_ADVISORY_MODE,
+            "remediation": "platforms_tested_provenance must be a string.",
+        })
+
+    # 2. Non-empty requirement — only at a current_phase → complete transition.
+    if not enforce_transition:
+        if coverage is not None:
+            coverage.skip(GATE, "not_staged_mode")
+        return findings
+    if state.get("current_phase") != "complete":
+        if coverage is not None:
+            coverage.skip(GATE, "not_complete_transition")
+        return findings
+    committed = _load_committed_state(path)
+    old_phase = committed.get("current_phase") if committed else None
+    if old_phase == "complete":
+        if coverage is not None:
+            coverage.skip(GATE, "no_phase_change")
+        return findings
+    exempt_reason = _platforms_tested_exempt(state)
+    if exempt_reason:
+        if coverage is not None:
+            coverage.skip(GATE, exempt_reason)
+        return findings
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    non_empty = isinstance(pt, dict) and any(v is True for v in pt.values())
+    if not non_empty:
+        findings.append({
+            "code": GATE, "feature": feature_slug,
+            "violation": "platforms_tested_empty",
+            "advisory": PLATFORMS_TESTED_ADVISORY_MODE,
+            "remediation": (
+                "current_phase=complete but platforms_tested names no platform "
+                "(no key set to true). Set the platforms whose tests this feature "
+                "exercised among {ios, web, backend, ai}; or, for framework-meta "
+                "work, mark work_subtype=framework_feature / work_type=chore (exempt)."),
+        })
     return findings
 
 

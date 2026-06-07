@@ -4,6 +4,8 @@
   "updated": "2026-05-07T19:10:00Z",
   "branch": "feature/roadmap-stress-test-2026-05-07",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "work_subtype": "experiment",
   "has_ui": false,
