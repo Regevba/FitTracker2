@@ -199,8 +199,13 @@ def _load_pr_cache() -> set[int] | None:
         return _PR_CACHE
     _PR_CACHE_LOADED = True
     try:
+        # --limit 2000 (was 500): a commit touching an OLD complete feature
+        # re-validates its merge pr_number, so the window must span the full
+        # PR history, not just the most-recent 500. Same W34 truncation class
+        # PR #631 closed for the integrity-check cache reader — this live
+        # reader was the second instance. Empirically ~1-2s for ~660 PRs.
         out = subprocess.check_output(
-            ["gh", "pr", "list", "--state", "all", "--limit", "500",
+            ["gh", "pr", "list", "--state", "all", "--limit", "2000",
              "--json", "number"],
             text=True, stderr=subprocess.DEVNULL,
         )
