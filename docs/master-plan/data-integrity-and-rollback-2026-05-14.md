@@ -10,6 +10,8 @@
 > [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md) (per-layer test surface) ·
 > [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) (instrumentation observability)
 > **Anchor baseline:** `~/Documents/FitTracker2-backups/2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14/` — frozen 2026-05-14T04:46Z, FT2 commit `2269077`
+>
+> **⏱️ Refreshed 2026-06-07:** The continuous-observability surfaces this plan specs SHIPPED in the **v7.8.6 cadence batch** (`make integrity-diff` vs anchor, unified `make preflight`, weekly gate-coverage zero-drift scan, daily checkpoint) — closing the 96h drift window. v7.9.1 added **F17 `gate-last-fired.json`** (derived per-gate index → enables the planned v7.10 `GATE_COVERAGE_ZERO` meta-check at O(1)) + the **F-LAUNCHD-DRIFT-EXTENSION** cron-context phantom-finding suppression. Quarterly **Data Freshness Audit #1 = 2026-08-12** (uses the F17 index). Rollback mechanism (`make snapshot-phase` + off-SSD baselines) exercised at the B2 post-v7.9 baseline (2026-05-28) + the v7.9.1 Phase-E-exit baseline.
 
 ---
 
