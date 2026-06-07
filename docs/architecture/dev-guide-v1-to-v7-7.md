@@ -373,6 +373,8 @@ Every feature has a `.claude/features/<name>/state.json` file. This file is the 
 | `complexity` | object | v6.0 protocol: `cu_version`, `factors_applied[]`, `view_count`, etc. (see § 9.1) |
 | `timing` | object | v6.0 protocol: `session_start`, `total_wall_time_minutes`, per-phase `started_at`/`ended_at` |
 | `cache_hits` | array | v6.0 protocol: each entry is `{timestamp, level, key, type, skill, event_type, phase}` |
+| `platforms_tested` | object | **T14 (2026-06-07).** `{ios, web, backend, ai}` booleans recording which platforms a feature's tests exercised. "Non-empty" = ≥1 key `true`. Validated by the advisory `PLATFORMS_TESTED` sub-check at `current_phase=complete`. Framework-meta features (`work_type=chore` / `work_subtype=framework_feature`) are exempt. See §5.4. |
+| `platforms_tested_provenance` | string | T14 provenance marker: `authored` \| `backfill-heuristic-<date>` \| `backfill-heuristic-low-confidence` \| `exempt:framework_meta`. |
 
 ### 5.2 Phase-specific sub-fields
 
@@ -391,6 +393,15 @@ Each entered phase typically also has:
 - `PHASE_TRANSITION_NO_TIMING` (v7.6) — phase changed but no `timing.phases.<new>.started_at` and/or old-phase `ended_at` update
 
 The `--staged` flag scopes the check to staged files (used by the pre-commit hook). The `FORCE_TRANSITION_CHECKS=1` env var unscopes for testing.
+
+### 5.4 `platforms_tested` parity (T14, 2026-06-07)
+
+`platforms_tested` records which platforms a feature's tests exercised, so platform-test parity is a queryable property of every completed feature (not just "tests passed somewhere"). Shape: `{"ios": bool, "web": bool, "backend": bool, "ai": bool}` (semantics: `ios`=SwiftUI app, `web`=fitme-story/website/dashboard, `backend`=sync/Supabase/Railway, `ai`=ai-engine cohort).
+
+- **Gate:** the advisory `PLATFORMS_TESTED` sub-check (in `check-state-schema.py`) fires on `current_phase=complete` transitions and reports when no platform key is `true`. It has its own `PLATFORMS_TESTED_ADVISORY_MODE` flag + isolated Mechanism A coverage key, so its advisory→enforced flip (~v7.10, after a 14-day calibration window) is independent of the enforced `FEATURE_CLOSURE_COMPLETENESS` gate it fires alongside.
+- **Q2 exemption:** framework-meta features (`work_type=chore` or `work_subtype=framework_feature`, or `platforms_tested_provenance` starting `exempt:`) are skipped — they ship no product-platform code, so an all-`false` record would be meaningless.
+- **Backfill:** `scripts/backfill-platforms-tested.py` populated all pre-T14 complete features from offline text signals, tagging each with a `platforms_tested_provenance` marker; low-confidence inferences are flagged for optional operator spot-check (0 mandatory review).
+- **Out of scope:** per-platform coverage *percentages* (T15+, depends on R9 Track B coverage data).
 
 ---
 
@@ -592,6 +603,9 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 | `BRANCH_ISOLATION_HISTORICAL` (v7.8.1 cycle advisory — **stays advisory by design**) | Cycle (advisory) | `integrity-check.py` | T17 forward-only audit — feature files first appear on `main` with no `feature/*`/`chore/*` branch attribution (squash-merge + branch-cleanup artifact; see Observed Patterns #1). |
 | `BRANCH_ISOLATION_LAUNCHD_DRIFT` (v7.8.1 cycle advisory — macOS-only, **stays advisory**) | Cycle (advisory) | `integrity-check.py` | T18 — launchd plist anchored to a stale repo path (the 2026-04-30 HADF Phase 2 trigger incident). |
 | `PR_CACHE_STALE` (v7.8.4 operability) | Pre-check | `ensure-pr-cache-fresh.py` | `.cache/gh-pr-cache.json` empty/missing/>24h → auto-refresh runs before `make integrity-check` + inside `integrity-cycle.yml`. Refresh failure logs but does NOT abort. Closes the 33-finding empty-cache false-positive incident (2026-05-12; see Observed Patterns #12 + W11). |
+| `PLATFORMS_TESTED` (T14, **advisory**; advisory→enforced ~v7.10) | Write | `check-state-schema.py` | `current_phase=complete` transition with no platform set to `true` in `platforms_tested`. Own `PLATFORMS_TESTED_ADVISORY_MODE` flag + isolated coverage key (independent flip from FEATURE_CLOSURE_COMPLETENESS). Q2-exempt: `work_type=chore` / `work_subtype=framework_feature` / `provenance exempt:*`. Also validates field shape any phase. See §5.4. |
+| `TRACKING_DRIFT_OPEN_BUT_SHIPPED` (2026-06-07, advisory) | On-demand | `tracking-drift-check.py` (`make tracking-drift-check`) | Planning rows that claim OPEN (`[ ]` / un-struck RICE row) while their feature `state.json` is `complete` or the row's own title carries a ship marker. Advisory only. |
+| `PR_NUMBER_UNRESOLVED` window (raised 500 → 2000, 2026-06-07) | Write | `check-state-schema.py` `_load_pr_cache` | `gh pr list --limit 2000` (was 500): a commit touching an OLD complete feature re-validates its merge pr_number, so the window must span full PR history (same W34 truncation class PR #631 closed for the integrity-check reader). |
 
 ### 10.2 The 72h cycle
 
