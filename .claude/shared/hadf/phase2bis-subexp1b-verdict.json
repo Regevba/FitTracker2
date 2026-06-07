@@ -1,0 +1,1 @@
+{"subexp": "subexp1b", "metric": "silhouette", "yield": 1465, "silhouette": 0.9805696345827537, "clusters": 2, "k_attempted": 2, "thresholds": {"silhouette_min": 0.5, "yield_min": 300, "clusters_min": 2}, "verdict": "PASS", "fail_reason": null}

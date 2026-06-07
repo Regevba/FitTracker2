@@ -34,3 +34,13 @@
 {"timestamp":"2026-06-02T15:42:19Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-02T14-05-18Z","records":     100,"estimated_cost_usd":0.013500}
 {"timestamp":"2026-06-02T18:02:54Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-02T18-00-05Z","records":     100,"estimated_cost_usd":0.013500}
 {"timestamp":"2026-06-02T23:02:25Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-02T23-00-03Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-03T05:02:32Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-03T05-00-04Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-03T10:02:23Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-03T10-00-01Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-03T14:03:03Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-03T14-00-05Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-03T18:02:30Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-03T18-00-05Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-03T23:02:21Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-03T23-00-01Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-04T05:02:31Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-04T05-00-04Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-04T10:02:37Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-04T10-00-03Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-04T14:02:50Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-04T14-00-05Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-04T18:03:02Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-04T18-00-05Z","records":     100,"estimated_cost_usd":0.013500}
+{"timestamp":"2026-06-04T23:02:40Z","subexp":"subexp1b","run_id":"subexp1b-2026-06-04T23-00-00Z","records":     100,"estimated_cost_usd":0.013500}
