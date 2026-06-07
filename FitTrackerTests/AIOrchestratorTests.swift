@@ -153,7 +153,9 @@ final class AIOrchestratorTests: XCTestCase {
     /// `ai_inference_completed` event with source_tier=cloud + duration_ms + segment.
     func testProcess_cloudPath_emitsInferenceCompleted_cloudTier() async {
         let mockAdapter = MockAnalyticsAdapter()
-        let analytics = AnalyticsService(provider: mockAdapter, consent: ConsentManager())
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
         let orchestrator = AIOrchestrator(
             engineClient: StubAIEngineClient(),
             foundationModel: ConfigurableFoundationModel(isAvailable: false),
@@ -180,7 +182,9 @@ final class AIOrchestratorTests: XCTestCase {
     /// On-device adapt accepted (confidence ≥ threshold) → terminal tier is on_device.
     func testProcess_onDeviceAdapt_emitsOnDeviceTier() async {
         let mockAdapter = MockAnalyticsAdapter()
-        let analytics = AnalyticsService(provider: mockAdapter, consent: ConsentManager())
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
         let orchestrator = AIOrchestrator(
             engineClient: StubAIEngineClient(),
             foundationModel: ConfigurableFoundationModel(isAvailable: true, confidence: 0.8),
@@ -204,7 +208,9 @@ final class AIOrchestratorTests: XCTestCase {
     /// Nil JWT → no cloud call → tier must never be "cloud" (no fabricated signal).
     func testProcess_nilJWT_tierIsNeverCloud() async {
         let mockAdapter = MockAnalyticsAdapter()
-        let analytics = AnalyticsService(provider: mockAdapter, consent: ConsentManager())
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
         let orchestrator = AIOrchestrator(
             engineClient: StubAIEngineClient(),
             foundationModel: ConfigurableFoundationModel(isAvailable: false),
