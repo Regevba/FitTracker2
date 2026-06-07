@@ -1,6 +1,8 @@
 {
   "feature_name": "framework-v7-9-1-promotion",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-04T17:00:00Z",
   "updated_at": "2026-06-04T17:00:00Z",
   "framework_version": "v7.9.1",

@@ -2,6 +2,8 @@
   "feature": "framework-v7-8-bridge",
   "feature_name": "framework-v7-8-bridge",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "case_study_type": "framework_meta_retroactive",

@@ -6,6 +6,8 @@
   "updated": "2026-04-16T17:00:00Z",
   "branch": "feature/framework-measurement-v6",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "framework_version": "v6.0",
   "agent_manifest": {

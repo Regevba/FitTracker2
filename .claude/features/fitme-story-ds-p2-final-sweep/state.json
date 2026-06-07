@@ -1,6 +1,8 @@
 {
   "feature_name": "fitme-story-ds-p2-final-sweep",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-05-12T03:50:06Z",
   "updated_at": "2026-05-12T04:25:00Z",
   "framework_version": "v7.8.3",

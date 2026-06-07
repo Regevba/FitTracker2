@@ -4,6 +4,8 @@
   "updated": "2026-06-06T07:10:00Z",
   "branch": "chore/w9-auto-isolation-closure",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "work_type": "feature",
   "work_subtype": "framework_feature",
   "state_owner": "ft2",

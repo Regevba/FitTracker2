@@ -12,6 +12,8 @@
     "shared_writes": []
   },
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "status": "complete",
   "created_at": "2026-04-28T04:00:00Z",
   "updated": "2026-04-28T22:30:00Z",

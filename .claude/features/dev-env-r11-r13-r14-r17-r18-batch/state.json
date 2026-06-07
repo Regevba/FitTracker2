@@ -1,6 +1,8 @@
 {
   "feature_name": "dev-env-r11-r13-r14-r17-r18-batch",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-04T16:45:00Z",
   "updated_at": "2026-06-04T16:45:00Z",
   "framework_version": "v7.9.1",
