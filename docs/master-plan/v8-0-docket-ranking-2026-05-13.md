@@ -3,6 +3,7 @@
 **Created:** 2026-05-13
 **Decision date:** 2026-05-21
 **Status:** ✅ DECIDED 2026-05-21 — v7.9 promotion shipped via PR #417; v8.x docket frozen with 18 F-candidates + 7 V8-I icebox. Substantive new build routes through v8.x cycle after Phase E exit ~2026-06-04. See `infra-master-plan-2026-05-12.md` §3.6.
+> **Refreshed 2026-06-07:** Phase E exited cleanly 2026-06-04 + v7.9.1 build window shipped. **Theme G (test discipline) progress:** F14 ✅ + F15 ✅ (2026-05-22/23) · F16 ✅ + F17 ✅ + F2 ✅ (v7.9.1, 2026-06-04). **Still open in v8.x:** F18 mutation testing, T1 `GATE_TEST_MISSING` meta-gate (gated on F14 Phase E = 2026-08-22), `GATE_COVERAGE_ZERO` meta-check (v7.10, enabled by F17). See the infra-master-plan 2026-06-07 banner for the live ladder.
 **Parent:** [`docs/master-plan/infra-master-plan-2026-05-12.md`](./infra-master-plan-2026-05-12.md) §3.3
 **Input specs:**
 - [`docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md`](../superpowers/specs/2026-05-08-framework-v7-9-candidates.md) — F1–F18

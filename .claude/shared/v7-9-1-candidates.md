@@ -480,12 +480,12 @@ To be filled when shipped.
 
 ---
 
-## F-SNAPSHOT-MANIFEST-LEDGER-ORDERING
+## ~~F-SNAPSHOT-MANIFEST-LEDGER-ORDERING~~ — **CLOSED 2026-06-07**
 
 **Discovered:** 2026-05-30 (full system check during Phase E Day 10).
-**Status:** queued (user-local script — separate from in-repo F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING above).
-**Owner:** TBD (operator-personal script edit).
-**Effort:** ~10min (single edit in `~/.fittracker/hadf-snapshot.sh`).
+**Status:** **CLOSED 2026-06-07** — applied Option (b) in `~/.fittracker/hadf-snapshot.sh`: the MANIFEST block now excludes the append-only `snapshot-ledger.jsonl` (appended AFTER the manifest is written, so its hash was stale-by-one-line → spurious `FAILED` on `shasum -c`). Loop preserves bare-filename output + guards the no-match case; `bash -n` verified. Operator-local edit (outside repo), no PR.
+**Owner:** N/A (closed).
+**Effort:** ~10min actual.
 
 ### Problem
 

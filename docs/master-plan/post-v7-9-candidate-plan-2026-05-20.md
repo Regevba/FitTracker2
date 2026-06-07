@@ -1,9 +1,8 @@
 # Post-v7.9 Candidate Plan — Drafted 2026-05-20 (Eve of Promotion)
 
-> **Status:** DRAFT · saved for tomorrow's resume after v7.9 promotion decision lands
+> **Status:** ✅ LARGELY EXECUTED (refreshed 2026-06-07) · v7.9 promoted 2026-05-21, Phase E exited cleanly 2026-06-04, v7.9.1 build window shipped 2026-06-04. Most E-series candidates here have shipped — notably **E-14 F-LAUNCHD-DRIFT-EXTENSION** (all 3 sub-fixes, v7.9.1 #621–#624). Current forward reality lives in the [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) 2026-06-07 status banner; remaining infra tails + the calibration ladder (F16 06-18 / W9 ~06-20 / t14 06-21 → v7.10) are tracked there + in [`.claude/shared/v7-9-1-candidates.md`](../../.claude/shared/v7-9-1-candidates.md).
 > **Drafted:** 2026-05-20 (operator + Claude session)
-> **First action tomorrow:** master plan + backlog + sub-plan refresh BEFORE any feature work
-> **Resume from:** read this doc top-to-bottom, then proceed in the order below
+> **Resume from:** historical — read the infra-master-plan banner first for current reality, then this doc for the original candidate detail.
 
 ## 0. CRITICAL PRIORITY ORDER (per operator direction 2026-05-20)
 
