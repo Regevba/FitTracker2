@@ -1,0 +1,11 @@
+{
+  "contract": "state-json-schema",
+  "sampled_at": "2026-06-07T16:15:19+00:00",
+  "provenance": "canonical",
+  "record_count": 5,
+  "required_keys": [
+    "current_phase",
+    "framework_version"
+  ],
+  "producer_repo": "FitTracker2"
+}

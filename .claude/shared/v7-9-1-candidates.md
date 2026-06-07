@@ -61,12 +61,12 @@ To be filled when shipped.
 
 ---
 
-## F-CONTRACT-FIXTURE-SAMPLING
+## F-CONTRACT-FIXTURE-SAMPLING — **FT2 SUBSTRATE SHIPPED 2026-06-07**
 
 **Discovered:** 2026-05-24 (production incident — `/control-room/framework` TypeError, 13-day silent regression).
-**Status:** queued. Filed as **E-15** in master plan v8.x docket.
-**Owner:** TBD (FT2 producer-side aggregator + fitme-story consumer-side adoption).
-**Effort:** ~1-1.5 days (aggregator script + fixture sampling integration + 1-2 contract tests).
+**Status:** **FT2-side substrate SHIPPED 2026-06-07** via branch `feature/f-contract-fixture-sampling`. `scripts/sample-contract-fixtures.py` samples each contract from its CANONICAL producer, asserts required keys at sample time, and writes `tests/fixtures/contracts/<name>.jsonl` + `.meta.json`. `make sample-contract-fixtures` regenerates; `make check-contract-fixtures` is the CI gate (fresh < `max_age_days` + required keys present), wired warn-only into `pr-integrity-check.yml`. Manifest: `.claude/shared/contract-manifest.json` (3 contracts: gate-coverage, state-json-schema, audit-log). 11 unit tests. **First run surfaced real producer heterogeneity** — state.json identity field is non-invariant (`feature`/`feature_name`/`name`), so required_keys was narrowed to the universal subset. **fitme-story-side consumer adoption + shared weekly re-sample cadence remains open** (cross-repo follow-up; the warn-only CI gate promotes to blocking when it lands). Filed as **E-15** in master plan v8.x docket.
+**Owner:** N/A for FT2 substrate (closed); fitme-story consumer adoption TBD.
+**Effort:** ~1-1.5 days estimate; FT2 substrate ~2h actual.
 **Source PRs containing the lesson:** fitme-story PR #146 (hotfix), FT2 PR #476 (W16 catalog).
 
 ### Problem

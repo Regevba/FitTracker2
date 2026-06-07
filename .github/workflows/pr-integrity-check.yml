@@ -299,7 +299,17 @@ jobs:
             scripts/tests/test_try_repo_telemetry_gates.py \
             scripts/tests/test_try_repo_isolation_gates.py \
             scripts/tests/test_repo_root_override.py \
+            scripts/tests/test_sample_contract_fixtures.py \
             -v --tb=short --junitxml=try-repo.xml
+
+      - name: Contract-fixture freshness check (F-CONTRACT-FIXTURE-SAMPLING)
+        # Warn-only first: fixtures naturally age past max_age_days between
+        # weekly re-samples; this nudges re-sampling without blocking PRs.
+        # Promotes to a hard gate once the fitme-story consumer-adoption PR
+        # lands and both repos re-sample on a shared weekly cadence.
+        continue-on-error: true
+        run: |
+          make check-contract-fixtures
 
       - name: Upload JUnit XML on failure
         if: failure()
