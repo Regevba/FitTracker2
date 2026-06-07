@@ -1,6 +1,8 @@
 {
   "feature_name": "fitme-story-website-design-system",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-05-10T14:01:12Z",
   "updated_at": "2026-05-10T16:50:00Z",
   "framework_version": "v7.8.2",

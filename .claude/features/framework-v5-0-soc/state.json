@@ -2,6 +2,8 @@
   "feature": "framework-v5-0-soc",
   "feature_name": "framework-v5-0-soc",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
   "framework_version": "v5.0",
   "work_type": "Feature",
   "case_study_type": "framework_meta_retroactive",
