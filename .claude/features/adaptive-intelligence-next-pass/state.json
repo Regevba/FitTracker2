@@ -3,6 +3,8 @@
   "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform — it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
   "work_type": "feature",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "case_study_path": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
   "case_study": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
   "merge_pr_number": 576,

@@ -7,6 +7,8 @@
   "state_owner": "ft2",
   "branch": "chore/audit-1-corrections",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": true,
