@@ -3,6 +3,8 @@
   "description": "Proactive pre-training readiness alert that fires BEFORE the user starts today's planned session. Integrates yesterday's HealthKit signals (HRV trend, RHR, sleep) + nutrition + recovery flags from ReadinessEngine v2 with today's training plan (DayType + volume from training-plan-v2). Outputs one of three smart recommendations (Continue / Rest day swap / Adapt to easier load) surfaced via AIInsightCard + push notification + AI avatar state. Includes Why? affordance that opens AIIntelligenceSheet with the readiness component breakdown that drove the recommendation.",
   "work_type": "enhancement",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-06-01T07:10:00Z",
   "state_owner": "ft2",
   "parent_feature": "smart-reminders",

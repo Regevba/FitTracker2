@@ -7,6 +7,8 @@
   "updated": "2026-04-06T14:00:00Z",
   "branch": null,
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "framework_version": "pre-v5.0",
   "agent_manifest": {
     "reads": [],

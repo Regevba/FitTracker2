@@ -3,6 +3,8 @@
   "state_owner": "ft2",
   "framework_version": "v7.8.3",
   "current_phase": "complete",
+  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "Feature",
   "dispatch_pattern": "subagent-driven-tdd-sequential-phased",
   "created_at": "2026-05-11T07:00:00Z",

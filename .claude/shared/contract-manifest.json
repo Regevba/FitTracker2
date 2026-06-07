@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "description": "Cross-repo data contracts (F-CONTRACT-FIXTURE-SAMPLING). The PRODUCER is the canonical source of truth for each record's shape. Consumer tests MUST run against fixtures sampled from the producer's real output — never against a fixture hand-authored to the consumer's expected shape. That anti-pattern caused the 2026-05-24 /control-room/framework 13-day silent regression (producer emitted `timestamp`, consumer expected `event.ts`, both test suites used the consumer's wrong field).",
+  "sample_dir": "tests/fixtures/contracts",
+  "max_age_days": 7,
+  "contracts": [
+    {
+      "name": "gate-coverage",
+      "producer_repo": "FitTracker2",
+      "producer_path": ".claude/logs/gate-coverage.jsonl",
+      "producer_format": "jsonl",
+      "sample_size": 10,
+      "required_keys": ["timestamp", "mode", "gate", "candidates", "checked", "skipped"],
+      "consumers": ["fitme-story:src/lib/control-room/gate-coverage-aggregator.ts"],
+      "notes": "The 2026-05-24 W16 incident contract. Canonical key is `timestamp` (NOT `event.ts`)."
+    },
+    {
+      "name": "state-json-schema",
+      "producer_repo": "FitTracker2",
+      "producer_path": ".claude/features/*/state.json",
+      "producer_format": "json-glob",
+      "sample_size": 5,
+      "required_keys": ["current_phase", "framework_version"],
+      "consumers": ["fitme-story:src/data/features/*.json"],
+      "notes": "fitme-story's pre-build sync mirrors a subset of state.json into src/data/features. NOTE: the identity field is NOT invariant — older features use `feature`, newer use `feature_name`, fitme-story-native reverse-mirrors use `name`. The aggregator surfaced this on first run; required_keys is therefore the truly-universal subset {current_phase, framework_version}. Identity-key normalization is tracked separately."
+    },
+    {
+      "name": "audit-log",
+      "producer_repo": "fitme-story",
+      "producer_path": "src/lib/auth/audit-log.ts (runtime → Upstash Redis / Vercel Blob)",
+      "local_mirror": ".claude/logs/ucc-auth-events.jsonl",
+      "producer_format": "jsonl",
+      "sample_size": 10,
+      "required_keys": ["event_type", "timestamp"],
+      "consumers": ["FitTracker2:make integrity-check (ucc-auth-events mirror)"],
+      "notes": "Canonical producer is fitme-story. FT2 holds a daily mirror; the FT2 substrate samples that mirror with provenance=mirror. The canonical fitme-story-side sample is produced by the fitme-story follow-up PR."
+    }
+  ]
+}

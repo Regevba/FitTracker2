@@ -4,6 +4,8 @@
   "updated": "2026-05-24T17:30:00Z",
   "branch": "feature/fitme-story-public-enhancements",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "enhancement",
   "work_subtype": "rollup_multi_pr",
   "has_ui": true,

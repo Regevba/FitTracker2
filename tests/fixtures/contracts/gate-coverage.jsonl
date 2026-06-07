@@ -1,0 +1,10 @@
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "PHASE_TRANSITION_NO_TIMING", "candidates": 95, "checked": 1, "skipped": 94, "skip_reasons": {"no_phase_change": 94}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "PLATFORMS_TESTED", "candidates": 95, "checked": 0, "skipped": 95, "skip_reasons": {"no_phase_change": 94, "not_complete_transition": 1}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "PR_NUMBER_UNRESOLVED", "candidates": 95, "checked": 50, "skipped": 45, "skip_reasons": {"field_absent": 45}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "SCHEMA_DRIFT_LEGACY_CREATED", "candidates": 95, "checked": 95, "skipped": 0, "skip_reasons": {}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "SCHEMA_DRIFT_LEGACY_PHASE", "candidates": 95, "checked": 95, "skipped": 0, "skip_reasons": {}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "STATE_NO_CASE_STUDY_LINK", "candidates": 95, "checked": 94, "skipped": 1, "skip_reasons": {"not_complete": 1}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "STATE_OWNER_INVALID", "candidates": 95, "checked": 95, "skipped": 0, "skip_reasons": {}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "STATE_OWNER_LOCATION_MISMATCH", "candidates": 95, "checked": 95, "skipped": 0, "skip_reasons": {}}
+{"timestamp": "2026-06-07T16:12:10+00:00", "mode": "staged", "gate": "STATE_OWNER_MISSING", "candidates": 95, "checked": 0, "skipped": 95, "skip_reasons": {"state_owner_present": 95}}
+{"gate": "w9.auto_isolate", "ts": "2026-06-07T16:13:13Z", "candidates": 1, "checked": 0, "skipped": 1, "skip_reasons": ["offer_not_acted"], "outcome": "offer", "drift": {"from_branch": "feature/t14-platform-parity-state-field", "to_branch": "feature/f-contract-fixture-sampling"}}

@@ -4,6 +4,8 @@
   "updated": "2026-04-20T00:00:00Z",
   "branch": "main",
   "current_phase": "complete",
+  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "framework_version": "v6.0",
   "agent_manifest": {
