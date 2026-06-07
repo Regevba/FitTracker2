@@ -12,6 +12,8 @@
   },
   "started": "2026-04-21",
   "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
   "status": "complete",
   "branch": "claude/review-ui-consistency-zSkvJ",
   "merged_to": "main",

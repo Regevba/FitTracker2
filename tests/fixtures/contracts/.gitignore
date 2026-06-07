@@ -1,0 +1,6 @@
+# audit-log: the canonical producer is fitme-story (cross-repo); the FT2 sample
+# is a daily MIRROR that can carry operator PII (e.g. source IPs). Keep it local
+# and regenerable — the committed canonical audit-log fixture is a fitme-story
+# deliverable (F-CONTRACT-FIXTURE-SAMPLING consumer-adoption follow-up).
+audit-log.jsonl
+audit-log.meta.json
