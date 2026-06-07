@@ -4,6 +4,8 @@
 > **Scope:** Test discipline across every system layer — iOS, web (fitme-story), framework (Python gates), backend (Supabase/CloudKit/auth), AI, analytics. Forward-looking calibration of where tests exist, where they've drifted, and where they're missing.
 > **Purpose:** Answer the question the infra master plan does NOT answer: "are all current tests in spec across all layers?" The infra plan covers Theme G — Test discipline for the framework layer only (F14–F18 + F19/F20 from analytics-observability). This sub-doc widens the scope to iOS + web + backend + AI + analytics and proposes a per-layer T-series candidate docket.
 > **Authority:** Same scoping conventions as the infra master plan. T-candidates here feed the 2026-05-21 prioritization pass (T29) and may promote into v8.0/v8.1 alongside F-candidates.
+>
+> **⏱️ Refreshed 2026-06-07:** **T6 web PR JS test gate SHIPPED** (fitme-story #137, RICE 200 — the plan's highest-leverage item). **F14 + F15 dispatch-test coverage SHIPPED** (2026-05-22/23; combined write-time 8/16 + cycle-time 2/3). **F16 try-repo harness SHIPPED** v7.9.1 (3rd test layer; advisory→enforced 2026-06-18). **R9 Track B coverage telemetry SHIPPED** v7.9.1 (#626) — 30-day data read **2026-07-04** feeds the **T1 `GATE_TEST_MISSING` meta-gate** (RICE 53.3, gated on F14 Phase E = **2026-08-22**). New platform-parity surface: **t14 `platforms_tested`** field + advisory gate (2026-06-07) records which platforms each feature's tests exercised (per-platform coverage % = T15+, gated on R9 30-day data). **C3 (Sentry reachability test) deferred to App Store launch.** Quarterly cross-layer audit B4 = **2026-08-13**.
 
 ---
 

@@ -7,6 +7,28 @@
 
 ---
 
+## ⏱️ STATUS UPDATE — 2026-06-07 (sync refresh)
+
+> This banner is the current-reality overlay; sections below retain their original dated framing for the audit trail. Where a section still says "v7.9.1 opens ~2026-06-04" or "Phase E runs through 2026-06-04," read it through this banner.
+
+**Where we are:**
+- **v7.9 Phase E EXITED CLEANLY 2026-06-04** — 0 regressions, 0 rollbacks across the 14-day soak. The 3 promoted gates (`BRANCH_ISOLATION_VIOLATION` Mode B/C + `FEATURE_CLOSURE_COMPLETENESS`) are stable enforced.
+- **v7.9.1 build window SHIPPED 2026-06-04** — single day, 8 ships / 14 PRs, **0 new enforcement gates** (Phase E exit discipline). Synthesis case study: `framework-v7-9-1-promotion-case-study.md`.
+- **Post-window additions (2026-06-07 session):** t14 `platforms_tested` field + advisory `PLATFORMS_TESTED` gate (#662/#665), `tracking-drift-check` (#659), F-LOCK-INTRODUCING-COMMIT-PERMIT (#660), F-CONTRACT-FIXTURE-SAMPLING FT2 substrate (#664) + fitme-story consumer adoption (fs #209), F-AUTH-LATENCY-SERVER-METRIC (fs #208), F-SNAPSHOT-MANIFEST-LEDGER-ORDERING (operator-local), dev-guide v7.9.1 refresh (fs #211). Enforcement total unchanged: **37 mechanical gates + 5 advisories**.
+
+**Theme G (test discipline) status:** F14 ✅ + F15 ✅ (shipped 2026-05-22/23) · F16 try-repo harness ✅ (shipped v7.9.1; advisory→enforced flip 2026-06-18) · F17 `last_fired_at` index ✅ (shipped v7.9.1) · F2 Phase 0 reality-check ✅ · **F18 mutation testing** + **T1 `GATE_TEST_MISSING` meta-gate** remain open (T1 gated on F14 Phase E = 2026-08-22).
+
+**Calibration ladder → next promotion window (~v7.10):** three advisory gates converge:
+- **2026-06-18** — F16 try-repo advisory→enforced flip
+- **~2026-06-20** — W9 Phase 2 concurrency-isolation enforce review (feature `w9-drift-triggered-auto-isolation`)
+- **2026-06-21** — t14 `PLATFORMS_TESTED` advisory→enforced review (cadence B15)
+
+**Recurring audit calendar (data-gated):** R9 Track B 30-day coverage read **2026-07-04** → feeds `GATE_TEST_MISSING` calibration · Quarterly Data Freshness Audit #1 **2026-08-12** (uses F17 index) · B4 cross-layer test audit **2026-08-13** · F14 Phase E **2026-08-22** → unblocks T1 build · External Audits #2/#3/#4 = **2026-06-12 / 2026-08-05 / 2026-10-08**.
+
+**Open v7.9.1 tails:** F-CONTRACT consumer CI-gate promotion to blocking + shared weekly re-sample cadence (cross-repo); W-MISTRAL-VERCEL-FREE-TIER-BURST (operator API-tier decision). All other docket items closed.
+
+---
+
 ## 0. TL;DR
 
 Four streams of work converge on the infra surface as of 2026-05-12 (updated end-of-day after PR #317 + PR #318; refreshed 2026-05-22 post-v7.9 ship):
