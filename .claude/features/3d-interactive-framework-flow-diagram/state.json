@@ -3,29 +3,23 @@
   "state_owner": "fitme-story",
   "framework_version": "v7.9.1",
   "current_phase": "tasks_phase",
-  "isolation_opt_out": true,
-  "isolation_opt_out_reason": "Feature is paused at Phase 1 (PRD draft) waiting for v7.9.1 close (~2026-06-04). state_owner is fitme-story so all real work will happen in that repo via standard isolated branches once unparked. The PRD draft committed direct-on-main 2026-05-11 was a pre-v7.9 PRD-authoring activity in FT2 (state.json + research dossier living in FT2 .claude/features/ per cross-repo convention). No code shipped from main; opting out of BRANCH_ISOLATION_HISTORICAL advisory until resume-from-pause activates real implementation work.",
   "paused": false,
   "paused_at": "2026-05-13T15:30:00Z",
-  "paused_reason_updated_2026_05_19": "Operator decision 2026-05-19: feature does NOT progress beyond Phase 1 PRD-draft state until v7.9 \u2192 v7.9.1 is fully finished (v7.9 promotion 2026-05-21 + v7.9.1 follow-up cycle complete, expected ~2026-06-04 Phase E end). Supersedes the prior `analytics-observability phase=complete` gate. Even PRD approval (Phase 1 \u2192 Phase 2 transition) waits for v7.9.1 closure. Rationale: avoid contamination of v7.9 calibration data + ensure framework substrate is fully shipped before adding a v7.8.3-state_owner=fitme-story flagship UI feature that depends on cross-repo sync stability.",
-  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Original 2026-05-13 reason: ship analytics-observability feature first to clear measurement debt (56 missing CSV rows + 4 unfired events + GA4 MCP disconnected) before 2026-05-21 v7.9 promotion decision. SUPERSEDED 2026-05-19 \u2014 see paused_reason_updated_2026_05_19.",
-  "scheduled_after": {
-    "signal": "v7.9 promotion (2026-05-21) AND v7.9.1 follow-up cycle complete",
-    "earliest_resume_window": "~2026-06-04 (end of v7.9 Phase E per calibration protocol)",
-    "trigger_action": "after v7.9.1 closes, re-open Phase 1 PRD-approval gate; 600-line PRD draft at prd.md still valid as starting point",
-    "previous_signal_2026_05_13": "analytics-observability phase=complete",
-    "previous_signal_superseded_at": "2026-05-19T12:38:00Z",
-    "previous_signal_superseded_reason": "operator preference 2026-05-19 to defer entire feature behind v7.9.1 finish; prevents Phase 2-3 work (tasks + UX) overlap with v7.9 calibration + post-promotion validation windows"
-  },
+  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Operator decision 2026-05-13: ship analytics-observability feature first to clear measurement debt before 2026-05-21 v7.9 promotion decision. SUPERSEDED 2026-05-19 \u2014 paused until v7.9.1 closure; SUPERSEDED again 2026-06-04 \u2014 v7.9.1 closed, feature unparked.",
+  "unpaused_at": "2026-06-04T19:30:00Z",
+  "unpaused_reason": "v7.9.1 build window CLOSED 2026-06-04 (8 ships, 14 PRs, 0 new gates per framework-v7-9-1-promotion-case-study.md). OQ-1 closed via AC-10 rephrase to deterministic Playwright-testable form + AC-11 added (pattern-skill overlay smoke). OQ-2 closed via feature-roster.json aggregator contract spec in \u00a7Data Contracts. OQ-3D-A closed via pattern-skill-map.json shipped in FT2 PR #615. OQ-3 (Alternatives Considered) deferred to parallel Phase 2 backfill (non-blocking). Phase 1 \u2192 Phase 2 advancement approved by operator 2026-06-04 19:30 UTC.",
   "work_type": "Feature",
   "has_ui": true,
   "requires_analytics": true,
   "created_at": "2026-05-11T16:30:00Z",
+  "case_study_link": "docs/case-studies/3d-interactive-framework-flow-diagram-case-study.md",
   "research_dossier": "../../FT2/.claude/features/3d-interactive-framework-flow-diagram/research.md",
   "scope": "fitme-story public-site enhancement; third flagship visual alongside DispatchReplay + LifecycleLoop; 3D interactive framework flow diagram (\"Framework Universe\") via React Three Fiber + Drei + Theatre.js + hybrid procedural-shell + glTF hero pieces",
   "phase_4_cutover_role": "First fitme-story-native feature; serves as the v7.8.3 framework certification round-trip per FT2 spec docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md \u00a76.5",
   "public_name": "Framework Universe",
-  "launch_window": "Track A (SUPERSEDED 2026-05-19): originally `PRD/Tasks/UX during v7.9 Phase E (2026-05-21 \u2192 06-04); implement parallel to v7.9.1; ship before v8.0 build window opens 2026-06-18`. New launch window per 2026-05-19 operator decision: PRD/Tasks/UX/Implementation ALL wait until v7.9.1 ships (~2026-06-04). Ship target remains pre-2026-06-18 v8.0 window but compressed timeline accepted as trade-off for v7.9 calibration purity.",
+  "launch_window": "Track A (compressed): PRD/Tasks/UX/Implementation deferred until v7.9.1 ships ~2026-06-04 (per 2026-05-19 operator decision). Ship target still pre-2026-06-18 v8.0 window.",
+  "prod_status": "temporarily_404 (2026-06-06)",
+  "prod_status_reason": "Operator decision 2026-06-06: animation polish needed before re-launching to the public. R3F scene tree, all primitives, scenes, fallback cascade, analytics wiring, and operator route stay on main so iteration continues. /framework/universe returns notFound(); /framework discovery card removed; /framework/universe dropped from lighthouse-ci URL list. Re-launch checklist captured inline at src/app/framework/universe/page.tsx (3 steps).",
   "phases": {
     "research": {
       "status": "approved",
@@ -36,44 +30,182 @@
       ]
     },
     "prd": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "approved",
+      "approved_at": "2026-06-04T19:30:00Z",
       "analytics_spec_complete": true,
       "draft_path": ".claude/features/3d-interactive-framework-flow-diagram/prd.md",
-      "ended_at": "2026-06-04T19:30:00Z",
-      "notes": "|| OQ-1 + OQ-2 + OQ-3D-A all closed 2026-06-04; OQ-3 deferred (non-blocking). Phase 1 \u2192 Phase 2 approved."
+      "notes": "OQ-1 + OQ-2 + OQ-3D-A all closed 2026-06-04; OQ-3 deferred (non-blocking). Phase 1 \u2192 Phase 2 approved."
     },
     "tasks": {
-      "status": "pending",
-      "count": 0
+      "status": "approved",
+      "count": 36,
+      "approved_at": "2026-06-05T00:00:00Z",
+      "tasks_md_pr": "FT2 #639",
+      "groups": [
+        {
+          "phase": "4.A",
+          "title": "Aggregator + data mirrors + snapshot loader",
+          "tasks": [
+            "T-aggregator",
+            "T-versions-mirror",
+            "T-adoption-mirror",
+            "T-pattern-skill-mirror",
+            "T-snapshot-loader"
+          ]
+        },
+        {
+          "phase": "4.B",
+          "title": "Primitives",
+          "tasks": [
+            "T-primitive-chambers",
+            "T-primitive-terrain",
+            "T-primitive-signage",
+            "T-primitive-motion"
+          ]
+        },
+        {
+          "phase": "4.C",
+          "title": "Acts I-VI",
+          "tasks": [
+            "T-act1-threshold",
+            "T-act2-emergence",
+            "T-act3-architecture",
+            "T-act4-gate-firings",
+            "T-act5-measurement",
+            "T-act6-legacy"
+          ]
+        },
+        {
+          "phase": "4.D",
+          "title": "Hero assets (gated on visual lock)",
+          "tasks": [
+            "T-hero-gate-machinery",
+            "T-hero-telemetry-instruments",
+            "T-hero-signature-props (x4)"
+          ]
+        },
+        {
+          "phase": "4.E",
+          "title": "Overlay + interaction wiring",
+          "tasks": [
+            "T-overlay-wiring",
+            "T-act-iv-pattern-hover",
+            "T-scrub-pause-timedilation",
+            "T-glossary-tooltips",
+            "T-pr-link-click"
+          ]
+        },
+        {
+          "phase": "4.F",
+          "title": "Fallback cascade",
+          "tasks": [
+            "T-rive-tier-2",
+            "T-poster-tier-3",
+            "T-fallback-cascade"
+          ]
+        },
+        {
+          "phase": "4.G",
+          "title": "Routes + budget",
+          "tasks": [
+            "T-route-framework",
+            "T-route-control-room",
+            "T-bundle-size-check"
+          ]
+        },
+        {
+          "phase": "4.H",
+          "title": "Analytics + ops surfaces",
+          "tasks": [
+            "T-ga4-events",
+            "T-comprehension-panel"
+          ]
+        },
+        {
+          "phase": "4.I",
+          "title": "HADF sensing layer hooks (path-agnostic aggregator + scene consumer)",
+          "tasks": [
+            "T-hadf-sensing-layer-hooks"
+          ]
+        },
+        {
+          "phase": "4.J",
+          "title": "E2E + perf assertions (mostly gated)",
+          "tasks": [
+            "T-playwright-ac10",
+            "T-playwright-ac11",
+            "T-lighthouse-perf",
+            "T-mobile-60fps"
+          ]
+        }
+      ]
     },
     "ux_or_integration": {
-      "status": "pending",
-      "type": null,
+      "status": "skipped_per_work_type",
+      "type": "integration",
       "preflight_passed": null
     },
     "implementation": {
-      "status": "pending",
-      "commits": []
+      "status": "in_progress",
+      "shipped_tasks_count": 20,
+      "remaining_tasks_count": 16,
+      "remaining_tasks_all_operator_gated": true,
+      "shipped_tasks": [
+        "T-aggregator (extended PR #203 with HADF Phase 3a hooks block)",
+        "T-versions-mirror",
+        "T-adoption-mirror",
+        "T-pattern-skill-mirror",
+        "T-snapshot-loader",
+        "T-primitive-chambers",
+        "T-primitive-terrain",
+        "T-primitive-signage",
+        "T-primitive-motion",
+        "T-act1-threshold",
+        "T-act2-emergence",
+        "T-act3-architecture",
+        "T-act4-gate-firings",
+        "T-act5-measurement",
+        "T-act6-legacy",
+        "T-overlay-wiring",
+        "T-act-iv-pattern-hover",
+        "T-glossary-tooltips",
+        "T-pr-link-click (via HoverCard prNumber)",
+        "T-fallback-cascade",
+        "T-route-framework",
+        "T-route-control-room",
+        "T-bundle-size-check",
+        "T-ga4-events (helpers shipped PR #198; ActSequencer + HoverCard wiring shipped PR #201 + #202)",
+        "T-comprehension-panel"
+      ],
+      "gated_remaining": {
+        "T-hero-gate-machinery + T-hero-telemetry-instruments + T-hero-signature-props_x4": "visual direction lock + Blender authoring decision",
+        "T-scrub-pause-timedilation": "Theatre.js v9 compatibility OR alternative path",
+        "T-rive-tier-2": "operator Rive asset",
+        "T-poster-tier-3": "operator hero PNG/WebP capture",
+        "T-hadf-sensing-layer-hooks_scene_consumer": "operator path 1 (Act III chambers) vs path 2 (new sub-Act) decision",
+        "T-playwright-ac10 + T-playwright-ac11 + T-mobile-60fps": "Playwright browser binary install approval (~200MB)",
+        "T-lighthouse-perf_promotion": "calibration window (assertion currently warn @ minScore 0.8; AC-16 target \u22650.95)"
+      }
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
-      "tests_added": 0,
-      "instrumentation_verified": false,
-      "analytics_tests_added": 0,
-      "analytics_verification_passed": false
+      "status": "in_progress",
+      "ci_passed": true,
+      "tests_added": 61,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 16,
+      "analytics_verification_passed": "pending (post-deploy operator workflow per src/lib/framework-universe-analytics.ts)"
     },
     "review": {
-      "status": "pending",
+      "status": "in_progress",
       "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "ci_main": true,
+      "ci_feature": true
     },
     "merge": {
-      "status": "pending",
+      "status": "rolling",
       "pr_number": null,
-      "analytics_regression_passed": null
+      "analytics_regression_passed": null,
+      "notes": "Many incremental PRs land directly via main; consumed by /framework + /framework/universe routes once the temp-404 is reverted."
     },
     "documentation": {
       "status": "pending"
@@ -87,14 +219,14 @@
       },
       "secondary": [],
       "guardrails": [],
-      "instrumentation_ready": false,
+      "instrumentation_ready": true,
       "first_review_date": null,
       "kill_criteria": ""
     },
     "tasks_phase": {
       "started_at": "2026-06-04T19:30:00Z",
       "ended_at": null,
-      "notes": "Phase 2 (Tasks) opens 2026-06-04 with all 3 Phase 1\u21922 blockers resolved (OQ-1, OQ-2, OQ-3D-A). T-aggregator task references the locked \u00a7Data Contracts feature-roster.json contract verbatim. T-overlay-wiring task consumes the v7.9.1 pattern-skill-map.json shipped via PR #615. T-act-iv-pattern-hover task wires AC-11 acceptance criterion."
+      "notes": "Phase 2 (Tasks) opens 2026-06-04 with all 3 Phase 1\u21922 blockers resolved (OQ-1, OQ-2, OQ-3D-A). 36 tasks across 10 Phase-4 groups; T-aggregator references the locked \u00a7Data Contracts feature-roster.json contract verbatim. T-overlay-wiring task consumes the v7.9.1 pattern-skill-map.json shipped via FT2 PR #615. T-act-iv-pattern-hover task wires AC-11 acceptance criterion."
     }
   },
   "transitions": [
@@ -104,6 +236,13 @@
       "timestamp": "2026-05-13T00:00:00Z",
       "approved_by": "user",
       "note": "Phase 0 dossier approved with 4 pre-PRD blockers resolved: Q1=Pixar clean-tech, Q2=hybrid procedural+glTF, Q15=Framework Universe, Q10=Track A launch window."
+    },
+    {
+      "from": "prd",
+      "to": "tasks_phase",
+      "timestamp": "2026-06-04T19:30:00Z",
+      "approved_by": "user",
+      "note": "OQ-1 + OQ-2 + OQ-3D-A closed; OQ-3 deferred (non-blocking). Framework v7.8.3 \u2192 v7.9.1 (v7.9.1 build window closed same day)."
     }
   ],
   "blocker_resolutions": {
@@ -114,17 +253,68 @@
   },
   "tasks": [],
   "related_prs": [
-    {"repo": "fitme-story", "n": 198, "title": "T-ga4-events: typed framework_universe_* GA4 helpers", "phase": "4.H", "status": "merged"},
-    {"repo": "fitme-story", "n": 199, "title": "T-fallback-cascade: FR-4 capability detection + tier resolution", "phase": "4.F", "status": "merged"},
-    {"repo": "fitme-story", "n": 200, "title": "T-comprehension-panel: operator dashboard for GA4 Universe events", "phase": "4.H", "status": "merged"},
-    {"repo": "fitme-story", "n": 201, "title": "Phase 4.H wire act_enter + label_hover GA4 events in ActSequencer + HoverCard", "phase": "4.H", "status": "merged", "sha": "ace1cde"},
-    {"repo": "fitme-story", "n": 202, "title": "Phase 4.H propagate analytics props to Act 3 + Act 4 HoverCards", "phase": "4.H", "status": "merged", "sha": "fd02fce"},
-    {"repo": "fitme-story", "n": 203, "title": "Phase 4.I T-aggregator extension — HADF Phase 3a hooks block (path-agnostic)", "phase": "4.I", "status": "merged", "sha": "e7c1b51"},
-    {"repo": "fitme-story", "n": 204, "title": "lighthouse-ci: add /framework + /framework/universe", "phase": "4.J", "status": "merged", "sha": "50e1983"},
-    {"repo": "fitme-story", "n": 205, "title": "temporarily 404 /framework/universe pending animation polish", "phase": "4-disable", "status": "merged", "sha": "3d46664"}
+    {
+      "repo": "fitme-story",
+      "n": 198,
+      "title": "T-ga4-events: typed framework_universe_* GA4 helpers",
+      "phase": "4.H",
+      "status": "merged"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 199,
+      "title": "T-fallback-cascade: FR-4 capability detection + tier resolution",
+      "phase": "4.F",
+      "status": "merged"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 200,
+      "title": "T-comprehension-panel: operator dashboard for GA4 Universe events",
+      "phase": "4.H",
+      "status": "merged"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 201,
+      "title": "Phase 4.H wire act_enter + label_hover GA4 events in ActSequencer + HoverCard",
+      "phase": "4.H",
+      "status": "merged",
+      "sha": "ace1cde"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 202,
+      "title": "Phase 4.H propagate analytics props to Act 3 + Act 4 HoverCards",
+      "phase": "4.H",
+      "status": "merged",
+      "sha": "fd02fce"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 203,
+      "title": "Phase 4.I T-aggregator extension \u2014 HADF Phase 3a hooks block (path-agnostic)",
+      "phase": "4.I",
+      "status": "merged",
+      "sha": "e7c1b51"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 204,
+      "title": "lighthouse-ci: add /framework + /framework/universe",
+      "phase": "4.J",
+      "status": "merged",
+      "sha": "50e1983"
+    },
+    {
+      "repo": "fitme-story",
+      "n": 205,
+      "title": "temporarily 404 /framework/universe pending animation polish",
+      "phase": "4-disable",
+      "status": "merged",
+      "sha": "3d46664"
+    }
   ],
-  "prod_status": "temporarily_404 (2026-06-06)",
-  "prod_status_reason": "Operator decision 2026-06-06: animation polish needed before re-launching to the public. R3F scene tree, all primitives, scenes, fallback cascade, analytics wiring, and operator route stay on main so iteration continues. /framework/universe returns notFound(); /framework discovery card removed; /framework/universe dropped from lighthouse-ci URL list. Re-launch checklist captured inline at src/app/framework/universe/page.tsx (3 steps).",
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {
@@ -163,42 +353,26 @@
       "mitigation": "Trigger via subsequent state.json modification (this commit) to exercise the path-filter trigger correctly"
     }
   ],
-  "state_owner_sync_origin": "fitme-story-reverse",
-  "state_owner_sync_origin_commit": "52f221342d794f771be116457ce1a09d2f8d6bf1",
-  "state_owner_sync_origin_pr_url": "pending",
-  "cu_v2": {
-    "factors": {
-      "complexity": 0.8,
-      "blast_radius": 0.5,
-      "novelty": 0.8,
-      "verification_difficulty": 0.7
-    },
-    "total": 2.8,
-    "tier_class": "A_high"
-  },
-  "case_study": "docs/case-studies/3d-interactive-framework-flow-diagram-case-study.md",
-  "unpaused_at": "2026-06-04T19:30:00Z",
-  "unpaused_reason": "v7.9.1 build window CLOSED 2026-06-04 (8 ships, 14 PRs, 0 new gates per framework-v7-9-1-promotion-case-study.md). OQ-1 closed via AC-10 rephrase to deterministic Playwright-testable form + AC-11 added (pattern-skill overlay smoke). OQ-2 closed via feature-roster.json aggregator contract spec in \u00a7Data Contracts (input glob + output schema + stability + privacy guarantees). OQ-3D-A closed via pattern-skill-map.json shipped in PR #615. OQ-3 (Alternatives Considered) deferred to parallel Phase 2 backfill (non-blocking). Phase 1 \u2192 Phase 2 advancement approved by operator 2026-06-04 19:30 UTC.",
   "oq_closures": {
     "OQ-1": {
       "resolved_at": "2026-06-04T19:30:00Z",
-      "resolution": "Acceptance Criterion 10 rephrased to deterministic Playwright-testable form. New AC-11 added for pattern-skill overlay smoke.",
-      "verified_by": "operator approval + section presence (grep AC-10 + AC-11 in prd.md)"
+      "resolution": "Acceptance Criterion 10 rephrased to deterministic Playwright-testable form. New AC-11 added for pattern-skill overlay smoke."
     },
     "OQ-2": {
       "resolved_at": "2026-06-04T19:30:00Z",
-      "resolution": "feature-roster.json aggregator contract locked in prd.md \u00a7Data Contracts \u2014 input glob + output schema (FeatureRosterEntry type) + sort key (alphabetical slug) + stability guarantees + privacy posture (drop-by-default allow-list) + ~30 LOC TypeScript reference skeleton + output destination + Phase 4 T-aggregator task creation reference.",
-      "verified_by": "operator approval + section presence (grep 'feature-roster.json aggregator contract' in prd.md)"
+      "resolution": "feature-roster.json aggregator contract locked in prd.md \u00a7Data Contracts \u2014 input glob + output schema (FeatureRosterEntry type) + sort key + stability + privacy posture + reference skeleton + Phase 4 T-aggregator task creation reference. PR #203 (2026-06-06) extended the contract additively with optional hadf_phase3a_hooks block."
     },
     "OQ-3D-A": {
       "resolved_at": "2026-06-04T19:01:00Z",
-      "resolution": "pattern-skill-map.json shipped 2026-06-04 via PR #615 (admin-merge bb6ae2b after W31 stuck-queue blocked standard merge). Map has 55 entries (23 gate + 32 workflow) with skills[] mappings. PATTERN_SKILL_UNMAPPED advisory keeps catalog \u2194 map in lockstep. W33 self-doc documents the overlay tool itself.",
-      "verified_by": "ls .claude/shared/pattern-skill-map.json + make integrity-check shows 0 PATTERN_SKILL_UNMAPPED"
+      "resolution": "pattern-skill-map.json shipped 2026-06-04 via FT2 PR #615 with 55 entries (23 gate + 32 workflow) + skills[] mappings + PATTERN_SKILL_UNMAPPED advisory."
     },
     "OQ-3": {
-      "status": "DEFERRED (non-blocking) \u2014 backfilled in parallel with Phase 2 tasks.md drafting via brainstorm-pm three-option mode",
+      "status": "DEFERRED (non-blocking) \u2014 backfilled in parallel with Phase 2 tasks.md drafting",
       "deferred_at": "2026-06-04T19:30:00Z"
     }
   },
-  "updated_at": "2026-06-07T00:00:00Z"
+  "updated_at": "2026-06-07T00:00:00Z",
+  "state_owner_sync_origin": "fitme-story-reverse",
+  "state_owner_sync_origin_commit": "2cc433f601263009cdc123326fcd34daac652c7d",
+  "state_owner_sync_origin_pr_url": "pending"
 }
