@@ -6,11 +6,22 @@
   "work_type": "feature",
   "created_at": "2026-06-05T00:00:00Z",
   "updated": "2026-06-05T07:30:00Z",
-  "branch": "feature/hadf-signature-expansion",
-  "current_phase": "merge",
+  "branch": "chore/hadf-signature-expansion-post-merge-closure",
+  "current_phase": "complete",
   "isolation_opt_out": false,
   "has_ui": false,
   "requires_analytics": false,
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.55,
+      "blast_radius": 0.4,
+      "novelty": 0.55,
+      "verification_difficulty": 0.6
+    },
+    "total": 2.1,
+    "tier_class": "B_medium",
+    "rationale": "Schema v1.1 migration + reader/attester calibration_status logic + on-device harness + cloud calibrator across .claude/shared/hadf catalogs (additive; no high-risk Swift files per review). Empirical-first calibration_status honesty layer is moderately novel (generalizes Sub-exp 2). Verification non-trivial: real M4 on-device calibration + K2 generalization check + RQ5 tight-cluster pathology finding, 19 tests. B_medium: infra/research, additive surface, below A_high line. (Populated 2026-06-07 during post-merge state-drift reconciliation; operator may recalibrate.)"
+  },
   "reachable_substrates": [
     "cloud_api_endpoints",
     "operator_m_series_macs",
@@ -48,11 +59,20 @@
         "ended_at": "2026-06-05T06:40:00Z"
       },
       "review": {
-        "started_at": "2026-06-05T06:40:00Z",
-        "ended_at": "2026-06-05T06:50:00Z"
+        "started_at": "2026-06-06T04:10:18Z",
+        "ended_at": "2026-06-06T04:10:18Z"
       },
       "merge": {
-        "started_at": "2026-06-05T06:50:00Z"
+        "started_at": "2026-06-06T04:10:18Z",
+        "ended_at": "2026-06-06T04:10:18Z"
+      },
+      "docs": {
+        "started_at": "2026-06-06T04:10:18Z",
+        "ended_at": "2026-06-07T06:26:50Z"
+      },
+      "complete": {
+        "started_at": "2026-06-07T06:26:50Z",
+        "ended_at": "2026-06-07T06:26:50Z"
       }
     }
   },
@@ -62,7 +82,7 @@
       "approved_at": "2026-06-05T01:00:00Z",
       "sources": [
         "docs/research/2026-04-28-hadf-signature-expansion.md",
-        "HADF-SOURCE-OF-TRUTH.md \u00a7-1",
+        "HADF-SOURCE-OF-TRUTH.md §-1",
         "Sub-exp 2 (on-device proof)"
       ]
     },
@@ -98,18 +118,36 @@
       "instrumentation_verified": true
     },
     "review": {
-      "status": "approved",
-      "risks": [
-        "touches .claude/shared catalogs (additive); no high-risk Swift files"
-      ],
-      "ci_feature": true
+      "started_at": "2026-06-06T04:10:18Z",
+      "ended_at": "2026-06-06T04:10:18Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     },
     "merge": {
-      "status": "in_progress",
-      "pr_number": null
+      "started_at": "2026-06-06T04:10:18Z",
+      "ended_at": "2026-06-06T04:10:18Z",
+      "pr_number": 644,
+      "merge_commit_sha": "81b4d8d120b45824358a2beb150c72e54d471adf",
+      "merged_at": "2026-06-06T04:10:18Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-06-07T06:26:50Z",
+      "approval_signal": "case study + backlog strike shipped in feature PR #644; closure batch 2026-06-07"
+    },
+    "docs": {
+      "started_at": "2026-06-06T04:10:18Z",
+      "ended_at": "2026-06-07T06:26:50Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-07T06:26:50Z",
+      "ended_at": "2026-06-07T06:26:50Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "predecessor_research": "docs/research/2026-04-28-hadf-signature-expansion.md",
@@ -117,7 +155,7 @@
   "tasks": [
     {
       "id": "T1",
-      "title": "Schema v1.1 \u2014 calibration_status + supported_precisions[] + compute_axes + memory_topology + vendor_status; migrate existing rows",
+      "title": "Schema v1.1 — calibration_status + supported_precisions[] + compute_axes + memory_topology + vendor_status; migrate existing rows",
       "type": "data",
       "skill": "dev",
       "status": "done",
@@ -154,7 +192,7 @@
     },
     {
       "id": "T4",
-      "title": "calibrate M4 (current machine) via harness \u2014 real instrumented row + K2 check",
+      "title": "calibrate M4 (current machine) via harness — real instrumented row + K2 check",
       "type": "data",
       "skill": "ops",
       "status": "done",
@@ -167,7 +205,7 @@
     },
     {
       "id": "T5",
-      "title": "iPhone A16 (14 Pro) on-device path \u2014 calibrate if reachable else document harness target",
+      "title": "iPhone A16 (14 Pro) on-device path — calibrate if reachable else document harness target",
       "type": "backend",
       "skill": "dev",
       "status": "done",
@@ -177,11 +215,11 @@
         "T3"
       ],
       "completed_at": "2026-06-05T06:00:00Z",
-      "note": "iPhone A16 has no local-inference route from this Mac this cycle \u2192 documented harness target (D5 allows)"
+      "note": "iPhone A16 has no local-inference route from this Mac this cycle → documented harness target (D5 allows)"
     },
     {
       "id": "T6",
-      "title": "cloud/API endpoint calibration \u2192 >=4 new instrumented rows",
+      "title": "cloud/API endpoint calibration → >=4 new instrumented rows",
       "type": "data",
       "skill": "ops",
       "status": "done",
@@ -270,7 +308,7 @@
       "to": "implementation",
       "timestamp": "2026-06-05T04:00:00Z",
       "approved_by": "user",
-      "note": "Phase 3b approved; ollama+llama3.2:3b live on M4 \u2192 T4 real calibration available."
+      "note": "Phase 3b approved; ollama+llama3.2:3b live on M4 → T4 real calibration available."
     },
     {
       "from": "implementation",
@@ -292,6 +330,30 @@
       "timestamp": "2026-06-05T07:00:00Z",
       "approved_by": "user",
       "note": "low-risk infra/docs feature; advancing to PR for review+merge approval"
+    },
+    {
+      "from": "merge",
+      "to": "review",
+      "at": "2026-06-06T04:10:18Z",
+      "reason": "PR #644 squashed onto main as 81b4d8d120 (operator-merged 2026-06-06T04:10:18Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-06T04:10:18Z",
+      "reason": "PR #644 squashed onto main as 81b4d8d120 (operator-merged 2026-06-06T04:10:18Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-06T04:10:18Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-07T06:26:50Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/hadf-signature-expansion-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
   ],
   "empirical_findings": {
@@ -300,15 +362,15 @@
       "tps_median": 41.0,
       "n": 80,
       "vs_m2_ollama_ttft_s": 0.179,
-      "k2_verdict": "PASS \u2014 method generalizes M2->M4 and discriminates them (0.095 vs 0.179s)"
+      "k2_verdict": "PASS — method generalizes M2->M4 and discriminates them (0.095 vs 0.179s)"
     },
-    "single_shot_attestation_limit": "tight on-device clusters (apple_m4 ttft var 0.0002) suffer the Mahalanobis tight-cluster pathology \u2014 single-shot attestation unreliable (RQ5, expected). Distribution-level centroids ARE distinct (the recognition claim holds)."
+    "single_shot_attestation_limit": "tight on-device clusters (apple_m4 ttft var 0.0002) suffer the Mahalanobis tight-cluster pathology — single-shot attestation unreliable (RQ5, expected). Distribution-level centroids ARE distinct (the recognition claim holds)."
   },
   "case_study": "docs/case-studies/hadf-signature-expansion-case-study.md",
   "primary_metric_result": {
     "instrumented_signatures": 9,
     "target": 12,
-    "note": "M4 real-calibrated (+1); cloud+iPhone are credential/hardware-gated \u2014 calibrator ships ready (feature thesis: calibrate what you can reach)"
+    "note": "M4 real-calibrated (+1); cloud+iPhone are credential/hardware-gated — calibrator ships ready (feature thesis: calibrate what you can reach)"
   },
   "experiment_ready_for_execution": {
     "ready": true,
@@ -319,10 +381,14 @@
     "runner": "scripts/hadf-signature-expansion-run.sh",
     "legs": {
       "device": "free (local ollama, apple_m4)",
-      "cloud": "paid API (5 pre-probed candidates) \u2014 operator-run"
+      "cloud": "paid API (5 pre-probed candidates) — operator-run"
     },
     "effect": "grows instrumented signatures from 9 toward >=12 (cloud) + re-tags catalogs",
     "validated": "--dry-run wiring confirmed; 19 tests pass; mistral routed via openai-compat",
     "all_tasks_done": true
-  }
+  },
+  "merge_pr_number": 644,
+  "merge_commit_sha": "81b4d8d120b45824358a2beb150c72e54d471adf",
+  "merged_at": "2026-06-06T04:10:18Z",
+  "feature_branch_merged": "feature/hadf-signature-expansion"
 }

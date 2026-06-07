@@ -16,7 +16,8 @@ kill_criteria:
   - "K2 — on-device harness can't reproduce a Sub-exp-2-quality signature on the operator's Mac → descope on-device"
 kill_criteria_resolution: "Neither fired. K1: priors live in chip-profiles.json / hardware-signature-table.json and are EXCLUDED from the attest candidate set by the guardrail — they cannot affect attestation accuracy on the reference store (test-enforced). K2: the harness produced a clean M4 signature (ttft_median 0.095s, tps 41, n=80, 100% valid) — it not only generalized M2→M4 but DISCRIMINATED them (M2-ollama 0.179s vs M4 0.095s)."
 tier_tags_present: true
-related_prs: []
+related_prs:
+  - 644
 ---
 
 # HADF Signature Expansion — empirical-first, with a real on-device calibration
