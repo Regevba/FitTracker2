@@ -32,7 +32,7 @@ TEST_DERIVED_DATA       ?= $(BUILD_DIR)/TestDerivedData
 # Uses node to run sd.config.js directly (not CLI) because custom transforms
 # and formats are registered in the config file itself.
 tokens: node_modules
-	node -e "const sd = require('style-dictionary').extend(require('./sd.config.js')); sd.buildAllPlatforms();"
+	node_modules/.bin/style-dictionary build --config sd.config.mjs
 	@echo "✅  DesignTokens.swift regenerated"
 
 # CI gate: verify committed DesignTokens.swift matches what make tokens would produce

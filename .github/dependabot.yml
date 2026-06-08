@@ -48,7 +48,13 @@ updates:
       - "npm"
     groups:
       # Group minor + patch upgrades so the PR cadence stays manageable.
-      # Majors stay as individual PRs for explicit review.
+      # Majors stay as individual PRs for explicit review — DO NOT auto-merge.
+      # Build-tooling majors (e.g. style-dictionary) often need a COORDINATED
+      # config migration in the SAME PR; the bare bump breaks `make tokens` on
+      # the post-merge `push: main` run. See the #577/#596/#668 incidents +
+      # docs/setup/style-dictionary-v5-migration-runbook.md. As of the
+      # 2026-06-08 CI fix (ci.yml now runs `make tokens-check` on package*.json
+      # changes), such a bare major bump FAILS at PR time instead of post-merge.
       minor-and-patch:
         applies-to: version-updates
         update-types:
