@@ -32,6 +32,13 @@ on:
       - 'scripts/ui-audit.py'
       - '.github/workflows/ci.yml'
       - 'Package.swift'
+      # Mirror of ci.yml's token-pipeline drivers (W29 fix). These are NOT
+      # docs-skippable: an edit here must reach the heavy ci.yml pipeline so
+      # `make tokens-check` runs. Keep in exact sync with ci.yml's paths.
+      - 'package.json'
+      - 'package-lock.json'
+      - 'sd.config.js'
+      - 'scripts/check-tokens.js'
 
 # ci-docs-skip.yml-specific concurrency group. Hardcoded prefix (NOT the
 # workflow-name expression) because ci.yml also has `name: CI` — sharing
