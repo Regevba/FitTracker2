@@ -950,6 +950,84 @@ def check_feature_closure_completeness_cycle() -> list[dict]:
     return findings
 
 
+def check_gate_coverage_zero() -> list[dict]:
+    """GATE_COVERAGE_ZERO (advisory, v7.10 candidate — built 2026-06-08).
+
+    Reads the F17 `gate-last-fired.json` index (refreshed before integrity-check
+    runs). Flags a HISTORICALLY-ACTIVE gate that went SILENT while the telemetry
+    corpus stayed active — i.e. it stopped being evaluated as a candidate even
+    though other gates kept firing. This is the PR #317 dispatch-unreachable /
+    silent-pass failure mode (a gate whose check site became unreachable so it
+    no longer emits Mechanism A coverage).
+
+    Relative-staleness semantic (low false-positive):
+      - corpus_latest = most recent candidate activity across ALL gates (proves
+        the framework is actively committing + telemetry is flowing).
+      - A gate with >= MIN_CANDIDATES historical candidates whose own last
+        activity is > STALE_DAYS behind corpus_latest → flagged.
+
+    Advisory only; the relative threshold + the 14-day v7.10 calibration window
+    absorb the legitimate "this gate only fires on rare transitions" case.
+    """
+    index_path = REPO_ROOT / ".claude" / "shared" / "gate-last-fired.json"
+    findings: list[dict] = []
+    if not index_path.is_file():
+        return findings
+    try:
+        idx = json.loads(index_path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return findings
+    gates = idx.get("gates", {})
+    if not isinstance(gates, dict) or not gates:
+        return findings
+
+    MIN_CANDIDATES = 20   # only consider gates with real historical coverage
+    STALE_DAYS = 14       # silent for this long (relative to the corpus) → flag
+
+    def _p(ts):
+        if not ts:
+            return None
+        try:
+            return datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        except (ValueError, TypeError):
+            return None
+
+    def _last_activity(stats: dict):
+        parsed = [p for p in (_p(stats.get("last_checked_at")),
+                              _p(stats.get("last_skipped_at"))) if p]
+        return max(parsed) if parsed else None
+
+    activities = {g: _last_activity(s) for g, s in gates.items() if isinstance(s, dict)}
+    corpus_latest = max((a for a in activities.values() if a), default=None)
+    if corpus_latest is None:
+        return findings
+
+    for gate, stats in sorted(gates.items()):
+        if not isinstance(stats, dict):
+            continue
+        if stats.get("total_candidates", 0) < MIN_CANDIDATES:
+            continue
+        last = activities.get(gate)
+        if last is None:
+            continue
+        behind_days = (corpus_latest - last).days
+        if behind_days > STALE_DAYS:
+            findings.append({
+                "feature": "—",
+                "severity": "ADVISORY",
+                "code": "GATE_COVERAGE_ZERO",
+                "message": (
+                    f"GATE_COVERAGE_ZERO: gate `{gate}` ({stats.get('total_candidates')} "
+                    f"historical candidates) last emitted Mechanism A coverage "
+                    f"{last.date()}, {behind_days}d behind the corpus latest "
+                    f"({corpus_latest.date()}). It may have stopped being evaluated — "
+                    f"verify its check site is still reachable (PR #317 silent-pass class). "
+                    f"Advisory; v7.10 enforcement candidate."
+                ),
+            })
+    return findings
+
+
 def check_tier_tags_advisory() -> list[dict]:
     """Run validate-tier-tags.py; emit findings as ADVISORY (not failure).
 
@@ -1175,6 +1253,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + check_cache_hits_auto_instrumentation_inactive()
         + pr_cache_failed_advisory  # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b)
         + check_pattern_skill_unmapped()  # v7.9.1 pattern↔skill overlay advisory
+        + check_gate_coverage_zero()  # v7.10 candidate (built 2026-06-08, advisory)
     )
     all_findings = findings + advisory_findings
 
