@@ -3,7 +3,12 @@
   "description": "Sustained-trend HRV alert: fires when HRV stays below the user's personal baseline (or a fixed floor for cold-start users) for 3+ consecutive days. Distinct from ReadinessAlertObserver (single-day score crossing) and ReadinessAwareTrainingObserver (daily pre-training advisory) — this observer surfaces a multi-day pattern. Surfaces via push notification + Home AIInsightCard banner; the Why? affordance opens an AIIntelligenceSheet section showing the 3-day HRV mini-chart with baseline overlay. Backlog source: docs/product/backlog.md L346 (RICE 10.5 per 2026-05-31 E1 refresh).",
   "work_type": "feature",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-06-01T08:30:00Z",
   "state_owner": "ft2",
@@ -194,5 +199,17 @@
   "merge_commit_sha": "3deab70daab66f9c0c7a3540b96fec3e3a02a09e",
   "merged_at": "2026-06-01T14:13:53Z",
   "feature_branch_merged": "feature/trend-alerts-hrv",
-  "kill_criteria_resolution": "pending_t14_eval_2026-06-17 — all 5 kill criteria carry calendar-anchored T+14d evaluations per case study frontmatter (action-taken rate 14d, false-positive 30d, push-fatigue 30d, adoption 30d, daily-trigger latency 14d post-wire-up). kill_criterion_fired: false at closure."
+  "kill_criteria_resolution": "pending_t14_eval_2026-06-17 — all 5 kill criteria carry calendar-anchored T+14d evaluations per case study frontmatter (action-taken rate 14d, false-positive 30d, push-fatigue 30d, adoption 30d, daily-trigger latency 14d post-wire-up). kill_criterion_fired: false at closure.",
+  "cache_hits": [
+    {
+      "ts": "2026-06-08T06:00:00Z",
+      "layer": "session",
+      "key": "session_ledger_attribution:trend-alerts-hrv",
+      "type": "backfill_2026_06_08",
+      "skill": "morning-hygiene",
+      "event_count": 24,
+      "note": "24 Read events attributed to this feature via Mechanism C session ledgers; auto-instrumentation captured them but did not dual-write to state.json::cache_hits[] (v7.8 advisory; v7.9 promotes dual-write). Honest provenance-tagged summary entry (mirrors the v7.8.4 backfill pattern), NOT per-Read fabrication.",
+      "backfilled_from": "Mechanism C session-ledger attributions"
+    }
+  ]
 }
