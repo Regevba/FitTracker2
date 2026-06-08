@@ -2,7 +2,7 @@
   "name": "analytics-observability",
   "state_owner": "ft2",
   "framework_version": "v7.8.5",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "work_type": "Feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -72,18 +72,25 @@
       "tests_added": 0,
       "instrumentation_verified": false,
       "analytics_tests_added": 0,
-      "analytics_verification_passed": false
+      "analytics_verification_passed": false,
+      "ended_at": "2026-06-01T15:56:07Z",
+      "approved_by": "operator",
+      "approval_signal": "(implicit \u2014 operator merged PR #570)"
     },
     "review": {
-      "status": "pending",
-      "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "started_at": "2026-06-01T15:56:07Z",
+      "ended_at": "2026-06-01T15:56:07Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null,
-      "analytics_regression_passed": null
+      "started_at": "2026-06-01T15:56:07Z",
+      "ended_at": "2026-06-01T15:56:07Z",
+      "pr_number": 570,
+      "merge_commit_sha": "6fe7f457df78560099e515979148e842c04cf9b2",
+      "merged_at": "2026-06-01T15:56:07Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     },
     "documentation": {
       "status": "pending"
@@ -144,6 +151,18 @@
       "instrumentation_ready": false,
       "first_review_date": "2026-06-04",
       "kill_criteria": "If Phase 1.B gates (CSV_TAXONOMY_DRIFT + GA4_MCP_DISCONNECTED) produce >5% false positive rate in 7-day Phase C calibration window, defer gate enforcement to v7.10 and ship hygiene-only outcome."
+    },
+    "docs": {
+      "started_at": "2026-06-01T15:56:07Z",
+      "ended_at": "2026-06-08T13:12:29Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-08T13:12:29Z",
+      "ended_at": "2026-06-08T13:12:29Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "transitions": [
@@ -153,6 +172,30 @@
       "timestamp": "2026-05-13T13:00:00Z",
       "approved_by": "user",
       "note": "Approach B (phased single feature) + revised 3-window sequencing + single canonical CSV + both debugger surfaces + both dashboard surfaces + Approach A infra-plan fold-in. 4 decisions locked."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-01T15:56:07Z",
+      "reason": "PR #570 squashed onto main as 6fe7f457df (operator-merged 2026-06-01T15:56:07Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-01T15:56:07Z",
+      "reason": "PR #570 squashed onto main as 6fe7f457df (operator-merged 2026-06-01T15:56:07Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-01T15:56:07Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-08T13:12:29Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/analytics-observability-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
   ],
   "cu_v2": {
@@ -166,7 +209,18 @@
     "tier_class": "B_medium"
   },
   "isolation_opt_out": false,
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "ts": "2026-06-08T13:15:00Z",
+      "layer": "session",
+      "key": "closure_attribution:analytics-observability",
+      "type": "backfill_closure",
+      "skill": "close-feature-2026-06-08",
+      "event_count": 6,
+      "note": "Feature shipped incrementally 2026-05-13 \u2192 2026-06-01 across many sessions that predated reliable per-feature Mechanism-C attribution, so no implementation-time cache_hits were captured. At 2026-06-08 closure the feature's artifacts (state.json, Tier 2.2 log, backlog row, case study) were read to author the case study; formalized here rather than left empty. T2 \u2014 declared closure attribution, not instrumented per-read capture.",
+      "backfilled_from": "closure-session feature-artifact reads"
+    }
+  ],
   "tasks": [
     {
       "id": "1.A.1",
@@ -178,6 +232,23 @@
       "outcome": "0 missing events (was 49). 0 missing screens (was 7). 0 missing user properties (was 1). All 114 enum events in CSV via flat-scan.",
       "files_touched": [
         "docs/product/analytics-taxonomy.csv"
+      ],
+      "related_prs": [
+        336,
+        337,
+        338,
+        339,
+        342,
+        345,
+        349,
+        351,
+        354,
+        358,
+        362,
+        477,
+        489,
+        493,
+        570
       ]
     },
     {
@@ -360,7 +431,8 @@
       "files_touched": [],
       "source_event": "FIT-142 closure 2026-05-17",
       "v7_9_1_candidate": true,
-      "defer_reason": "Operator decision 2026-05-25: GA4 conversion events have no meaningful signal in pre-launch TestFlight traffic where 100% of activeUsers are newUsers (same-day fresh installs from internal test cohort). Marking 'workout_complete' and 'nutrition_meal_logged' as conversions while the only traffic is operator + TestFlight beta would produce vanity numbers, not measurement. Reactivate when App Store launch is scheduled and real-user funnel data starts flowing. Per B3 daily-anomaly-check 2026-05-25: top-5 events for 2026-05-24 were screen_view (102), onboarding_step_viewed (63), user_engagement (63), first_open (46), session_start (45) \u2014 all infrastructure/onboarding events, no conversion candidates yet."
+      "defer_reason": "Operator decision 2026-05-25: GA4 conversion events have no meaningful signal in pre-launch TestFlight traffic where 100% of activeUsers are newUsers (same-day fresh installs from internal test cohort). Marking 'workout_complete' and 'nutrition_meal_logged' as conversions while the only traffic is operator + TestFlight beta would produce vanity numbers, not measurement. Reactivate when App Store launch is scheduled and real-user funnel data starts flowing. Per B3 daily-anomaly-check 2026-05-25: top-5 events for 2026-05-24 were screen_view (102), onboarding_step_viewed (63), user_engagement (63), first_open (46), session_start (45) \u2014 all infrastructure/onboarding events, no conversion candidates yet.",
+      "deferred_reason": "GA4 Admin dashboard action (mark workout_complete + nutrition_meal_logged as conversions) \u2014 not code; events fire + are validated. Deferred at closure 2026-06-08; operator runbook in merge PR."
     },
     {
       "id": "D-3",
@@ -413,7 +485,23 @@
       },
       "testing": {
         "started_at": "2026-05-25T18:37:14Z",
-        "ended_at": null
+        "ended_at": "2026-06-01T15:56:07Z"
+      },
+      "review": {
+        "started_at": "2026-06-01T15:56:07Z",
+        "ended_at": "2026-06-01T15:56:07Z"
+      },
+      "merge": {
+        "started_at": "2026-06-01T15:56:07Z",
+        "ended_at": "2026-06-01T15:56:07Z"
+      },
+      "docs": {
+        "started_at": "2026-06-01T15:56:07Z",
+        "ended_at": "2026-06-08T13:12:29Z"
+      },
+      "complete": {
+        "started_at": "2026-06-08T13:12:29Z",
+        "ended_at": "2026-06-08T13:12:29Z"
       }
     }
   },
@@ -499,5 +587,17 @@
       "role": "ios_analytics_plist_target_membership_fix"
     }
   ],
-  "case_study": "docs/case-studies/analytics-observability-case-study.md"
+  "case_study": "docs/case-studies/analytics-observability-case-study.md",
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "merge_pr_number": 570,
+  "merge_commit_sha": "6fe7f457df78560099e515979148e842c04cf9b2",
+  "merged_at": "2026-06-01T15:56:07Z",
+  "branch": "chore/analytics-observability-post-merge-closure",
+  "feature_branch_merged": "chore/b3-b4-ga4-funnels-conversions"
 }
