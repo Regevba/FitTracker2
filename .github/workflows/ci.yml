@@ -30,6 +30,15 @@ on:
       - 'scripts/ui-audit.py'
       - '.github/workflows/ci.yml'
       - 'Package.swift'
+      # Token-pipeline drivers: a bump/edit here must run `make tokens-check`,
+      # not get the synthetic ci-docs-skip green. Closes the W29 silent-pass
+      # where a style-dictionary major bump (PR #668) passed PR CI but breaks
+      # `make tokens` on the post-merge `push: main` run. Keep in exact sync
+      # with ci-docs-skip.yml's paths-ignore mirror.
+      - 'package.json'
+      - 'package-lock.json'
+      - 'sd.config.js'
+      - 'scripts/check-tokens.js'
   push:
     branches:
       - main
