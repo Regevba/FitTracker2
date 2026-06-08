@@ -44,18 +44,47 @@ date_written: 2026-04-29
 
 
 def test_t1_claim_without_ledger_evidence_warns(tmp_path):
-    # Use a word-char-ending unit (`ms`) so the v7.8.4 `\b` boundary in the
-    # claim regex (validate-tier-tags.py:33) matches. The original `999%`
-    # example broke after v7.8.4 because `%` followed by space has no
-    # word-boundary transition (both non-word chars). `999ms` → boundary
-    # between `s` (word) and ` ` (non-word) ✓.
+    # Use `x` (multiplier) — a word-char-ending unit the claim regex matches,
+    # NOT one of the 2026-06-08 observed-measurement suppression classes
+    # (durations / test ratios), so the warn-path still fires. The original
+    # `999ms` example was retired because `ms` is a duration → now suppressed.
     text = """---
 date_written: 2026-04-29
 ---
 # Case
-**T1**: cache_hits latency was 999ms — clearly broken.
+**T1**: peak throughput was 999x baseline — no ledger match.
 """
     result = run_on_text(text, tmp_path)
+    assert "TIER_TAG_LIKELY_INCORRECT" in result.stdout
+
+
+def test_observed_durations_and_test_ratios_suppressed(tmp_path):
+    # 2026-06-08 filter: instrumented OBSERVATIONS (wall-time/latency durations
+    # + X/Y test-pass ratios) are legitimately T1 but never ledger-match — must
+    # NOT warn. These are the exact recurring FP shapes (3.5h, 1.60s, 49/49).
+    for claim in (
+        "**T1**: the suite ran in 1.60s — fast.",
+        "**T1**: ~3.5h wall time for the whole session.",
+        "**T1**: latency 0.857s per call.",
+        "**T1**: 49/49 tests pass in the import suite.",
+        "**T1**: 19/19 unit tests pass.",
+    ):
+        text = f"---\ndate_written: 2026-04-29\n---\n# Case\n{claim}\n"
+        result = run_on_text(text, tmp_path)
+        assert "TIER_TAG_LIKELY_INCORRECT" not in result.stdout, f"should suppress: {claim}"
+
+
+def test_non_test_ratio_still_warns(tmp_path):
+    # A bare X/Y ratio WITHOUT a test-context word (e.g. a sync/records ratio)
+    # is NOT suppressed — keeps the filter from over-reaching. Controlled ledger
+    # so the warn-path isn't masked by a coincidental real-ledger match.
+    text = """---
+date_written: 2026-04-29
+---
+# Case
+**T1**: reconciled 73/91 records cleanly — no ledger match.
+"""
+    result = run_on_text(text, tmp_path, ledger={"unrelated": 1.0})
     assert "TIER_TAG_LIKELY_INCORRECT" in result.stdout
 
 
