@@ -1,8 +1,8 @@
 {
   "feature_name": "fitme-story-dual-audience-redesign",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T05:20:00Z",
+  "updated_at": "2026-06-09T05:40:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "has_ui": true,
@@ -12,7 +12,11 @@
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-09T05:20:00Z"
+        "started_at": "2026-06-09T05:20:00Z",
+        "ended_at": "2026-06-09T05:40:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-09T05:40:00Z"
       }
     }
   },
@@ -36,14 +40,14 @@
   "related_prs": [],
   "phases": {
     "research": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-06-09T05:20:00Z",
-      "ended_at": null,
-      "approved_at": null,
-      "sources": [],
-      "notes": "Brainstorm complete (design locked via 4 structured decisions: persistent lens switch, Dev+PM only, era-grouped collapsible case studies, compact home). Operator refinements: keep /about alongside /story; PM lens makes pm-flow + design-system first-class story chapters with dev side supporting. research.md + design spec authored this phase."
+      "ended_at": "2026-06-09T05:40:00Z",
+      "approved_at": "2026-06-09T05:40:00Z",
+      "sources": ["research.md", "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md", "GA4 runReport 2026-05-10..2026-06-09 (fitme-story web property)"],
+      "notes": "Brainstorm complete (design locked via 4 structured decisions: persistent lens switch, Dev+PM only, era-grouped collapsible case studies, compact home). Operator refinements: keep /about alongside /story; PM lens makes pm-flow + design-system first-class story chapters with dev side supporting. research.md + design spec authored + approved (spec reviewed in IDE)."
     },
-    "prd": { "status": "pending", "approved_at": null, "analytics_spec_complete": false },
+    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": true },
     "tasks_phase": { "status": "pending", "count": 0 },
     "ux_or_integration": { "status": "pending", "type": null, "preflight_passed": null },
     "implementation": { "status": "pending", "commits": [] },
@@ -56,5 +60,7 @@
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": { "ux": null, "design": null },
-  "transitions": []
+  "transitions": [
+    { "from": "research", "to": "prd", "timestamp": "2026-06-09T05:40:00Z", "approved_by": "user", "note": "Design spec approved (reviewed in IDE). GA4 home baseline pulled: 76.2% bounce." }
+  ]
 }
