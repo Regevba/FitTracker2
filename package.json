@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Token pipeline: Figma Variables → tokens.json → DesignTokens.swift",
   "scripts": {
-    "tokens": "style-dictionary build --config sd.config.js",
+    "tokens": "style-dictionary build --config sd.config.mjs",
     "tokens:check": "node scripts/check-tokens.js"
   },
   "devDependencies": {
-    "style-dictionary": "^3.9.2"
+    "style-dictionary": "^5.4.4"
   }
 }

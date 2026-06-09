@@ -137,12 +137,42 @@ FORWARD_DEADLINE_RE = re.compile(
 )
 
 
+# Observed instrumented values that are legitimately T1 but never ledger-match:
+# wall-time / latency DURATIONS (from a timing instrument) and X/Y test-pass
+# RATIOS (from a test runner). measurement-adoption.json tracks the BOOLEAN
+# adoption of the 4 dimensions, not the specific value, so a duration like
+# "3.5h" or a ratio like "49/49" has no ledger entry by construction. Added
+# 2026-06-08 to clear the recurring FP class (3.5h wall time, 1.60s, 0.09s,
+# 0.857 s latency, 49/49 suite, 19/19 tests). Mirrors the v7.8.4 +
+# F-TIER-TAG-FORWARD-DEADLINE-FILTER heuristic-narrowing pattern.
+DURATION_RE = re.compile(r"\d+(\.\d+)?\s*(ms|s|sec|secs|h|hr|hrs|min|mins)\b", re.IGNORECASE)
+TEST_RATIO_RE = re.compile(r"\b\d+\s*/\s*\d+\b")
+TEST_CONTEXT_MARKERS = ("test", "suite", "pass", "assert", "spec", "coverage")
+
+
+def is_observed_unledgered_claim(context: str) -> bool:
+    """True when the claim is an instrumented OBSERVATION that cannot ledger-match:
+    a wall-time/latency duration, or an X/Y test-pass ratio. These are T1 (a real
+    instrument produced them) but the adoption ledger stores adoption booleans,
+    not the value — so the number will never match. Test ratios additionally
+    require a test-context word so genuine non-test ratios (e.g. "2/9 adoption")
+    are NOT suppressed."""
+    if DURATION_RE.search(context):
+        return True
+    if TEST_RATIO_RE.search(context) and any(
+        w in context.lower() for w in TEST_CONTEXT_MARKERS
+    ):
+        return True
+    return False
+
+
 def is_target_or_kill_claim(context: str) -> bool:
     """True when the claim context is a forward-looking threshold declaration.
 
     Added v7.8.4 to narrow the false-positive class — see CLAUDE.md "v7.8.4"
     section. Extended v7.9.1 (F-TIER-TAG-FORWARD-DEADLINE-FILTER) to also
-    recognize T+Nd / events/Nd / within-Nd forward-deadline patterns.
+    recognize T+Nd / events/Nd / within-Nd forward-deadline patterns, and
+    2026-06-08 to skip un-ledgerable observations (durations / test ratios).
 
     Targets/kill criteria/measurement-windows are legitimately T1-tagged
     because the *metric* is instrumented, but the *number* is a declaration
@@ -153,6 +183,8 @@ def is_target_or_kill_claim(context: str) -> bool:
     if any(marker in lower for marker in TARGET_KILL_MARKERS):
         return True
     if FORWARD_DEADLINE_RE.search(context):
+        return True
+    if is_observed_unledgered_claim(context):
         return True
     return False
 

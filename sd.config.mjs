@@ -1,15 +1,23 @@
-// sd.config.js — Style Dictionary configuration
+// sd.config.mjs — Style Dictionary v5 configuration (ESM)
 // Run `make tokens` to regenerate FitTracker/DesignSystem/DesignTokens.swift
 // Requires: npm install (installs style-dictionary as dev dep)
+//
+// Migrated from sd.config.js (v3) on 2026-06-08. v5 is ESM-only; the v3→v5
+// API renames are: require→import, module.exports→export default,
+// matcher→filter, transformer→transform, formatter→format, sync
+// .extend().buildAllPlatforms()→async new StyleDictionary()+build (handled by
+// the CLI in the Makefile), name/cti/camel→name/camel. The transform/format
+// function BODIES are unchanged — same hex→RGB math, same line emission — so
+// the generated DesignTokens.swift is byte-identical to the v3 output.
 
-const StyleDictionary = require("style-dictionary");
+import StyleDictionary from "style-dictionary";
 
 // Custom transform: convert hex colors to Swift Color(red:green:blue:) or rgba
 StyleDictionary.registerTransform({
   name: "color/swift",
   type: "value",
-  matcher: (token) => token.type === "color",
-  transformer: (token) => {
+  filter: (token) => token.type === "color",
+  transform: (token) => {
     const v = token.value;
     // Pass rgba strings through as-is (documented in output)
     if (v.startsWith("rgba(")) return v;
@@ -25,7 +33,7 @@ StyleDictionary.registerTransform({
 // Custom format: emit a Swift enum
 StyleDictionary.registerFormat({
   name: "swift/fittracker-tokens",
-  formatter: ({ dictionary }) => {
+  format: ({ dictionary }) => {
     const now = new Date().toISOString().slice(0, 10);
     const lines = [
       `// FitTracker/DesignSystem/DesignTokens.swift`,
@@ -78,11 +86,11 @@ StyleDictionary.registerFormat({
   },
 });
 
-module.exports = {
+export default {
   source: ["design-tokens/tokens.json"],
   platforms: {
     swift: {
-      transforms: ["attribute/cti", "name/cti/camel", "color/swift"],
+      transforms: ["attribute/cti", "name/camel", "color/swift"],
       buildPath: "FitTracker/DesignSystem/",
       files: [
         {
