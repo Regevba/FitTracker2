@@ -2,7 +2,7 @@
   "feature_name": "fitme-story-dual-audience-redesign",
   "current_phase": "implementation",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T06:10:00Z",
+  "updated_at": "2026-06-09T08:20:00Z",
   "work_subtype": "new_ui",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
@@ -34,22 +34,22 @@
     }
   },
   "scheduled_after": null,
-  "primary_metric": "% of home-page visitors who select an audience lens (Dev or PM) — engagement with the new core wayfinding mechanism",
+  "primary_metric": "% of home-page visitors who select an audience lens (Dev or PM) \u2014 engagement with the new core wayfinding mechanism",
   "success_metrics": [
-    "Lens-selection rate among home visitors ≥ target (T1, GA4 home_lens_select / home page_view; baseline + target set in Phase 1 PRD)",
+    "Lens-selection rate among home visitors \u2265 target (T1, GA4 home_lens_select / home page_view; baseline + target set in Phase 1 PRD)",
     "Home bounce-rate reduction vs pre-redesign baseline (T1, GA4)",
-    "Case-study reach depth improves — more sessions expand/open studies older than the newest era (T1, GA4 case_study era-expand + study open events)"
+    "Case-study reach depth improves \u2014 more sessions expand/open studies older than the newest era (T1, GA4 case_study era-expand + study open events)"
   ],
   "kill_criteria": [
-    "Lens-selection rate below floor AND home bounce rate worsens vs baseline after 30 days → revert to a neutral (lens-less) home",
-    "Lens switching causes measurable confusion — support/feedback signals OR a drop in cross-page navigation depth vs baseline"
+    "Lens-selection rate below floor AND home bounce rate worsens vs baseline after 30 days \u2192 revert to a neutral (lens-less) home",
+    "Lens switching causes measurable confusion \u2014 support/feedback signals OR a drop in cross-page navigation depth vs baseline"
   ],
   "kill_criteria_resolution": "",
   "dispatch_pattern": "agent-driven (cross-repo: state.json + spec in FitTracker2, implementation in fitme-story)",
   "case_study": "docs/case-studies/fitme-story-dual-audience-redesign-case-study.md",
   "case_study_showcase": "",
   "spec": "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md",
-  "scope_summary": "Reorients the fitme-story public site around TWO audiences — developers and product managers — via a persistent, cookie-backed, server-rendered 'lens' (dev|pm) switchable from the header. The lens defines the NARRATIVE SPINE: in the PM lens the product/process story (pm-flow, lifecycle, design system, outcomes) leads and engineering supports; the Dev lens flips it (architecture, gates, state schema, dev-guide, Code Connect lead). Rebuilds the home page (compact: who/what + origin hook + early lens chooser + numbers + 3 featured studies; drops the 4-persona ThreeWaysIn, keeping only Dev+PM) and adds a lens-aware /story narrative page (who → what → how it started → how it grew → today). Reworks /case-studies into an era-grouped collapsible layout (newest era expanded; subject sub-groups) backed by new category/era frontmatter on the 68 MDX files. Adds the missing v7.9.1 entry to the framework timeline. OUT OF SCOPE: /control-room (gated operator surface), the iOS app, and authoring any NEW case-study content. /about is retained alongside the new /story.",
+  "scope_summary": "Reorients the fitme-story public site around TWO audiences \u2014 developers and product managers \u2014 via a persistent, cookie-backed, server-rendered 'lens' (dev|pm) switchable from the header. The lens defines the NARRATIVE SPINE: in the PM lens the product/process story (pm-flow, lifecycle, design system, outcomes) leads and engineering supports; the Dev lens flips it (architecture, gates, state schema, dev-guide, Code Connect lead). Rebuilds the home page (compact: who/what + origin hook + early lens chooser + numbers + 3 featured studies; drops the 4-persona ThreeWaysIn, keeping only Dev+PM) and adds a lens-aware /story narrative page (who \u2192 what \u2192 how it started \u2192 how it grew \u2192 today). Reworks /case-studies into an era-grouped collapsible layout (newest era expanded; subject sub-groups) backed by new category/era frontmatter on the 68 MDX files. Adds the missing v7.9.1 entry to the framework timeline. OUT OF SCOPE: /control-room (gated operator surface), the iOS app, and authoring any NEW case-study content. /about is retained alongside the new /story.",
   "related_prs": [],
   "phases": {
     "research": {
@@ -57,43 +57,314 @@
       "started_at": "2026-06-09T05:20:00Z",
       "ended_at": "2026-06-09T05:40:00Z",
       "approved_at": "2026-06-09T05:40:00Z",
-      "sources": ["research.md", "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md", "GA4 runReport 2026-05-10..2026-06-09 (fitme-story web property)"],
+      "sources": [
+        "research.md",
+        "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md",
+        "GA4 runReport 2026-05-10..2026-06-09 (fitme-story web property)"
+      ],
       "notes": "Brainstorm complete (design locked via 4 structured decisions: persistent lens switch, Dev+PM only, era-grouped collapsible case studies, compact home). Operator refinements: keep /about alongside /story; PM lens makes pm-flow + design-system first-class story chapters with dev side supporting. research.md + design spec authored + approved (spec reviewed in IDE)."
     },
-    "prd": { "status": "approved", "approved_at": "2026-06-09T05:50:00Z", "analytics_spec_complete": true },
-    "tasks_phase": { "status": "approved", "count": 16, "approved_at": "2026-06-09T06:00:00Z" },
-    "ux_or_integration": { "status": "approved", "approved_at": "2026-06-09T06:10:00Z", "type": "ux", "preflight_passed": true, "notes": "ux-spec.md authored, grounded in real fitme-story symbols (preflight pass). Key reconciliation: narrow existing PersonaProvider 4→2 + add cookie SSR layer; reuse Disclosure/CaseStudyCard/Tag/Stat/Button; one new primitive (LensToggle). Web repo — iOS ui-audit/AppTheme gates N/A; compliance checked vs design-tokens.ts + ui/. Analytics: no consent gate (GA env opt-in) — T15 becomes no-op-guard test. T14-T16 need test+lighthouse harness bootstrap (+1.0d)." },
-    "implementation": { "status": "pending", "commits": [] },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
-    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
-    "documentation": { "status": "pending" }
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-06-09T05:50:00Z",
+      "analytics_spec_complete": true
+    },
+    "tasks_phase": {
+      "status": "approved",
+      "count": 16,
+      "approved_at": "2026-06-09T06:00:00Z"
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "approved_at": "2026-06-09T06:10:00Z",
+      "type": "ux",
+      "preflight_passed": true,
+      "notes": "ux-spec.md authored, grounded in real fitme-story symbols (preflight pass). Key reconciliation: narrow existing PersonaProvider 4\u21922 + add cookie SSR layer; reuse Disclosure/CaseStudyCard/Tag/Stat/Button; one new primitive (LensToggle). Web repo \u2014 iOS ui-audit/AppTheme gates N/A; compliance checked vs design-tokens.ts + ui/. Analytics: no consent gate (GA env opt-in) \u2014 T15 becomes no-op-guard test. T14-T16 need test+lighthouse harness bootstrap (+1.0d)."
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    }
   },
   "tasks": [
-    { "id": "T1", "title": "getLens() server util + fitme_lens cookie contract + default resolution", "type": "backend", "skill": "dev", "status": "done", "priority": "critical", "effort_days": 0.5, "depends_on": [], "completed_at": "2026-06-09T06:25:00Z", "note": "src/lib/lens.ts — server-only Lens type, LENS_COOKIE, getLens()/getLensWithDefault() (async cookies()), isLens guard, PM default. Additive; does not yet narrow Persona." },
-    { "id": "T2", "title": "Lens persistence + provider wiring (cookie mirror in persona.ts; PersonaProvider hoisted in layout; client-resolved to keep site static — cacheComponents off)", "type": "ui", "skill": "dev", "status": "done", "priority": "critical", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-06-09T06:45:00Z", "note": "Deviation from spec's SSR-layout-read: cacheComponents is OFF, so a root-layout cookie read would force the whole static site dynamic (perf-guardrail regression). Lens resolves client-side (consistent with existing persona/theme); cookie added for persistence + per-page server opt-in (lens.server.ts getLens). Flagged for operator review." },
-    { "id": "T3", "title": "LensToggle segmented Dev|PM radiogroup (header + chooser variants) in SiteHeader; MobileNav copy deferred to T11", "type": "ui", "skill": "dev", "status": "done", "priority": "critical", "effort_days": 0.5, "depends_on": ["T2"], "completed_at": "2026-06-09T06:45:00Z", "note": "src/components/ui/LensToggle.tsx — new primitive (no segmented control existed). Keyboard nav, focus ring, 44px, reduce-motion-safe. Mounted desktop header." },
-    { "id": "T4", "title": "useLens / useSetLens / LensGate helpers (lens-client.tsx)", "type": "ui", "skill": "dev", "status": "done", "priority": "critical", "effort_days": 0.5, "depends_on": ["T2"], "completed_at": "2026-06-09T06:45:00Z", "note": "Lens-typed layer over persona context; LensGate defaults to PM when unset." },
-    { "id": "T5", "title": "Rebuild home page.tsx (compact hero + origin hook + lens chooser + numbers + 3 featured studies + story CTA; remove ThreeWaysIn)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 1.0, "depends_on": ["T4"], "completed_at": null },
-    { "id": "T6", "title": "New /story route — lens-aware narrative (who→what→started→grew→today)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 1.0, "depends_on": ["T4"], "completed_at": null },
-    { "id": "T7", "title": "Add category frontmatter enum + backfill 67 case-study MDX (explicit slug map; era derived from version in code)", "type": "data", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": "2026-06-09T07:10:00Z", "note": "fitme-story 8568dac. content-schema category enum + scripts/backfill-case-study-category.mjs (idempotent, no deps). 67 categorized (28 framework/21 product/9 design-system/5 meta/4 dev-deepdive); README+audit-report skipped. era NOT stored (derived from version, DRY)." },
-    { "id": "T8", "title": "Rebuild /case-studies index — era-grouped collapsible accordions (newest expanded), milestones pinned in-era with curated hooks, subject sub-groups, count badges, expand-all, sticky jump-nav, lens-aware ordering", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 1.5, "depends_on": ["T4", "T7"], "completed_at": "2026-06-09T07:45:00Z", "note": "fitme-story 8009f15. case-study-grouping.ts (pure, era-from-version, meta/dev/version-less excluded from eras) + 9 node:test unit tests + CaseStudyEras.tsx (reuses Disclosure+Tag, lens-reactive, era/open analytics). Methodology preserved verbatim; Meta+Dev sections category-driven. Strict DS tokens/typography. Wireframe approved pre-build. Grouping 10/10 local; next build via CI." },
-    { "id": "T9", "title": "Add v7.9.1 (2026-06-04) entry to framework-page BRIDGE_TIMELINE; verify framework page renders it", "type": "data", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.25, "depends_on": [], "completed_at": "2026-06-09T06:20:00Z", "note": "Real surface was the inline BRIDGE_TIMELINE in src/app/framework/page.tsx (not src/lib/timeline.ts — that's the home timeline). Added v7.9.1 entry (fitme-story bbd50d8). Deliberately NOT added to cu/wall trend chart or curated EvolutionStrip to preserve their semantics." },
-    { "id": "T10", "title": "Lens-aware section ordering on /framework (PM: why→outcomes→lifecycle; Dev: architecture→gates→schema)", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.75, "depends_on": ["T4"], "completed_at": null },
-    { "id": "T11", "title": "Nav reorder per lens (nav.ts + SiteHeader + MobileNav) + add /story link", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T4"], "completed_at": null },
-    { "id": "T12", "title": "/pm-flow + /design-system lens spine treatment (PM first-class chapter vs Dev supporting)", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.75, "depends_on": ["T4"], "completed_at": null },
-    { "id": "T13", "title": "Wire GA4 events (home_lens_select, nav_lens_switch, story_scroll_depth, case_study_era_expand, case_study_open) + update analytics taxonomy doc", "type": "analytics", "skill": "analytics", "status": "in_progress", "priority": "high", "effort_days": 0.75, "depends_on": ["T5", "T6", "T8", "T3"], "completed_at": null, "note": "lens-analytics.ts all 5 helpers. Wired: home_lens_select + nav_lens_switch (LensToggle, T3); case_study_era_expand + case_study_open (CaseStudyEras, T8). Remaining: story_scroll_depth (T6 /story), taxonomy doc." },
-    { "id": "T14", "title": "Lens-engine tests (cookie resolution, SSR PM default, toggle round-trip, no hydration mismatch)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T1", "T2", "T3", "T4"], "completed_at": null },
-    { "id": "T15", "title": "Analytics verification (each event fires with correct params + consent-gated)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T13"], "completed_at": null },
-    { "id": "T16", "title": "lighthouse-ci on changed routes + a11y pass on LensToggle + accordion (keyboard, ARIA, 44px, reduce-motion)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T5", "T6", "T8"], "completed_at": null }
+    {
+      "id": "T1",
+      "title": "getLens() server util + fitme_lens cookie contract + default resolution",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-06-09T06:25:00Z",
+      "note": "src/lib/lens.ts \u2014 server-only Lens type, LENS_COOKIE, getLens()/getLensWithDefault() (async cookies()), isLens guard, PM default. Additive; does not yet narrow Persona."
+    },
+    {
+      "id": "T2",
+      "title": "Lens persistence + provider wiring (cookie mirror in persona.ts; PersonaProvider hoisted in layout; client-resolved to keep site static \u2014 cacheComponents off)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-09T06:45:00Z",
+      "note": "Deviation from spec's SSR-layout-read: cacheComponents is OFF, so a root-layout cookie read would force the whole static site dynamic (perf-guardrail regression). Lens resolves client-side (consistent with existing persona/theme); cookie added for persistence + per-page server opt-in (lens.server.ts getLens). Flagged for operator review."
+    },
+    {
+      "id": "T3",
+      "title": "LensToggle segmented Dev|PM radiogroup (header + chooser variants) in SiteHeader; MobileNav copy deferred to T11",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": "2026-06-09T06:45:00Z",
+      "note": "src/components/ui/LensToggle.tsx \u2014 new primitive (no segmented control existed). Keyboard nav, focus ring, 44px, reduce-motion-safe. Mounted desktop header."
+    },
+    {
+      "id": "T4",
+      "title": "useLens / useSetLens / LensGate helpers (lens-client.tsx)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": "2026-06-09T06:45:00Z",
+      "note": "Lens-typed layer over persona context; LensGate defaults to PM when unset."
+    },
+    {
+      "id": "T5",
+      "title": "Rebuild home page.tsx (compact hero + origin hook + lens chooser + numbers + 3 featured studies + story CTA; remove ThreeWaysIn)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": "2026-06-09T08:20:00Z",
+      "note": "fitme-story 4a279a8. Compact Hero (who-am-I + LensToggle chooser, dropped PersonaBar) + numbers + lens-aware FeaturedStudies + /story CTA. ThreeWaysIn/OriginNarrative/Timeline removed from home."
+    },
+    {
+      "id": "T6",
+      "title": "New /story route \u2014 lens-aware narrative (who\u2192what\u2192started\u2192grew\u2192today)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": "2026-06-09T08:20:00Z",
+      "note": "fitme-story 4a279a8. /story page \u2014 lens-aware intro (StoryLensLine), reuses OriginNarrative+Timeline, StoryScrollTracker fires story_scroll_depth (who/started/grew/today)."
+    },
+    {
+      "id": "T7",
+      "title": "Add category frontmatter enum + backfill 67 case-study MDX (explicit slug map; era derived from version in code)",
+      "type": "data",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-06-09T07:10:00Z",
+      "note": "fitme-story 8568dac. content-schema category enum + scripts/backfill-case-study-category.mjs (idempotent, no deps). 67 categorized (28 framework/21 product/9 design-system/5 meta/4 dev-deepdive); README+audit-report skipped. era NOT stored (derived from version, DRY)."
+    },
+    {
+      "id": "T8",
+      "title": "Rebuild /case-studies index \u2014 era-grouped collapsible accordions (newest expanded), milestones pinned in-era with curated hooks, subject sub-groups, count badges, expand-all, sticky jump-nav, lens-aware ordering",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 1.5,
+      "depends_on": [
+        "T4",
+        "T7"
+      ],
+      "completed_at": "2026-06-09T07:45:00Z",
+      "note": "fitme-story 8009f15. case-study-grouping.ts (pure, era-from-version, meta/dev/version-less excluded from eras) + 9 node:test unit tests + CaseStudyEras.tsx (reuses Disclosure+Tag, lens-reactive, era/open analytics). Methodology preserved verbatim; Meta+Dev sections category-driven. Strict DS tokens/typography. Wireframe approved pre-build. Grouping 10/10 local; next build via CI."
+    },
+    {
+      "id": "T9",
+      "title": "Add v7.9.1 (2026-06-04) entry to framework-page BRIDGE_TIMELINE; verify framework page renders it",
+      "type": "data",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": "2026-06-09T06:20:00Z",
+      "note": "Real surface was the inline BRIDGE_TIMELINE in src/app/framework/page.tsx (not src/lib/timeline.ts \u2014 that's the home timeline). Added v7.9.1 entry (fitme-story bbd50d8). Deliberately NOT added to cu/wall trend chart or curated EvolutionStrip to preserve their semantics."
+    },
+    {
+      "id": "T10",
+      "title": "Lens-aware section ordering on /framework (PM: why\u2192outcomes\u2192lifecycle; Dev: architecture\u2192gates\u2192schema)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T11",
+      "title": "Nav reorder per lens (nav.ts + SiteHeader + MobileNav) + add /story link",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T12",
+      "title": "/pm-flow + /design-system lens spine treatment (PM first-class chapter vs Dev supporting)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T13",
+      "title": "Wire GA4 events (home_lens_select, nav_lens_switch, story_scroll_depth, case_study_era_expand, case_study_open) + update analytics taxonomy doc",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T5",
+        "T6",
+        "T8",
+        "T3"
+      ],
+      "completed_at": "2026-06-09T08:20:00Z",
+      "note": "fitme-story 4a279a8. All 5 lens events wired: home_lens_select+nav_lens_switch (LensToggle), case_study_era_expand+case_study_open (CaseStudyEras), story_scroll_depth (StoryScrollTracker). Remaining: analytics-taxonomy doc note."
+    },
+    {
+      "id": "T14",
+      "title": "Lens-engine tests (cookie resolution, SSR PM default, toggle round-trip, no hydration mismatch)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T15",
+      "title": "Analytics verification (each event fires with correct params + consent-gated)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T13"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T16",
+      "title": "lighthouse-ci on changed routes + a11y pass on LensToggle + accordion (keyboard, ARIA, 44px, reduce-motion)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T5",
+        "T6",
+        "T8"
+      ],
+      "completed_at": null
+    }
   ],
   "figma_node_ids": {},
   "figma_build_status": null,
-  "pre_merge_review": { "ux": null, "design": null },
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
   "transitions": [
-    { "from": "research", "to": "prd", "timestamp": "2026-06-09T05:40:00Z", "approved_by": "user", "note": "Design spec approved (reviewed in IDE). GA4 home baseline pulled: 76.2% bounce." },
-    { "from": "prd", "to": "tasks_phase", "timestamp": "2026-06-09T05:50:00Z", "approved_by": "user", "note": "PRD approved. 16 tasks across 7 groups; lens engine is the foundation dependency." },
-    { "from": "tasks_phase", "to": "ux_or_integration", "timestamp": "2026-06-09T06:00:00Z", "approved_by": "user", "note": "Tasks approved. UX spec grounded in real symbols; lens = refactor of existing PersonaProvider (4→2) + cookie SSR layer." },
-    { "from": "ux_or_integration", "to": "implementation", "timestamp": "2026-06-09T06:10:00Z", "approved_by": "user", "note": "UX approved. Implementing in fitme-story; T9 v7.9.1 quick win first, then lens-engine refactor." }
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-06-09T05:40:00Z",
+      "approved_by": "user",
+      "note": "Design spec approved (reviewed in IDE). GA4 home baseline pulled: 76.2% bounce."
+    },
+    {
+      "from": "prd",
+      "to": "tasks_phase",
+      "timestamp": "2026-06-09T05:50:00Z",
+      "approved_by": "user",
+      "note": "PRD approved. 16 tasks across 7 groups; lens engine is the foundation dependency."
+    },
+    {
+      "from": "tasks_phase",
+      "to": "ux_or_integration",
+      "timestamp": "2026-06-09T06:00:00Z",
+      "approved_by": "user",
+      "note": "Tasks approved. UX spec grounded in real symbols; lens = refactor of existing PersonaProvider (4\u21922) + cookie SSR layer."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-06-09T06:10:00Z",
+      "approved_by": "user",
+      "note": "UX approved. Implementing in fitme-story; T9 v7.9.1 quick win first, then lens-engine refactor."
+    }
   ]
 }
