@@ -425,7 +425,11 @@
         358,
         362,
         376,
-        388
+        388,
+        477,
+        489,
+        493,
+        570
       ]
     },
     {
@@ -593,6 +597,26 @@
       "number": 388,
       "repo": "Regevba/FitTracker2",
       "role": "ios_analytics_plist_target_membership_fix"
+    },
+    {
+      "number": 477,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_reconcile_implementation_status"
+    },
+    {
+      "number": 489,
+      "repo": "Regevba/FitTracker2",
+      "role": "D-3_screenmodifier_settingsview"
+    },
+    {
+      "number": 493,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_flip_implementation_testing"
+    },
+    {
+      "number": 570,
+      "repo": "Regevba/FitTracker2",
+      "role": "B1-B4_ga4_funnels_conversion_runbook"
     }
   ],
   "case_study": "docs/case-studies/analytics-observability-case-study.md",
