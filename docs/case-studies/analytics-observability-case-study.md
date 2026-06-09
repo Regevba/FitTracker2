@@ -9,7 +9,7 @@ dispatch_pattern: incremental-phased
 primary_metric: "Analytics taxonomy drift (CSV-missing-rows count): baseline 56 → target 0 → achieved 0 (T2, declared with baseline/target/current in state.json::phases.metrics)"
 success_metrics:
   - "Taxonomy drift: 56 missing CSV rows → 0; CSV ↔ AnalyticsEvent enum ↔ code in sync (T2)"
-  - "iOS event test coverage: 81% → 100% (112/112 events) via 19 new XCTest methods (T2)"
+  - "iOS event test coverage: 81% → 100% (112/112 events) via 19 new XCTest methods (T1 — instrumented from the XCTest suite)"
   - "Declared-but-unfired iOS events: 4 → 0 (T2)"
   - "GA4 MCP connectivity: disconnected → connected (env-var + access-binding fixes) + analytics-watch CLI + SSE mirror + debug-sink adapter operational (T2)"
 kill_criteria:
@@ -17,7 +17,7 @@ kill_criteria:
 kill_criteria_resolution: "Not triggered. The Phase 1.B enforcement gates were folded into the v8.0 docket (F19/F20) rather than shipped in-feature, so the >5%-false-positive condition has no active gate to fire against; the hygiene + observability outcome shipped as planned. The one open item — D-2 (configure GA4 conversions: workout_complete + nutrition_meal_logged in the GA4 dashboard) — is operator-only (GA4 console config, no code), deferred to App Store launch because pre-launch TestFlight traffic is 100% same-day new-users (vanity numbers, not measurement). Tracked in the Operator Action Register. D-2 does not gate the shipped instrumentation/tooling deliverables."
 tier_tags_present: true
 state_owner: ft2
-related_prs: [332, 334, 335, 336, 337, 338, 339, 342, 345, 349, 351, 354, 358, 362, 376, 388]
+related_prs: [332, 334, 335, 336, 337, 338, 339, 342, 345, 349, 351, 354, 358, 362, 376, 388, 477, 489, 493, 570]
 ---
 
 # Analytics Observability
