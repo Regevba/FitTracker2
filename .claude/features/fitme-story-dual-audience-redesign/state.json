@@ -2,7 +2,7 @@
   "feature_name": "fitme-story-dual-audience-redesign",
   "current_phase": "implementation",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T08:20:00Z",
+  "updated_at": "2026-06-09T09:00:00Z",
   "work_subtype": "new_ui",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
@@ -235,39 +235,42 @@
       "title": "Lens-aware section ordering on /framework (PM: why\u2192outcomes\u2192lifecycle; Dev: architecture\u2192gates\u2192schema)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.75,
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-09T09:00:00Z",
+      "note": "fitme-story b9a2905. /framework LensFraming intro (PM lifecycle/outcomes + #bridge jump; Dev floor-by-floor + dev-guide). No physical reorder (keeps page static; floors are bottom-up metaphor)."
     },
     {
       "id": "T11",
       "title": "Nav reorder per lens (nav.ts + SiteHeader + MobileNav) + add /story link",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-09T09:00:00Z",
+      "note": "fitme-story b9a2905. nav.ts navForLens() per-lens primary-route order + /story added; SiteHeader + MobileNav lens-ordered; MobileNav lens toggle (mobile parity)."
     },
     {
       "id": "T12",
       "title": "/pm-flow + /design-system lens spine treatment (PM first-class chapter vs Dev supporting)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.75,
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-09T09:00:00Z",
+      "note": "fitme-story b9a2905. /pm-flow + /design-system LensFraming (PM: home-base / product-asset framing; Dev: orchestration-layer / implementation framing)."
     },
     {
       "id": "T13",
