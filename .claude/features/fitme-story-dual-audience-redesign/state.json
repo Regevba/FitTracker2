@@ -1,8 +1,15 @@
 {
   "feature_name": "fitme-story-dual-audience-redesign",
-  "current_phase": "review",
+  "current_phase": "complete",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T09:45:00Z",
+  "updated_at": "2026-06-09T17:45:00Z",
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
   "work_subtype": "new_ui",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
@@ -37,7 +44,19 @@
         "ended_at": "2026-06-09T09:40:00Z"
       },
       "review": {
-        "started_at": "2026-06-09T09:40:00Z"
+        "started_at": "2026-06-09T09:40:00Z",
+        "ended_at": "2026-06-09T17:40:00Z"
+      },
+      "merge": {
+        "started_at": "2026-06-09T17:40:00Z",
+        "ended_at": "2026-06-09T17:42:00Z"
+      },
+      "documentation": {
+        "started_at": "2026-06-09T17:42:00Z",
+        "ended_at": "2026-06-09T17:44:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-09T17:45:00Z"
       }
     }
   },
@@ -52,14 +71,19 @@
     "Lens-selection rate below floor AND home bounce rate worsens vs baseline after 30 days \u2192 revert to a neutral (lens-less) home",
     "Lens switching causes measurable confusion \u2014 support/feedback signals OR a drop in cross-page navigation depth vs baseline"
   ],
-  "kill_criteria_resolution": "",
+  "kill_criteria_resolution": "Pre-registered, not yet evaluable at ship. The lens mechanism is net-new (baseline 0) and both kill criteria are 30/60-day metric evaluations against GA4. First review 2026-07-09 (T+30d); primary-metric (lens-selection rate >=40%) evaluation 2026-08-09 (T+60d). No kill condition is triggerable at ship time; resolution recorded at the first review.",
   "dispatch_pattern": "agent-driven (cross-repo: state.json + spec in FitTracker2, implementation in fitme-story)",
   "case_study": "docs/case-studies/fitme-story-dual-audience-redesign-case-study.md",
   "case_study_showcase": "",
   "spec": "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md",
   "scope_summary": "Reorients the fitme-story public site around TWO audiences \u2014 developers and product managers \u2014 via a persistent, cookie-backed, server-rendered 'lens' (dev|pm) switchable from the header. The lens defines the NARRATIVE SPINE: in the PM lens the product/process story (pm-flow, lifecycle, design system, outcomes) leads and engineering supports; the Dev lens flips it (architecture, gates, state schema, dev-guide, Code Connect lead). Rebuilds the home page (compact: who/what + origin hook + early lens chooser + numbers + 3 featured studies; drops the 4-persona ThreeWaysIn, keeping only Dev+PM) and adds a lens-aware /story narrative page (who \u2192 what \u2192 how it started \u2192 how it grew \u2192 today). Reworks /case-studies into an era-grouped collapsible layout (newest era expanded; subject sub-groups) backed by new category/era frontmatter on the 68 MDX files. Adds the missing v7.9.1 entry to the framework timeline. OUT OF SCOPE: /control-room (gated operator surface), the iOS app, and authoring any NEW case-study content. /about is retained alongside the new /story.",
   "related_prs": [
-    213
+    {
+      "number": 213,
+      "repo": "Regevba/fitme-story",
+      "role": "implementation_squash_merge",
+      "merge_commit": "1f5bd0989c303bcb2748f2ff51c6418fb23b14f6"
+    }
   ],
   "phases": {
     "research": {
@@ -113,18 +137,26 @@
       "analytics_verification_passed": true
     },
     "review": {
-      "status": "in_progress",
+      "status": "approved",
+      "approved_at": "2026-06-09T17:40:00Z",
       "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "ci_main": true,
+      "ci_feature": true,
+      "notes": "fitme-story #213 CI all-green (lighthouse, verify, audit, gates, mdx-render, unit-tests, Vercel, GitGuardian); dual pre-merge review (ux + design) passed."
     },
     "merge": {
-      "status": "pending",
+      "status": "approved",
+      "approved_at": "2026-06-09T17:42:00Z",
       "pr_number": null,
-      "analytics_regression_passed": null
+      "implementation_pr": "Regevba/fitme-story#213",
+      "merge_commit": "1f5bd0989c303bcb2748f2ff51c6418fb23b14f6",
+      "analytics_regression_passed": true,
+      "notes": "Implementation squash-merged in fitme-story (#213, commit 1f5bd09). FT2 side carries the PM paper trail (state + case study) merged separately to FT2 main; pr_number left null (cross-repo dual-outlet: the runnable merge is the fitme-story PR)."
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-06-09T17:44:00Z",
+      "notes": "Case study at docs/case-studies/fitme-story-dual-audience-redesign-case-study.md. Showcase MDX (fitme-story/content/04-case-studies/) is a fitme-story-repo follow-up per chronological-order rule."
     }
   },
   "tasks": [
@@ -138,7 +170,8 @@
       "effort_days": 0.5,
       "depends_on": [],
       "completed_at": "2026-06-09T06:25:00Z",
-      "note": "src/lib/lens.ts \u2014 server-only Lens type, LENS_COOKIE, getLens()/getLensWithDefault() (async cookies()), isLens guard, PM default. Additive; does not yet narrow Persona."
+      "related_prs": [213],
+      "note": "src/lib/lens.ts \u2014 server-only Lens type, LENS_COOKIE, getLens()/getLensWithDefault() (async cookies()), isLens guard, PM default. Additive; does not yet narrow Persona. Shipped (with all tasks) via fitme-story #213 squash-merge."
     },
     {
       "id": "T2",
@@ -406,6 +439,27 @@
       "timestamp": "2026-06-09T09:40:00Z",
       "approved_by": "user",
       "note": "CI green incl. 3 new test files; self pre-merge review next."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-06-09T17:40:00Z",
+      "approved_by": "user",
+      "note": "Dual pre-merge review (ux+design) passed; fitme-story #213 CI all-green + mergeable. User approved merge."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-06-09T17:42:00Z",
+      "approved_by": "user",
+      "note": "fitme-story #213 squash-merged (commit 1f5bd09). Case study authored."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-06-09T17:45:00Z",
+      "approved_by": "user",
+      "note": "Case study + state reconciled. Feature complete; first metric review 2026-07-09 (T+30d)."
     }
   ],
   "persona_narrowing_decision": "SUPERSEDED (2026-06-09): full Persona 4->2 type narrowing + dead-component prune NOT done. Reason discovered in implementation: PersonaBar + PersonaIndicator are catalogued design-system components (src/lib/design-system.ts with githubPath) AND carry Code Connect .figma.tsx mappings AND persona_emphasis data carries hr/academic keys. The persona substrate must stay 4-valued to back those retained showcase components + data. The two-audience guarantee is enforced at the LENS layer (only dev|pm are settable via LensToggle, readable via cookie, surfaced in nav/home/story/case-studies). ThreeWaysIn no longer rendered (left in repo; no per-action deletion approval). Net: lens-on-persona is the correct architecture, not a shortcut."
