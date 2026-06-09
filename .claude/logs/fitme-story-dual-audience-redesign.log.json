@@ -1,0 +1,267 @@
+{
+  "version": "1.0",
+  "feature": "fitme-story-dual-audience-redesign",
+  "title": "fitme story dual audience redesign",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-09T05:26:14Z",
+  "updated_at": "2026-06-09T17:45:53Z",
+  "events": [
+    {
+      "timestamp": "2026-06-09T05:26:14Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 Research opened. Design locked via brainstorm: persistent cookie-backed lens (dev|pm) defining narrative spine; Dev+PM only; era-grouped collapsible case studies; compact home + lens-aware /story; v7.9.1 timeline fix. research.md + design spec authored.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:33:35Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 Research approved by operator. Design spec reviewed (opened in IDE). Lens system + IA + era-grouped case studies + v7.9.1 fix locked as the downstream contract.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:33:35Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 PRD opened. Authoring success metrics (lens-selection primary), Analytics Spec gate for lens events, has_ui=true, requires_analytics=true.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:39:05Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "PRD approved by operator. GA4 baseline locked (home bounce 76.2%); primary metric = lens-selection rate; analytics spec validated; kill criteria + cadence set.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:39:05Z",
+      "event_type": "phase_started",
+      "phase": "tasks_phase",
+      "summary": "Phase 2 Tasks opened. Decomposing into lens engine, home rebuild, /story, case-study era-grouping + frontmatter backfill, per-page spines + nav, v7.9.1 timeline, analytics wiring, tests.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:46:50Z",
+      "event_type": "phase_approved",
+      "phase": "tasks_phase",
+      "summary": "Task breakdown approved by operator. 16 tasks, dependency-ordered; lens engine (T1-T4) is the foundation.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:46:50Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 UX/UI opened (web; new_ui). Authoring ux-spec for LensToggle, home chooser, era-grouped case-study accordion, /story layout \u2014 grounded in fitme-story design-system components + web a11y.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:55:53Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "UX spec approved by operator. Persona-reuse reconciliation accepted (narrow 4\u21922 + cookie SSR layer; reuse Disclosure/cards; one new LensToggle). Keep persona code vocab + URL-param sharing.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T05:55:53Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 Implement opened. fitme-story branch feature/fitme-story-dual-audience-redesign. Order: T9 v7.9.1 (quick win) \u2192 T1-T4 lens engine refactor \u2192 T5 home \u2192 T6 story \u2192 T7-T8 case studies \u2192 T10-T12 framework/nav/spines \u2192 T13 analytics \u2192 T14-T16 tests.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T08:06:28Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T9 done: v7.9.1 entry added to framework-page BRIDGE_TIMELINE (fitme-story bbd50d8). T1 done: src/lib/lens.ts server-only lens engine (cookie SSR source of truth, async getLens, PM default).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T08:20:00Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "Lens engine complete (T2-T4, fitme-story b5cb815): cookie persistence + provider hoist + LensToggle (header/chooser radiogroup) + useLens/useSetLens/LensGate + lens-analytics (T13 started). Pure lens logic smoke-tested 10/10 via Node type-stripping. Spec deviation logged: client-resolved lens (cacheComponents off \u2192 no SSR layout read) to protect perf guardrail. Env constraint: sandbox npm resolves only ~357 pkgs (no zod/tsx/Next) \u2192 full next build deferred to CI.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T08:33:26Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T7 done (fitme-story 8568dac): category frontmatter enum + 67-study backfill (explicit slug map; era derived from version). Pushed to PR #213 for CI re-verify. Case-study decisions locked: era accordions newest-first, milestones pinned in-era. Next: T8 accordion rebuild.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T08:49:49Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T8 done + CI-GREEN (fitme-story 8009f15, PR #213): era-grouped /case-studies (newest-first accordions, milestones pinned in-era with hooks, lens-aware, era/open analytics). Vercel next build + 9 grouping unit-tests + lighthouse all pass. T13 case-study events wired (story_scroll_depth remains for T6).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T14:04:04Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T5+T6 done + CI-GREEN (fitme-story 4a279a8): compact home with LensToggle chooser (#1/#2/#3) + lens-aware /story narrative. T13 complete \u2014 all 5 lens GA4 events wired. 4 of 6 operator asks now shipped (#1/#2/#3/#5/#6 + engine); remaining #4 = T10-T12 framework/nav/spines.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T14:20:12Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "T10-T12 done + CI-green (fitme-story b9a2905): per-lens nav + framework/pm-flow/design-system framing completes #4. ALL 6 operator asks now built + build-verified. T1-T13 done; remaining T14-T16 (tests/lighthouserc/taxonomy doc) + persona 4to2 narrowing cleanup + Phases 5-9.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T15:04:33Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Implementation complete: all 16 tasks done, CI-green on PR #213 (Vercel next build + unit-tests + lighthouse). 6/6 operator asks shipped.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T15:04:33Z",
+      "event_type": "phase_started",
+      "phase": "testing",
+      "summary": "Phase 5 Testing: CI verified across 6 pushes \u2014 next build + unit-tests (lens/nav/grouping/analytics) + lighthouse all green.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T15:04:33Z",
+      "event_type": "runtime_verification",
+      "phase": "testing",
+      "summary": "Vercel preview deploy succeeded for branch HEAD; all public routes build + render.",
+      "artifacts": [],
+      "metrics": {
+        "status": "passed"
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T15:04:33Z",
+      "event_type": "phase_approved",
+      "phase": "testing",
+      "summary": "Testing passed: CI green, 3 new test files (lens, lens-analytics, case-study-grouping) + existing suite. Analytics no-op-guard verified.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T15:04:33Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Phase 6 Review: self pre-merge UX+design review vs spec. DS compliance: all var() tokens + font-serif/sans + reused Disclosure/Tag/CaseStudyCard/Card/Stat; one justified new primitive (LensToggle). a11y: radiogroup + keyboard + focus ring + 44px + reduce-motion.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T17:45:53Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Phase merge opened; fitme-story #213 squash-merged (1f5bd09).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T17:45:53Z",
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "summary": "Phase documentation opened; case study authored.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-09T17:45:53Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Feature complete; review\u2192merge\u2192complete reconciled. First metric review 2026-07-09.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
