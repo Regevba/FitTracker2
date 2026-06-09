@@ -1,8 +1,8 @@
 {
   "feature_name": "fitme-story-dual-audience-redesign",
-  "current_phase": "ux_or_integration",
+  "current_phase": "implementation",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T06:00:00Z",
+  "updated_at": "2026-06-09T06:10:00Z",
   "work_subtype": "new_ui",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
@@ -25,7 +25,11 @@
         "ended_at": "2026-06-09T06:00:00Z"
       },
       "ux_or_integration": {
-        "started_at": "2026-06-09T06:00:00Z"
+        "started_at": "2026-06-09T06:00:00Z",
+        "ended_at": "2026-06-09T06:10:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-09T06:10:00Z"
       }
     }
   },
@@ -58,7 +62,7 @@
     },
     "prd": { "status": "approved", "approved_at": "2026-06-09T05:50:00Z", "analytics_spec_complete": true },
     "tasks_phase": { "status": "approved", "count": 16, "approved_at": "2026-06-09T06:00:00Z" },
-    "ux_or_integration": { "status": "in_progress", "type": "ux", "preflight_passed": true, "notes": "ux-spec.md authored, grounded in real fitme-story symbols (preflight pass). Key reconciliation: narrow existing PersonaProvider 4→2 + add cookie SSR layer; reuse Disclosure/CaseStudyCard/Tag/Stat/Button; one new primitive (LensToggle). Web repo — iOS ui-audit/AppTheme gates N/A; compliance checked vs design-tokens.ts + ui/. Analytics: no consent gate (GA env opt-in) — T15 becomes no-op-guard test. T14-T16 need test+lighthouse harness bootstrap (+1.0d)." },
+    "ux_or_integration": { "status": "approved", "approved_at": "2026-06-09T06:10:00Z", "type": "ux", "preflight_passed": true, "notes": "ux-spec.md authored, grounded in real fitme-story symbols (preflight pass). Key reconciliation: narrow existing PersonaProvider 4→2 + add cookie SSR layer; reuse Disclosure/CaseStudyCard/Tag/Stat/Button; one new primitive (LensToggle). Web repo — iOS ui-audit/AppTheme gates N/A; compliance checked vs design-tokens.ts + ui/. Analytics: no consent gate (GA env opt-in) — T15 becomes no-op-guard test. T14-T16 need test+lighthouse harness bootstrap (+1.0d)." },
     "implementation": { "status": "pending", "commits": [] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
     "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
@@ -89,6 +93,7 @@
   "transitions": [
     { "from": "research", "to": "prd", "timestamp": "2026-06-09T05:40:00Z", "approved_by": "user", "note": "Design spec approved (reviewed in IDE). GA4 home baseline pulled: 76.2% bounce." },
     { "from": "prd", "to": "tasks_phase", "timestamp": "2026-06-09T05:50:00Z", "approved_by": "user", "note": "PRD approved. 16 tasks across 7 groups; lens engine is the foundation dependency." },
-    { "from": "tasks_phase", "to": "ux_or_integration", "timestamp": "2026-06-09T06:00:00Z", "approved_by": "user", "note": "Tasks approved. UX spec grounded in real symbols; lens = refactor of existing PersonaProvider (4→2) + cookie SSR layer." }
+    { "from": "tasks_phase", "to": "ux_or_integration", "timestamp": "2026-06-09T06:00:00Z", "approved_by": "user", "note": "Tasks approved. UX spec grounded in real symbols; lens = refactor of existing PersonaProvider (4→2) + cookie SSR layer." },
+    { "from": "ux_or_integration", "to": "implementation", "timestamp": "2026-06-09T06:10:00Z", "approved_by": "user", "note": "UX approved. Implementing in fitme-story; T9 v7.9.1 quick win first, then lens-engine refactor." }
   ]
 }
