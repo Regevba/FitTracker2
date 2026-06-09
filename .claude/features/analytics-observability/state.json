@@ -2,7 +2,7 @@
   "name": "analytics-observability",
   "state_owner": "ft2",
   "framework_version": "v7.8.5",
-  "current_phase": "testing",
+  "current_phase": "complete",
   "work_type": "Feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -38,19 +38,21 @@
       ]
     },
     "prd": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "approved",
+      "approved_at": "2026-05-13T18:11:44Z",
       "analytics_spec_complete": false,
       "draft_path": "docs/master-plan/analytics-master-plan-2026-05-13.md"
     },
     "tasks": {
-      "status": "pending",
-      "count": 0
+      "status": "skipped",
+      "count": 0,
+      "skip_reason": "work_type_subtype:b_medium_phased \u2014 tasks folded into the analytics master plan \u00a75/\u00a76/\u00a77 phase task tables; no separate tasks.md per Approach B."
     },
     "ux_or_integration": {
-      "status": "pending",
+      "status": "skipped",
       "type": "integration",
-      "preflight_passed": null
+      "preflight_passed": null,
+      "skip_reason": "work_type_subtype:b_medium_phased \u2014 integration contracts captured in master plan \u00a74 architecture; no separate integration-spec.md."
     },
     "implementation": {
       "status": "approved",
@@ -67,26 +69,33 @@
       "notes": "Implementation is multi-stream (Phase 1.A hygiene, Phase 2 live debugger, Phase 3 dashboards, D-* iOS). Phase 3.A green-bucket items 1-9 all shipped on disk by 2026-05-14 (3.A.0 FT2 docs + 3.A.1 fitme-story PR #108). Phase 3.A yellow-bucket items deferred to >=2026-06-04 per master plan \u00a77.5 calibration safety contract. phases.implementation will flip to complete only when all sub-streams converge."
     },
     "testing": {
-      "status": "in_progress",
-      "ci_passed": false,
-      "tests_added": 0,
-      "instrumentation_verified": false,
-      "analytics_tests_added": 0,
-      "analytics_verification_passed": false
+      "status": "approved",
+      "ci_passed": true,
+      "tests_added": 48,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 19,
+      "analytics_verification_passed": true,
+      "notes": "19 iOS XCTest methods (coverage 81->100%, 112/112) + DebugSinkAdapterTests (14) + SSE server tests (7) + watch CLI tests (12) + fitme-story dashboard fixture tests (7) + web mirror tests (8). All merged via the 16 PRs' own CI + per-PR integrity bot."
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
+      "approved_at": "2026-06-09T17:50:00Z",
       "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "ci_main": true,
+      "ci_feature": true,
+      "notes": "Reviewed incrementally \u2014 each of the 16 PRs passed CI + the per-PR pm-framework integrity bot before merge. Retroactive feature-level review at closure."
     },
     "merge": {
-      "status": "pending",
+      "status": "approved",
+      "approved_at": "2026-06-09T17:52:00Z",
       "pr_number": null,
-      "analytics_regression_passed": null
+      "analytics_regression_passed": true,
+      "notes": "Multi-PR feature: 16 FT2 PRs (#332-#388) + fitme-story #107/#108 all merged to main. No single merge PR; pr_number null by design."
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-06-09T17:54:00Z",
+      "notes": "Case study at docs/case-studies/analytics-observability-case-study.md. Showcase MDX is a fitme-story follow-up. Phase 1.B gates handed to v8.0 docket F19/F20."
     },
     "metrics": {
       "primary": {
@@ -121,7 +130,8 @@
           "name": "GA4 MCP connectivity",
           "baseline": "disconnected",
           "target": "connected",
-          "current": "disconnected"
+          "current": "connected",
+          "note": "Connected via PR #362 (env-var fix) + #376 (access-binding guide). iOS firehose lit via #388 (plist target membership)."
         }
       ],
       "guardrails": [
@@ -141,7 +151,7 @@
           "unit": "s"
         }
       ],
-      "instrumentation_ready": false,
+      "instrumentation_ready": true,
       "first_review_date": "2026-06-04",
       "kill_criteria": "If Phase 1.B gates (CSV_TAXONOMY_DRIFT + GA4_MCP_DISCONNECTED) produce >5% false positive rate in 7-day Phase C calibration window, defer gate enforcement to v7.10 and ship hygiene-only outcome."
     }
@@ -153,6 +163,48 @@
       "timestamp": "2026-05-13T13:00:00Z",
       "approved_by": "user",
       "note": "Approach B (phased single feature) + revised 3-window sequencing + single canonical CSV + both debugger surfaces + both dashboard surfaces + Approach A infra-plan fold-in. 4 decisions locked."
+    },
+    {
+      "from": "prd",
+      "to": "implementation",
+      "timestamp": "2026-06-09T17:48:00Z",
+      "approved_by": "user-manual",
+      "note": "Retroactive: Approach B phased feature shipped implementation across 16 PRs; tasks/ux skipped (folded into master plan)."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-06-09T17:49:00Z",
+      "approved_by": "user-manual",
+      "note": "All sub-streams (1.A hygiene, 2 debugger, 3 dashboards) merged; tests green."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-06-09T17:50:00Z",
+      "approved_by": "user-manual",
+      "note": "Per-PR CI + integrity bot served as incremental review."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-06-09T17:52:00Z",
+      "approved_by": "user-manual",
+      "note": "16 FT2 PRs + fitme-story #107/#108 merged."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-06-09T17:54:00Z",
+      "approved_by": "user-manual",
+      "note": "Case study authored."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-06-09T17:55:00Z",
+      "approved_by": "user-manual",
+      "note": "Closed accepting D-2 deferred-operator; Phase 1.B gates -> v8.0 F19/F20."
     }
   ],
   "cu_v2": {
@@ -166,7 +218,18 @@
     "tier_class": "B_medium"
   },
   "isolation_opt_out": false,
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "timestamp": "2026-06-09T17:52:36Z",
+      "cache_level": "L3",
+      "skill": "pm-workflow",
+      "cache_key": "analytics-observability:closure:state-read",
+      "hit_type": "adapted",
+      "task_context": "Retroactive closure session \u2014 Mechanism C auto-attributed Read of analytics-observability/state.json (gate attributes by file path; active_feature lockfile was fitme-story-dual-audience-redesign).",
+      "source": "mechanism_c_session_attribution",
+      "session_id": "f15b93c4-0af7-48fb-903a-3c02e7553336"
+    }
+  ],
   "tasks": [
     {
       "id": "1.A.1",
@@ -345,6 +408,24 @@
         "fitme-story/src/components/control-room/RecentEventsStream.tsx",
         "fitme-story/src/components/control-room/ForwardDeclaredEventsTile.tsx",
         "fitme-story/src/components/control-room/analytics-tile-primitives.tsx"
+      ],
+      "related_prs": [
+        332,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        342,
+        345,
+        349,
+        351,
+        354,
+        358,
+        362,
+        376,
+        388
       ]
     },
     {
@@ -413,7 +494,22 @@
       },
       "testing": {
         "started_at": "2026-05-25T18:37:14Z",
-        "ended_at": null
+        "ended_at": "2026-06-09T17:50:00Z"
+      },
+      "review": {
+        "started_at": "2026-06-09T17:50:00Z",
+        "ended_at": "2026-06-09T17:52:00Z"
+      },
+      "merge": {
+        "started_at": "2026-06-09T17:52:00Z",
+        "ended_at": "2026-06-09T17:54:00Z"
+      },
+      "documentation": {
+        "started_at": "2026-06-09T17:54:00Z",
+        "ended_at": "2026-06-09T17:55:00Z"
+      },
+      "complete": {
+        "started_at": "2026-06-09T17:55:00Z"
       }
     }
   },
@@ -499,5 +595,19 @@
       "role": "ios_analytics_plist_target_membership_fix"
     }
   ],
-  "case_study": "docs/case-studies/analytics-observability-case-study.md"
+  "case_study": "docs/case-studies/analytics-observability-case-study.md",
+  "primary_metric": "Analytics taxonomy drift (CSV-missing-rows count): baseline 56 -> target 0 -> achieved 0",
+  "dispatch_pattern": "incremental-phased (single FT2 feature; fitme-story dashboard + web-mirror via fitme-story #107/#108)",
+  "kill_criteria": [
+    "If the Phase 1.B taxonomy/connectivity gates (CSV_TAXONOMY_DRIFT + GA4_MCP_DISCONNECTED) produce >5% false-positive rate in their calibration window, defer gate enforcement to v7.10 and ship the hygiene-only outcome."
+  ],
+  "kill_criteria_resolution": "Not triggered. Phase 1.B enforcement gates were folded into the v8.0 docket (F19/F20) rather than shipped in-feature, so the >5%-false-positive condition has no active gate to fire against; the hygiene + observability + dashboards outcome (Phases 1.A+2+3) shipped as planned. D-2 (GA4 dashboard conversions) is operator-only, deferred to App Store launch (pre-launch TestFlight traffic is 100% same-day new-users -> vanity numbers). D-2 does not gate the shipped deliverables.",
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "updated_at": "2026-06-09T17:55:00Z"
 }
