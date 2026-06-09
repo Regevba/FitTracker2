@@ -1,8 +1,8 @@
 {
   "feature_name": "fitme-story-dual-audience-redesign",
-  "current_phase": "prd",
+  "current_phase": "tasks_phase",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T05:40:00Z",
+  "updated_at": "2026-06-09T05:50:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "has_ui": true,
@@ -16,7 +16,11 @@
         "ended_at": "2026-06-09T05:40:00Z"
       },
       "prd": {
-        "started_at": "2026-06-09T05:40:00Z"
+        "started_at": "2026-06-09T05:40:00Z",
+        "ended_at": "2026-06-09T05:50:00Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-09T05:50:00Z"
       }
     }
   },
@@ -47,8 +51,8 @@
       "sources": ["research.md", "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md", "GA4 runReport 2026-05-10..2026-06-09 (fitme-story web property)"],
       "notes": "Brainstorm complete (design locked via 4 structured decisions: persistent lens switch, Dev+PM only, era-grouped collapsible case studies, compact home). Operator refinements: keep /about alongside /story; PM lens makes pm-flow + design-system first-class story chapters with dev side supporting. research.md + design spec authored + approved (spec reviewed in IDE)."
     },
-    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": true },
-    "tasks_phase": { "status": "pending", "count": 0 },
+    "prd": { "status": "approved", "approved_at": "2026-06-09T05:50:00Z", "analytics_spec_complete": true },
+    "tasks_phase": { "status": "in_progress", "count": 16 },
     "ux_or_integration": { "status": "pending", "type": null, "preflight_passed": null },
     "implementation": { "status": "pending", "commits": [] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
@@ -56,11 +60,29 @@
     "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
     "documentation": { "status": "pending" }
   },
-  "tasks": [],
+  "tasks": [
+    { "id": "T1", "title": "getLens() server util + fitme_lens cookie contract + default resolution", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "completed_at": null },
+    { "id": "T2", "title": "LensProvider in root layout (SSR cookie read → context, no hydration mismatch)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": null },
+    { "id": "T3", "title": "LensToggle segmented Dev|PM control in SiteHeader + MobileNav", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T2"], "completed_at": null },
+    { "id": "T4", "title": "useLens() + <LensGate> helpers + per-page spine-config pattern", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T2"], "completed_at": null },
+    { "id": "T5", "title": "Rebuild home page.tsx (compact hero + origin hook + lens chooser + numbers + 3 featured studies + story CTA; remove ThreeWaysIn)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 1.0, "depends_on": ["T4"], "completed_at": null },
+    { "id": "T6", "title": "New /story route — lens-aware narrative (who→what→started→grew→today)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 1.0, "depends_on": ["T4"], "completed_at": null },
+    { "id": "T7", "title": "Backfill category + era frontmatter on 68 case-study MDX (derive from slug map; spot-check)", "type": "data", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null },
+    { "id": "T8", "title": "Rebuild /case-studies index — era-grouped collapsible accordion + subject sub-groups + badges + expand-all + sticky jump-nav + lens-aware ordering + retain search/filter", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 1.5, "depends_on": ["T4", "T7"], "completed_at": null },
+    { "id": "T9", "title": "Add v7.9.1 (2026-06-04) entry to src/lib/timeline.ts BRIDGE_TIMELINE; verify framework page renders it", "type": "data", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "completed_at": null },
+    { "id": "T10", "title": "Lens-aware section ordering on /framework (PM: why→outcomes→lifecycle; Dev: architecture→gates→schema)", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.75, "depends_on": ["T4"], "completed_at": null },
+    { "id": "T11", "title": "Nav reorder per lens (nav.ts + SiteHeader + MobileNav) + add /story link", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T4"], "completed_at": null },
+    { "id": "T12", "title": "/pm-flow + /design-system lens spine treatment (PM first-class chapter vs Dev supporting)", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.75, "depends_on": ["T4"], "completed_at": null },
+    { "id": "T13", "title": "Wire GA4 events (home_lens_select, nav_lens_switch, story_scroll_depth, case_study_era_expand, case_study_open) + update analytics taxonomy doc", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.75, "depends_on": ["T5", "T6", "T8", "T3"], "completed_at": null },
+    { "id": "T14", "title": "Lens-engine tests (cookie resolution, SSR PM default, toggle round-trip, no hydration mismatch)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T1", "T2", "T3", "T4"], "completed_at": null },
+    { "id": "T15", "title": "Analytics verification (each event fires with correct params + consent-gated)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T13"], "completed_at": null },
+    { "id": "T16", "title": "lighthouse-ci on changed routes + a11y pass on LensToggle + accordion (keyboard, ARIA, 44px, reduce-motion)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T5", "T6", "T8"], "completed_at": null }
+  ],
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": { "ux": null, "design": null },
   "transitions": [
-    { "from": "research", "to": "prd", "timestamp": "2026-06-09T05:40:00Z", "approved_by": "user", "note": "Design spec approved (reviewed in IDE). GA4 home baseline pulled: 76.2% bounce." }
+    { "from": "research", "to": "prd", "timestamp": "2026-06-09T05:40:00Z", "approved_by": "user", "note": "Design spec approved (reviewed in IDE). GA4 home baseline pulled: 76.2% bounce." },
+    { "from": "prd", "to": "tasks_phase", "timestamp": "2026-06-09T05:50:00Z", "approved_by": "user", "note": "PRD approved. 16 tasks across 7 groups; lens engine is the foundation dependency." }
   ]
 }
