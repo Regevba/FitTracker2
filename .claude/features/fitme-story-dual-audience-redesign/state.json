@@ -1,0 +1,60 @@
+{
+  "feature_name": "fitme-story-dual-audience-redesign",
+  "current_phase": "research",
+  "created_at": "2026-06-09T05:20:00Z",
+  "updated_at": "2026-06-09T05:20:00Z",
+  "framework_version": "v7.9.1",
+  "work_type": "Feature",
+  "has_ui": true,
+  "requires_analytics": true,
+  "state_owner": "ft2",
+  "branch": "feature/fitme-story-dual-audience-redesign",
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-09T05:20:00Z"
+      }
+    }
+  },
+  "scheduled_after": null,
+  "primary_metric": "% of home-page visitors who select an audience lens (Dev or PM) — engagement with the new core wayfinding mechanism",
+  "success_metrics": [
+    "Lens-selection rate among home visitors ≥ target (T1, GA4 home_lens_select / home page_view; baseline + target set in Phase 1 PRD)",
+    "Home bounce-rate reduction vs pre-redesign baseline (T1, GA4)",
+    "Case-study reach depth improves — more sessions expand/open studies older than the newest era (T1, GA4 case_study era-expand + study open events)"
+  ],
+  "kill_criteria": [
+    "Lens-selection rate below floor AND home bounce rate worsens vs baseline after 30 days → revert to a neutral (lens-less) home",
+    "Lens switching causes measurable confusion — support/feedback signals OR a drop in cross-page navigation depth vs baseline"
+  ],
+  "kill_criteria_resolution": "",
+  "dispatch_pattern": "agent-driven (cross-repo: state.json + spec in FitTracker2, implementation in fitme-story)",
+  "case_study": "docs/case-studies/fitme-story-dual-audience-redesign-case-study.md",
+  "case_study_showcase": "",
+  "spec": "docs/superpowers/specs/2026-06-09-fitme-story-dual-audience-redesign-design.md",
+  "scope_summary": "Reorients the fitme-story public site around TWO audiences — developers and product managers — via a persistent, cookie-backed, server-rendered 'lens' (dev|pm) switchable from the header. The lens defines the NARRATIVE SPINE: in the PM lens the product/process story (pm-flow, lifecycle, design system, outcomes) leads and engineering supports; the Dev lens flips it (architecture, gates, state schema, dev-guide, Code Connect lead). Rebuilds the home page (compact: who/what + origin hook + early lens chooser + numbers + 3 featured studies; drops the 4-persona ThreeWaysIn, keeping only Dev+PM) and adds a lens-aware /story narrative page (who → what → how it started → how it grew → today). Reworks /case-studies into an era-grouped collapsible layout (newest era expanded; subject sub-groups) backed by new category/era frontmatter on the 68 MDX files. Adds the missing v7.9.1 entry to the framework timeline. OUT OF SCOPE: /control-room (gated operator surface), the iOS app, and authoring any NEW case-study content. /about is retained alongside the new /story.",
+  "related_prs": [],
+  "phases": {
+    "research": {
+      "status": "in_progress",
+      "started_at": "2026-06-09T05:20:00Z",
+      "ended_at": null,
+      "approved_at": null,
+      "sources": [],
+      "notes": "Brainstorm complete (design locked via 4 structured decisions: persistent lens switch, Dev+PM only, era-grouped collapsible case studies, compact home). Operator refinements: keep /about alongside /story; PM lens makes pm-flow + design-system first-class story chapters with dev side supporting. research.md + design spec authored this phase."
+    },
+    "prd": { "status": "pending", "approved_at": null, "analytics_spec_complete": false },
+    "tasks_phase": { "status": "pending", "count": 0 },
+    "ux_or_integration": { "status": "pending", "type": null, "preflight_passed": null },
+    "implementation": { "status": "pending", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
+    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
+    "documentation": { "status": "pending" }
+  },
+  "tasks": [],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": { "ux": null, "design": null },
+  "transitions": []
+}

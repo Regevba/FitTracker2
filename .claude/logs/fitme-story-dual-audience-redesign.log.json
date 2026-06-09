@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "fitme-story-dual-audience-redesign",
+  "title": "fitme story dual audience redesign",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "framework_version": "v7.9.1",
+  "started_at": "2026-06-09T05:26:14Z",
+  "updated_at": "2026-06-09T05:26:14Z",
+  "events": [
+    {
+      "timestamp": "2026-06-09T05:26:14Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 Research opened. Design locked via brainstorm: persistent cookie-backed lens (dev|pm) defining narrative spine; Dev+PM only; era-grouped collapsible case studies; compact home + lens-aware /story; v7.9.1 timeline fix. research.md + design spec authored.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
