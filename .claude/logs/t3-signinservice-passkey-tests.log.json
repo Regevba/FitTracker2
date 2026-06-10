@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "t3-signinservice-passkey-tests",
+  "title": "t3 signinservice passkey tests",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-10T07:34:44Z",
+  "updated_at": "2026-06-10T07:34:44Z",
+  "events": [
+    {
+      "timestamp": "2026-06-10T07:34:44Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "T3 SignInService passkey tests shipped \u2014 10 env-independent device-free tests (10/10 pass); rewrite after first run revealed test bundle ships a real relying-party ID",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
