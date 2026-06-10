@@ -75,7 +75,12 @@ else:
 
 LEDGER_PATH = REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
 INDEX_PATH = REPO_ROOT / ".claude" / "shared" / "gate-last-fired.json"
-SCHEMA_VERSION = 1
+SNAPSHOTS_DIR = REPO_ROOT / ".claude" / "integrity" / "snapshots"
+# v2 (T13): each gate gains `last_failed_at` / `total_failure_snapshots` /
+# `last_failure_severity` derived from the integrity-snapshot history — so the
+# index distinguishes "stopped running" (no recent coverage) from "running but
+# catching violations" (recent failures). Schema-versioned so readers detect drift.
+SCHEMA_VERSION = 2
 
 
 def refresh_index(ledger: Path, *, now_iso: str | None = None) -> dict[str, Any]:
@@ -135,6 +140,12 @@ def refresh_index(ledger: Path, *, now_iso: str | None = None) -> dict[str, Any]
                     "total_firings": 0,
                     "total_skips": 0,
                     "total_candidates": 0,
+                    # T13 (v2) failure-history fields — populated below from the
+                    # integrity-snapshot history. None until a snapshot records
+                    # this gate code in its findings.
+                    "last_failed_at": None,
+                    "total_failure_snapshots": 0,
+                    "last_failure_severity": None,
                 },
             )
 
@@ -170,14 +181,92 @@ def refresh_index(ledger: Path, *, now_iso: str | None = None) -> dict[str, Any]
             entry["total_firings"] += checked
             entry["total_skips"] += skipped
 
+    # T13: overlay failure history from the integrity-snapshot stream. Derive
+    # the snapshots dir RELATIVE TO THE LEDGER (ledger is <root>/.claude/logs/...;
+    # snapshots are <root>/.claude/integrity/snapshots) so a tmp-dir ledger in
+    # tests resolves to a non-existent (empty) snapshots dir and the merge is a
+    # no-op — keeping tests hermetic while production resolves the real dir.
+    snapshots_dir = ledger.parent.parent / "integrity" / "snapshots"
+    snapshots_scanned = merge_failure_history(gates, snapshots_dir)
+
     return {
         "schema_version": SCHEMA_VERSION,
         "refreshed_at": now_iso or _utc_iso(),
         "source_ledger": str(ledger.relative_to(REPO_ROOT)) if ledger.is_absolute() and _is_relative_to(ledger, REPO_ROOT) else str(ledger),
         "source_rows_read": rows_read,
         "source_rows_malformed": rows_malformed,
+        "failure_source_snapshots": snapshots_scanned,
+        "failure_history_note": (
+            "last_failed_at is derived from .claude/integrity/snapshots/*.json "
+            "(cycle-time findings). Write-time gates BLOCK commits rather than "
+            "logging, so their blocks are not captured here — last_failed_at is "
+            "meaningful for cycle-time + advisory codes (T13.1 may add a "
+            "write-time block ledger)."
+        ),
         "gates": gates,
     }
+
+
+def merge_failure_history(gates: dict[str, dict[str, Any]], snapshots_dir: Path) -> int:
+    """Overlay per-gate failure history from the integrity-snapshot stream.
+
+    Each `.claude/integrity/snapshots/<ts>.json` records `timestamp` + a
+    `findings[]` array of `{code, severity, ...}`. For every gate code seen, we
+    set `last_failed_at` (most recent snapshot timestamp where the code appeared),
+    `total_failure_snapshots` (count of distinct snapshots), and
+    `last_failure_severity` (severity in the most-recent failing snapshot).
+
+    Gates that appear ONLY in failure history (a cycle-time code with no coverage
+    row) get a minimal entry created so the index is complete.
+
+    Returns the number of snapshots scanned. Best-effort: a missing dir or a
+    malformed snapshot is skipped, never raised.
+    """
+    if not snapshots_dir.is_dir():
+        return 0
+    scanned = 0
+    for snap_path in sorted(snapshots_dir.glob("*.json")):
+        try:
+            snap = json.loads(snap_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        ts = snap.get("timestamp")
+        findings = snap.get("findings")
+        if not isinstance(ts, str) or not isinstance(findings, list):
+            continue
+        scanned += 1
+        # codes seen in THIS snapshot (dedup so total_failure_snapshots counts
+        # snapshots, not individual findings).
+        seen_here: dict[str, str] = {}
+        for f in findings:
+            if not isinstance(f, dict):
+                continue
+            code = f.get("code")
+            if not isinstance(code, str):
+                continue
+            # keep the first (any) severity for this code in this snapshot
+            seen_here.setdefault(code, f.get("severity") or "")
+        for code, severity in seen_here.items():
+            entry = gates.setdefault(
+                code,
+                {
+                    "last_fired_at": None,
+                    "last_checked_at": None,
+                    "last_skipped_at": None,
+                    "first_seen_at": ts,
+                    "total_firings": 0,
+                    "total_skips": 0,
+                    "total_candidates": 0,
+                    "last_failed_at": None,
+                    "total_failure_snapshots": 0,
+                    "last_failure_severity": None,
+                },
+            )
+            entry["total_failure_snapshots"] += 1
+            if entry["last_failed_at"] is None or ts > entry["last_failed_at"]:
+                entry["last_failed_at"] = ts
+                entry["last_failure_severity"] = severity or None
+    return scanned
 
 
 def write_index(index: dict[str, Any], path: Path) -> None:
