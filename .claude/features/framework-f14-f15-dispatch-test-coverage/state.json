@@ -476,7 +476,9 @@
         ]
       }
     ],
-    "time_source": "measuring"
+    "time_source": "measuring",
+    "total_wall_time_minutes": 674.9,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   },
   "case_study": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
   "isolation_opt_out_reason": "Post-merge closure during hygiene session 2026-05-23. All code work happened on feature/framework-f14-f15-dispatch-test-coverage + chore/f14-f15-pr-451-backfill branches (now merged via PRs #451 + #452). This commit only flips current_phase to complete + adds closure timing.",

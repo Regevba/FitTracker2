@@ -38,11 +38,16 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+# Forward reference anchor. Bumped 2026-06-10 to the post-timing-backfill anchor
+# so single-anchor diffs run against corrected data. The prior anchor
+# (2026-05-14-...-platform-baseline) is retained on disk and remains part of the
+# normalized trend via scripts/integrity-multi-anchor.py. For dilution-immune
+# comparison across ALL anchors, prefer `make integrity-multi-anchor`.
 DEFAULT_BASELINE = (
     Path.home()
     / "Documents"
     / "FitTracker2-backups"
-    / "2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14"
+    / "2026-06-10-telemetry-backfill-anchor"
     / "platform-baseline"
 )
 

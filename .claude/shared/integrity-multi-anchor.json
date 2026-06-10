@@ -1,0 +1,138 @@
+{
+  "latest": "live",
+  "anchors": [
+    {
+      "label": "2026-05-12-pre-v7.9",
+      "n_anchor": 68,
+      "cohort_size": 68,
+      "new_in_latest": 36,
+      "dimensions": {
+        "timing_wall_time": {
+          "raw_anchor": 25.0,
+          "raw_latest": 34.6,
+          "cohort_anchor": 25.0,
+          "cohort_latest": 32.4,
+          "cohort_delta": 7.4,
+          "num_anchor": 17,
+          "num_latest": 36
+        },
+        "per_phase_timing": {
+          "raw_anchor": 42.6,
+          "raw_latest": 65.4,
+          "cohort_anchor": 42.6,
+          "cohort_latest": 47.1,
+          "cohort_delta": 4.5,
+          "num_anchor": 29,
+          "num_latest": 68
+        },
+        "cache_hits": {
+          "raw_anchor": 26.5,
+          "raw_latest": 27.9,
+          "cohort_anchor": 26.5,
+          "cohort_latest": 30.9,
+          "cohort_delta": 4.4,
+          "num_anchor": 18,
+          "num_latest": 29
+        },
+        "cu_v2": {
+          "raw_anchor": 10.3,
+          "raw_latest": 24.0,
+          "cohort_anchor": 10.3,
+          "cohort_latest": 20.6,
+          "cohort_delta": 10.3,
+          "num_anchor": 7,
+          "num_latest": 25
+        }
+      }
+    },
+    {
+      "label": "2026-05-14-platform",
+      "n_anchor": 70,
+      "cohort_size": 70,
+      "new_in_latest": 34,
+      "dimensions": {
+        "timing_wall_time": {
+          "raw_anchor": 24.3,
+          "raw_latest": 34.6,
+          "cohort_anchor": 24.3,
+          "cohort_latest": 31.4,
+          "cohort_delta": 7.1,
+          "num_anchor": 17,
+          "num_latest": 36
+        },
+        "per_phase_timing": {
+          "raw_anchor": 45.7,
+          "raw_latest": 65.4,
+          "cohort_anchor": 45.7,
+          "cohort_latest": 48.6,
+          "cohort_delta": 2.9,
+          "num_anchor": 32,
+          "num_latest": 68
+        },
+        "cache_hits": {
+          "raw_anchor": 28.6,
+          "raw_latest": 27.9,
+          "cohort_anchor": 28.6,
+          "cohort_latest": 31.4,
+          "cohort_delta": 2.8,
+          "num_anchor": 20,
+          "num_latest": 29
+        },
+        "cu_v2": {
+          "raw_anchor": 10.0,
+          "raw_latest": 24.0,
+          "cohort_anchor": 10.0,
+          "cohort_latest": 21.4,
+          "cohort_delta": 11.4,
+          "num_anchor": 7,
+          "num_latest": 25
+        }
+      }
+    },
+    {
+      "label": "2026-06-10-telemetry-backfill",
+      "n_anchor": 104,
+      "cohort_size": 104,
+      "new_in_latest": 0,
+      "dimensions": {
+        "timing_wall_time": {
+          "raw_anchor": 34.6,
+          "raw_latest": 34.6,
+          "cohort_anchor": 34.6,
+          "cohort_latest": 34.6,
+          "cohort_delta": 0.0,
+          "num_anchor": 36,
+          "num_latest": 36
+        },
+        "per_phase_timing": {
+          "raw_anchor": 65.4,
+          "raw_latest": 65.4,
+          "cohort_anchor": 65.4,
+          "cohort_latest": 65.4,
+          "cohort_delta": 0.0,
+          "num_anchor": 68,
+          "num_latest": 68
+        },
+        "cache_hits": {
+          "raw_anchor": 27.9,
+          "raw_latest": 27.9,
+          "cohort_anchor": 27.9,
+          "cohort_latest": 27.9,
+          "cohort_delta": 0.0,
+          "num_anchor": 29,
+          "num_latest": 29
+        },
+        "cu_v2": {
+          "raw_anchor": 24.0,
+          "raw_latest": 24.0,
+          "cohort_anchor": 24.0,
+          "cohort_latest": 24.0,
+          "cohort_delta": 0.0,
+          "num_anchor": 25,
+          "num_latest": 25
+        }
+      }
+    }
+  ],
+  "regressions": []
+}

@@ -122,7 +122,9 @@
         "started_at": "2026-06-04T16:02:42Z",
         "ended_at": "2026-06-04T16:02:42Z"
       }
-    }
+    },
+    "total_wall_time_minutes": 12.7,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   },
   "merge_pr_number": 623,
   "merge_commit_sha": "32c41b1a3cd4cb26dc5505d1db94afacbd9ef9e4",

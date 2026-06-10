@@ -4,7 +4,12 @@
   "updated": "2026-04-20T00:00:00Z",
   "branch": "main",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "framework_version": "v6.0",
@@ -178,6 +183,7 @@
         "ended_at": "2026-05-23T19:42:18Z",
         "note": "Non-canonical 'closed' state held from 2026-04-21 (PROD LIVE) to 2026-05-23 (canonicalization). Estimated start = ship date."
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   }
 }

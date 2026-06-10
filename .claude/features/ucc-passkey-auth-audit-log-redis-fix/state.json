@@ -9,7 +9,12 @@
   "branch": "feature/ucc-passkey-auth-audit-log-redis-fix",
   "state_owner": "ft2",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": false, "backend": true, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": true,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "has_ui": false,
   "requires_analytics": false,
@@ -412,7 +417,8 @@
       "complete": {
         "started_at": "2026-05-26T06:20:08.814733Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "transitions": [
     {

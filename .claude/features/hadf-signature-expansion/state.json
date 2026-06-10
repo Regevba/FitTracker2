@@ -8,7 +8,12 @@
   "updated": "2026-06-05T07:30:00Z",
   "branch": "chore/hadf-signature-expansion-post-merge-closure",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": false, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-low-confidence",
   "isolation_opt_out": false,
   "has_ui": false,
@@ -76,7 +81,8 @@
         "started_at": "2026-06-07T06:26:50Z",
         "ended_at": "2026-06-07T06:26:50Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "phases": {
     "research": {
@@ -84,7 +90,7 @@
       "approved_at": "2026-06-05T01:00:00Z",
       "sources": [
         "docs/research/2026-04-28-hadf-signature-expansion.md",
-        "HADF-SOURCE-OF-TRUTH.md §-1",
+        "HADF-SOURCE-OF-TRUTH.md \u00a7-1",
         "Sub-exp 2 (on-device proof)"
       ]
     },
@@ -143,7 +149,7 @@
       "started_at": "2026-06-06T04:10:18Z",
       "ended_at": "2026-06-07T06:26:50Z",
       "approved_by": "operator",
-      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
     },
     "complete": {
       "started_at": "2026-06-07T06:26:50Z",
@@ -157,7 +163,7 @@
   "tasks": [
     {
       "id": "T1",
-      "title": "Schema v1.1 — calibration_status + supported_precisions[] + compute_axes + memory_topology + vendor_status; migrate existing rows",
+      "title": "Schema v1.1 \u2014 calibration_status + supported_precisions[] + compute_axes + memory_topology + vendor_status; migrate existing rows",
       "type": "data",
       "skill": "dev",
       "status": "done",
@@ -194,7 +200,7 @@
     },
     {
       "id": "T4",
-      "title": "calibrate M4 (current machine) via harness — real instrumented row + K2 check",
+      "title": "calibrate M4 (current machine) via harness \u2014 real instrumented row + K2 check",
       "type": "data",
       "skill": "ops",
       "status": "done",
@@ -207,7 +213,7 @@
     },
     {
       "id": "T5",
-      "title": "iPhone A16 (14 Pro) on-device path — calibrate if reachable else document harness target",
+      "title": "iPhone A16 (14 Pro) on-device path \u2014 calibrate if reachable else document harness target",
       "type": "backend",
       "skill": "dev",
       "status": "done",
@@ -217,11 +223,11 @@
         "T3"
       ],
       "completed_at": "2026-06-05T06:00:00Z",
-      "note": "iPhone A16 has no local-inference route from this Mac this cycle → documented harness target (D5 allows)"
+      "note": "iPhone A16 has no local-inference route from this Mac this cycle \u2192 documented harness target (D5 allows)"
     },
     {
       "id": "T6",
-      "title": "cloud/API endpoint calibration → >=4 new instrumented rows",
+      "title": "cloud/API endpoint calibration \u2192 >=4 new instrumented rows",
       "type": "data",
       "skill": "ops",
       "status": "done",
@@ -310,7 +316,7 @@
       "to": "implementation",
       "timestamp": "2026-06-05T04:00:00Z",
       "approved_by": "user",
-      "note": "Phase 3b approved; ollama+llama3.2:3b live on M4 → T4 real calibration available."
+      "note": "Phase 3b approved; ollama+llama3.2:3b live on M4 \u2192 T4 real calibration available."
     },
     {
       "from": "implementation",
@@ -355,7 +361,7 @@
       "from": "docs",
       "to": "complete",
       "at": "2026-06-07T06:26:50Z",
-      "reason": "Feature CLOSED via close-feature.py on chore/hadf-signature-expansion-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+      "reason": "Feature CLOSED via close-feature.py on chore/hadf-signature-expansion-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
   ],
   "empirical_findings": {
@@ -364,15 +370,15 @@
       "tps_median": 41.0,
       "n": 80,
       "vs_m2_ollama_ttft_s": 0.179,
-      "k2_verdict": "PASS — method generalizes M2->M4 and discriminates them (0.095 vs 0.179s)"
+      "k2_verdict": "PASS \u2014 method generalizes M2->M4 and discriminates them (0.095 vs 0.179s)"
     },
-    "single_shot_attestation_limit": "tight on-device clusters (apple_m4 ttft var 0.0002) suffer the Mahalanobis tight-cluster pathology — single-shot attestation unreliable (RQ5, expected). Distribution-level centroids ARE distinct (the recognition claim holds)."
+    "single_shot_attestation_limit": "tight on-device clusters (apple_m4 ttft var 0.0002) suffer the Mahalanobis tight-cluster pathology \u2014 single-shot attestation unreliable (RQ5, expected). Distribution-level centroids ARE distinct (the recognition claim holds)."
   },
   "case_study": "docs/case-studies/hadf-signature-expansion-case-study.md",
   "primary_metric_result": {
     "instrumented_signatures": 9,
     "target": 12,
-    "note": "M4 real-calibrated (+1); cloud+iPhone are credential/hardware-gated — calibrator ships ready (feature thesis: calibrate what you can reach)"
+    "note": "M4 real-calibrated (+1); cloud+iPhone are credential/hardware-gated \u2014 calibrator ships ready (feature thesis: calibrate what you can reach)"
   },
   "experiment_ready_for_execution": {
     "ready": true,
@@ -383,7 +389,7 @@
     "runner": "scripts/hadf-signature-expansion-run.sh",
     "legs": {
       "device": "free (local ollama, apple_m4)",
-      "cloud": "paid API (5 pre-probed candidates) — operator-run"
+      "cloud": "paid API (5 pre-probed candidates) \u2014 operator-run"
     },
     "effect": "grows instrumented signatures from 9 toward >=12 (cloud) + re-tags catalogs",
     "validated": "--dry-run wiring confirmed; 19 tests pass; mistral routed via openai-compat",
