@@ -4,13 +4,30 @@
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "b_medium",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "isolation_opt_out": false,
   "created_at": "2026-06-05T00:00:00Z",
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-06-05T00:00:00Z"
+        "started_at": "2026-06-05T00:00:00Z",
+        "ended_at": "2026-06-05T06:23:09Z"
+      },
+      "review": {
+        "started_at": "2026-06-05T06:23:09Z",
+        "ended_at": "2026-06-05T06:23:09Z"
+      },
+      "merge": {
+        "started_at": "2026-06-05T06:23:09Z",
+        "ended_at": "2026-06-05T06:23:09Z"
+      },
+      "docs": {
+        "started_at": "2026-06-05T06:23:09Z",
+        "ended_at": "2026-06-10T04:11:20Z"
+      },
+      "complete": {
+        "started_at": "2026-06-10T04:11:20Z",
+        "ended_at": "2026-06-10T04:11:20Z"
       }
     }
   },
@@ -24,48 +41,59 @@
     "Attestation presented as authoritative per-request (violates RQ5 honesty boundary) -> revert T2 to advisory-only or pull it.",
     "Any T1-T3 producer makes a dispatch/routing decision (violates Phase 3A non-goal; acting is gated on RQ4 / Phase 3B)."
   ],
-  "kill_criteria_resolution": "Not yet at closure (current_phase=implementation). T1-T3 ship advisory/detection-only by construction (every attestation output carries advisory:true + a 'do NOT route' caveat; no producer reads or writes a dispatch decision). Closure deferred until T4 control-room panel + T5 AIOrchestrator-hook decisions are made.",
+  "kill_criteria_resolution": "Neither kill criterion fired. T1–T3 ship advisory/detection-only by construction: every hadf-attest.py output carries advisory:true + an explicit 'do NOT route' caveat, and same-model endpoints (anthropic vs aws-bedrock claude-haiku-4-5) attest 'weak' by design (the conservative RQ5 posture). No T1–T3 producer reads or writes a dispatch decision; the AIOrchestrator T5a hook emits an honest ai_inference_completed observation only (duration_ms + source_tier) and routes nothing. The acting layer (RQ4 / Phase 3B) remains unbuilt and explicitly gated. T5b (server-side real streaming ttft_s/tps) deferred as a follow-on (AIEngineClient streaming rewrite + Railway change), not a closure blocker.",
   "dispatch_pattern": "operator-driven (post-Phase-2-bis activation build)",
-  "case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+  "case_study": "docs/case-studies/hadf-phase3a-sensing-case-study.md",
   "spec": "docs/superpowers/specs/2026-06-02-hadf-phase3a-sensing-layer-design.md",
   "predecessor_case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
-  "related_prs": [],
-  "related_prs_notes": "FT2 sensing producers PR (this branch). T4 control-room panel is a fitme-story-side follow-on; T5 AIOrchestrator emit hook is a deferred high-risk-area follow-on.",
+  "related_prs": [
+    635,
+    644
+  ],
+  "related_prs_notes": "FT2 sensing producers PR (this branch). T4 control-room panel is a fitme-story-side follow-on; T5 AIOrchestrator emit hook is a deferred high-risk-area follow-on. fitme-story #207 (T4 control-room HADF panel) tracked via case-study pr_citation_exempt.",
   "tasks": [
     {
       "id": "T1",
       "status": "done",
-      "summary": "reference-store builder + reference-signatures.json (8 endpoints, 7197 valid records, min_n=50, max_ttft=30s)"
+      "summary": "reference-store builder + reference-signatures.json (8 endpoints, 7197 valid records, min_n=50, max_ttft=30s)",
+      "related_prs": [
+        635,
+        644
+      ]
     },
     {
       "id": "T2",
       "status": "done",
-      "summary": "attestation classifier \u2014 Mahalanobis + confidence band (strong/weak/uncertain), advisory-only"
+      "summary": "attestation classifier — Mahalanobis + confidence band (strong/weak/uncertain), advisory-only",
+      "pr_number": 635
     },
     {
       "id": "T3",
       "status": "done",
-      "summary": "drift monitor \u2014 Mahalanobis mean-shift + KS vs locked baseline -> drift-monitor.jsonl"
+      "summary": "drift monitor — Mahalanobis mean-shift + KS vs locked baseline -> drift-monitor.jsonl",
+      "pr_number": 635
     },
     {
       "id": "T3b",
       "status": "done",
-      "summary": "test_hadf_sensing.py \u2014 9 tests (builder/attest/drift, incl. implausible-TTFT ceiling)"
+      "summary": "test_hadf_sensing.py — 9 tests (builder/attest/drift, incl. implausible-TTFT ceiling)",
+      "pr_number": 635
     },
     {
       "id": "T4",
       "status": "done",
-      "summary": "control-room HADF panel (fitme-story) \u2014 shipped via fitme-story PR #207; advisory observability surface, W16 producer-schema-pinned loader"
+      "summary": "control-room HADF panel (fitme-story) — shipped via fitme-story PR #207; advisory observability surface, W16 producer-schema-pinned loader"
     },
     {
       "id": "T5",
       "status": "done",
-      "summary": "AIOrchestrator emit hook \u2014 T5a shipped: honest ai_inference_completed (duration_ms + source_tier), descoped per t4-t5-risk-assessment.md (ttft/tps not client-capturable); 3 emit tests pass, build green"
+      "summary": "AIOrchestrator emit hook — T5a shipped: honest ai_inference_completed (duration_ms + source_tier), descoped per t4-t5-risk-assessment.md (ttft/tps not client-capturable); 3 emit tests pass, build green",
+      "pr_number": 635
     },
     {
       "id": "T5b",
       "status": "deferred",
-      "summary": "server-side real ttft_s/tps + provider/model \u2014 requires AIEngineClient streaming rewrite + Railway contract; backlog sibling to F-AUTH-LATENCY-SERVER-METRIC (per risk assessment R4)"
+      "summary": "server-side real ttft_s/tps + provider/model — requires AIEngineClient streaming rewrite + Railway contract; backlog sibling to F-AUTH-LATENCY-SERVER-METRIC (per risk assessment R4)"
     }
   ],
   "phases": {
@@ -75,37 +103,66 @@
     },
     "prd": {
       "status": "skipped",
-      "skip_reason": "work_subtype:b_medium \u2014 sensing producers are mechanical materialization of a locked spec (2026-06-02 Phase 3A design); state.json + spec + sibling case study suffice."
+      "skip_reason": "work_subtype:b_medium — sensing producers are mechanical materialization of a locked spec (2026-06-02 Phase 3A design); state.json + spec + sibling case study suffice."
     },
     "tasks_phase": {
       "status": "complete",
-      "note": "T1-T5 enumerated in spec \u00a74."
+      "note": "T1-T5 enumerated in spec §4."
     },
     "ux_or_integration": {
       "status": "skipped",
-      "skip_reason": "work_subtype:b_medium \u2014 no user-visible surface in T1-T3 (panel is T4, fitme-story)."
+      "skip_reason": "work_subtype:b_medium — no user-visible surface in T1-T3 (panel is T4, fitme-story)."
     },
     "implement": {
-      "status": "in_progress",
-      "note": "T1-T3 + tests done on this branch; T4/T5 deferred."
+      "status": "complete",
+      "note": "T1-T3 + tests done on this branch; T4/T5 deferred.",
+      "started_at": "2026-06-10T04:12:30Z",
+      "ended_at": "2026-06-10T04:12:30Z"
     },
     "test": {
-      "status": "in_progress"
+      "status": "complete",
+      "started_at": "2026-06-10T04:12:30Z",
+      "ended_at": "2026-06-10T04:12:30Z"
     },
     "review": {
-      "status": "pending"
+      "started_at": "2026-06-05T06:23:09Z",
+      "ended_at": "2026-06-10T04:12:30Z",
+      "approved_by": "operator",
+      "approval_signal": "merged",
+      "status": "complete"
     },
     "merge": {
-      "status": "pending"
+      "started_at": "2026-06-05T06:23:09Z",
+      "ended_at": "2026-06-10T04:12:30Z",
+      "pr_number": 635,
+      "merge_commit_sha": "35fc32d2c71892620b515a1f088867c96ab0d69d",
+      "merged_at": "2026-06-05T06:23:09Z",
+      "approved_by": "operator",
+      "approval_signal": "merged",
+      "status": "complete"
     },
     "docs": {
-      "status": "pending"
+      "started_at": "2026-06-05T06:23:09Z",
+      "ended_at": "2026-06-10T04:12:30Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)",
+      "status": "complete"
     },
     "learn": {
-      "status": "pending"
+      "status": "skipped",
+      "note": "b_medium feature — learn phase folded into closure case study",
+      "started_at": "2026-06-10T04:12:30Z",
+      "ended_at": "2026-06-10T04:12:30Z"
+    },
+    "complete": {
+      "started_at": "2026-06-10T04:11:20Z",
+      "ended_at": "2026-06-10T04:12:30Z",
+      "approved_by": "operator",
+      "approval_signal": "merged",
+      "status": "complete"
     }
   },
-  "phase_status_note": "Phase 3A is the activate-now (sensing/observability) half of HADF Phase 3. Detection only \u2014 no dispatch decisions; the acting/routing layer is pre-registered as RQ4 (Phase 3B), a separate spec. T1-T3 producers + 9 tests shipped this PR; T4 panel + T5 emit-hook deferred.",
+  "phase_status_note": "Phase 3A is the activate-now (sensing/observability) half of HADF Phase 3. Detection only — no dispatch decisions; the acting/routing layer is pre-registered as RQ4 (Phase 3B), a separate spec. T1-T3 producers + 9 tests shipped this PR; T4 panel + T5 emit-hook deferred.",
   "complexity": {
     "cu_version": 2,
     "view_count": 0,
@@ -116,11 +173,49 @@
     "computed_cu": 1.4,
     "factors_applied": [
       "base: 1.0",
-      "architectural_novelty: +0.2 (first framework sensing layer \u2014 reference store + attestation + drift monitor per PR #635 T1-T3)",
+      "architectural_novelty: +0.2 (first framework sensing layer — reference store + attestation + drift monitor per PR #635 T1-T3)",
       "is_first_of_kind: +0.1 (no prior FT2 sensing infrastructure; predecessor was HADF behavioral measurement only)",
       "predecessor_dependence: +0.1 (extends HADF Phase 2-bis cross-sub-exp synthesis behavioral models)"
     ],
     "presence_only": true,
     "presence_only_note": "Populated by helper-agent 2026-06-05 to clear MISSING_CU_V2 gate while feature is in-flight (T4+T5 still pending). Factor values are conservative-plausible; the implementing agent may refine at feature closure. Per CLAUDE.md Known Mechanical Limits #2, the gate checks presence not magnitude."
-  }
+  },
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": true,
+    "ai": true
+  },
+  "platforms_tested_provenance": "authored",
+  "merge_pr_number": 635,
+  "merge_commit_sha": "35fc32d2c71892620b515a1f088867c96ab0d69d",
+  "merged_at": "2026-06-05T06:23:09Z",
+  "branch": "chore/hadf-phase3a-sensing-post-merge-closure",
+  "feature_branch_merged": "feat/hadf-phase3a-sensing",
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-05T06:23:09Z",
+      "reason": "PR #635 squashed onto main as 35fc32d2c7 (operator-merged 2026-06-05T06:23:09Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-05T06:23:09Z",
+      "reason": "PR #635 squashed onto main as 35fc32d2c7 (operator-merged 2026-06-05T06:23:09Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-05T06:23:09Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-10T04:11:20Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/hadf-phase3a-sensing-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ]
 }
