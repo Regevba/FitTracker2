@@ -77,3 +77,55 @@ def test_all_recent_no_findings(tmp_path, monkeypatch):
 def test_missing_index_safe(tmp_path, monkeypatch):
     monkeypatch.setattr(ic, "REPO_ROOT", tmp_path)  # no index file
     assert ic.check_gate_coverage_zero() == []
+
+
+# --- v7.10 mis-wire (0-candidate) detection -------------------------------
+
+def test_miswire_zero_candidate_gate_flagged(tmp_path, monkeypatch):
+    """A gate registered in the index but with ALL counters zero = mis-wired."""
+    now = datetime.now(timezone.utc)
+    gates = {
+        "ACTIVE_GATE": {"total_candidates": 200, "last_checked_at": _iso(now),
+                        "last_skipped_at": _iso(now)},
+        "MISWIRED_GATE": {"total_candidates": 0, "total_checked": 0, "total_skips": 0,
+                          "total_firings": 0},
+    }
+    findings = _run(tmp_path, gates, monkeypatch)
+    msgs = " ".join(f["message"] for f in findings)
+    assert "MISWIRED_GATE" in msgs
+    assert "every counter is zero" in msgs
+    assert all(f["code"] == "GATE_COVERAGE_ZERO" for f in findings)
+
+
+def test_healthy_zero_firing_gate_not_flagged(tmp_path, monkeypatch):
+    """STATE_OWNER_MISSING shape: thousands of candidates, 0 firings — HEALTHY.
+
+    The gate runs on every commit and never finds a violation; it must NOT be
+    flagged as mis-wired (it has non-zero candidates) nor as stale (its activity
+    is current).
+    """
+    now = datetime.now(timezone.utc)
+    gates = {
+        "ACTIVE_GATE": {"total_candidates": 200, "last_checked_at": _iso(now),
+                        "last_skipped_at": _iso(now)},
+        "STATE_OWNER_MISSING": {"total_candidates": 1936, "total_firings": 0,
+                                "total_skips": 1936,
+                                "last_checked_at": _iso(now),
+                                "last_skipped_at": _iso(now)},
+    }
+    findings = _run(tmp_path, gates, monkeypatch)
+    flagged = {f["message"].split("`")[1] for f in findings if "`" in f["message"]}
+    assert "STATE_OWNER_MISSING" not in flagged
+
+
+def test_miswire_does_not_double_flag_as_stale(tmp_path, monkeypatch):
+    """A 0-candidate gate produces exactly one finding (mis-wire), not also stale."""
+    now = datetime.now(timezone.utc)
+    gates = {
+        "ACTIVE_GATE": {"total_candidates": 200, "last_checked_at": _iso(now),
+                        "last_skipped_at": _iso(now)},
+        "MISWIRED_GATE": {"total_candidates": 0, "total_checked": 0, "total_skips": 0},
+    }
+    findings = _run(tmp_path, gates, monkeypatch)
+    miswire = [f for f in findings if "MISWIRED_GATE" in f["message"]]
+    assert len(miswire) == 1
