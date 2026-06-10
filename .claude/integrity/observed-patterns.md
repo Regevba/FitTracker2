@@ -427,6 +427,22 @@ Each entry follows the format:
 
 ---
 
+### #24 Field-rename silent-pass in a READER/INDEX (measurement layer) — generalization of #7/#9
+
+**Trigger:** A report, index, or meta-check reads a state/ledger field under one name while the producer writes it under a *different* name. No gate fires; the metric silently under- or mis-counts. Distinct from #7/#9 (which were `state.json` write-time gates reading the renamed field) — this is the same bug class in the *measurement/observability* layer, where there is no failing gate to surface it.
+
+**Why expected:** schema-drift. A field is renamed/forked (`created`→`created_at`; top-level `cu_v2` object vs legacy `complexity.cu_version`; coverage rows keyed `timestamp` vs the W9 hook's `ts`) but only one producer/consumer is updated. The two representations co-exist and are often nearly disjoint, so the reader sees ~half the data and reports it as truth.
+
+**Distinguishing real signal:** a coverage/adoption number that "feels low," OR two field shapes in the corpus where `grep -l '"new_field"'` and `grep -l '"old_field"'` return nearly-disjoint sets. Confirm by counting both: if `READ-field` count ≪ `WRITTEN-field` count, the reader is on the wrong field.
+
+**Silence path:** make the reader accept BOTH representations (`d.get("new") or d.get("legacy")`), add a unit test pinning both, and prefer canonical going forward. NOT a per-feature exemption — it's a one-line reader fix.
+
+**First observed:** 2026-06-10 audit — `measurement-adoption-report.py::has_cu_v2` read only legacy `complexity.cu_version` (15 feats) not canonical top-level `cu_v2` (12 feats), halving adoption (fixed PR #687); `refresh-gate-last-fired.py` read only `timestamp`, dropping 30 `w9.auto_isolate` rows keyed `ts` (fixed PR #688). Predecessor incident: `created`/`created_at` `CACHE_HITS_EMPTY_POST_V6` 0%-coverage (#7/#9, 2026-05-01).
+
+**Notes:** v7.10. **Lesson: when you rename or fork a field, grep EVERY reader (`grep -rn '.get("<oldname>"' scripts/`) in the same change.** Related: #7, #9, #20 (the 3-cycle-time-check coverage gap was closed alongside this — `GATE_COVERAGE_ZERO` gained a 0-candidate mis-wire detector + the three cycle-time checks `BROKEN_PR_CITATION` / `CASE_STUDY_MISSING_TIER_TAGS` / `PATTERN_SKILL_UNMAPPED` now emit Mechanism A coverage so reader/writer drift is itself observable).
+
+---
+
 ## Section 2 — Workflow / operational patterns
 
 Non-gate patterns: situations where operator action (or inaction) causes confusion.

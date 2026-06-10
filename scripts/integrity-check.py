@@ -48,6 +48,20 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
+LOGS_DIR = REPO_ROOT / ".claude" / "logs"
+GATE_COVERAGE_LEDGER = LOGS_DIR / "gate-coverage.jsonl"
+
+# v7.10 cycle-time coverage (built 2026-06-10): the write-time gates emit
+# Mechanism A coverage from check-state-schema.py, but three cycle-time checks
+# (BROKEN_PR_CITATION, CASE_STUDY_MISSING_TIER_TAGS, PATTERN_SKILL_UNMAPPED) ran
+# WITHOUT emitting any coverage row — so the F17 index + GATE_COVERAGE_ZERO
+# meta-check could not see them. If one silently stopped checking, nothing
+# detected it (a silent-pass blind spot surfaced by the 2026-06-10 audit). We
+# instrument them with the same GateCoverage tracker the write-time gates use,
+# tagged mode="cycle" so the downstream index distinguishes cycle-time coverage
+# from staged/explicit write-time coverage.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gate_coverage import GateCoverage  # noqa: E402
 
 # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b):
 # When ensure-pr-cache-fresh.py fails in cron context, it writes this sentinel.
@@ -454,7 +468,7 @@ def _resolve_pr_cite_integrity(match: re.Match, cache: dict) -> str | None:
     return None
 
 
-def audit_case_study_citations(pr_cache: dict | None) -> list[dict]:
+def audit_case_study_citations(pr_cache: dict | None, coverage: "GateCoverage | None" = None) -> list[dict]:
     """Scan every case study .md for PR citations; flag broken ones.
 
     If pr_cache is None, skip gracefully (gh not available). Returns findings
@@ -465,19 +479,33 @@ def audit_case_study_citations(pr_cache: dict | None) -> list[dict]:
     in their prose is meta-reference, not a real evidentiary claim.
 
     v7.8.3 D-3: uses resolve_pr_cite() for cross-repo routing via REPO_MAP.
+    v7.10: emits Mechanism A coverage (gate BROKEN_PR_CITATION) when `coverage`
+    is supplied — every candidate .md is checked unless filtered out.
     """
     if pr_cache is None or not CASE_STUDIES_DIR.exists():
+        if coverage is not None:
+            coverage.skip("BROKEN_PR_CITATION", "no_pr_cache_or_dir")
         return []
     findings: list[dict] = []
     for f in sorted(CASE_STUDIES_DIR.rglob("*.md")):
+        if coverage is not None:
+            coverage.candidate("BROKEN_PR_CITATION")
         if f.name in SKIP_CASE_STUDY_FILES:
+            if coverage is not None:
+                coverage.skip("BROKEN_PR_CITATION", "skip_listed_file")
             continue
         if "meta-analysis" in f.relative_to(CASE_STUDIES_DIR).parts:
+            if coverage is not None:
+                coverage.skip("BROKEN_PR_CITATION", "meta_analysis_prose")
             continue
         try:
             text = f.read_text()
         except Exception:
+            if coverage is not None:
+                coverage.skip("BROKEN_PR_CITATION", "unreadable")
             continue
+        if coverage is not None:
+            coverage.checked("BROKEN_PR_CITATION")
         for m in _PR_CITATION_PAT.finditer(text):
             err = _resolve_pr_cite_integrity(m, pr_cache)
             if err is not None:
@@ -1005,6 +1033,36 @@ def check_gate_coverage_zero() -> list[dict]:
     for gate, stats in sorted(gates.items()):
         if not isinstance(stats, dict):
             continue
+
+        # v7.10 refinement — the MIS-WIRE signature (distinct from the staleness
+        # case below). A gate REGISTERED in the index but whose every counter is
+        # zero (candidates == checked == skipped == firings == 0) has a check
+        # site that runs but never reaches a single candidate — the classic
+        # "gate function present, emission key wrong / loop unreachable" bug the
+        # cache_hits keying incident was. NOT the same as a healthy zero-firing
+        # gate (e.g. STATE_OWNER_MISSING: thousands of candidates, zero
+        # violations) — those have non-zero candidates and are silent here.
+        # Checked BEFORE the MIN_CANDIDATES filter, which would otherwise skip it.
+        if (
+            stats.get("total_candidates", 0) == 0
+            and stats.get("total_checked", stats.get("total_firings", 0)) == 0
+            and stats.get("total_skips", 0) == 0
+        ):
+            findings.append({
+                "feature": "—",
+                "severity": "ADVISORY",
+                "code": "GATE_COVERAGE_ZERO",
+                "message": (
+                    f"GATE_COVERAGE_ZERO: gate `{gate}` is registered in the "
+                    f"coverage index but every counter is zero "
+                    f"(candidates=0, checked=0, skipped=0) — its check site runs "
+                    f"but never reaches a candidate. Likely mis-wired emission "
+                    f"key or an unreachable loop (cache_hits-keying bug class). "
+                    f"Advisory; v7.10 enforcement candidate."
+                ),
+            })
+            continue
+
         if stats.get("total_candidates", 0) < MIN_CANDIDATES:
             continue
         last = activities.get(gate)
@@ -1062,7 +1120,7 @@ def check_tier_tags_advisory() -> list[dict]:
         }]
 
 
-def audit_case_study_tier_tags() -> list[dict]:
+def audit_case_study_tier_tags(coverage: "GateCoverage | None" = None) -> list[dict]:
     """Flag post-2026-04-21 case studies that lack any T1/T2/T3 tier tag.
 
     Added 2026-04-24 per Gemini audit Tier 2.3 enforcement follow-through.
@@ -1075,27 +1133,47 @@ def audit_case_study_tier_tags() -> list[dict]:
     Exempt: files under `docs/case-studies/meta-analysis/`, the template,
     README, data-quality-tiers.md itself, and any case study whose extracted
     "Date written:" header is older than 2026-04-21 (forward-only policy).
+
+    v7.10: emits Mechanism A coverage (gate CASE_STUDY_MISSING_TIER_TAGS) when
+    `coverage` is supplied — a candidate becomes `checked` only once it passes
+    the forward-only date filter (post-convention dated case studies).
     """
     if not CASE_STUDIES_DIR.exists():
+        if coverage is not None:
+            coverage.skip("CASE_STUDY_MISSING_TIER_TAGS", "no_dir")
         return []
     findings: list[dict] = []
     for f in sorted(CASE_STUDIES_DIR.rglob("*.md")):
+        if coverage is not None:
+            coverage.candidate("CASE_STUDY_MISSING_TIER_TAGS")
         if f.name in SKIP_CASE_STUDY_FILES or f.name == "data-quality-tiers.md":
+            if coverage is not None:
+                coverage.skip("CASE_STUDY_MISSING_TIER_TAGS", "skip_listed_file")
             continue
         if "meta-analysis" in f.relative_to(CASE_STUDIES_DIR).parts:
+            if coverage is not None:
+                coverage.skip("CASE_STUDY_MISSING_TIER_TAGS", "meta_analysis_prose")
             continue
         try:
             text = f.read_text()
         except Exception:
+            if coverage is not None:
+                coverage.skip("CASE_STUDY_MISSING_TIER_TAGS", "unreadable")
             continue
         # Extract date_written from the header (same regex family as
         # documentation-debt-report.py uses, plus explicit capture).
         date_match = _DATE_WRITTEN_PAT.search(text)
         if not date_match:
+            if coverage is not None:
+                coverage.skip("CASE_STUDY_MISSING_TIER_TAGS", "no_date_header")
             continue  # No date extracted — can't determine if post-convention
         date_written = date_match.group(1) or date_match.group(2)
         if not date_written or date_written < _TIER_CONVENTION_DATE:
+            if coverage is not None:
+                coverage.skip("CASE_STUDY_MISSING_TIER_TAGS", "pre_convention_date")
             continue  # Pre-convention — grandfathered by the forward-only policy
+        if coverage is not None:
+            coverage.checked("CASE_STUDY_MISSING_TIER_TAGS")
         if not _TIER_TAG_PAT.search(text):
             findings.append({
                 "feature": str(f.relative_to(REPO_ROOT)),
@@ -1108,7 +1186,7 @@ def audit_case_study_tier_tags() -> list[dict]:
     return findings
 
 
-def check_pattern_skill_unmapped() -> list[dict]:
+def check_pattern_skill_unmapped(coverage: "GateCoverage | None" = None) -> list[dict]:
     """Advisory: Observed-Patterns-Catalog IDs missing from pattern-skill-map.json.
 
     v7.9.1 pattern↔skill overlay. Parses every pattern ID from the catalog
@@ -1120,25 +1198,36 @@ def check_pattern_skill_unmapped() -> list[dict]:
 
     Severity: ADVISORY only — never affects finding_count or exit code.
     Silent when either file is missing (degrades gracefully).
+
+    v7.10: emits Mechanism A coverage (gate PATTERN_SKILL_UNMAPPED) when
+    `coverage` is supplied — one candidate per catalog pattern ID evaluated.
     """
     catalog = REPO_ROOT / ".claude" / "integrity" / "observed-patterns.md"
     map_path = REPO_ROOT / ".claude" / "shared" / "pattern-skill-map.json"
     if not catalog.exists() or not map_path.exists():
+        if coverage is not None:
+            coverage.skip("PATTERN_SKILL_UNMAPPED", "catalog_or_map_missing")
         return []
 
     import re as _re
     try:
         text = catalog.read_text()
     except OSError:
+        if coverage is not None:
+            coverage.skip("PATTERN_SKILL_UNMAPPED", "catalog_unreadable")
         return []
     # Section headings: "### #12 ..." (gate) or "### W9 — ..." (workflow).
     catalog_ids = set(_re.findall(r"^### (#\d+|W\d+)\b", text, flags=_re.MULTILINE))
     if not catalog_ids:
+        if coverage is not None:
+            coverage.skip("PATTERN_SKILL_UNMAPPED", "no_catalog_ids")
         return []
 
     try:
         entries = json.loads(map_path.read_text())
     except (OSError, json.JSONDecodeError):
+        if coverage is not None:
+            coverage.skip("PATTERN_SKILL_UNMAPPED", "map_unreadable")
         return []
     mapped = {e.get("id"): e.get("skills", []) for e in entries}
 
@@ -1152,6 +1241,9 @@ def check_pattern_skill_unmapped() -> list[dict]:
 
     findings: list[dict] = []
     for pid in sorted(catalog_ids - SELF_DOC_EXEMPT, key=lambda x: (x[0] != "#", x)):
+        if coverage is not None:
+            coverage.candidate("PATTERN_SKILL_UNMAPPED")
+            coverage.checked("PATTERN_SKILL_UNMAPPED")
         if pid not in mapped:
             findings.append({
                 "feature": "pattern-skill-map",
@@ -1235,10 +1327,20 @@ def build_snapshot(snapshot_trigger: str) -> dict:
                 f"Investigate `gh auth status` under cron context."
             ),
         })
+    # v7.10: cycle-time Mechanism A coverage tracker. The three cycle-time
+    # checks below previously emitted NO coverage, so the F17 index +
+    # GATE_COVERAGE_ZERO meta-check were blind to them. mode="cycle"
+    # distinguishes these full-corpus scans from the write-time gates'
+    # staged/explicit coverage. Tests opt out via GATE_COVERAGE_LEDGER_DISABLED=1.
+    cycle_coverage = GateCoverage(mode="cycle")
+
+    if pr_cache_failed_advisory:
+        # Cache known-stale: BROKEN_PR_CITATION was deliberately not run.
+        cycle_coverage.skip("BROKEN_PR_CITATION", "pr_cache_refresh_failed")
     else:
         # Auditor Agent case-study citation checks
-        findings.extend(audit_case_study_citations(_PR_CACHE))
-    findings.extend(audit_case_study_tier_tags())
+        findings.extend(audit_case_study_citations(_PR_CACHE, coverage=cycle_coverage))
+    findings.extend(audit_case_study_tier_tags(coverage=cycle_coverage))
 
     # v7.7 M3 T18: advisory tier-tag correctness heuristic (14th check code).
     # v7.8 M2 PR-3 T11: advisory cache_hits auto-instrumentation early-warning
@@ -1252,10 +1354,19 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + check_tier_tags_advisory()
         + check_cache_hits_auto_instrumentation_inactive()
         + pr_cache_failed_advisory  # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b)
-        + check_pattern_skill_unmapped()  # v7.9.1 pattern↔skill overlay advisory
+        + check_pattern_skill_unmapped(coverage=cycle_coverage)  # v7.9.1 overlay
         + check_gate_coverage_zero()  # v7.10 candidate (built 2026-06-08, advisory)
     )
     all_findings = findings + advisory_findings
+
+    # v7.10: persist cycle-time coverage so the F17 index + GATE_COVERAGE_ZERO
+    # can observe these three checks. Best-effort: a write failure must never
+    # break the integrity scan (the findings above are the load-bearing output).
+    if os.environ.get("GATE_COVERAGE_LEDGER_DISABLED") != "1":
+        try:
+            cycle_coverage.write_jsonl(GATE_COVERAGE_LEDGER)
+        except OSError:
+            pass
 
     non_advisory_count = len(findings)
 

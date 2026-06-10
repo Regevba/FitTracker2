@@ -21,6 +21,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `#12` | PR_CACHE_STALE — empty/stale cache → cascading false positives *(probed)* | no | Auto-refreshes via scripts/ensure-pr-cache-fresh.py; run make refresh-pr-cache if findings persist. |
 | `#13` | BROKEN_PR_CITATION — unresolved PR cite (graceful fallback when gh unavailable) *(probed)* | yes | Fix the PR citation or add pr_citation_exempt frontmatter; skipped gracefully when gh is unavailable. |
 | `#23` | .gitignore blocks Mechanism A / Mechanism C remote-agent visibility | no | Commit periodic gate-coverage / session-ledger snapshots to non-gitignored paths so remote agents can audit. |
+| `#24` | Field-rename silent-pass in a READER/INDEX (measurement layer) — generalization of #7/#9 *(probed)* | no | Make the reader accept BOTH field representations (d.get('new') or d.get('legacy')); add a unit test pinning both; grep every reader of a renamed field in the same change. |
 | `W1` | SSH signing requires loaded agent before headless commits *(probed)* | no | Run ssh-add ~/.ssh/id_ed25519 before headless commits; verify with ssh-add -l. |
 | `W3` | Check CI before local-build panic | no | Check CI status (gh run list) before deep local-build debugging. |
 | `W4` | No auto-merge without explicit approval | yes | Never auto-merge; surface PR + checks and wait for explicit approval. |
@@ -41,7 +42,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `W32` | scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation → complete directly, no testing phase) | yes | For single-phase framework features (e.g., sub-fixes shipping their own unit tests in-phase), call `python3 scripts/close-feature.py <feature> --force-incomplete` directly. The `make close-feature` target does NOT pass --force-incomplete through. Durable script-heuristic patch queued in backlog Framework hygiene. |
 | `W34` | PR cache window truncation past the 500-PR limit *(probed)* | yes | Verify the cache window covers the historically-cited PR range: `python3 -c "import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 — covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set). |
 
-At activation run `make skill-preflight SKILL=dev` — probes the 6 mechanized blockers for this work type; clear any before proceeding.
+At activation run `make skill-preflight SKILL=dev` — probes the 7 mechanized blockers for this work type; clear any before proceeding.
 
 **Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
 <!-- END pattern-preflight -->
