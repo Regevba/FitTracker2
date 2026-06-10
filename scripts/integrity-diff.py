@@ -38,16 +38,19 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-# Forward reference anchor. Bumped 2026-06-10 to the post-timing-backfill anchor
-# so single-anchor diffs run against corrected data. The prior anchor
-# (2026-05-14-...-platform-baseline) is retained on disk and remains part of the
-# normalized trend via scripts/integrity-multi-anchor.py. For dilution-immune
-# comparison across ALL anchors, prefer `make integrity-multi-anchor`.
+# CANONICAL regression anchor — 2026-05-14, per data-integrity-and-rollback
+# sub-plan §2.3/§2.5 (named reference) + §3.2 baseline cadence. This stays fixed:
+# a stable anchor is what makes drift detection meaningful, and §3.2 only
+# authorizes new baselines at daily / framework-promotion / pre-research triggers.
+# Raw deltas vs this anchor are dilution-SENSITIVE (corpus growth drags %); the
+# regression VERDICT below is dilution-aware (see classify_delta import). For the
+# full dilution-immune cohort/numerator view across all anchors, use
+# `make integrity-multi-anchor`.
 DEFAULT_BASELINE = (
     Path.home()
     / "Documents"
     / "FitTracker2-backups"
-    / "2026-06-10-telemetry-backfill-anchor"
+    / "2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14"
     / "platform-baseline"
 )
 
@@ -149,14 +152,31 @@ def collect_current_metrics() -> dict:
 
 
 HIGHER_IS_WORSE = ("integrity_findings", "doc_debt_open")
+# Numerator metrics — an absolute count dropping IS a real regression (monotonicity).
 LOWER_IS_WORSE = (
+    "fully_adopted",
     "fully_adopted_post_v6",
-    "adoption_pct_post_v6",
-    "timing_wall_time_pct_post_v6",
-    "per_phase_timing_pct_post_v6",
-    "cache_hits_pct_post_v6",
-    "cu_v2_pct_post_v6",
 )
+# Percentage metrics are DILUTION-SENSITIVE (corpus growth drags them down even when
+# nothing regressed). They are gated via classify_delta (cohort + numerator), NOT raw
+# delta. `adoption_pct_post_v6` is gated indirectly by `fully_adopted_post_v6` above.
+DILUTION_AWARE_DIMS = {
+    "timing_wall_time_pct_post_v6": "timing_wall_time",
+    "per_phase_timing_pct_post_v6": "per_phase_timing",
+    "cache_hits_pct_post_v6": "cache_hits",
+    "cu_v2_pct_post_v6": "cu_v2",
+}
+NON_GATING_PCT = ("adoption_pct_post_v6",)
+
+
+def _load_multi_anchor():
+    """Import classify_delta + load_adoption_features from the hyphenated sibling module."""
+    import importlib.util
+    p = REPO_ROOT / "scripts" / "integrity-multi-anchor.py"
+    spec = importlib.util.spec_from_file_location("integrity_multi_anchor", p)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def is_regression(key: str, delta: float) -> bool:
@@ -206,6 +226,20 @@ def main():
     baseline = collect_metrics_from_dir(baseline_dir)
     current = collect_current_metrics()
 
+    # Dilution-aware verdicts for the percentage dimensions (data-integrity sub-plan §2.6).
+    # Compares per-feature adoption maps from the baseline anchor vs the live ledger so a
+    # raw-% drop caused purely by corpus growth is classified `dilution`, not a regression.
+    verdicts = {}
+    try:
+        mod = _load_multi_anchor()
+        b_feats = mod.load_adoption_features(baseline_dir / "measurement-adoption.json")
+        c_feats = mod.load_adoption_features(REPO_ROOT / ".claude" / "shared" / "measurement-adoption.json")
+        if b_feats and c_feats:
+            for key, dim in DILUTION_AWARE_DIMS.items():
+                verdicts[key] = mod.classify_delta(b_feats, c_feats, dim)
+    except Exception as e:  # never let the overlay break the raw diff
+        print(f"  (dilution overlay unavailable: {e})", file=sys.stderr)
+
     keys = (
         "integrity_findings",
         "integrity_advisory",
@@ -226,10 +260,24 @@ def main():
     for k in keys:
         b = baseline.get(k, -1)
         c = current.get(k, -1)
-        row_text, regr = format_row(k, b, c)
+        row_text, raw_regr = format_row(k, b, c)
+        if k in DILUTION_AWARE_DIMS and k in verdicts:
+            v = verdicts[k]
+            regr = v["verdict"] == "REAL_REGRESSION"
+            note = {"REAL_REGRESSION": "REAL_REGRESSION", "dilution": "dilution",
+                    "improved": "improved", "flat": "flat"}[v["verdict"]]
+            row_text = row_text.rstrip() + f"  {note} (cohortΔ {v['cohort_delta']:+.1f}, num {v['numerator_delta']:+d})"
+            if regr:
+                regressions.append({"key": k, "baseline": b, "current": c,
+                                    "delta": round(c - b, 2), "verdict": v["verdict"],
+                                    "cohort_delta": v["cohort_delta"], "numerator_delta": v["numerator_delta"]})
+        elif k in NON_GATING_PCT:
+            regr = False  # dilution-sensitive; gated indirectly via fully_adopted_post_v6
+        else:
+            regr = raw_regr
+            if regr:
+                regressions.append({"key": k, "baseline": b, "current": c, "delta": round(c - b, 2)})
         rows.append(row_text)
-        if regr:
-            regressions.append({"key": k, "baseline": b, "current": c, "delta": round(c - b, 2)})
 
     if args.json:
         print(json.dumps({

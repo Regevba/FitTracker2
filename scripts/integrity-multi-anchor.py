@@ -49,8 +49,16 @@ HOME = Path.home()
 BACKUPS = HOME / "Documents" / "FitTracker2-backups"
 DIMENSIONS = ["timing_wall_time", "per_phase_timing", "cache_hits", "cu_v2"]
 
+# CANONICAL regression anchor — must match scripts/integrity-diff.py DEFAULT_BASELINE
+# and data-integrity-and-rollback sub-plan §2.3/§2.5. The cohort-normalized regression
+# verdict is computed against THIS anchor specifically; other anchors are trend context.
+CANONICAL_ANCHOR = "2026-05-14-platform"
+
 # Built-in anchor registry: (label, candidate paths to measurement-adoption.json).
 # First existing candidate wins. Order = chronological.
+# NOTE: the 2026-06-10-telemetry-backfill snapshot is EVIDENCE-ONLY (referenced by
+# honesty ledger FT2-FH-004), deliberately NOT registered here — it must not act as a
+# regression anchor (operator decision 2026-06-10: keep 2026-05-14 canonical, no supersede).
 ANCHOR_REGISTRY = [
     ("2026-05-12-pre-v7.9", [
         BACKUPS / "2026-05-12-framework-v7-8-branch-isolation-pre-v7-9-baseline" / "measurement-adoption.json",
@@ -58,30 +66,99 @@ ANCHOR_REGISTRY = [
     ("2026-05-14-platform", [
         BACKUPS / "2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14" / "platform-baseline" / "measurement-adoption.json",
     ]),
-    ("2026-06-10-telemetry-backfill", [
-        BACKUPS / "2026-06-10-telemetry-backfill-anchor" / "platform-baseline" / "measurement-adoption.json",
-    ]),
 ]
 LIVE = ("live", [REPO_ROOT / ".claude" / "shared" / "measurement-adoption.json"])
 
 
-def load_anchor(label: str, candidates: list[Path]):
-    """Return (label, {feature_name: adoption_dict}, created_map) or None."""
+def classify_delta(anchor_adopt: dict, latest_adopt: dict, dimension: str) -> dict:
+    """Dilution-aware regression classifier for one adoption dimension.
+
+    Shared logic consumed by integrity-diff.py and the data-lake analyzer so the
+    regression *definition* is single-sourced. Compares an anchor's per-feature
+    adoption map against the latest map and returns three deltas plus a verdict.
+
+    - raw_delta:       Δ adoption-% over each side's FULL corpus (dilution-SENSITIVE)
+    - cohort_delta:    Δ adoption-% over features present in BOTH (apples-to-apples)
+    - numerator_delta: Δ absolute count of adopted features (monotonicity check)
+
+    Verdict rule (data-integrity sub-plan §2.6):
+      * cohort_delta < 0  OR  numerator_delta < 0  -> "REAL_REGRESSION"
+      * raw_delta < 0  but cohort_delta >= 0 and numerator_delta >= 0 -> "dilution"
+      * otherwise -> "improved" (or "flat" when all zero)
+    """
+    anchor_names = set(anchor_adopt)
+    latest_names = set(latest_adopt)
+    cohort = anchor_names & latest_names
+
+    def _pct(num, den):
+        return round(100.0 * num / den, 1) if den else 0.0
+
+    raw_anc = _pct(sum(1 for a in anchor_adopt.values() if a.get(dimension)), len(anchor_names))
+    raw_now = _pct(sum(1 for a in latest_adopt.values() if a.get(dimension)), len(latest_names))
+    coh_anc = _pct(sum(1 for n in cohort if anchor_adopt[n].get(dimension)), len(cohort))
+    coh_now = _pct(sum(1 for n in cohort if latest_adopt[n].get(dimension)), len(cohort))
+    num_anc = sum(1 for a in anchor_adopt.values() if a.get(dimension))
+    num_now = sum(1 for a in latest_adopt.values() if a.get(dimension))
+
+    raw_delta = round(raw_now - raw_anc, 1)
+    cohort_delta = round(coh_now - coh_anc, 1)
+    numerator_delta = num_now - num_anc
+
+    if cohort_delta < 0 or numerator_delta < 0:
+        verdict = "REAL_REGRESSION"
+    elif raw_delta < 0:
+        verdict = "dilution"
+    elif raw_delta > 0 or cohort_delta > 0 or numerator_delta > 0:
+        verdict = "improved"
+    else:
+        verdict = "flat"
+
+    return {
+        "dimension": dimension, "raw_delta": raw_delta, "cohort_delta": cohort_delta,
+        "numerator_delta": numerator_delta, "raw_anchor": raw_anc, "raw_latest": raw_now,
+        "cohort_anchor": coh_anc, "cohort_latest": coh_now,
+        "num_anchor": num_anc, "num_latest": num_now, "verdict": verdict,
+    }
+
+
+def load_adoption_features(path: Path, instrumented_only: bool = False) -> dict | None:
+    """Load a measurement-adoption.json into {feature_name: adoption_dict}, or None.
+
+    When instrumented_only=True, a dimension counts as adopted ONLY if its provenance
+    is 'instrumented' (derived backfills are dropped) — the strict T1 view. Older
+    snapshots without a `provenance` block are treated as fully instrumented (the
+    field didn't exist when they were captured)."""
+    if not path.is_file():
+        return None
+    try:
+        d = json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return None
+    feats = d.get("features")
+    if not isinstance(feats, list):
+        return None
+    out = {}
+    for f in feats:
+        name = f.get("feature")
+        if not name:
+            continue
+        adoption = dict(f.get("adoption", {}))
+        if instrumented_only:
+            prov = f.get("provenance") or {}
+            for dim, present in list(adoption.items()):
+                if present and prov.get(dim) == "derived":
+                    adoption[dim] = False
+        out[name] = adoption
+    return out
+
+
+def load_anchor(label: str, candidates: list[Path], instrumented_only: bool = False):
+    """Return (label, {feature_name: adoption_dict}, source_path) or None."""
     for c in candidates:
         if c.is_file():
-            try:
-                d = json.loads(c.read_text())
-            except json.JSONDecodeError:
-                continue
-            feats = d.get("features")
-            if not isinstance(feats, list):
-                continue
-            adoption = {}
-            for f in feats:
-                name = f.get("feature")
-                if name:
-                    adoption[name] = f.get("adoption", {})
-            return label, adoption, str(c).replace(str(HOME), "~")
+            adoption = load_adoption_features(c, instrumented_only=instrumented_only)
+            if adoption is not None:
+                return label, adoption, str(c).replace(str(HOME), "~")
     return None
 
 
@@ -96,6 +173,10 @@ def main() -> int:
                     help="ad-hoc anchor LABEL=PATH (repeatable)")
     ap.add_argument("--exit-on-regression", action="store_true",
                     help="exit 2 if any COHORT-normalized dimension regressed")
+    ap.add_argument("--canonical-only", action="store_true",
+                    help=f"only compare vs the canonical anchor ({CANONICAL_ANCHOR})")
+    ap.add_argument("--instrumented-only", action="store_true",
+                    help="strict T1 view — count only instrumented values, drop derived backfills")
     args = ap.parse_args()
 
     registry = list(ANCHOR_REGISTRY)
@@ -107,7 +188,7 @@ def main() -> int:
 
     loaded, skipped = [], []
     for label, cands in registry:
-        r = load_anchor(label, cands)
+        r = load_anchor(label, cands, instrumented_only=args.instrumented_only)
         (loaded.append if r else skipped.append)(r if r else label)
 
     if len(loaded) < 2:
@@ -123,52 +204,51 @@ def main() -> int:
         print(f"skipped (no per-feature measurement-adoption.json): {', '.join(skipped)}")
     print()
 
-    report = {"latest": latest_label, "anchors": [], "regressions": []}
+    report = {"latest": latest_label, "canonical_anchor": CANONICAL_ANCHOR,
+              "anchors": [], "regressions": []}
 
-    for label, adopt, src in loaded[:-1]:
+    anchors_to_compare = loaded[:-1]
+    if args.canonical_only:
+        anchors_to_compare = [a for a in anchors_to_compare if a[0] == CANONICAL_ANCHOR]
+
+    for label, adopt, src in anchors_to_compare:
+        is_canonical = label == CANONICAL_ANCHOR
         anchor_names = set(adopt)
         cohort = anchor_names & latest_names
         new_in_latest = latest_names - anchor_names
-        print(f"── anchor {label}  ({len(anchor_names)} feats; cohort∩latest={len(cohort)}; "
+        tag = "  [CANONICAL regression reference]" if is_canonical else "  (trend context)"
+        print(f"── anchor {label}{tag}  ({len(anchor_names)} feats; cohort∩latest={len(cohort)}; "
               f"new-in-latest={len(new_in_latest)}) ──")
-        header = f"  {'dimension':22s} {'RAW@anchor':>11s} {'RAW@latest':>11s} | {'COHORT@anc':>11s} {'COHORT@now':>11s} {'Δcohort':>8s} | {'NUM@anc':>8s} {'NUM@now':>8s}"
+        header = f"  {'dimension':22s} {'RAW@anc':>9s} {'RAW@now':>9s} | {'COH@anc':>8s} {'COH@now':>8s} {'Δcoh':>7s} | {'NUM@anc':>8s} {'NUM@now':>8s}  verdict"
         print(header)
-        anchor_rec = {"label": label, "n_anchor": len(anchor_names),
+        anchor_rec = {"label": label, "is_canonical": is_canonical, "n_anchor": len(anchor_names),
                       "cohort_size": len(cohort), "new_in_latest": len(new_in_latest),
                       "dimensions": {}}
         for dim in DIMENSIONS:
-            raw_anc = pct(sum(1 for a in adopt.values() if a.get(dim)), len(anchor_names))
-            raw_now = pct(sum(1 for a in latest_adopt.values() if a.get(dim)), len(latest_names))
-            coh_anc_n = sum(1 for n in cohort if adopt[n].get(dim))
-            coh_now_n = sum(1 for n in cohort if latest_adopt[n].get(dim))
-            coh_anc = pct(coh_anc_n, len(cohort))
-            coh_now = pct(coh_now_n, len(cohort))
-            dcoh = round(coh_now - coh_anc, 1)
-            num_anc = sum(1 for a in adopt.values() if a.get(dim))
-            num_now = sum(1 for a in latest_adopt.values() if a.get(dim))
-            flag = " ⚠REGRESSION" if dcoh < 0 else ""
-            print(f"  {dim:22s} {raw_anc:>10.1f}% {raw_now:>10.1f}% | "
-                  f"{coh_anc:>10.1f}% {coh_now:>10.1f}% {dcoh:>+7.1f}% | "
-                  f"{num_anc:>8d} {num_now:>8d}{flag}")
-            anchor_rec["dimensions"][dim] = {
-                "raw_anchor": raw_anc, "raw_latest": raw_now,
-                "cohort_anchor": coh_anc, "cohort_latest": coh_now,
-                "cohort_delta": dcoh, "num_anchor": num_anc, "num_latest": num_now,
-            }
-            if dcoh < 0:
-                report["regressions"].append({"anchor": label, "dimension": dim, "cohort_delta": dcoh})
-        # dilution attribution
+            c = classify_delta(adopt, latest_adopt, dim)
+            mark = {"REAL_REGRESSION": " ⚠REAL_REGRESSION", "dilution": " ·dilution",
+                    "improved": " ✓", "flat": ""}[c["verdict"]]
+            print(f"  {dim:22s} {c['raw_anchor']:>8.1f}% {c['raw_latest']:>8.1f}% | "
+                  f"{c['cohort_anchor']:>7.1f}% {c['cohort_latest']:>7.1f}% {c['cohort_delta']:>+6.1f}% | "
+                  f"{c['num_anchor']:>8d} {c['num_latest']:>8d}{mark}")
+            anchor_rec["dimensions"][dim] = c
+            # Only the CANONICAL anchor's REAL_REGRESSIONs gate; trend anchors are advisory.
+            if c["verdict"] == "REAL_REGRESSION" and is_canonical:
+                report["regressions"].append({"anchor": label, "dimension": dim,
+                                              "cohort_delta": c["cohort_delta"],
+                                              "numerator_delta": c["numerator_delta"]})
         print(f"  dilution: {len(new_in_latest)} new features since {label}; of those, adopted:",
               ", ".join(f"{dim}={sum(1 for n in new_in_latest if latest_adopt[n].get(dim))}" for dim in DIMENSIONS))
         print()
         report["anchors"].append(anchor_rec)
 
     if report["regressions"]:
-        print(f"COHORT-normalized regressions (REAL, not dilution): {len(report['regressions'])}")
+        print(f"REAL regressions vs canonical anchor {CANONICAL_ANCHOR} (cohort<0 or numerator<0): {len(report['regressions'])}")
         for r in report["regressions"]:
-            print(f"  - {r['anchor']} :: {r['dimension']} {r['cohort_delta']:+.1f}%")
+            print(f"  - {r['dimension']}  cohortΔ {r['cohort_delta']:+.1f}%  numeratorΔ {r['numerator_delta']:+d}")
     else:
-        print("No COHORT-normalized regressions — all percentage drops vs anchors are denominator dilution.")
+        print(f"No REAL regressions vs canonical anchor {CANONICAL_ANCHOR} — "
+              "raw percentage drops are denominator dilution (cohort flat-or-up, numerator non-decreasing).")
 
     if args.json:
         Path(args.json).write_text(json.dumps(report, indent=2) + "\n")

@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -235,6 +235,14 @@ integrity-diff:
 # CI mode: exits 2 on a cohort regression — `make integrity-multi-anchor EXIT_ON_REGRESSION=1`.
 integrity-multi-anchor:
 	@python3 scripts/integrity-multi-anchor.py --json .claude/shared/integrity-multi-anchor.json $(if $(EXIT_ON_REGRESSION),--exit-on-regression,)
+
+# Unified telemetry data-layer (read-only OLAP). Ingests EVERY source — state corpus,
+# Mechanism A gate-coverage, daily/weekly crons, F17 index, anchors, snapshots — joins
+# them, and emits cross-source reconciliation + dilution-normalized adoption + a
+# forward-decision digest. Stdlib-first; optional DuckDB backend for `--sql`.
+# CI mode: `make integrity-data-lake EXIT_ON_ANOMALY=1` exits 2 on a HIGH/CRITICAL finding.
+integrity-data-lake:
+	@python3 scripts/integrity-data-lake.py --json .claude/shared/integrity-data-lake.json $(if $(EXIT_ON_ANOMALY),--exit-on-anomaly,)
 
 # Rotate / prune daily-checkpoint snapshots under
 # ~/Documents/FitTracker2-backups/daily/ (R2 from 2026-05-19 dev-env audit).

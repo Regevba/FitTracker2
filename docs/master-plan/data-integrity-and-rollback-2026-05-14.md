@@ -204,7 +204,40 @@ make uninstall-daily-cron              # Reverse the above
 | Mechanism C session events | ≥0 (no minimum; capture-only) | session-ledger row count | 1,258 ✅ |
 | Mechanism F membrane | 1 active lease per active feature | `make membrane-status` | 1 ✅ |
 
-**Regression definition:** any target on the table degrading vs the 2026-05-14 baseline column by more than the natural noise floor is a §2.3 HIGH/CRITICAL drift signal.
+**Regression definition:** a target degrading vs the 2026-05-14 baseline column by more than the natural noise floor is a §2.3 HIGH/CRITICAL drift signal — **measured on the cohort-normalized / numerator basis, NOT the raw percentage** (§2.6). A *percentage* target (`per_phase_timing`, `cache_hits`, `cu_v2`, `fully_adopted_post_v6 / post_v6`) falling purely because the corpus grew is **denominator dilution, not a regression**; it gates only when the cohort-intersection delta is negative OR the absolute numerator decreased. Adoption targets are evaluated on *presence* but reported with an **instrumented-vs-derived split** (§2.6); a value backfill-*derived* after the fact is not counted as instrumented.
+
+---
+
+## 2.6 Dilution-Normalized Drift Comparison (the normalization overlay)
+
+**Added 2026-06-10** (honesty ledger [FT2-FH-004](../../docs/case-studies/framework-honesty-ledger.md)). The §2.3 drift table and §2.5 regression definition were originally **dilution-blind**: they compared raw counts/percentages against the 2026-05-14 column with no rule for "the % fell purely because the corpus grew." When 34–36 features were added between captures, every percentage target diluted and `make integrity-diff` raised **phantom regressions** (`timing_wall_time` −23.3pp, `cache_hits` −13.4pp on 2026-06-10) even though the underlying numerators were flat-or-up.
+
+**The overlay (non-superseding).** The 2026-05-14 anchor **stays canonical** (§3.2 authorizes new baselines only at daily / framework-promotion / pre-research triggers; this is none of those). Instead of moving the anchor, a normalization layer *attunes to the difference*:
+
+- **`make integrity-multi-anchor`** ([`scripts/integrity-multi-anchor.py`](../../scripts/integrity-multi-anchor.py)) reports, per dimension, three views vs the canonical anchor: **RAW %** (dilution-sensitive), **COHORT %** (features present at both anchors — apples-to-apples), and **absolute NUMERATOR**, plus explicit dilution attribution (how many new features carry each metric).
+- The single-sourced classifier `classify_delta()` returns a **verdict**: `REAL_REGRESSION` (cohort Δ<0 OR numerator Δ<0) · `dilution` (raw Δ<0 but cohort Δ≥0 and numerator Δ≥0) · `improved` · `flat`.
+- **`make integrity-diff`** still prints raw deltas vs 2026-05-14 (transparent — hides nothing) but its **regression verdict / `EXIT_ON_REGRESSION`** now consumes `classify_delta`, so CI trips only on `REAL_REGRESSION`; dilution deltas are annotated inline. `scripts/daily-integrity-checkpoint.py::detect_regression()` is likewise dilution-aware (a `%`-drop gates only when the absolute `fully_adopted_post_v6` numerator also fell).
+- **Provenance split.** `make measurement-adoption` reports each dimension as `present (instrumented + derived)`; `make integrity-multi-anchor --instrumented-only` gives the strict T1 view (derived backfills dropped) so a corrective backfill can never masquerade as contemporaneous instrumentation.
+
+**Worked example (2026-06-10):** vs the 2026-05-14 canonical anchor, `cache_hits` raw fell 28.6%→27.9% but cohort rose 28.6%→31.4% with numerator 20→29 → verdict `dilution`, **not** a regression. All four dimensions: zero `REAL_REGRESSION`.
+
+**§2.3 drift-table addendum:**
+
+| Diff signal | Severity | Disposition |
+|---|---|---|
+| A percentage target drops, but `classify_delta` verdict is `dilution` (cohort Δ≥0 ∧ numerator Δ≥0) | LOW / expected | Denominator dilution from corpus growth. Not a regression; record the dilution note. |
+| A percentage/numerator target drops with verdict `REAL_REGRESSION` (cohort Δ<0 ∨ numerator Δ<0) | **HIGH/CRITICAL** | Real adoption loss on the shared cohort. Investigate immediately. |
+
+## 2.7 Unified Telemetry Data-Layer (read-only OLAP)
+
+**Added 2026-06-10.** [`scripts/integrity-data-lake.py`](../../scripts/integrity-data-lake.py) (`make integrity-data-lake`) is the single read-only entry point that **layers ALL telemetry** — state corpus, Mechanism A `gate-coverage.jsonl`, daily/weekly crons, F17 `gate-last-fired.json`, adoption history, anchors, and daily snapshots (local + SSD) — normalizes each to tabular rows, joins on time / feature / gate axes, and emits:
+
+1. **Source inventory** — row counts per source (drift in any count is itself a signal).
+2. **Cross-source reconciliation** — consistency checks that auto-surface drift: e.g. **R1** weekly `distinct_gate_count` vs F17 index vs `gate-coverage.jsonl` (catches the 2026-05/06 *weekly-reports-0-gates-while-index-has-25* anomaly as HIGH); **R3** corpus-growth dilution attribution; **R4** snapshot local-vs-SSD parity; **R5** F17 zero-candidate gates (mis-wire class, cross-ref `GATE_COVERAGE_ZERO`).
+3. **Dilution-normalized adoption** vs the canonical anchor (reuses §2.6 `classify_delta`).
+4. **Forward-decision digest** — calibration ladder + ranked anomalies.
+
+**Engine:** stdlib-first (zero deps). Optional **DuckDB** backend (`--sql`) registers the normalized tables as SQL views — a *local* analytical layer (SQL-over-files, zero data egress). It is deliberately **not** cloud BigQuery: the ledgers are framework-internal and uploading them to GCP would be needless external egress. Read-only / observability — no enforcement, no writes to any source (non-superseding). CI: `make integrity-data-lake EXIT_ON_ANOMALY=1` exits 2 on a HIGH/CRITICAL finding.
 
 ---
 
@@ -403,7 +436,7 @@ This plan focuses on platform-baseline rollback (per scope decision). The three 
 
 ## 5. Open Questions & Future Work
 
-1. ~~**`make integrity-diff` target.**~~ **SHIPPED 2026-05-14** as `make daily-checkpoint` + `.claude/shared/integrity-checkpoint-ledger.jsonl` with auto-detected regression deltas vs prev. The ledger row IS the diff. Remaining gap: a `make integrity-diff <date>` target that compares the live state against an arbitrary historical row (not just the immediately-previous one). Estimated effort: 1h.
+1. ~~**`make integrity-diff` target.**~~ **SHIPPED 2026-05-14** as `make daily-checkpoint` + `.claude/shared/integrity-checkpoint-ledger.jsonl` with auto-detected regression deltas vs prev. The ledger row IS the diff. ~~Remaining gap: a `make integrity-diff <date>` target that compares the live state against an arbitrary historical row.~~ **CLOSED 2026-06-10:** the dilution-normalized multi-anchor comparison (`make integrity-multi-anchor`, §2.6) compares the live state against ALL registered anchors with cohort + numerator views, and `make integrity-data-lake` (§2.7) layers every source into one analysis. Both ship dilution-immune by construction.
 2. **Auto-baseline on regression (partial).** §3.2 trigger (5) — auto-snapshot when a §2.3 HIGH/CRITICAL signal first fires. The daily-checkpoint already writes `integrity-checkpoint-regression.flag` on detected deltas (per §2.4); what remains is *augmenting* that flag write with an immediate second snapshot stamped `post-regression-evidence-...` so the corrupt state is forensically preserved before the next day's overwrite. Estimated effort: 30min.
 3. **Off-SSD verification (not yet automated).** Daily checkpoints live on internal Mac storage + DevSSD. No scheduled check verifies BOTH directories exist + checksums are valid since the last write. Proposed: weekly cron in `framework-status-weekly.yml` that runs `shasum -c` against the 7 most recent daily snapshots in both locations. Surfaces silent corruption.
 4. **Cross-repo baseline scope.** This plan covers FT2 framework state. The fitme-story repo has its own integrity surface (PR-integrity CI + verify-blind-switch). The daily-checkpoint already captures fitme-story's git head context; a future revision should also capture its shared state (any UCC mirror data, the cross-repo gate-coverage stream). Tracked as a v8.x candidate.
