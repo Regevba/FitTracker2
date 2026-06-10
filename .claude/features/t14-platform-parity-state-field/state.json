@@ -6,6 +6,16 @@
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.45,
+      "blast_radius": 0.45,
+      "novelty": 0.3,
+      "verification_difficulty": 0.4
+    },
+    "total": 1.6,
+    "tier_class": "B_medium"
+  },
   "has_ui": false,
   "requires_analytics": false,
   "state_owner": "ft2",
@@ -114,12 +124,14 @@
     {
       "id": "T7",
       "description": "Update fitme-story dev-guide.md mirror + glossary entry",
-      "status": "pending"
+      "status": "complete",
+      "summary": " [reconciled 2026-06-10] fitme-story glossary platforms_tested entry shipped; dev-guide mirror auto-syncs the FT2 source (docs/architecture/dev-guide-v1-to-v7-7.md §5.4 + schema rows + gate catalog), with the v7.9.1 timeline row corrected from \"stub/queued\" to \"shipped\"."
     },
     {
       "id": "T8",
       "description": "Source case study + showcase MDX in fitme-story",
-      "status": "in_progress"
+      "status": "complete",
+      "summary": " [reconciled 2026-06-10] source case study docs/case-studies/t14-platform-parity-state-field-case-study.md + fitme-story showcase content/04-case-studies/48-t14-platform-parity.mdx (order 48, v7.9.1) both shipped on disk."
     },
     {
       "id": "T9",
