@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "garmin-health-connection",
+  "title": "garmin health connection",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-10T17:00:38Z",
+  "updated_at": "2026-06-10T17:00:38Z",
+  "events": [
+    {
+      "timestamp": "2026-06-10T17:00:38Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 Research opened \u2014 Garmin Connect health-data integration (Task 10 split, separate-feature per operator decision)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
