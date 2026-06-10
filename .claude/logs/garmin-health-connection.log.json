@@ -6,13 +6,24 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-10T17:00:38Z",
-  "updated_at": "2026-06-10T17:00:38Z",
+  "updated_at": "2026-06-10T17:13:16Z",
   "events": [
     {
       "timestamp": "2026-06-10T17:00:38Z",
       "event_type": "phase_started",
       "phase": "research",
       "summary": "Phase 0 Research opened \u2014 Garmin Connect health-data integration (Task 10 split, separate-feature per operator decision)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-10T17:13:16Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Research approved \u2192 PRD. Operator decision: Tier 1 (HealthKit relay) only for v1; Tier 2 direct-API deferred (demand-gated). Both Garmin+Fitbit advance together; shared Data-Sources Settings surface + AIInputAdapter contract.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

@@ -3,25 +3,25 @@
   "name": "garmin-health-connection",
   "created": "2026-06-10T17:00:38Z",
   "created_at": "2026-06-10T17:00:38Z",
-  "updated": "2026-06-10T17:09:49Z",
+  "updated": "2026-06-10T17:17:45Z",
   "branch": "feature/garmin-health-connection",
   "state_owner": "ft2",
   "framework_version": "v7.10",
-  "current_phase": "research",
+  "current_phase": "prd",
   "work_type": "feature",
   "work_subtype": "new_feature",
-  "has_ui": null,
-  "requires_analytics": null,
+  "has_ui": true,
+  "requires_analytics": true,
   "phases": {
     "research": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "complete",
+      "approved_at": "2026-06-10T17:13:16Z",
       "sources": []
     },
     "prd": {
-      "status": "pending",
+      "status": "in_progress",
       "approved_at": null,
-      "analytics_spec_complete": false
+      "analytics_spec_complete": true
     },
     "tasks": {
       "status": "pending",
@@ -57,20 +57,35 @@
     },
     "metrics": {
       "primary": {
-        "name": "",
-        "baseline": null,
-        "target": null,
+        "name": "% of Garmin-connected WAU with a non-empty readiness score",
+        "baseline": 0,
+        "target": ">=70% within 7 days of connect",
         "current": null
       },
-      "secondary": [],
-      "guardrails": [],
+      "secondary": [
+        "connect-flow completion rate >=50%",
+        "readiness-score coverage delta for Garmin segment"
+      ],
+      "guardrails": [
+        "crash-free >99.5%",
+        "cold start <2s",
+        "existing HealthKit read path unaffected",
+        "zero-knowledge invariant holds"
+      ],
       "instrumentation_ready": false,
-      "first_review_date": null,
-      "kill_criteria": ""
+      "first_review_date": "2026-06-24",
+      "kill_criteria": "If <20% of users who open Data Sources with a Garmin device complete a connection within 60 days, reassess Tier 1 UX value vs jumping to a Tier-2 demand signal."
     }
   },
   "tasks": [],
-  "transitions": [],
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-10T17:13:16Z",
+      "approved": true
+    }
+  ],
   "sibling_feature": "fitbit-health-connection",
   "parent_backlog": "Task 10 \u2014 Health API connections (Garmin/Whoop/Oura/Samsung/Fitbit)",
   "timing": {
@@ -78,10 +93,17 @@
     "phases": {
       "research": {
         "started_at": "2026-06-10T17:09:49Z",
+        "ended_at": "2026-06-10T17:13:16Z",
+        "duration_minutes": null
+      },
+      "prd": {
+        "started_at": "2026-06-10T17:13:16Z",
         "ended_at": null,
         "duration_minutes": null
       }
     },
     "time_source": "measured"
-  }
+  },
+  "scope_decision": "tier_1_only_v1",
+  "scope_decision_note": "Operator approved Tier 1 (HealthKit relay) only for v1 (2026-06-10). Tier 2 (direct Garmin Connect Health API) deferred to a future demand-gated feature."
 }
