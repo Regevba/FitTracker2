@@ -73,12 +73,28 @@ def has_cache_hits(d: dict) -> bool:
 
 
 def has_cu_v2(d: dict) -> bool:
-    """True if complexity.cu_version is 2 (or "v2")."""
+    """True if the feature carries CU v2 data in EITHER canonical representation.
+
+    Two field shapes coexist in the corpus and the adoption metric must count both,
+    or it systematically undercounts (the `created`/`created_at` bug class — a
+    measurement reading a field that's not where the data is written):
+
+      1. The v7.7+ canonical top-level ``cu_v2`` object — ``{factors, total,
+         tier_class}`` — i.e. the exact structure the ``CU_V2_INVALID`` write-time
+         gate validates. This is where new features write CU v2 data.
+      2. The legacy v6.0-era ``complexity.cu_version == 2`` marker, retained for
+         back-compat with features that predate the top-level object.
+
+    These two sets are nearly disjoint (only a handful of features carry both), so
+    reading only one silently halves real cu_v2 adoption.
+    """
+    cu = d.get("cu_v2")
+    if isinstance(cu, dict) and cu.get("total") is not None:
+        return True
     c = d.get("complexity")
-    if not isinstance(c, dict):
-        return False
-    v = c.get("cu_version")
-    return v in (2, "2", "v2")
+    if isinstance(c, dict) and c.get("cu_version") in (2, "2", "v2"):
+        return True
+    return False
 
 
 def classify_feature(d: dict) -> dict:
