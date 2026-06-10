@@ -129,3 +129,18 @@ def test_miswire_does_not_double_flag_as_stale(tmp_path, monkeypatch):
     findings = _run(tmp_path, gates, monkeypatch)
     miswire = [f for f in findings if "MISWIRED_GATE" in f["message"]]
     assert len(miswire) == 1
+
+
+def test_miswire_not_flagged_when_failure_history_present(tmp_path, monkeypatch):
+    """T13: a 0-candidate gate WITH failure history is a cycle-time code, not mis-wired."""
+    now = datetime.now(timezone.utc)
+    gates = {
+        "ACTIVE_GATE": {"total_candidates": 200, "last_checked_at": _iso(now),
+                        "last_skipped_at": _iso(now)},
+        # 0 coverage but it caught a violation in a snapshot → running, not mis-wired
+        "CYCLE_ONLY_GATE": {"total_candidates": 0, "total_checked": 0, "total_skips": 0,
+                            "last_failed_at": _iso(now - timedelta(days=3))},
+    }
+    findings = _run(tmp_path, gates, monkeypatch)
+    flagged = {f["message"].split("`")[1] for f in findings if "`" in f["message"]}
+    assert "CYCLE_ONLY_GATE" not in flagged
