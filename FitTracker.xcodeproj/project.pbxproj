@@ -67,6 +67,7 @@
 		AI100000000000000000UI04 /* AIFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000UI04 /* AIFeedbackView.swift */; };
 		C5DRPK00000000000000UI04 /* DismissReasonPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DRPK00000000000000FR04 /* DismissReasonPicker.swift */; };
 		AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AM200000000000000000AT01 /* AuthManagerTests.swift */; };
+		SIPK00000000000000PKT01 /* SignInServicePasskeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SIPK00000000000000PKT02 /* SignInServicePasskeyTests.swift */; };
 		AN100000000000000000AT01 /* AnalyticsEventNamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */; };
 		AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200000000000000000AT02 /* AuthPolishV2Tests.swift */; };
 		AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A301 /* ForgotPasswordRequestView.swift */; };
@@ -395,6 +396,7 @@
 		AI200000000000000000UI04 /* AIFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackView.swift; sourceTree = "<group>"; };
 		C5DRPK00000000000000FR04 /* DismissReasonPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissReasonPicker.swift; sourceTree = "<group>"; };
 		AM200000000000000000AT01 /* AuthManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManagerTests.swift; sourceTree = "<group>"; };
+		SIPK00000000000000PKT02 /* SignInServicePasskeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInServicePasskeyTests.swift; sourceTree = "<group>"; };
 		AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEventNamingTests.swift; sourceTree = "<group>"; };
 		AP200000000000000000AT02 /* AuthPolishV2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPolishV2Tests.swift; sourceTree = "<group>"; };
 		AP200002000000000001A301 /* ForgotPasswordRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordRequestView.swift; sourceTree = "<group>"; };
@@ -993,6 +995,7 @@
 				AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */,
 				EC200000000000000000AT01 /* EncryptionServiceTests.swift */,
 				AM200000000000000000AT01 /* AuthManagerTests.swift */,
+				SIPK00000000000000PKT02 /* SignInServicePasskeyTests.swift */,
 				AP200000000000000000AT02 /* AuthPolishV2Tests.swift */,
 				AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */,
 				HK200000000000000000AT01 /* HealthKitServiceTests.swift */,
@@ -1789,6 +1792,7 @@
 				AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */,
 				EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */,
 				AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */,
+				SIPK00000000000000PKT01 /* SignInServicePasskeyTests.swift in Sources */,
 				AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */,
 				AN100000000000000000AT01 /* AnalyticsEventNamingTests.swift in Sources */,
 				HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */,

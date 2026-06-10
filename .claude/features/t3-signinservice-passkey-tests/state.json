@@ -1,0 +1,140 @@
+{
+  "name": "t3-signinservice-passkey-tests",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "b_medium",
+  "current_phase": "complete",
+  "isolation_opt_out": false,
+  "created_at": "2026-06-10T07:24:01Z",
+  "primary_metric": "SignInService (high-risk, previously zero direct tests) gains deterministic device-free unit coverage of its passkey/WebAuthn surface — config logic, not-configured guard/error paths, persisted token-type contract, UserSession Codable round-trip.",
+  "success_metrics": {
+    "primary": "10 SignInServicePasskeyTests covering canShowPasskeyLogin invariants + SessionTokenType raw-value/Codable persistence contract + UserSession passkey Codable round-trip; 10/10 pass on simulator.",
+    "secondary": [
+      "Mirrors AuthManagerTests device-free scope (ASAuthorizationController happy-path device-only, documented)",
+      "Pins the persisted SessionTokenType raw values against silent rename drift"
+    ]
+  },
+  "kill_criteria": [
+    "Tests assert against the ASAuthorizationController UI flow (would be non-deterministic / device-only).",
+    "Tests pin implementation detail rather than the behavioral/persistence contract."
+  ],
+  "kill_criteria_resolution": "Neither fired. Tests cover only the deterministic device-free surface (config props, unconfigured guard/error paths, enum/Codable contracts) — the ASAuthorizationController registration/assertion flow is explicitly out of scope (device-only, documented in the test header like AuthManagerTests documents real-device biometrics). The SessionTokenType raw-value tests pin a PERSISTENCE contract (stored sessions) not an implementation detail.",
+  "dispatch_pattern": "operator-driven (T3 from test-coverage master plan; highest-risk zero-coverage service)",
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "case_study": "docs/case-studies/t3-signinservice-passkey-tests-case-study.md",
+  "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md",
+  "tasks": [
+    {
+      "id": "T1",
+      "status": "complete",
+      "summary": "Scope SignInService passkey surface (config props, guards, enums, UserSession) + AuthManagerTests template"
+    },
+    {
+      "id": "T2",
+      "status": "complete",
+      "summary": "Author SignInServicePasskeyTests.swift (10 env-independent device-free tests; rewrite after first run revealed the test bundle ships a real relying-party ID)"
+    },
+    {
+      "id": "T3",
+      "status": "complete",
+      "summary": "Register in project.pbxproj (FitTrackerTests target, 4 entries)"
+    },
+    {
+      "id": "T4",
+      "status": "complete",
+      "summary": "Build + verify"
+    }
+  ],
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "implement": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "test": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "review": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "merge": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "docs": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      },
+      "complete": {
+        "started_at": "2026-06-10T07:24:01Z",
+        "ended_at": "2026-06-10T07:24:01Z"
+      }
+    },
+    "wall_time_seconds": 1
+  },
+  "phases": {
+    "research": {
+      "status": "complete"
+    },
+    "prd": {
+      "status": "skipped",
+      "note": "b_medium; scope in test-coverage plan T3"
+    },
+    "tasks_phase": {
+      "status": "complete"
+    },
+    "ux_or_integration": {
+      "status": "skipped"
+    },
+    "implement": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:24:01Z",
+      "ended_at": "2026-06-10T07:24:01Z"
+    },
+    "test": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:24:01Z",
+      "ended_at": "2026-06-10T07:24:01Z"
+    },
+    "review": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:24:01Z",
+      "ended_at": "2026-06-10T07:24:01Z"
+    },
+    "merge": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:24:01Z",
+      "ended_at": "2026-06-10T07:24:01Z"
+    },
+    "docs": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:24:01Z",
+      "ended_at": "2026-06-10T07:24:01Z"
+    },
+    "learn": {
+      "status": "skipped"
+    },
+    "complete": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:24:01Z",
+      "ended_at": "2026-06-10T07:24:01Z"
+    }
+  }
+}
