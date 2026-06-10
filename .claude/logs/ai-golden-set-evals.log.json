@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "ai-golden-set-evals",
+  "title": "ai golden set evals",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-10T06:42:24Z",
+  "updated_at": "2026-06-10T06:42:24Z",
+  "events": [
+    {
+      "timestamp": "2026-06-10T06:42:24Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "T10 AI golden-set eval harness shipped \u2014 24 golden cases + parametrized pytest harness against deterministic InsightService; 60 pass/1 skip; negative-control proven",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
