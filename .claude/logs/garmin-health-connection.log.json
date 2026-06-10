@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-10T17:00:38Z",
-  "updated_at": "2026-06-10T17:13:16Z",
+  "updated_at": "2026-06-10T17:28:32Z",
   "events": [
     {
       "timestamp": "2026-06-10T17:00:38Z",
@@ -24,6 +24,17 @@
       "event_type": "phase_transition",
       "phase": "prd",
       "summary": "Research approved \u2192 PRD. Operator decision: Tier 1 (HealthKit relay) only for v1; Tier 2 direct-API deferred (demand-gated). Both Garmin+Fitbit advance together; shared Data-Sources Settings surface + AIInputAdapter contract.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-10T17:28:32Z",
+      "event_type": "phase_transition",
+      "phase": "tasks",
+      "summary": "PRD approved \u2192 Tasks. Garmin carries the SHARED foundation (DataSourcesScreen + AIInputAdapter source-detection protocol) that Fitbit depends on. Shared tasks.md approach.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
