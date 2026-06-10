@@ -1,0 +1,140 @@
+{
+  "name": "t13-last-failed-at-index",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "current_phase": "complete",
+  "isolation_opt_out": false,
+  "created_at": "2026-06-10T07:17:22Z",
+  "primary_metric": "Per-gate last_failed_at materialized in the F17 index from the integrity-snapshot history, so the meta-layer distinguishes 'gate stopped running' (no coverage) from 'gate running + catching violations' (recent failures).",
+  "success_metrics": {
+    "primary": "gate-last-fired.json schema v2 carries last_failed_at / total_failure_snapshots / last_failure_severity per gate (6 cycle-time gates populated from 14 snapshots); GATE_COVERAGE_ZERO mis-wire detector refined to not flag gates with failure history",
+    "secondary": [
+      "F17 producer stays hermetic in tests (snapshots dir derived from ledger path)",
+      "Write-time block limitation documented (failure_history_note)"
+    ]
+  },
+  "kill_criteria": [
+    "last_failed_at conflated with last_fired_at (a gate that ran but never failed shows a stale last_failed) — would mislead the meta-check.",
+    "Snapshot scan slows the index refresh beyond the <1s budget."
+  ],
+  "kill_criteria_resolution": "Neither fired. last_failed_at is strictly the most-recent snapshot ts where the gate code appeared in findings[] (a real violation), distinct from last_fired_at (checked>=1 in coverage). Refresh stays <1s (14 snapshots, ~3.2k coverage rows). Refined the v7.10 mis-wire detector: a 0-candidate gate with failure history is a cycle-time code (running, not mis-wired) — cleared 4 false GATE_COVERAGE_ZERO advisories the index extension would otherwise have produced.",
+  "dispatch_pattern": "operator-driven (T13 from test-coverage master plan; extends F17)",
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "case_study": "docs/case-studies/t13-last-failed-at-index-case-study.md",
+  "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md",
+  "tasks": [
+    {
+      "id": "T1",
+      "status": "complete",
+      "summary": "Scope: failure signal absent from coverage rows; derive from integrity snapshots"
+    },
+    {
+      "id": "T2",
+      "status": "complete",
+      "summary": "Extend refresh-gate-last-fired.py with last_failed_at (schema v2) + ledger-relative snapshots dir"
+    },
+    {
+      "id": "T3",
+      "status": "complete",
+      "summary": "Refine GATE_COVERAGE_ZERO mis-wire detector to skip gates with failure history"
+    },
+    {
+      "id": "T4",
+      "status": "complete",
+      "summary": "Tests: 5 merge-failure-history + mis-wire-vs-failure-history"
+    }
+  ],
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "implement": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "test": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "review": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "merge": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "docs": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      },
+      "complete": {
+        "started_at": "2026-06-10T07:17:22Z",
+        "ended_at": "2026-06-10T07:17:22Z"
+      }
+    },
+    "wall_time_seconds": 1
+  },
+  "phases": {
+    "research": {
+      "status": "complete"
+    },
+    "prd": {
+      "status": "skipped",
+      "note": "framework_feature; scope in test-coverage plan T13"
+    },
+    "tasks_phase": {
+      "status": "complete"
+    },
+    "ux_or_integration": {
+      "status": "skipped"
+    },
+    "implement": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:17:22Z",
+      "ended_at": "2026-06-10T07:17:22Z"
+    },
+    "test": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:17:22Z",
+      "ended_at": "2026-06-10T07:17:22Z"
+    },
+    "review": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:17:22Z",
+      "ended_at": "2026-06-10T07:17:22Z"
+    },
+    "merge": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:17:22Z",
+      "ended_at": "2026-06-10T07:17:22Z"
+    },
+    "docs": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:17:22Z",
+      "ended_at": "2026-06-10T07:17:22Z"
+    },
+    "learn": {
+      "status": "skipped"
+    },
+    "complete": {
+      "status": "complete",
+      "started_at": "2026-06-10T07:17:22Z",
+      "ended_at": "2026-06-10T07:17:22Z"
+    }
+  }
+}
