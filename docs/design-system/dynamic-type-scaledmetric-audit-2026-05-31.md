@@ -60,19 +60,51 @@ Without scanning all 84 individually, the rough categories are:
 - ✓ 84 fixed numeric Image dimensions identified as the real audit target
 - ✓ 4 sub-categories with different remediation strategies (not a blanket sweep)
 
-## Recommended scope for an L353-fixing PR
+## Phase resolution (revised 2026-06-10 — L353 closure)
 
-**Not** a bulk 84-site sweep. Instead a categorized sub-feature PR:
+The original "~40-50 site" Phase 1 estimate was loose. Once the work landed, the
+real count was far smaller, and Phases 3-4 resolved to **documented design
+decisions, not code sweeps**. Phase-by-phase outcome:
 
-1. **Phase 1 (~2h, ~40-50 sites):** SF Symbol point-dimension sweep — add `@ScaledMetric` to icon size constants in the most-touched files (Settings screens, Home cards, NavigationBars). Verify visually with Dynamic Type set to AX5 (largest) in simulator.
+1. **Phase 1 — SHIPPED via PR #557 (4 sites, not ~40-50).** Added `@ScaledMetric`
+   to **4 v2 icon containers** — the genuinely text-adjacent icon dimensions where
+   a fixed point size visibly desynchronizes from scaled text at AX5. The "~40-50"
+   estimate over-counted because most fixed `Image` dimensions are *not*
+   text-adjacent (see Phases 3-4). Operator simulator verification (AX5 Dynamic
+   Type) is the remaining manual half (tracked separately as a ~10-min operator
+   action).
 
-2. **Phase 2 (~1h, ~10-15 sites):** Asset-catalog icon dimensions — same treatment.
+2. **Phase 2 — folded into Phase 1.** The asset-catalog icons that mattered were
+   among the 4 in #557; no separate sweep was warranted at this size.
 
-3. **Phase 3 (~30 min, ~5-10 sites):** Touch-target audit — confirm `>= 44pt` is intentionally non-scaled, document the rationale.
+3. **Phase 3 — Touch-target rationale (RESOLVED: fixed is correct, by design).**
+   The ~5-10 `>= 44pt` touch targets **intentionally do NOT scale** with Dynamic
+   Type, and that is the right call: 44pt is an **Apple HIG accessibility
+   *minimum*** (a floor that must hold for every user regardless of text size),
+   not a text-relative dimension. Applying `@ScaledMetric` to a touch target would
+   make the *minimum* itself grow at large Dynamic Type sizes — harmless when text
+   grows but wrong as a structural floor (it would inflate hit-areas past the
+   layout). The correct pattern is what the codebase already does: a fixed
+   `>= 44pt` frame, with the *content* (icon + label) scaling inside it.
+   **Decision: leave touch targets non-scaled; this section is the documented
+   rationale Phase 3 called for.**
 
-4. **Phase 4 (~1h, ~10-15 sites):** Layout dimension review — case-by-case decisions on which should scale.
+4. **Phase 4 — Layout-dimension review (RESOLVED: structural dims stay fixed).**
+   The ~10-15 layout dimensions (card heights, chart heights, section spacing) are
+   **structural, not text-relative**, and correctly use the fixed design-system
+   tokens (`AppSpacing.*`, `AppSize.*`, `AppLayout.*`) rather than `@ScaledMetric`.
+   Rationale: these dimensions define the *container* geometry; the *text inside*
+   already scales via SwiftUI's automatic `Text` Dynamic Type behavior + the
+   `AppText.*` tokens, so the container holds a stable shape while its contents
+   reflow. The one exception class — a dimension itself derived from a line-height
+   or capping a single line of text — is rare and was handled case-by-case in
+   Phase 1. **Decision: layout/structural dimensions stay on fixed DS tokens; no
+   `@ScaledMetric` retrofit.**
 
-Total estimated effort: **~4-5h of careful work + simulator verification**. Should ship as one feature `dynamic-type-icon-sweep` with PRD documenting the categorization decisions.
+**Net:** L353 closed as **1 small code PR (#557, 4 sites) + 2 documented design
+decisions (Phases 3-4 above)** — not the imagined ~84-site sweep. The audit's
+value was re-scoping a non-problem (text already scales) down to the handful of
+genuinely text-adjacent icons, and recording *why* the rest correctly stay fixed.
 
 ## What this session did NOT do
 
