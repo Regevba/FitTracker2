@@ -1047,6 +1047,10 @@ def check_gate_coverage_zero() -> list[dict]:
             stats.get("total_candidates", 0) == 0
             and stats.get("total_checked", stats.get("total_firings", 0)) == 0
             and stats.get("total_skips", 0) == 0
+            # T13: a gate with failure history is demonstrably running (it caught
+            # a violation recorded in an integrity snapshot) — it's a cycle-time
+            # code that doesn't emit Mechanism A coverage, NOT a mis-wired gate.
+            and stats.get("last_failed_at") is None
         ):
             findings.append({
                 "feature": "—",

@@ -342,3 +342,60 @@ def test_non_int_count_fields_default_to_zero(tmp_path: Path):
     assert entry["total_candidates"] == 1
     assert entry["total_firings"] == 0
     assert entry["total_skips"] == 2
+
+
+# ── T13: failure-history merge from integrity snapshots ───────────────────
+
+def _write_snapshot(snap_dir, ts, findings):
+    import json as _json
+    snap_dir.mkdir(parents=True, exist_ok=True)
+    (snap_dir / f"{ts.replace(':', '-')}.json").write_text(
+        _json.dumps({"timestamp": ts, "findings": findings}))
+
+
+def test_merge_failure_history_sets_last_failed_at(tmp_path):
+    gates = {}
+    snap = tmp_path / "snaps"
+    _write_snapshot(snap, "2026-06-01T00:00:00Z", [{"code": "FOO", "severity": "WARN"}])
+    _write_snapshot(snap, "2026-06-05T00:00:00Z", [{"code": "FOO", "severity": "INCONSISTENT"}])
+    scanned = _mod.merge_failure_history(gates, snap)
+    assert scanned == 2
+    assert gates["FOO"]["last_failed_at"] == "2026-06-05T00:00:00Z"  # most recent
+    assert gates["FOO"]["last_failure_severity"] == "INCONSISTENT"
+    assert gates["FOO"]["total_failure_snapshots"] == 2
+
+
+def test_merge_failure_history_dedups_codes_within_a_snapshot(tmp_path):
+    gates = {}
+    snap = tmp_path / "snaps"
+    # same code twice in one snapshot → counts as ONE failing snapshot
+    _write_snapshot(snap, "2026-06-01T00:00:00Z",
+                    [{"code": "BAR", "severity": "WARN"}, {"code": "BAR", "severity": "WARN"}])
+    _mod.merge_failure_history(gates, snap)
+    assert gates["BAR"]["total_failure_snapshots"] == 1
+
+
+def test_merge_failure_history_creates_entry_for_failure_only_code(tmp_path):
+    # a cycle-time code with no coverage row still appears in the index
+    gates = {}
+    snap = tmp_path / "snaps"
+    _write_snapshot(snap, "2026-06-01T00:00:00Z", [{"code": "CYCLE_ONLY", "severity": "ADVISORY"}])
+    _mod.merge_failure_history(gates, snap)
+    assert "CYCLE_ONLY" in gates
+    assert gates["CYCLE_ONLY"]["last_fired_at"] is None  # never emitted coverage
+    assert gates["CYCLE_ONLY"]["last_failed_at"] == "2026-06-01T00:00:00Z"
+
+
+def test_merge_failure_history_missing_dir_is_noop(tmp_path):
+    gates = {}
+    assert _mod.merge_failure_history(gates, tmp_path / "does-not-exist") == 0
+    assert gates == {}
+
+
+def test_merge_failure_history_malformed_snapshot_skipped(tmp_path):
+    gates = {}
+    snap = tmp_path / "snaps"; snap.mkdir()
+    (snap / "bad.json").write_text("{not json")
+    _write_snapshot(snap, "2026-06-01T00:00:00Z", [{"code": "OK", "severity": "WARN"}])
+    scanned = _mod.merge_failure_history(gates, snap)
+    assert scanned == 1 and "OK" in gates  # bad one skipped, good one counted
