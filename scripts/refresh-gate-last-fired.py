@@ -111,7 +111,12 @@ def refresh_index(ledger: Path, *, now_iso: str | None = None) -> dict[str, Any]
                 continue
 
             gate = row.get("gate")
-            ts = row.get("timestamp")
+            # Most Mechanism A rows use `timestamp`; some coverage-emitting hook
+            # events (e.g. the W9 auto-isolation hook, `w9.auto_isolate`) use the
+            # shorter `ts` field. Accept both so those rows are indexed rather than
+            # miscounted as malformed (they share the candidates/checked/skipped
+            # schema the aggregate needs).
+            ts = row.get("timestamp") or row.get("ts")
             if not isinstance(gate, str) or not isinstance(ts, str):
                 rows_malformed += 1
                 continue
