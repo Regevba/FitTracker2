@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "t13-last-failed-at-index",
+  "title": "t13 last failed at index",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-10T07:18:20Z",
+  "updated_at": "2026-06-10T07:18:20Z",
+  "events": [
+    {
+      "timestamp": "2026-06-10T07:18:20Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "T13 last_failed_at index extension shipped \u2014 schema v2 + GATE_COVERAGE_ZERO mis-wire refinement; 27 tests pass",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
