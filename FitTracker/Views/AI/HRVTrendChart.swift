@@ -73,7 +73,7 @@ struct HRVTrendChart: View {
             EmptyView()
         }
         .chart(baselineRule: baseline, floorRule: floor)
-        .frame(height: 160)
+        .frame(height: AppLayout.chartHeight)
         .padding(.vertical, AppSpacing.xSmall)
         .accessibilityLabel("7-day HRV trend chart")
         .accessibilityValue("Baseline \(Int(baseline)). Floor \(Int(floor)). \(validSampleCount) of \(dailySamples.count) readings available.")
