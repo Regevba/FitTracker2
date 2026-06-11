@@ -178,6 +178,18 @@ enum AnalyticsEvent {
     /// User initiates destructive data action
     static let settingsDataDeleted      = "settings_data_deleted"
 
+    // ── Data Sources Events (garmin-health-connection / fitbit, Tier 1) ──
+    /// Data Sources screen shown
+    static let settingsDataSourcesViewed          = "settings_data_sources_viewed"
+    /// A source's data was found in Apple Health (source dimension)
+    static let settingsDataSourceDetected         = "settings_data_source_detected"
+    /// User opened a source's guided-connection flow
+    static let settingsDataSourceConnectStarted   = "settings_data_source_connect_started"
+    /// A source's data was first detected after a connect flow
+    static let settingsDataSourceConnectCompleted = "settings_data_source_connect_completed"
+    /// A source is selected but a readiness signal is absent
+    static let settingsDataSourceEmptyStateShown  = "settings_data_source_empty_state_shown"
+
     // ── Training Events (custom) ─────────────────────────────
 
     /// User views the active training session screen
@@ -442,7 +454,12 @@ enum AnalyticsParam {
 
     // Recovery parameters
     static let metricType        = "metric_type"      // weight/hrv/rhr/sleep/body_fat
-    static let source            = "source"           // manual/healthkit
+    static let source            = "source"           // manual/healthkit/garmin/fitbit
+
+    // Data Sources parameters (garmin-health-connection / fitbit, Tier 1)
+    static let signals           = "signals"          // comma-sep readiness signals detected (hrv,rhr,sleep)
+    static let missing           = "missing"          // comma-sep readiness signals absent
+    static let timeToDetectS      = "time_to_detect_s" // seconds from connect-flow open to detection
 
     // Notification Platform parameters (push-notifications-v2)
     static let triggerContext    = "trigger_context"  // post_workout/settings — for notification_priming_shown

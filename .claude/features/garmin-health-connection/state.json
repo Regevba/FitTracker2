@@ -3,11 +3,11 @@
   "name": "garmin-health-connection",
   "created": "2026-06-10T17:00:38Z",
   "created_at": "2026-06-10T17:00:38Z",
-  "updated": "2026-06-11T16:12:55Z",
+  "updated": "2026-06-11T16:40:17Z",
   "branch": "feature/garmin-health-connection",
   "state_owner": "ft2",
   "framework_version": "v7.10",
-  "current_phase": "ux_or_integration",
+  "current_phase": "implementation",
   "work_type": "feature",
   "work_subtype": "new_feature",
   "has_ui": true,
@@ -28,7 +28,7 @@
       "count": 10
     },
     "ux_or_integration": {
-      "status": "in_progress",
+      "status": "complete",
       "type": "ux",
       "preflight_passed": true,
       "spec": ".claude/features/garmin-health-connection/ux-spec.md",
@@ -36,7 +36,7 @@
       "placement_decision": "Data Sources = row under existing HealthDevicesSettingsScreen -> dedicated DataSourcesScreen (no new top-level category)"
     },
     "implementation": {
-      "status": "pending",
+      "status": "in_progress",
       "commits": []
     },
     "testing": {
@@ -85,35 +85,35 @@
       "id": "T1",
       "desc": "DataSourcesScreen scaffold (shared multi-source Settings v2)",
       "complexity": "heavyweight",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
       "id": "T2",
       "desc": "AIInputAdapter source-presence protocol",
       "complexity": "standard",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
       "id": "T3",
       "desc": "HealthKitSourceProbe impl + testable shim",
       "complexity": "standard",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
       "id": "T4",
       "desc": "GarminAdapter (presence/attribution, Tier-2 seam)",
       "complexity": "standard",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
       "id": "T5",
       "desc": "Garmin guided-connection flow + empty-states",
       "complexity": "standard",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
@@ -127,21 +127,21 @@
       "id": "T7",
       "desc": "Wire 5 settings_data_source_* analytics events",
       "complexity": "standard",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
       "id": "T8",
       "desc": "Analytics taxonomy rows registration",
       "complexity": "lightweight",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
       "id": "T9",
       "desc": "Unit tests (probe + GarminAdapter, device-free)",
       "complexity": "standard",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
@@ -170,6 +170,12 @@
       "to": "ux_or_integration",
       "at": "2026-06-11T16:12:55Z",
       "approved": true
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "at": "2026-06-11T16:40:17Z",
+      "approved": true
     }
   ],
   "sibling_feature": "fitbit-health-connection",
@@ -194,6 +200,11 @@
       },
       "ux_or_integration": {
         "started_at": "2026-06-11T16:12:55Z",
+        "ended_at": "2026-06-11T16:40:17Z",
+        "duration_minutes": null
+      },
+      "implementation": {
+        "started_at": "2026-06-11T16:40:17Z",
         "ended_at": null,
         "duration_minutes": null
       }
@@ -208,5 +219,6 @@
     "backend": false,
     "ai": false
   },
-  "platforms_tested_provenance": "authored"
+  "platforms_tested_provenance": "authored",
+  "implementation_note": "Offline-verified: 6 new files swiftc -parse clean; ui-audit P0=0 + DataSourcesScreen 0 findings. Full xcodebuild NOT runnable locally (SPM binary artifacts unresolved + offline) \u2014 CI enforces build+test. T9 tests written (device-free), CI-verification pending."
 }
