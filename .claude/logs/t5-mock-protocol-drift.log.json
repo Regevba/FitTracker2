@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "t5-mock-protocol-drift",
+  "title": "t5 mock protocol drift",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-10T15:00:32Z",
+  "updated_at": "2026-06-10T15:00:32Z",
+  "events": [
+    {
+      "timestamp": "2026-06-10T15:00:32Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "T5 mock-protocol drift shipped \u2014 central conformance registry (6 protocol anchors + 2 shareable-mock bindings); build-for-testing green; caught its own incomplete EmailAuthProviding anchor",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
