@@ -1,9 +1,14 @@
 {
   "feature": "adaptive-intelligence-next-pass",
-  "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform — it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
+  "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform \u2014 it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
   "work_type": "feature",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "case_study_path": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
   "case_study": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
@@ -27,10 +32,10 @@
   },
   "backlog_source": "docs/product/backlog.md Planned RICE row 4.5 + 2026-05-31 tier carryover plan D1",
   "dependencies_met": {
-    "C5_ai_user_feedback_loop": "in flight 2026-06-01 PR #572 — provides RecommendationMemory env-object + AIOrchestrator reinforcement-loop block + 3 new home_ai_feedback_* analytics events. D1 builds on top, NOT around.",
+    "C5_ai_user_feedback_loop": "in flight 2026-06-01 PR #572 \u2014 provides RecommendationMemory env-object + AIOrchestrator reinforcement-loop block + 3 new home_ai_feedback_* analytics events. D1 builds on top, NOT around.",
     "AIOrchestrator_pipeline": "shipped (FitTracker/AI/AIOrchestrator.swift)",
     "RecommendationMemory_storage": "shipped 2026-04-10 + extended in C5",
-    "HADF_Phase_2_clustering": "shipped 2026-05-01 → k=5 clusters, silhouette 0.5566; cohort-level fingerprinting infra in place"
+    "HADF_Phase_2_clustering": "shipped 2026-05-01 \u2192 k=5 clusters, silhouette 0.5566; cohort-level fingerprinting infra in place"
   },
   "dependencies_gated_on": {
     "C5_reaches_implementation_complete": "PR #572 must merge OR reach phases.implementation.ended_at before D1 PRD authoring (D1 references C5's APIs)",
@@ -112,7 +117,7 @@
     },
     {
       "id": "T8",
-      "title": "Test suite — 4 new test files, ~12 tests, ≥90% coverage on new files",
+      "title": "Test suite \u2014 4 new test files, ~12 tests, \u226590% coverage on new files",
       "file": "FitTrackerTests/{AnalyticsAdaptiveIntelligenceEvents,RecommendationMemoryD1Fields,AcceptanceTrendDetector,AIOrchestratorTrendUnsuppress}Tests.swift",
       "type": "new",
       "loc_est": 280,
@@ -121,7 +126,7 @@
     },
     {
       "id": "T9",
-      "title": "Final verify-local + case study + state.json → testing + backlog RICE 4.5 strike",
+      "title": "Final verify-local + case study + state.json \u2192 testing + backlog RICE 4.5 strike",
       "file": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md + state.json + backlog.md",
       "type": "new+modify",
       "loc_est": 170,
@@ -167,7 +172,7 @@
       "started_at": "2026-06-02T22:00:00Z",
       "ended_at": "2026-06-02T18:33:12Z",
       "approved_by": "operator",
-      "approval_signal": "(implicit — operator merged PR #576)"
+      "approval_signal": "(implicit \u2014 operator merged PR #576)"
     },
     "review": {
       "started_at": "2026-06-02T18:33:00Z",
@@ -188,7 +193,7 @@
       "started_at": "2026-06-02T18:33:12Z",
       "ended_at": "2026-06-02T18:35:00Z",
       "approved_by": "operator",
-      "approval_signal": "(post-merge closure batch — case study + backlog strike already shipped in PR #576 T9)"
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike already shipped in PR #576 T9)"
     },
     "complete": {
       "started_at": "2026-06-02T18:35:00Z",
@@ -235,14 +240,15 @@
         "started_at": "2026-06-02T18:35:00Z",
         "ended_at": "2026-06-02T18:35:00Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-dirty-timestamps"
   },
   "transitions": [
     {
       "from": null,
       "to": "research",
       "at": "2026-06-01T20:15:00Z",
-      "reason": "D1 from 2026-05-31 tier carryover plan (RICE 4.5, research-heavy 5-7d, pairs with C5). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only — D1 has 4 open candidate sub-features requiring decision before PRD authoring."
+      "reason": "D1 from 2026-05-31 tier carryover plan (RICE 4.5, research-heavy 5-7d, pairs with C5). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only \u2014 D1 has 4 open candidate sub-features requiring decision before PRD authoring."
     },
     {
       "from": "research",
@@ -254,7 +260,7 @@
       "from": "prd",
       "to": "tasks_phase",
       "at": "2026-06-02T20:40:00Z",
-      "reason": "Phase 1 PRD approved (operator: 'continue d1'). Phase 2 Tasks at .claude/features/adaptive-intelligence-next-pass/tasks.md — 9 discrete tasks T1-T9 with dependency graph, LoC estimates totaling ~835 (T1 analytics 70 + T2 memory 120 + T3+T4 detector+orchestrator 130 + T5+T6 detail screen+routing 195 + T7+T8 pbxproj+tests 320 + T9 case study 170). 6-commit Phase 4 landing order matching C3/C5/C6 single-session pattern. Out-of-scope guards (3) explicit. Estimated wall time ~3.5h. C5 dependency satisfied — RecommendationMemory + AIOrchestrator already on main."
+      "reason": "Phase 1 PRD approved (operator: 'continue d1'). Phase 2 Tasks at .claude/features/adaptive-intelligence-next-pass/tasks.md \u2014 9 discrete tasks T1-T9 with dependency graph, LoC estimates totaling ~835 (T1 analytics 70 + T2 memory 120 + T3+T4 detector+orchestrator 130 + T5+T6 detail screen+routing 195 + T7+T8 pbxproj+tests 320 + T9 case study 170). 6-commit Phase 4 landing order matching C3/C5/C6 single-session pattern. Out-of-scope guards (3) explicit. Estimated wall time ~3.5h. C5 dependency satisfied \u2014 RecommendationMemory + AIOrchestrator already on main."
     },
     {
       "from": "tasks_phase",

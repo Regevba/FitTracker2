@@ -4,7 +4,12 @@
   "framework_version": "v7.8.3",
   "work_type": "Feature",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "isolation_opt_out": false,
   "created_at": "2026-05-12T07:22:43Z",
@@ -22,11 +27,12 @@
         "started_at": "2026-06-05T03:55:00Z",
         "ended_at": "2026-06-05T03:55:00Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "primary_metric": "silhouette score at k=5 across all 11 endpoints (replicates Phase 2 baseline)",
   "success_metrics": [
-    "Sub-exp 1: silhouette ≥ 0.5 with cluster count ≥ 3 across 9 cloud endpoints",
+    "Sub-exp 1: silhouette \u2265 0.5 with cluster count \u2265 3 across 9 cloud endpoints",
     "Sub-exp 2: Ollama distribution KS-distinguishable from cloud endpoints (p < 0.01)",
     "Sub-exp 3: Bedrock haiku-4-5 fingerprint distinguishable from Anthropic-direct haiku-4-5 (signature delta > Sub-exp 1 within-provider variance)"
   ],
@@ -85,22 +91,22 @@
     583
   ],
   "related_prs_notes": {
-    "506": "chore — Sub-exp 2 prereg pre-ceremony fill-in (B14.2 prep, awaiting ceremony lock ~2026-05-28+)",
-    "507": "chore — Sub-exp 3 prereg pre-ceremony fill-in (B15.2 prep, awaiting ceremony lock ~2026-06-01+, double-gated on Sub-exp 1+2 PASS)"
+    "506": "chore \u2014 Sub-exp 2 prereg pre-ceremony fill-in (B14.2 prep, awaiting ceremony lock ~2026-05-28+)",
+    "507": "chore \u2014 Sub-exp 3 prereg pre-ceremony fill-in (B15.2 prep, awaiting ceremony lock ~2026-06-01+, double-gated on Sub-exp 1+2 PASS)"
   },
   "tasks": [
     {
       "id": "A",
-      "title": "Block A — Soak window scaffolding (state.json + harness + preflight + verdict scripts + launchd templates + 6 unit test suites + go/no-go ceremony runbook)",
+      "title": "Block A \u2014 Soak window scaffolding (state.json + harness + preflight + verdict scripts + launchd templates + 6 unit test suites + go/no-go ceremony runbook)",
       "status": "done",
       "effort_days": 4,
       "completed_at": "2026-05-12T14:08:21Z",
       "shipped_via_pr": 316,
-      "scope_note": "A0–A12 (13 sub-tasks, summarized 'Block A — 12 tasks' in PR title) shipped in one PR. Includes wrapper preflight, anchor-drift detection, cost cron, heartbeat audit, verdict script, launchd plist templates, go/no-go ceremony doc, 6 Python test suites + 1 bash test suite all passing. See docs/superpowers/plans/2026-05-12-hadf-phase2bis-replication.md §'BLOCK A — Soak Window Scaffolding' for the sub-task breakdown."
+      "scope_note": "A0\u2013A12 (13 sub-tasks, summarized 'Block A \u2014 12 tasks' in PR title) shipped in one PR. Includes wrapper preflight, anchor-drift detection, cost cron, heartbeat audit, verdict script, launchd plist templates, go/no-go ceremony doc, 6 Python test suites + 1 bash test suite all passing. See docs/superpowers/plans/2026-05-12-hadf-phase2bis-replication.md \u00a7'BLOCK A \u2014 Soak Window Scaffolding' for the sub-task breakdown."
     },
     {
       "id": "B13",
-      "title": "Block B Sub-exp 1 — Cloud fingerprinting (4-endpoint narrowed matrix per launch_matrix_narrowing 2026-05-25; 14 fires across ~2.8 days)",
+      "title": "Block B Sub-exp 1 \u2014 Cloud fingerprinting (4-endpoint narrowed matrix per launch_matrix_narrowing 2026-05-25; 14 fires across ~2.8 days)",
       "status": "done",
       "effort_days": 4,
       "started_at": "2026-05-25T16:36:44Z",
@@ -164,38 +170,38 @@
         ],
         "verdict_script": "scripts/hadf-phase2bis-verdict.py --raw-dir /Volumes/DevSSD/hadf-sub-exp-1a-backups --subexp subexp1",
         "raw_data_backup_dir": "/Volumes/DevSSD/hadf-sub-exp-1a-backups/",
-        "case_study_section": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md §3.A",
+        "case_study_section": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md \u00a73.A",
         "disarm_command": "launchctl bootout gui/$UID ~/Library/LaunchAgents/com.fitme.hadf-phase2bis-subexp1.plist"
       },
       "sub_tasks": [
-        "B13.1 Operator runs go/no-go ceremony for Sub-exp 1 — done 2026-05-25",
-        "B13.2 Lock prereg-subexp1.json — done 2026-05-25 (git tag prereg-phase2bis-subexp1-locked-2026-05-25)",
-        "B13.3 launchctl bootstrap subexp1 plist — done 2026-05-25",
-        "B13.4 Wait for collection — 14 fires across 2026-05-25T16:36 → 2026-05-28T11:11Z (~2.8 days; 1 fire skipped vs nominal 15 because verdict landed PASS at 4.3× yield threshold post-fire-14)",
-        "B13.5 Run verdict script — done; final yield 2600, silhouette 0.7003 at k=5, 5 clusters",
-        "B13.6 Sub-exp 1A verdict written into §3.A of synthesis case study (operator's chosen flow vs standalone per-sub-exp doc)",
-        "B13.7 make snapshot-phase PHASE=subexp1-closure FEATURE=hadf-phase2bis-replication — done this-PR",
-        "B13.8 Commit + PR + merge — this-PR"
+        "B13.1 Operator runs go/no-go ceremony for Sub-exp 1 \u2014 done 2026-05-25",
+        "B13.2 Lock prereg-subexp1.json \u2014 done 2026-05-25 (git tag prereg-phase2bis-subexp1-locked-2026-05-25)",
+        "B13.3 launchctl bootstrap subexp1 plist \u2014 done 2026-05-25",
+        "B13.4 Wait for collection \u2014 14 fires across 2026-05-25T16:36 \u2192 2026-05-28T11:11Z (~2.8 days; 1 fire skipped vs nominal 15 because verdict landed PASS at 4.3\u00d7 yield threshold post-fire-14)",
+        "B13.5 Run verdict script \u2014 done; final yield 2600, silhouette 0.7003 at k=5, 5 clusters",
+        "B13.6 Sub-exp 1A verdict written into \u00a73.A of synthesis case study (operator's chosen flow vs standalone per-sub-exp doc)",
+        "B13.7 make snapshot-phase PHASE=subexp1-closure FEATURE=hadf-phase2bis-replication \u2014 done this-PR",
+        "B13.8 Commit + PR + merge \u2014 this-PR"
       ],
       "external_audit": "audit-1-v7-9-promotion (2026-05-22, scope: Sub-exp 1 prereg + smoke-fire data quality)",
-      "subexp1b_status": "queued — gated on (a) operator API-key acquisition for vercel-ai-gateway/mistral/xai, (b) reasoning-model TTFT decomposition methodology for gemini-2.5-flash/pro; not in scope of B13"
+      "subexp1b_status": "queued \u2014 gated on (a) operator API-key acquisition for vercel-ai-gateway/mistral/xai, (b) reasoning-model TTFT decomposition methodology for gemini-2.5-flash/pro; not in scope of B13"
     },
     {
       "id": "B14",
-      "title": "Block B Sub-exp 2 — Ollama local fingerprinting (1 endpoint = llama3.2:3b on M2, KS-distinguishability check vs cloud anchors per spec §1 RQ2)",
+      "title": "Block B Sub-exp 2 \u2014 Ollama local fingerprinting (1 endpoint = llama3.2:3b on M2, KS-distinguishability check vs cloud anchors per spec \u00a71 RQ2)",
       "status": "done",
       "effort_days": 4,
       "blocker_resolved_at": "2026-05-28T13:30:00Z (B13 verdict PASS)",
-      "scheduled_start": "2026-05-30T22:00:00Z (Sat night Israel time = Sun 01:00 IDT; first fire aligns to standard 22:00 UTC slot per spec §4)",
-      "scheduled_end": "~2026-06-02T22:00Z (3 days × 5 fires/day, Day-3 final fire 22:00 UTC Tue)",
-      "yield_target_reconciliation": "Prereg expected_yield_threshold = 375 (per spec §2 Sub-exp 2 nominal); kill_criteria n_valid < 200 (consistent with expected 375; legacy 600 threshold was Sub-exp 1 holdover, reconciled per operator decision 2026-05-28)",
+      "scheduled_start": "2026-05-30T22:00:00Z (Sat night Israel time = Sun 01:00 IDT; first fire aligns to standard 22:00 UTC slot per spec \u00a74)",
+      "scheduled_end": "~2026-06-02T22:00Z (3 days \u00d7 5 fires/day, Day-3 final fire 22:00 UTC Tue)",
+      "yield_target_reconciliation": "Prereg expected_yield_threshold = 375 (per spec \u00a72 Sub-exp 2 nominal); kill_criteria n_valid < 200 (consistent with expected 375; legacy 600 threshold was Sub-exp 1 holdover, reconciled per operator decision 2026-05-28)",
       "sub_tasks": [
-        "B14.1 Operator runs go/no-go ceremony for Sub-exp 2 — Saturday 2026-05-30 evening IDT (pre-arming)",
+        "B14.1 Operator runs go/no-go ceremony for Sub-exp 2 \u2014 Saturday 2026-05-30 evening IDT (pre-arming)",
         "B14.2 Lock prereg-subexp2.json (filled in this-PR; ceremony locks + signed tag at B14.1)",
-        "B14.3 launchctl bootstrap subexp2 plist — Saturday 2026-05-30 evening IDT (post-ceremony)",
-        "B14.4 Wait 3 days for collection (5 fires/day × 3 days × 1 endpoint × 50 calls = 750 dispatched, ~375 valid expected)",
+        "B14.3 launchctl bootstrap subexp2 plist \u2014 Saturday 2026-05-30 evening IDT (post-ceremony)",
+        "B14.4 Wait 3 days for collection (5 fires/day \u00d7 3 days \u00d7 1 endpoint \u00d7 50 calls = 750 dispatched, ~375 valid expected)",
         "B14.5 Run verdict script (KS-test vs cloud anchors + yield check)",
-        "B14.6 Populate §3.B of synthesis case study",
+        "B14.6 Populate \u00a73.B of synthesis case study",
         "B14.7 make snapshot-phase",
         "B14.8 Commit + PR + merge"
       ],
@@ -250,24 +256,24 @@
         "cost_usd_actual": 0.0,
         "verdict_artifact": ".claude/shared/hadf/phase2bis-subexp2-verdict.json",
         "early_close_note": "Closed 2026-06-02 after 18 fires (Day-3 22:00 final fire skipped); 800 valid = 2.1x the 375 nominal expectation, 4x the 200 kill floor.",
-        "remaining_close_subtasks": "B14.6 (synthesis case study §3.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 = Bedrock access)"
+        "remaining_close_subtasks": "B14.6 (synthesis case study \u00a73.B) + B14.7 (snapshot) + B14.8 (PR) deferred to Block C synthesis (gated on B15 Sub-exp 3 = Bedrock access)"
       }
     },
     {
       "id": "B15",
-      "title": "Block B Sub-exp 3 — Bedrock haiku-4-5 vs Anthropic-direct haiku-4-5 (1 endpoint each, fingerprint delta check)",
+      "title": "Block B Sub-exp 3 \u2014 Bedrock haiku-4-5 vs Anthropic-direct haiku-4-5 (1 endpoint each, fingerprint delta check)",
       "status": "done",
       "effort_days": 5,
       "blocker": "B14 verdict = PASS",
       "scheduled_start": "~2026-05-31 (gated on Sub-exp 2 PASS)",
       "sub_tasks": [
-        "B15.1–B15.8 same as B13 with subexp3 substitutions",
+        "B15.1\u2013B15.8 same as B13 with subexp3 substitutions",
         "B15.9 Run anchor-drift check vs Sub-exp 1 anchors (T2-E)"
       ]
     },
     {
       "id": "C",
-      "title": "Block C — Synthesis + closure (cross-sub-exp case study + fitme-story showcase slot 30 + state.json complete + final snapshot)",
+      "title": "Block C \u2014 Synthesis + closure (cross-sub-exp case study + fitme-story showcase slot 30 + state.json complete + final snapshot)",
       "status": "done",
       "effort_days": 3,
       "blocker": "B15 complete",
@@ -277,7 +283,7 @@
         "C17 fitme-story showcase MDX (slot 30)",
         "C18 state.json closure (current_phase=complete; passes FEATURE_CLOSURE_COMPLETENESS)",
         "C19 Final make snapshot-phase",
-        "C20 Linear FIT-71 → Done"
+        "C20 Linear FIT-71 \u2192 Done"
       ],
       "related_prs": [
         533,

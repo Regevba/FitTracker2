@@ -1,6 +1,6 @@
 {
   "feature": "hadf-phase2-cloud-fingerprinting",
-  "display_name": "HADF Phase 2 — Cloud Fingerprinting Measurement",
+  "display_name": "HADF Phase 2 \u2014 Cloud Fingerprinting Measurement",
   "case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/22b-hadf-phase2-cloud-fingerprinting.mdx",
   "case_study_type": "measurement_study",
@@ -17,17 +17,22 @@
     "shared_writes": []
   },
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "status": "complete",
   "created_at": "2026-04-29T00:00:00Z",
   "branch": "feature/hadf-phase2-fingerprint",
   "isolation_opt_out": true,
-  "isolation_opt_out_reason": "Retroactive feature dir creation 2026-05-23 closing D-AUDIT-8 from comprehensive PR↔docs sync audit. Feature work shipped 2026-04-29 → 2026-05-08 (campaign ran 2026-04-30 → 2026-05-01 IDT; case study published in PR #170 on 2026-05-02; final scripts + summary landed in PR #264 on 2026-05-08). The campaign branches (feature/hadf-phase2-fingerprint + chore/hadf-phase2-progress-snapshot) and the dedicated worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/ are documented in the case study Methodology Notes; this state.json is a retroactive ledger entry, not a new working tree.",
+  "isolation_opt_out_reason": "Retroactive feature dir creation 2026-05-23 closing D-AUDIT-8 from comprehensive PR\u2194docs sync audit. Feature work shipped 2026-04-29 \u2192 2026-05-08 (campaign ran 2026-04-30 \u2192 2026-05-01 IDT; case study published in PR #170 on 2026-05-02; final scripts + summary landed in PR #264 on 2026-05-08). The campaign branches (feature/hadf-phase2-fingerprint + chore/hadf-phase2-progress-snapshot) and the dedicated worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/ are documented in the case study Methodology Notes; this state.json is a retroactive ledger entry, not a new working tree.",
   "timing": {
     "time_source": "measured-incomplete",
     "total_wall_time_minutes": null,
-    "total_wall_time_note": "Campaign wall time spans 2026-04-29 (pre-registration authored) → 2026-05-01 22:43 IDT (campaign closed by user direction) → 2026-05-08 (final summary artifact landed in main as squash a4b357f via PR #264). Pre-registration immutable; raw data collected over ~2 calendar days (early closure documented in case study Methodology Notes). Wall-time instrumentation not captured at runtime — state.json created retroactively 2026-05-23.",
+    "total_wall_time_note": "Campaign wall time spans 2026-04-29 (pre-registration authored) \u2192 2026-05-01 22:43 IDT (campaign closed by user direction) \u2192 2026-05-08 (final summary artifact landed in main as squash a4b357f via PR #264). Pre-registration immutable; raw data collected over ~2 calendar days (early closure documented in case study Methodology Notes). Wall-time instrumentation not captured at runtime \u2014 state.json created retroactively 2026-05-23.",
     "session_start": "2026-04-29T00:00:00Z",
     "session_end": "2026-05-08T20:29:09Z",
     "phases": {
@@ -43,28 +48,28 @@
         "ended_at": null,
         "duration_minutes": 0,
         "paused_minutes": 0,
-        "notes": "N/A — measurement study, no PRD; success/abort criteria pre-registered instead."
+        "notes": "N/A \u2014 measurement study, no PRD; success/abort criteria pre-registered instead."
       },
       "tasks": {
         "started_at": null,
         "ended_at": null,
         "duration_minutes": 0,
         "paused_minutes": 0,
-        "notes": "N/A — pre-registration defines the experiment, not a task list."
+        "notes": "N/A \u2014 pre-registration defines the experiment, not a task list."
       },
       "ux_or_integration": {
         "started_at": null,
         "ended_at": null,
         "duration_minutes": 0,
         "paused_minutes": 0,
-        "notes": "N/A — no UI."
+        "notes": "N/A \u2014 no UI."
       },
       "implementation": {
         "started_at": "2026-04-29T12:00:00Z",
         "ended_at": "2026-05-01T19:43:00Z",
         "duration_minutes": null,
         "paused_minutes": 0,
-        "notes": "Campaign collection 2026-04-30 07:00 IDT → 2026-05-01 22:43 IDT. 11 scheduled+manual fires. 700 valid records (locked-700-fires1to7.jsonl) + 200 contaminated records segregated (fire 8 broken venv + fire 9 missing env keys). Mid-campaign incidents documented in case study Methodology Notes §Mid-Campaign Incident Disclosure."
+        "notes": "Campaign collection 2026-04-30 07:00 IDT \u2192 2026-05-01 22:43 IDT. 11 scheduled+manual fires. 700 valid records (locked-700-fires1to7.jsonl) + 200 contaminated records segregated (fire 8 broken venv + fire 9 missing env keys). Mid-campaign incidents documented in case study Methodology Notes \u00a7Mid-Campaign Incident Disclosure."
       },
       "testing": {
         "started_at": "2026-05-01T19:43:00Z",
@@ -99,13 +104,14 @@
         "ended_at": "2026-05-23T00:00:00Z",
         "duration_minutes": 0,
         "paused_minutes": 0,
-        "notes": "Retroactive transition timestamp — D-AUDIT-8 audit-close ledger entry. The feature shipped 2026-04-29 → 2026-05-08; this 'complete' phase entry exists to satisfy PHASE_TRANSITION_NO_TIMING gate on the retroactive state.json creation commit."
+        "notes": "Retroactive transition timestamp \u2014 D-AUDIT-8 audit-close ledger entry. The feature shipped 2026-04-29 \u2192 2026-05-08; this 'complete' phase entry exists to satisfy PHASE_TRANSITION_NO_TIMING gate on the retroactive state.json creation commit."
       }
     },
     "parallel_context": {
       "concurrent_features": 0,
       "stress_test": false
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "complexity": {
     "cu_version": 2,
@@ -140,7 +146,7 @@
       "shipped_in_commit": "61964d3",
       "pr_number": null,
       "related_prs": [],
-      "note": "700 valid records (350 openai + 350 anthropic) collected 2026-04-30 → 2026-05-01 IDT. Mid-campaign isolation pivot (5c096bc) — wrapper made portable; switched to dedicated worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/. Two contaminated batches segregated (fires 8+9). Campaign closed by user direction 2026-05-01 22:43 IDT after locked-700 reached."
+      "note": "700 valid records (350 openai + 350 anthropic) collected 2026-04-30 \u2192 2026-05-01 IDT. Mid-campaign isolation pivot (5c096bc) \u2014 wrapper made portable; switched to dedicated worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/. Two contaminated batches segregated (fires 8+9). Campaign closed by user direction 2026-05-01 22:43 IDT after locked-700 reached."
     },
     {
       "id": "T3",
@@ -149,7 +155,9 @@
       "completed_at": "2026-05-02T08:36:16Z",
       "shipped_in_commit": "a4b357f",
       "pr_number": 170,
-      "related_prs": [170],
+      "related_prs": [
+        170
+      ],
       "note": "Analyzer verdict: silhouette=0.5566 at best_k=5; clusters_found=true; path_b_recommendation=green-lit. Case study published via PR #170 alongside Tracks 3/4 deep research notes. None of the 3 pre-registered abort conditions fired."
     },
     {
@@ -159,7 +167,10 @@
       "completed_at": "2026-05-09T03:00:00Z",
       "shipped_in_commit": "a4b357f",
       "pr_number": 264,
-      "related_prs": [264, 265],
+      "related_prs": [
+        264,
+        265
+      ],
       "note": "PR #264 landed scripts/hadf-phase2-analyze.py + .claude/shared/hadf/phase2-fingerprint-summary.json in main (closes citation gap; squash SHA a4b357f). PR #265 updated case study citations to canonical squash SHA."
     }
   ],
@@ -171,12 +182,17 @@
   "phases": {
     "merge": {
       "pr_number": 264,
-      "related_prs": [264, 265],
-      "note": "Top-level phases block — duplicates timing.phases.merge but adds pr_number for Q6 PR-list parity gate. Final summary landed via PR #264; citation cleanup via PR #265."
+      "related_prs": [
+        264,
+        265
+      ],
+      "note": "Top-level phases block \u2014 duplicates timing.phases.merge but adds pr_number for Q6 PR-list parity gate. Final summary landed via PR #264; citation cleanup via PR #265."
     },
     "documentation": {
       "pr_number": 170,
-      "related_prs": [170],
+      "related_prs": [
+        170
+      ],
       "note": "Case study published via PR #170."
     }
   },
@@ -187,7 +203,7 @@
       "to": "complete",
       "timestamp": "2026-05-23T00:00:00Z",
       "approved_by": "retroactive_audit_close",
-      "note": "D-AUDIT-8 retroactive feature-dir creation closing comprehensive PR↔docs sync audit 2026-05-23. Feature actually shipped 2026-04-29 → 2026-05-08; state.json + log created today as ledger entries pointing at existing case study + showcase MDX + immutable pre-registration + summary artifact. No new code shipped."
+      "note": "D-AUDIT-8 retroactive feature-dir creation closing comprehensive PR\u2194docs sync audit 2026-05-23. Feature actually shipped 2026-04-29 \u2192 2026-05-08; state.json + log created today as ledger entries pointing at existing case study + showcase MDX + immutable pre-registration + summary artifact. No new code shipped."
     }
   ],
   "updated": "2026-05-23T00:00:00Z",
@@ -221,7 +237,7 @@
         ".claude/shared/hadf/phase2-fingerprint-raw.contaminated-100-fire9-missing-env-keys.jsonl"
       ],
       "raw_dataset_empty_placeholder": ".claude/shared/hadf/phase2-fingerprint-raw.jsonl",
-      "campaign_logs_dir": ".claude/shared/hadf/logs/ (8 collect-*.log files spanning 2026-04-30 → 2026-05-01 IDT)",
+      "campaign_logs_dir": ".claude/shared/hadf/logs/ (8 collect-*.log files spanning 2026-04-30 \u2192 2026-05-01 IDT)",
       "incident_recovery_dir": ".claude/shared/hadf/incident-2026-05-01-22utc-recovery/",
       "pre_merge_backup_dir": ".claude/shared/hadf/pre-merge-backup-2026-04-30/",
       "campaign_worktree": "/Volumes/DevSSD/FitTracker2-hadf-campaign/ (dedicated isolated worktree pinned to feature/hadf-phase2-fingerprint then renamed to chore/hadf-phase2-progress-snapshot)",

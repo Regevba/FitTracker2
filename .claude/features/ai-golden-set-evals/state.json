@@ -16,7 +16,7 @@
     ]
   },
   "kill_criteria": [
-    "Golden harness becomes flaky (non-deterministic) — would violate the 'deterministic AI is gateable' premise; revert to advisory.",
+    "Golden harness becomes flaky (non-deterministic) \u2014 would violate the 'deterministic AI is gateable' premise; revert to advisory.",
     "Golden set pins implementation detail rather than behavioral contract (brittle to benign refactors)."
   ],
   "kill_criteria_resolution": "Neither fired. Harness asserts behavioral contracts (signal presence/absence, confidence bands, escalate boolean) not internal structure; InsightService is pure-deterministic so flake is structurally impossible (60/60). Live-LLM path gated behind unset LLM_API_KEY and skips cleanly (0 flake). Negative control (mutate a rule -> golden case fails) proves the set catches real regressions.",
@@ -33,7 +33,7 @@
     {
       "id": "T1",
       "status": "complete",
-      "summary": "Scope AI surface — confirmed deterministic InsightService (not LLM); golden target identified"
+      "summary": "Scope AI surface \u2014 confirmed deterministic InsightService (not LLM); golden target identified"
     },
     {
       "id": "T2",
@@ -141,6 +141,7 @@
         "ended_at": "2026-06-10T06:41:33Z"
       }
     },
-    "wall_time_seconds": 1
+    "wall_time_seconds": 1,
+    "wall_time_backfill": "excluded-dirty-timestamps"
   }
 }

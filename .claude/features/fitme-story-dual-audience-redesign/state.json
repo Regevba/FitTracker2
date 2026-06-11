@@ -58,7 +58,9 @@
       "complete": {
         "started_at": "2026-06-09T17:45:00Z"
       }
-    }
+    },
+    "total_wall_time_minutes": 744.0,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   },
   "scheduled_after": null,
   "primary_metric": "% of home-page visitors who select an audience lens (Dev or PM) \u2014 engagement with the new core wayfinding mechanism",
@@ -170,7 +172,9 @@
       "effort_days": 0.5,
       "depends_on": [],
       "completed_at": "2026-06-09T06:25:00Z",
-      "related_prs": [213],
+      "related_prs": [
+        213
+      ],
       "note": "src/lib/lens.ts \u2014 server-only Lens type, LENS_COOKIE, getLens()/getLensWithDefault() (async cookies()), isLens guard, PM default. Additive; does not yet narrow Persona. Shipped (with all tasks) via fitme-story #213 squash-merge."
     },
     {

@@ -40,7 +40,9 @@
       "complete": {
         "started_at": "2026-06-06T07:10:00Z"
       }
-    }
+    },
+    "total_wall_time_minutes": 160.0,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   },
   "predecessor_case_studies": [
     ".claude/shared/v7-9-1-candidates.md#f-w9-drift-triggered-auto-isolation"
