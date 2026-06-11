@@ -213,6 +213,46 @@ The framework now follows the same closure rule as the case-study layer: publish
 
 ---
 
+## FT2-FH-004 — 2026-06-10 dilution-blind regression definition (phantom integrity-diff alerts)
+
+**Status:** **CLOSED** in the 2026-06-10 telemetry-normalization pass (`chore/telemetry-backfill-multianchor`).
+
+**Original behavior** (data-integrity sub-plan §2.3/§2.5 + `integrity-diff.py` + `daily-integrity-checkpoint.py::detect_regression`, as written 2026-05-14):
+
+> A measurement target **degrading vs the 2026-05-14 baseline column** is a HIGH/CRITICAL drift signal.
+
+This compared **raw percentages** against the canonical anchor with no rule for "the % fell purely because the corpus grew."
+
+**What the data showed** (T1, instrumented via `make integrity-diff` + the new cohort comparison, captured 2026-06-10):
+
+- `make integrity-diff` reported `timing_wall_time_pct_post_v6` −23.3pp and `cache_hits_pct_post_v6` −13.4pp vs the 2026-05-14 anchor.
+- Both were **denominator dilution**: 34–36 features were added to the corpus since the anchor, entering the percentage denominators with empty metrics.
+- On the cohort-intersection (features present at both anchors), **every dimension was flat-or-up**: `cache_hits` cohort 28.6%→31.4%, numerator 20→29. Zero real adoption was lost.
+- The same blindness existed in the daily checkpoint: a day-over-day `adoption_pct_post_v6` drop flagged a regression even when the absolute `fully_adopted_post_v6` numerator was unchanged.
+
+**Why this matters:** the regression *detector itself* was manufacturing false positives — the inverse of the silent-pass class, but the same root failure (a check whose definition doesn't match reality). Acting on a phantom regression wastes triage and erodes trust in the signal; left unfixed, every soak window with corpus growth would repeat it.
+
+**Closure path** (2026-06-10):
+
+1. **Honest backfill** — `total_wall_time_minutes` derived (from summed phase durations) for 19 clean same-session features; 29 multi-day/dirty features transparently tagged `wall_time_backfill: excluded-*` (NOT fabricated); all derived values carry `total_wall_time_minutes_provenance`. `cache_hits` deliberately NOT mass-backfilled (no honest source). This produced a one-time **+27pp `timing_wall_time` step-change** (23.9%→51.4% post-v6) — the trend-chart discontinuity on 2026-06-10 is this corrective backfill, NOT a measurement bug.
+2. **Dilution-aware regression definition** — `classify_delta()` (`scripts/integrity-multi-anchor.py`) single-sources the verdict: `REAL_REGRESSION` only when cohort Δ<0 OR numerator Δ<0; a raw drop otherwise classifies `dilution`. `integrity-diff` + `daily-integrity-checkpoint` consume it; raw deltas still printed for transparency.
+3. **Provenance split** — `make measurement-adoption` reports `instrumented + derived` per dimension; `--instrumented-only` gives the strict T1 view. The derived backfill cannot masquerade as contemporaneous instrumentation.
+4. **Canonical anchor retained** — the 2026-05-14 baseline stays the regression reference (§3.2 authorizes new baselines only at daily/promotion/pre-research triggers). The earlier same-session bump of `integrity-diff` DEFAULT_BASELINE to a 2026-06-10 anchor was **reverted**; the 2026-06-10 snapshot is retained as evidence-only, not a regression anchor.
+5. **Codified** — data-integrity sub-plan §2.6 (normalization overlay) + §2.7 (unified data-layer `make integrity-data-lake`) + §2.3/§2.5 amendments; CLAUDE.md Soak-window section; infra-master-plan pointer.
+6. **Tests** — `test_integrity_multi_anchor.py` (classify_delta verdicts), `test_backfill_timing_wall_time.py` (clean/multiday/dirty), `test_integrity_data_lake.py` (R1/R5 reconciliation), provenance cases in `test_measurement_adoption_report.py`.
+
+**Operator note:** the same `make integrity-data-lake` reconciliation pass surfaced a *separate* open anomaly — the weekly gate-coverage trend reports `distinct_gate_count=0` for 2026-05-18 / 06-01 / 06-08 while the F17 index has 25 gates. Flagged for a follow-up investigation (cron-context emptiness, F-LAUNCHD-DRIFT class); not part of this entry's closure.
+
+**Cross-references:**
+
+- Normalizer + classifier: [`scripts/integrity-multi-anchor.py`](../../scripts/integrity-multi-anchor.py)
+- Unified data-layer: [`scripts/integrity-data-lake.py`](../../scripts/integrity-data-lake.py)
+- Honest backfill: [`scripts/backfill-timing-wall-time.py`](../../scripts/backfill-timing-wall-time.py)
+- Codification: [`docs/master-plan/data-integrity-and-rollback-2026-05-14.md`](../master-plan/data-integrity-and-rollback-2026-05-14.md) §2.6/§2.7
+- Related field-rename class: FT2-FH-001
+
+---
+
 > _Next entry will be appended below this line when needed. Format
 > is FT2-FH-NNN with immutable monotonic numbering. Entries are never
 > silently edited; revisions are themselves new entries that

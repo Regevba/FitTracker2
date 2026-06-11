@@ -3,7 +3,12 @@
   "state_owner": "ft2",
   "framework_version": "v7.8.3",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "Feature",
   "dispatch_pattern": "subagent-driven-tdd-sequential-phased",
@@ -173,7 +178,9 @@
       "complete": {
         "started_at": "2026-05-11T17:10:00Z"
       }
-    }
+    },
+    "total_wall_time_minutes": 605.0,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   },
   "framework_dogfooding_catches": [
     {

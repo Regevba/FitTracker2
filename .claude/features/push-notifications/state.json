@@ -7,7 +7,12 @@
   "updated": "2026-05-07T08:02:34Z",
   "branch": "feature/push-notifications-v2",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "framework_version": "v7.8",
   "agent_manifest": {
@@ -258,7 +263,9 @@
       "complete": {
         "started_at": "2026-05-07T08:05:44Z"
       }
-    }
+    },
+    "total_wall_time_minutes": 252.1,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   },
   "cache_hits": [
     {

@@ -1,6 +1,6 @@
 {
   "feature": "orchid-v1-5",
-  "display_name": "Orchid v1.5 — Additive Units (U8 + U9 + Tier Propagation)",
+  "display_name": "Orchid v1.5 \u2014 Additive Units (U8 + U9 + Tier Propagation)",
   "case_study": "docs/case-studies/orchid-v1-5-additive-units-case-study.md",
   "case_study_type": "live_pm_workflow",
   "work_type": "feature",
@@ -30,16 +30,22 @@
   "created_at": "2026-05-03T00:00:00Z",
   "branch": "feature/orchid-v1-5",
   "isolation_opt_out": true,
-  "isolation_opt_out_reason": "Retroactive feature dir creation 2026-05-23 closing D-AUDIT-9 from comprehensive PR↔docs sync audit. Feature work (Tracks L + D) shipped 2026-05-03 via PRs #179 (spec), #180 (plan), #182 (Track L Layer A behavioral models), #183 (Track D D1+D2 tier-aware DSE), #184 (toolchain setup guide + case study scaffold). Track R RTL Phases 6-9 are BLOCKED on v1 SoC integration (Phase 5) which itself requires the v1 toolchain to land; per project memory paused-at-Track-L+D-complete. Case study at status=draft_for_review with sections 4-5 unfilled pending Track R completion. This state.json is a retroactive ledger entry, not a new working tree.",
+  "isolation_opt_out_reason": "Retroactive feature dir creation 2026-05-23 closing D-AUDIT-9 from comprehensive PR\u2194docs sync audit. Feature work (Tracks L + D) shipped 2026-05-03 via PRs #179 (spec), #180 (plan), #182 (Track L Layer A behavioral models), #183 (Track D D1+D2 tier-aware DSE), #184 (toolchain setup guide + case study scaffold). Track R RTL Phases 6-9 are BLOCKED on v1 SoC integration (Phase 5) which itself requires the v1 toolchain to land; per project memory paused-at-Track-L+D-complete. Case study at status=draft_for_review with sections 4-5 unfilled pending Track R completion. This state.json is a retroactive ledger entry, not a new working tree.",
   "paused": {
     "at": "2026-05-03T00:00:00Z",
-    "reason": "Track R Layer B Chisel RTL Phases 6-9 blocked on v1 SoC integration (Phase 5). Phase 5 doesn't exist yet — needs the Orchid v1 toolchain (per docs/setup/orchid-toolchain-setup.md) AND v1 Phase 2-5 plans to execute first. This is EXPECTED per the v1.5 plan §Risks item 1 — the whole point of Option B (v1.5 incremental) was that Track R doesn't block on the v1.5 spec/Layer A work.",
-    "resume_signal": "Orchid v1 toolchain setup complete AND v1 Phase 5 SoC integration green; case study §3.3 Track R checklist becomes actionable.",
+    "reason": "Track R Layer B Chisel RTL Phases 6-9 blocked on v1 SoC integration (Phase 5). Phase 5 doesn't exist yet \u2014 needs the Orchid v1 toolchain (per docs/setup/orchid-toolchain-setup.md) AND v1 Phase 2-5 plans to execute first. This is EXPECTED per the v1.5 plan \u00a7Risks item 1 \u2014 the whole point of Option B (v1.5 incremental) was that Track R doesn't block on the v1.5 spec/Layer A work.",
+    "resume_signal": "Orchid v1 toolchain setup complete AND v1 Phase 5 SoC integration green; case study \u00a73.3 Track R checklist becomes actionable.",
     "snapshot": {
       "current_phase": "implementation",
-      "tracks_shipped": ["L", "D-partial-D1+D2"],
-      "tracks_blocked": ["R", "D-D3-DSE-26K-run-sweep"],
-      "next_action_when_resumed": "Run Track D D3 (26K-run DSE sweep) → fill case study §4 with results → start Track R Phases 6-9 RTL once v1 Phase 5 lands → fill case study §5 architecture validation.",
+      "tracks_shipped": [
+        "L",
+        "D-partial-D1+D2"
+      ],
+      "tracks_blocked": [
+        "R",
+        "D-D3-DSE-26K-run-sweep"
+      ],
+      "next_action_when_resumed": "Run Track D D3 (26K-run DSE sweep) \u2192 fill case study \u00a74 with results \u2192 start Track R Phases 6-9 RTL once v1 Phase 5 lands \u2192 fill case study \u00a75 architecture validation.",
       "blockers": [
         "v1 SoC integration Phase 5 not started",
         "Orchid v1 toolchain (Chisel/FIRRTL/Yosys/OpenROAD) not installed locally"
@@ -56,7 +62,7 @@
   "timing": {
     "time_source": "measured-incomplete",
     "total_wall_time_minutes": null,
-    "total_wall_time_note": "Spec + plan + Tracks L + D + toolchain guide all shipped same-day 2026-05-03 across PRs #179/#180/#182/#183/#184. Wall-time instrumentation not captured at runtime — state.json created retroactively 2026-05-23 for D-AUDIT-9 close.",
+    "total_wall_time_note": "Spec + plan + Tracks L + D + toolchain guide all shipped same-day 2026-05-03 across PRs #179/#180/#182/#183/#184. Wall-time instrumentation not captured at runtime \u2014 state.json created retroactively 2026-05-23 for D-AUDIT-9 close.",
     "session_start": "2026-05-03T00:00:00Z",
     "session_end": null,
     "phases": {
@@ -72,21 +78,21 @@
         "ended_at": "2026-05-03T00:00:00Z",
         "duration_minutes": null,
         "paused_minutes": 0,
-        "notes": "v1.5 design spec authored via PR #179 (spec(orchid): v1.5 design addendum — additive U8 + U9 + tier propagation + forward-compat Option B). Functions as PRD-equivalent for the research feature."
+        "notes": "v1.5 design spec authored via PR #179 (spec(orchid): v1.5 design addendum \u2014 additive U8 + U9 + tier propagation + forward-compat Option B). Functions as PRD-equivalent for the research feature."
       },
       "tasks": {
         "started_at": "2026-05-03T00:00:00Z",
         "ended_at": "2026-05-03T00:00:00Z",
         "duration_minutes": null,
         "paused_minutes": 0,
-        "notes": "Implementation plan via PR #180 (plan(orchid): v1.5 implementation plan — Tracks L + D + R)."
+        "notes": "Implementation plan via PR #180 (plan(orchid): v1.5 implementation plan \u2014 Tracks L + D + R)."
       },
       "ux_or_integration": {
         "started_at": null,
         "ended_at": null,
         "duration_minutes": 0,
         "paused_minutes": 0,
-        "notes": "N/A — research / hardware design, no UI."
+        "notes": "N/A \u2014 research / hardware design, no UI."
       },
       "implementation": {
         "started_at": "2026-05-03T00:00:00Z",
@@ -94,8 +100,12 @@
         "duration_minutes": null,
         "paused_minutes": null,
         "pr_number": 182,
-        "related_prs": [182, 183, 184],
-        "notes": "Tracks L + D shipped 2026-05-03 across PRs #182 (Track L Layer A behavioral models), #183 (Track D D1+D2 tier-aware DSE end-to-end), #184 (toolchain setup guide + case study scaffold). Track D D3 (26K-run DSE sweep) deferred. Track R (Layer B Chisel RTL Phases 6-9) BLOCKED on v1 Phase 5 SoC integration — see paused block."
+        "related_prs": [
+          182,
+          183,
+          184
+        ],
+        "notes": "Tracks L + D shipped 2026-05-03 across PRs #182 (Track L Layer A behavioral models), #183 (Track D D1+D2 tier-aware DSE end-to-end), #184 (toolchain setup guide + case study scaffold). Track D D3 (26K-run DSE sweep) deferred. Track R (Layer B Chisel RTL Phases 6-9) BLOCKED on v1 Phase 5 SoC integration \u2014 see paused block."
       },
       "testing": {
         "started_at": null,
@@ -116,7 +126,13 @@
         "duration_minutes": 0,
         "paused_minutes": 0,
         "pr_number": 182,
-        "related_prs": [179, 180, 182, 183, 184],
+        "related_prs": [
+          179,
+          180,
+          182,
+          183,
+          184
+        ],
         "notes": "All 5 PRs merged 2026-05-03. Aggregate of spec + plan + Tracks L+D + toolchain guide shipment day."
       },
       "documentation": {
@@ -125,14 +141,17 @@
         "duration_minutes": null,
         "paused_minutes": null,
         "pr_number": 184,
-        "related_prs": [184],
+        "related_prs": [
+          184
+        ],
         "notes": "Case study scaffold + toolchain setup guide shipped via PR #184. Case study sections 4-5 deferred pending Track R completion. Status: draft_for_review until full architecture validation lands."
       }
     },
     "parallel_context": {
       "concurrent_features": 0,
       "stress_test": false
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "complexity": {
     "cu_version": 2,
@@ -155,8 +174,10 @@
       "status": "completed",
       "completed_at": "2026-05-03T00:00:00Z",
       "pr_number": 179,
-      "related_prs": [179],
-      "note": "PR #179 spec(orchid): v1.5 design addendum — additive U8 + U9 + tier propagation + forward-compat (Option B). Spec at docs/superpowers/specs/2026-05-03-orchid-v1-5-design.md."
+      "related_prs": [
+        179
+      ],
+      "note": "PR #179 spec(orchid): v1.5 design addendum \u2014 additive U8 + U9 + tier propagation + forward-compat (Option B). Spec at docs/superpowers/specs/2026-05-03-orchid-v1-5-design.md."
     },
     {
       "id": "T2",
@@ -164,26 +185,32 @@
       "status": "completed",
       "completed_at": "2026-05-03T00:00:00Z",
       "pr_number": 180,
-      "related_prs": [180],
-      "note": "PR #180 plan(orchid): v1.5 implementation plan — Tracks L (Layer A) + D (DSE) + R (RTL Phases 6-9). Plan at docs/superpowers/plans/2026-05-03-orchid-v1-5-additive-units.md."
+      "related_prs": [
+        180
+      ],
+      "note": "PR #180 plan(orchid): v1.5 implementation plan \u2014 Tracks L (Layer A) + D (DSE) + R (RTL Phases 6-9). Plan at docs/superpowers/plans/2026-05-03-orchid-v1-5-additive-units.md."
     },
     {
       "id": "T3",
-      "name": "Track L — Layer A behavioral models (U8 + U9 + tier propagation)",
+      "name": "Track L \u2014 Layer A behavioral models (U8 + U9 + tier propagation)",
       "status": "completed",
       "completed_at": "2026-05-03T00:00:00Z",
       "pr_number": 182,
-      "related_prs": [182],
-      "note": "PR #182 feat(orchid-v1.5): Track L — Layer A behavioral models. Python behavioral models for U8 (Patrol Scrubber) + U9 (Validation Bus) + tier propagation in the Orchid repo. Unit tests target ≥80% line coverage per success_metrics secondary."
+      "related_prs": [
+        182
+      ],
+      "note": "PR #182 feat(orchid-v1.5): Track L \u2014 Layer A behavioral models. Python behavioral models for U8 (Patrol Scrubber) + U9 (Validation Bus) + tier propagation in the Orchid repo. Unit tests target \u226580% line coverage per success_metrics secondary."
     },
     {
       "id": "T4",
-      "name": "Track D D1+D2 — tier-aware DSE end-to-end",
+      "name": "Track D D1+D2 \u2014 tier-aware DSE end-to-end",
       "status": "completed",
       "completed_at": "2026-05-03T00:00:00Z",
       "pr_number": 183,
-      "related_prs": [183],
-      "note": "PR #183 feat(orchid-v1.5): Track D D1+D2 — tier-aware DSE end-to-end. Sub-task D3 (26K-run DSE sweep) deferred; Tracks D3-only results will populate case study §4."
+      "related_prs": [
+        183
+      ],
+      "note": "PR #183 feat(orchid-v1.5): Track D D1+D2 \u2014 tier-aware DSE end-to-end. Sub-task D3 (26K-run DSE sweep) deferred; Tracks D3-only results will populate case study \u00a74."
     },
     {
       "id": "T5",
@@ -191,22 +218,26 @@
       "status": "completed",
       "completed_at": "2026-05-03T00:00:00Z",
       "pr_number": 184,
-      "related_prs": [184],
+      "related_prs": [
+        184
+      ],
       "note": "PR #184 docs(orchid-v1.5): toolchain setup guide + companion case study scaffold. Toolchain guide at docs/setup/orchid-toolchain-setup.md; case study scaffold at docs/case-studies/orchid-v1-5-additive-units-case-study.md (status: draft_for_review)."
     },
     {
       "id": "T6",
-      "name": "Track D D3 — 26K-run DSE sweep",
+      "name": "Track D D3 \u2014 26K-run DSE sweep",
       "status": "deferred",
       "completed_at": null,
       "pr_number": null,
       "related_prs": [],
-      "blocked_by": ["Track R cadence dependency clarity"],
-      "note": "Deferred. Will populate case study §4 DSE re-run results when run."
+      "blocked_by": [
+        "Track R cadence dependency clarity"
+      ],
+      "note": "Deferred. Will populate case study \u00a74 DSE re-run results when run."
     },
     {
       "id": "T7",
-      "name": "Track R — Layer B Chisel RTL Phases 6-9",
+      "name": "Track R \u2014 Layer B Chisel RTL Phases 6-9",
       "status": "blocked",
       "completed_at": null,
       "pr_number": null,
@@ -215,7 +246,7 @@
         "Orchid v1 Phase 5 SoC integration not started",
         "Orchid v1 toolchain (Chisel/FIRRTL/Yosys/OpenROAD) not installed"
       ],
-      "note": "Blocked per v1.5 plan §Risks item 1. Will populate case study §5 architecture validation when complete."
+      "note": "Blocked per v1.5 plan \u00a7Risks item 1. Will populate case study \u00a75 architecture validation when complete."
     }
   ],
   "tasks_summary": {
@@ -228,7 +259,13 @@
   "phases": {
     "merge": {
       "pr_number": 182,
-      "related_prs": [179, 180, 182, 183, 184],
+      "related_prs": [
+        179,
+        180,
+        182,
+        183,
+        184
+      ],
       "note": "Top-level phases.merge for Q6 PR-list parity. All 5 v1.5 PRs merged 2026-05-03."
     }
   },
@@ -239,7 +276,7 @@
       "to": "implementation",
       "timestamp": "2026-05-23T00:00:00Z",
       "approved_by": "retroactive_audit_close",
-      "note": "D-AUDIT-9 retroactive feature-dir creation closing comprehensive PR↔docs sync audit 2026-05-23. Tracks L + D shipped 2026-05-03; Track R blocked. current_phase set to implementation (not complete) because the architecture work is genuinely paused, not done. paused.at + paused.reason + paused.resume_signal document the pause per the same idiom used by .claude/features/onboarding-v2-retroactive/state.json."
+      "note": "D-AUDIT-9 retroactive feature-dir creation closing comprehensive PR\u2194docs sync audit 2026-05-23. Tracks L + D shipped 2026-05-03; Track R blocked. current_phase set to implementation (not complete) because the architecture work is genuinely paused, not done. paused.at + paused.reason + paused.resume_signal document the pause per the same idiom used by .claude/features/onboarding-v2-retroactive/state.json."
     }
   ],
   "updated": "2026-05-23T00:00:00Z",
