@@ -182,6 +182,8 @@
       "complete": {
         "started_at": "2026-06-04T08:50:00Z"
       }
-    }
+    },
+    "total_wall_time_minutes": 200.0,
+    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
   }
 }

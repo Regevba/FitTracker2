@@ -107,6 +107,40 @@ def classify_feature(d: dict) -> dict:
     }
 
 
+def wall_time_is_derived(d: dict) -> bool:
+    """True if total_wall_time_minutes was backfill-derived (not contemporaneously
+    instrumented). Per data-quality-tiers a derived-after-the-fact value is NOT T1
+    'Instrumented'; the adoption report must distinguish the two so a corrective
+    backfill (e.g. 2026-06-10, honesty ledger FT2-FH-004) never masquerades as
+    contemporaneous instrumentation."""
+    t = d.get("timing")
+    if not isinstance(t, dict):
+        return False
+    prov = t.get("total_wall_time_minutes_provenance") or ""
+    return isinstance(prov, str) and prov.startswith("backfill-derived")
+
+
+# Per-dimension "is this value derived?" predicates. Only timing_wall_time carries a
+# backfill provenance today; the others are always contemporaneous → never derived.
+DERIVED_PREDICATES = {
+    "timing_wall_time": wall_time_is_derived,
+}
+
+
+def provenance_vector(d: dict, adoption: dict) -> dict:
+    """For each adopted dimension, label its provenance: 'derived' | 'instrumented'.
+    Absent (not adopted) dimensions map to None."""
+    out = {}
+    for dim, present in adoption.items():
+        if not present:
+            out[dim] = None
+        elif DERIVED_PREDICATES.get(dim, lambda _d: False)(d):
+            out[dim] = "derived"
+        else:
+            out[dim] = "instrumented"
+    return out
+
+
 def post_v6(created: str) -> bool:
     """True if the feature was created on or after v6.0's ship date."""
     if not created:
@@ -144,6 +178,7 @@ def build_report() -> dict:
             "post_v6": post_v6(created),
             "current_phase": d.get("current_phase") or d.get("phase"),
             "adoption": adoption,
+            "provenance": provenance_vector(d, adoption),
             "fully_adopted": all_four,
             "any_adopted": any_field,
         })
@@ -163,11 +198,18 @@ def build_report() -> dict:
     for dim in ("timing_wall_time", "per_phase_timing", "cache_hits", "cu_v2"):
         present = sum(1 for f in features if f.get("adoption", {}).get(dim))
         post_v6_present = sum(1 for f in post_v6_features if f.get("adoption", {}).get(dim))
+        # Provenance split (data-quality-tiers): derived backfill ≠ T1 instrumented.
+        derived = sum(1 for f in features if f.get("provenance", {}).get(dim) == "derived")
+        post_v6_derived = sum(1 for f in post_v6_features if f.get("provenance", {}).get(dim) == "derived")
         dimension_coverage[dim] = {
             "overall_present": present,
             "overall_percent": round(present / total * 100, 1),
             "post_v6_present": post_v6_present,
             "post_v6_percent": round(post_v6_present / max(len(post_v6_features), 1) * 100, 1),
+            "overall_instrumented": present - derived,
+            "overall_derived": derived,
+            "post_v6_instrumented": post_v6_present - post_v6_derived,
+            "post_v6_derived": post_v6_derived,
         }
 
     return {
@@ -290,10 +332,13 @@ def main() -> int:
     print(f"  Zero adoption: {s['zero_adopted']}")
     print(f"  Tier 1.1 status: {s['tier_1_1_status']}")
     print()
-    print("Per-dimension coverage:")
+    print("Per-dimension coverage (presence; instrumented vs derived split):")
     for dim, v in report["dimension_coverage"].items():
+        split = ""
+        if v.get("post_v6_derived"):
+            split = f" [{v['post_v6_instrumented']} instrumented + {v['post_v6_derived']} derived]"
         print(f"  {dim}: {v['overall_present']}/{s['features_total']} overall ({v['overall_percent']}%); "
-              f"{v['post_v6_present']}/{s['features_post_v6']} post-v6 ({v['post_v6_percent']}%)")
+              f"{v['post_v6_present']}/{s['features_post_v6']} post-v6 ({v['post_v6_percent']}%){split}")
     print()
     print(f"Report written to: {output_path}")
     print(f"History: {history_msg}")

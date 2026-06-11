@@ -1,0 +1,129 @@
+{
+  "latest": "live",
+  "canonical_anchor": "2026-05-14-platform",
+  "anchors": [
+    {
+      "label": "2026-05-12-pre-v7.9",
+      "is_canonical": false,
+      "n_anchor": 68,
+      "cohort_size": 68,
+      "new_in_latest": 36,
+      "dimensions": {
+        "timing_wall_time": {
+          "dimension": "timing_wall_time",
+          "raw_delta": 9.6,
+          "cohort_delta": 7.4,
+          "numerator_delta": 19,
+          "raw_anchor": 25.0,
+          "raw_latest": 34.6,
+          "cohort_anchor": 25.0,
+          "cohort_latest": 32.4,
+          "num_anchor": 17,
+          "num_latest": 36,
+          "verdict": "improved"
+        },
+        "per_phase_timing": {
+          "dimension": "per_phase_timing",
+          "raw_delta": 22.8,
+          "cohort_delta": 4.5,
+          "numerator_delta": 39,
+          "raw_anchor": 42.6,
+          "raw_latest": 65.4,
+          "cohort_anchor": 42.6,
+          "cohort_latest": 47.1,
+          "num_anchor": 29,
+          "num_latest": 68,
+          "verdict": "improved"
+        },
+        "cache_hits": {
+          "dimension": "cache_hits",
+          "raw_delta": 1.4,
+          "cohort_delta": 4.4,
+          "numerator_delta": 11,
+          "raw_anchor": 26.5,
+          "raw_latest": 27.9,
+          "cohort_anchor": 26.5,
+          "cohort_latest": 30.9,
+          "num_anchor": 18,
+          "num_latest": 29,
+          "verdict": "improved"
+        },
+        "cu_v2": {
+          "dimension": "cu_v2",
+          "raw_delta": 13.7,
+          "cohort_delta": 10.3,
+          "numerator_delta": 18,
+          "raw_anchor": 10.3,
+          "raw_latest": 24.0,
+          "cohort_anchor": 10.3,
+          "cohort_latest": 20.6,
+          "num_anchor": 7,
+          "num_latest": 25,
+          "verdict": "improved"
+        }
+      }
+    },
+    {
+      "label": "2026-05-14-platform",
+      "is_canonical": true,
+      "n_anchor": 70,
+      "cohort_size": 70,
+      "new_in_latest": 34,
+      "dimensions": {
+        "timing_wall_time": {
+          "dimension": "timing_wall_time",
+          "raw_delta": 10.3,
+          "cohort_delta": 7.1,
+          "numerator_delta": 19,
+          "raw_anchor": 24.3,
+          "raw_latest": 34.6,
+          "cohort_anchor": 24.3,
+          "cohort_latest": 31.4,
+          "num_anchor": 17,
+          "num_latest": 36,
+          "verdict": "improved"
+        },
+        "per_phase_timing": {
+          "dimension": "per_phase_timing",
+          "raw_delta": 19.7,
+          "cohort_delta": 2.9,
+          "numerator_delta": 36,
+          "raw_anchor": 45.7,
+          "raw_latest": 65.4,
+          "cohort_anchor": 45.7,
+          "cohort_latest": 48.6,
+          "num_anchor": 32,
+          "num_latest": 68,
+          "verdict": "improved"
+        },
+        "cache_hits": {
+          "dimension": "cache_hits",
+          "raw_delta": -0.7,
+          "cohort_delta": 2.8,
+          "numerator_delta": 9,
+          "raw_anchor": 28.6,
+          "raw_latest": 27.9,
+          "cohort_anchor": 28.6,
+          "cohort_latest": 31.4,
+          "num_anchor": 20,
+          "num_latest": 29,
+          "verdict": "dilution"
+        },
+        "cu_v2": {
+          "dimension": "cu_v2",
+          "raw_delta": 14.0,
+          "cohort_delta": 11.4,
+          "numerator_delta": 18,
+          "raw_anchor": 10.0,
+          "raw_latest": 24.0,
+          "cohort_anchor": 10.0,
+          "cohort_latest": 21.4,
+          "num_anchor": 7,
+          "num_latest": 25,
+          "verdict": "improved"
+        }
+      }
+    }
+  ],
+  "regressions": []
+}

@@ -80,3 +80,27 @@ def test_cache_hits_populated_list(mod):
     assert mod.has_cache_hits({"cache_hits": [{"path": "x"}]}) is True
     assert mod.has_cache_hits({"cache_hits": []}) is False
     assert mod.has_cache_hits({}) is False
+
+
+# --- provenance split: instrumented vs derived (FT2-FH-004) ----------------
+
+def test_wall_time_is_derived_detects_backfill_provenance(mod):
+    d = {"timing": {"total_wall_time_minutes": 60,
+                    "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"}}
+    assert mod.wall_time_is_derived(d) is True
+
+
+def test_wall_time_instrumented_when_no_provenance(mod):
+    assert mod.wall_time_is_derived({"timing": {"total_wall_time_minutes": 60}}) is False
+    assert mod.wall_time_is_derived({"timing": {}}) is False
+
+
+def test_provenance_vector_labels_each_dimension(mod):
+    d = {"timing": {"total_wall_time_minutes": 60,
+                    "total_wall_time_minutes_provenance": "backfill-derived-x"}}
+    adoption = {"timing_wall_time": True, "per_phase_timing": True,
+                "cache_hits": False, "cu_v2": False}
+    pv = mod.provenance_vector(d, adoption)
+    assert pv["timing_wall_time"] == "derived"
+    assert pv["per_phase_timing"] == "instrumented"   # no derived predicate → instrumented
+    assert pv["cache_hits"] is None                    # not adopted
