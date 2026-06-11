@@ -3,11 +3,11 @@
   "name": "garmin-health-connection",
   "created": "2026-06-10T17:00:38Z",
   "created_at": "2026-06-10T17:00:38Z",
-  "updated": "2026-06-10T17:34:43Z",
+  "updated": "2026-06-11T16:12:55Z",
   "branch": "feature/garmin-health-connection",
   "state_owner": "ft2",
   "framework_version": "v7.10",
-  "current_phase": "tasks",
+  "current_phase": "ux_or_integration",
   "work_type": "feature",
   "work_subtype": "new_feature",
   "has_ui": true,
@@ -28,9 +28,12 @@
       "count": 10
     },
     "ux_or_integration": {
-      "status": "pending",
-      "type": null,
-      "preflight_passed": null
+      "status": "in_progress",
+      "type": "ux",
+      "preflight_passed": true,
+      "spec": ".claude/features/garmin-health-connection/ux-spec.md",
+      "checklist_completed": true,
+      "placement_decision": "Data Sources = row under existing HealthDevicesSettingsScreen -> dedicated DataSourcesScreen (no new top-level category)"
     },
     "implementation": {
       "status": "pending",
@@ -117,7 +120,7 @@
       "id": "T6",
       "desc": "UX spec for Data Sources screen (Phase 3 gateway)",
       "complexity": "heavyweight",
-      "status": "pending",
+      "status": "done",
       "pr_number": null
     },
     {
@@ -161,6 +164,12 @@
       "to": "tasks",
       "at": "2026-06-10T17:28:32Z",
       "approved": true
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "at": "2026-06-11T16:12:55Z",
+      "approved": true
     }
   ],
   "sibling_feature": "fitbit-health-connection",
@@ -180,6 +189,11 @@
       },
       "tasks": {
         "started_at": "2026-06-10T17:28:32Z",
+        "ended_at": "2026-06-11T16:12:55Z",
+        "duration_minutes": null
+      },
+      "ux_or_integration": {
+        "started_at": "2026-06-11T16:12:55Z",
         "ended_at": null,
         "duration_minutes": null
       }
