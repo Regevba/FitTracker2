@@ -1,6 +1,6 @@
 {
   "feature": "ai-user-feedback-loop",
-  "description": "Wire the existing AI feedback signal (thumbs up/down in AIInsightCard + AIIntelligenceSheet AIFeedbackView) into a real reinforcement loop. RecommendationMemory storage layer already exists (record/outcomes/acceptanceRate/frequentlyDismissedSignals/clearAll) and has unit tests, but is per-AIOrchestrator-instance — not wired into views. C5 closes the deferred audit UI-024 by promoting RecommendationMemory to an injectable EnvironmentObject, wiring the actual record() call from AIInsightCard.recordFeedback (replacing the existing no-op comment block), feeding back into AIOrchestrator's recommendation pipeline (suppress signals with high dismiss-count + boost segments with high acceptance-rate), and surfacing a Settings → AI Feedback row showing history + GDPR clear-all. Pairs with D1 (adaptive-intelligence next pass).",
+  "description": "Wire the existing AI feedback signal (thumbs up/down in AIInsightCard + AIIntelligenceSheet AIFeedbackView) into a real reinforcement loop. RecommendationMemory storage layer already exists (record/outcomes/acceptanceRate/frequentlyDismissedSignals/clearAll) and has unit tests, but is per-AIOrchestrator-instance \u2014 not wired into views. C5 closes the deferred audit UI-024 by promoting RecommendationMemory to an injectable EnvironmentObject, wiring the actual record() call from AIInsightCard.recordFeedback (replacing the existing no-op comment block), feeding back into AIOrchestrator's recommendation pipeline (suppress signals with high dismiss-count + boost segments with high acceptance-rate), and surfacing a Settings \u2192 AI Feedback row showing history + GDPR clear-all. Pairs with D1 (adaptive-intelligence next pass).",
   "work_type": "feature",
   "current_phase": "complete",
   "platforms_tested": {
@@ -35,14 +35,14 @@
     "homeReadinessAlertActionTaken + homeTrendAlertActionTaken": "shipped 2026-06-01 (C2 + C4)"
   },
   "scope_known_gap": {
-    "deferred_comment_at_AIInsightCard_recordFeedback": "RESOLVED 2026-06-01 in T6 (commit c476572) — replaced UI-024 deferred block with feedbackController.record(outcome:) call.",
+    "deferred_comment_at_AIInsightCard_recordFeedback": "RESOLVED 2026-06-01 in T6 (commit c476572) \u2014 replaced UI-024 deferred block with feedbackController.record(outcome:) call.",
     "c5_closes_ui_024": true,
-    "what_c5_adds_beyond_wiring": "Reinforcement loop in AIOrchestrator + Settings → AI Feedback management surface + dismiss-reason picker + 3 new analytics events"
+    "what_c5_adds_beyond_wiring": "Reinforcement loop in AIOrchestrator + Settings \u2192 AI Feedback management surface + dismiss-reason picker + 3 new analytics events"
   },
   "tasks": [
     {
       "id": "T1",
-      "title": "RecommendationMemory.frequentlyDismissedSignals → 30-day window",
+      "title": "RecommendationMemory.frequentlyDismissedSignals \u2192 30-day window",
       "file": "FitTracker/AI/RecommendationMemory.swift",
       "type": "modify",
       "loc_est": 12,
@@ -87,7 +87,7 @@
     },
     {
       "id": "T6",
-      "title": "AIInsightCard.recordFeedback — close audit UI-024",
+      "title": "AIInsightCard.recordFeedback \u2014 close audit UI-024",
       "file": "FitTracker/Views/AI/AIInsightCard.swift",
       "type": "modify",
       "loc_est": 10,
@@ -114,7 +114,7 @@
     },
     {
       "id": "T9",
-      "title": "AIFeedbackSettingsScreen — 4-section Settings detail",
+      "title": "AIFeedbackSettingsScreen \u2014 4-section Settings detail",
       "file": "FitTracker/Views/Settings/v2/Screens/AIFeedbackSettingsScreen.swift",
       "type": "new",
       "loc_est": 180,
@@ -132,7 +132,7 @@
     },
     {
       "id": "T11",
-      "title": "AnalyticsService — 3 new logAi* methods + AnalyticsProvider constants",
+      "title": "AnalyticsService \u2014 3 new logAi* methods + AnalyticsProvider constants",
       "file": "FitTracker/Services/Analytics/AnalyticsService.swift,FitTracker/Services/Analytics/AnalyticsProvider.swift",
       "type": "modify",
       "loc_est": 30,
@@ -141,7 +141,7 @@
     },
     {
       "id": "T12",
-      "title": "Test suite — 4 new test files, 14 tests, all passing",
+      "title": "Test suite \u2014 4 new test files, 14 tests, all passing",
       "file": "FitTrackerTests/{RecommendationMemoryWindow,RecommendationFeedbackController,AIOrchestratorReinforcementHelpers,AIRecommendationWithConfidence}Tests.swift",
       "type": "new",
       "loc_est": 200,
@@ -156,8 +156,8 @@
   "case_study": "docs/case-studies/ai-user-feedback-loop-case-study.md",
   "primary_metric": "home_ai_feedback_submitted events per WAU >= 0.10 at T+30d (T1, baseline 0.03)",
   "success_metrics": [
-    "home_ai_feedback_submitted events per WAU (T1, baseline 0.03 → target >=0.10 at T+30d)",
-    "acceptance rate >=0.6 in >=2 segments (T1, baseline nil → target met at T+30d)",
+    "home_ai_feedback_submitted events per WAU (T1, baseline 0.03 \u2192 target >=0.10 at T+30d)",
+    "acceptance rate >=0.6 in >=2 segments (T1, baseline nil \u2192 target met at T+30d)",
     "recommendation fatigue rate declining trend (T2, declining over 14d window)",
     "Settings AI Feedback opt-out rate <=20% (T2, kill criterion)",
     "suppression accuracy operator-observation (T3, >=1 positive observation)"
@@ -209,7 +209,7 @@
       "started_at": "2026-06-01T19:12:00Z",
       "ended_at": "2026-06-02T04:35:02Z",
       "approved_by": "operator",
-      "approval_signal": "(implicit — operator merged PR #572)"
+      "approval_signal": "(implicit \u2014 operator merged PR #572)"
     },
     "review": {
       "started_at": "2026-06-02T04:35:02Z",
@@ -230,7 +230,7 @@
       "started_at": "2026-06-02T04:35:02Z",
       "ended_at": "2026-06-03T05:00:00Z",
       "approved_by": "operator",
-      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
     },
     "complete": {
       "started_at": "2026-06-03T05:00:00Z",
@@ -277,7 +277,8 @@
         "started_at": "2026-06-03T05:00:00Z",
         "ended_at": "2026-06-03T05:00:00Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "transitions": [
     {
@@ -290,19 +291,19 @@
       "from": "research",
       "to": "prd",
       "at": "2026-06-01T17:35:00Z",
-      "reason": "Phase 0 approved in PR #572. Phase 1 PRD authored — frozen constants + 3 new analytics events + 5 success metrics + 4 kill criteria + 6 OQ resolved."
+      "reason": "Phase 0 approved in PR #572. Phase 1 PRD authored \u2014 frozen constants + 3 new analytics events + 5 success metrics + 4 kill criteria + 6 OQ resolved."
     },
     {
       "from": "prd",
       "to": "tasks_phase",
       "at": "2026-06-01T17:55:00Z",
-      "reason": "Phase 1 PRD approved (operator: 'continue'). Phase 2 Tasks authored — 12 discrete units T1-T12 with dependency graph + Phase 4 landing order."
+      "reason": "Phase 1 PRD approved (operator: 'continue'). Phase 2 Tasks authored \u2014 12 discrete units T1-T12 with dependency graph + Phase 4 landing order."
     },
     {
       "from": "tasks_phase",
       "to": "implementation",
       "at": "2026-06-01T18:05:00Z",
-      "reason": "Phase 2 Tasks approved (operator: 'continue'). Phase 4 Implement: 7 standalone-buildable commits — T1+T3+T11 infra (6a00984), T2+T4 plumbing (be993f8), T5 orchestrator (571881d), T6 UI-024 closure (c476572), T7+T8 picker (f95e85b), T9+T10 settings (438e02c), T12 tests (current). xcodebuild BUILD SUCCEEDED after each commit."
+      "reason": "Phase 2 Tasks approved (operator: 'continue'). Phase 4 Implement: 7 standalone-buildable commits \u2014 T1+T3+T11 infra (6a00984), T2+T4 plumbing (be993f8), T5 orchestrator (571881d), T6 UI-024 closure (c476572), T7+T8 picker (f95e85b), T9+T10 settings (438e02c), T12 tests (current). xcodebuild BUILD SUCCEEDED after each commit."
     },
     {
       "from": "implementation",
@@ -332,7 +333,7 @@
       "from": "docs",
       "to": "complete",
       "at": "2026-06-03T05:00:00Z",
-      "reason": "Feature CLOSED. Closure batch on chore/state-drift-closure-c2-c3-c5-c6 (one of 4 features in 2026-06-03 sweep — addresses 5th instance of state-drift pattern documented in session memory). PR #587 closed D1 alone; this PR consolidates C2 + C3 + C5 + C6."
+      "reason": "Feature CLOSED. Closure batch on chore/state-drift-closure-c2-c3-c5-c6 (one of 4 features in 2026-06-03 sweep \u2014 addresses 5th instance of state-drift pattern documented in session memory). PR #587 closed D1 alone; this PR consolidates C2 + C3 + C5 + C6."
     }
   ],
   "merge_pr_number": 572,

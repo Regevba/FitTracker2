@@ -486,6 +486,13 @@ def detect_regression(prev: dict | None, curr: dict) -> tuple[bool, dict]:
     readers of the regression flag don't mistake `completeness_blocking: -2`
     (a 2-block improvement) for a regression cause.
 
+    Dilution-awareness (data-integrity sub-plan §2.5/§2.6): `adoption_pct_post_v6`
+    is a percentage and therefore DILUTION-SENSITIVE — adding a feature with empty
+    metrics drags it down even though nothing regressed. So a raw %-drop is recorded
+    as a dilution note but gates ONLY when the absolute numerator
+    (`fully_adopted_post_v6`) also dropped (numerator monotonicity). This stops the
+    phantom day-over-day regression alerts documented in honesty ledger FT2-FH-004.
+
     Shape: {"regressed": {<metric>: delta, ...}, "improved": {<metric>: delta, ...}}
     """
     if prev is None:
@@ -501,14 +508,21 @@ def detect_regression(prev: dict | None, curr: dict) -> tuple[bool, dict]:
             regression = True
         elif d < 0:
             improved[k] = d
-    # Lower-is-worse (adoption, fully_adopted) — d < 0 is a regression
-    for k in ("fully_adopted_post_v6", "adoption_pct_post_v6"):
-        d = curr.get(k, 0) - prev.get(k, 0)
-        if d < 0:
-            regressed[k] = d
-            regression = True
-        elif d > 0:
-            improved[k] = d
+    # Numerator: fully_adopted_post_v6 dropping IS a regression (monotonicity).
+    d_num = curr.get("fully_adopted_post_v6", 0) - prev.get("fully_adopted_post_v6", 0)
+    if d_num < 0:
+        regressed["fully_adopted_post_v6"] = d_num
+        regression = True
+    elif d_num > 0:
+        improved["fully_adopted_post_v6"] = d_num
+    # Percentage: gate only when the numerator also dropped; else it is dilution.
+    d_pct = curr.get("adoption_pct_post_v6", 0) - prev.get("adoption_pct_post_v6", 0)
+    if d_pct < 0 and d_num < 0:
+        regressed["adoption_pct_post_v6"] = d_pct
+    elif d_pct < 0:
+        improved["adoption_pct_post_v6_dilution"] = d_pct  # %-drop explained by corpus growth
+    elif d_pct > 0:
+        improved["adoption_pct_post_v6"] = d_pct
     # Mechanism A gates dropping is critical (lower-is-worse)
     d = curr.get("gate_coverage_distinct_gates", 0) - prev.get("gate_coverage_distinct_gates", 0)
     if d < 0:
