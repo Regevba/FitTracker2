@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "updated": "2026-06-10T18:17:41Z",
+  "updated": "2026-06-11T06:10:12Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 107,
-    "features_scanned": 104,
+    "case_studies_scanned": 108,
+    "features_scanned": 105,
     "integrity_snapshot_files": 15,
     "integrity_cycle_snapshots": 13,
     "trend_ready": true,
@@ -12,39 +12,39 @@
   },
   "coverage": {
     "date_written": {
-      "present": 107,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 107,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 107,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 107,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 107,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 48,
+      "present": 49,
       "missing": 59,
-      "percent": 44.9,
+      "percent": 45.4,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -55,8 +55,8 @@
     },
     "pr_citation_exempt": {
       "present": 25,
-      "missing": 82,
-      "percent": 23.4,
+      "missing": 83,
+      "percent": 23.1,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/ai-golden-set-evals-case-study.md",
@@ -66,7 +66,7 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 104,
+      "present": 105,
       "missing": 0,
       "percent": 100.0,
       "examples": []

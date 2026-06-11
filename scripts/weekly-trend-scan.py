@@ -8,6 +8,14 @@ Weekly trend scan — extends framework-status-weekly.yml with:
      distinct-gate set vs the union of all previously-seen gates from
      `.claude/shared/gate-coverage-weekly.jsonl`. Missing gates → regression.
 
+     Source (R1 fix, 2026-06-11): the CURRENT distinct-gate set is read from
+     the committed F17 index `.claude/shared/gate-last-fired.json`, NOT the
+     gitignored `.claude/logs/gate-coverage.jsonl`. The raw ledger is absent
+     on CI runners, which previously made this observer persist
+     distinct_gate_count=0 every week — structurally blind to the very drift
+     it exists to catch. The raw ledger remains a fallback for local /
+     pre-F17 environments where the index is absent.
+
 (A4) Per-dimension adoption trend nudge:
      The existing weekly cron only watches `fully_adopted` + `any_adopted`.
      This adds the four dimension percentages (timing, per_phase, cache_hits,
@@ -43,6 +51,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GATE_COV = REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
+# v7.9.1 F17 per-gate index. Committed + CI-durable; the primary source for
+# the distinct-gate set (see current_distinct_gates). GATE_COV is gitignored
+# and absent on CI runners, which previously made this observer blind (R1).
+GATE_LAST_FIRED = REPO_ROOT / ".claude" / "shared" / "gate-last-fired.json"
 WEEKLY_GATE_LEDGER = REPO_ROOT / ".claude" / "shared" / "gate-coverage-weekly.jsonl"
 ADOPT = REPO_ROOT / ".claude" / "shared" / "measurement-adoption.json"
 ADOPT_HIST = REPO_ROOT / ".claude" / "shared" / "measurement-adoption-history.json"
@@ -57,11 +69,33 @@ def load_json(p: Path) -> dict:
         return {}
 
 
-def current_distinct_gates() -> set[str]:
-    if not GATE_COV.exists():
+def _gates_from_index(index_path: Path) -> set[str]:
+    """Distinct gate names from the committed F17 gate-last-fired index.
+
+    The index is the canonical, version-controlled materialization of every
+    gate that has emitted Mechanism A coverage (or appeared in integrity-
+    snapshot failure history). Unlike the raw ledger it is tracked, so it is
+    present on CI runners — making it the consistent cross-environment source.
+    """
+    try:
+        d = json.loads(index_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return set()
+    gates = d.get("gates", {})
+    return {g for g in gates} if isinstance(gates, dict) else set()
+
+
+def _gates_from_ledger(ledger_path: Path) -> set[str]:
+    """Distinct gate names from the raw (gitignored) gate-coverage ledger.
+
+    Fallback source for local / pre-F17 environments where the index is
+    absent. Empty on CI runners (the ledger is not committed) — which is
+    exactly why it cannot be the primary source.
+    """
+    if not ledger_path.exists():
         return set()
     gates: set[str] = set()
-    for line in GATE_COV.read_text().splitlines():
+    for line in ledger_path.read_text().splitlines():
         if not line.strip():
             continue
         try:
@@ -72,6 +106,25 @@ def current_distinct_gates() -> set[str]:
         except json.JSONDecodeError:
             continue
     return gates
+
+
+def current_distinct_gates(
+    index_path: Path = GATE_LAST_FIRED,
+    ledger_path: Path = GATE_COV,
+) -> set[str]:
+    """The current distinct-gate set for A2 zero-drift detection.
+
+    Prefers the committed F17 index (CI-durable, consistent across
+    environments) and falls back to the raw ledger only when the index is
+    absent or lists no gates. Sourcing from the index closes the 2026-06-11
+    R1 finding: the gitignored ledger is empty on CI runners, so the weekly
+    observer used to persist distinct_gate_count=0 every week and could never
+    fire its own "a gate stopped emitting" alert.
+    """
+    from_index = _gates_from_index(index_path)
+    if from_index:
+        return from_index
+    return _gates_from_ledger(ledger_path)
 
 
 def ever_seen_gates() -> set[str]:
