@@ -111,7 +111,7 @@ struct AIFeedbackSettingsScreen: View {
                                     .font(AppText.caption)
                                     .foregroundStyle(AppColor.Text.secondary)
                                 Image(systemName: "chevron.right")
-                                    .font(.caption)
+                                    .font(AppText.caption)
                                     .foregroundStyle(AppColor.Text.secondary)
                             }
                             .contentShape(Rectangle())
