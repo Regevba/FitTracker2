@@ -1231,7 +1231,105 @@
           "post_v6_percent": 22.7
         }
       }
+    },
+    {
+      "date": "2026-06-10",
+      "generated_at": "2026-06-10T18:13:11Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 104,
+        "features_post_v6": 70,
+        "features_pre_v6": 34,
+        "fully_adopted": 9,
+        "partial_adopted": 59,
+        "zero_adopted": 36,
+        "fully_adopted_post_v6": 9,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 36,
+          "overall_percent": 34.6,
+          "post_v6_present": 36,
+          "post_v6_percent": 51.4
+        },
+        "per_phase_timing": {
+          "overall_present": 68,
+          "overall_percent": 65.4,
+          "post_v6_present": 65,
+          "post_v6_percent": 92.9
+        },
+        "cache_hits": {
+          "overall_present": 29,
+          "overall_percent": 27.9,
+          "post_v6_present": 28,
+          "post_v6_percent": 40.0
+        },
+        "cu_v2": {
+          "overall_present": 25,
+          "overall_percent": 24.0,
+          "post_v6_present": 25,
+          "post_v6_percent": 35.7
+        }
+      }
+    },
+    {
+      "date": "2026-06-11",
+      "generated_at": "2026-06-11T06:10:13Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 105,
+        "features_post_v6": 71,
+        "features_pre_v6": 34,
+        "fully_adopted": 9,
+        "partial_adopted": 60,
+        "zero_adopted": 36,
+        "fully_adopted_post_v6": 9,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 36,
+          "overall_percent": 34.3,
+          "post_v6_present": 36,
+          "post_v6_percent": 50.7,
+          "overall_instrumented": 17,
+          "overall_derived": 19,
+          "post_v6_instrumented": 17,
+          "post_v6_derived": 19
+        },
+        "per_phase_timing": {
+          "overall_present": 69,
+          "overall_percent": 65.7,
+          "post_v6_present": 66,
+          "post_v6_percent": 93.0,
+          "overall_instrumented": 69,
+          "overall_derived": 0,
+          "post_v6_instrumented": 66,
+          "post_v6_derived": 0
+        },
+        "cache_hits": {
+          "overall_present": 29,
+          "overall_percent": 27.6,
+          "post_v6_present": 28,
+          "post_v6_percent": 39.4,
+          "overall_instrumented": 29,
+          "overall_derived": 0,
+          "post_v6_instrumented": 28,
+          "post_v6_derived": 0
+        },
+        "cu_v2": {
+          "overall_present": 25,
+          "overall_percent": 23.8,
+          "post_v6_present": 25,
+          "post_v6_percent": 35.2,
+          "overall_instrumented": 25,
+          "overall_derived": 0,
+          "post_v6_instrumented": 25,
+          "post_v6_derived": 0
+        }
+      }
     }
   ],
-  "updated": "2026-06-08T06:04:19Z"
+  "updated": "2026-06-11T06:10:13Z"
 }

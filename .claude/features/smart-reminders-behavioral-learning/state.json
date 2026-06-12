@@ -7,7 +7,12 @@
   "work_type": "feature",
   "framework_version": "v7.7",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "status": "complete",
   "created": "2026-04-29T18:55:00Z",
@@ -114,7 +119,8 @@
         "duration_minutes": null,
         "paused_minutes": 0
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "cu_v2": {
     "factors": {

@@ -1,0 +1,151 @@
+{
+  "generated_for": "integrity-data-lake",
+  "source_counts": {
+    "features": 104,
+    "gate_coverage_gates": 21,
+    "f17_gates": 25,
+    "weekly_gate_snapshots": 3,
+    "daily_checkpoints": 31,
+    "adoption_history_snapshots": 31,
+    "anchors": 2,
+    "daily_snapshots_local": 28,
+    "daily_snapshots_ssd": 32
+  },
+  "reconciliation": [
+    {
+      "id": "R1-weekly-zero-vs-index",
+      "severity": "HIGH",
+      "message": "weekly gate trend reports distinct_gate_count=0 (2026-06-08) but F17 index has 25 gates and gate-coverage.jsonl has 21 emitting gates \u2014 the weekly observer is blind (cron-context emptiness or reader divergence)."
+    },
+    {
+      "id": "R2-adoption-vs-checkpoint",
+      "severity": "INFO",
+      "message": "live fully_adopted=9; latest daily-checkpoint (2026-06-10) fully_adopted_post_v6=9."
+    },
+    {
+      "id": "R3-corpus-growth",
+      "severity": "INFO",
+      "message": "corpus grew 70 \u2192 104 (+34) since canonical anchor 2026-05-14-platform \u2014 raw % targets are diluted by this; use cohort view."
+    },
+    {
+      "id": "R4-snapshot-parity",
+      "severity": "LOW",
+      "message": "daily snapshot dirs differ: 0 local-only, 4 SSD-only (dual-write drift; SSD is the non-authoritative copy)."
+    },
+    {
+      "id": "R5-zero-candidate-gates",
+      "severity": "LOW",
+      "message": "4 gate(s) in F17 index with 0 candidates+0 firings (BRANCH_ISOLATION_HISTORICAL, CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE, PHASE_LIE, TIER_TAG_LIKELY_INCORRECT) \u2014 verify via GATE_COVERAGE_ZERO whether healthy-zero or mis-wired."
+    }
+  ],
+  "adoption_normalized": {
+    "canonical_anchor": "2026-05-14-platform",
+    "dimensions": {
+      "timing_wall_time": {
+        "dimension": "timing_wall_time",
+        "raw_delta": 10.3,
+        "cohort_delta": 7.1,
+        "numerator_delta": 19,
+        "raw_anchor": 24.3,
+        "raw_latest": 34.6,
+        "cohort_anchor": 24.3,
+        "cohort_latest": 31.4,
+        "num_anchor": 17,
+        "num_latest": 36,
+        "verdict": "improved"
+      },
+      "per_phase_timing": {
+        "dimension": "per_phase_timing",
+        "raw_delta": 19.7,
+        "cohort_delta": 2.9,
+        "numerator_delta": 36,
+        "raw_anchor": 45.7,
+        "raw_latest": 65.4,
+        "cohort_anchor": 45.7,
+        "cohort_latest": 48.6,
+        "num_anchor": 32,
+        "num_latest": 68,
+        "verdict": "improved"
+      },
+      "cache_hits": {
+        "dimension": "cache_hits",
+        "raw_delta": -0.7,
+        "cohort_delta": 2.8,
+        "numerator_delta": 9,
+        "raw_anchor": 28.6,
+        "raw_latest": 27.9,
+        "cohort_anchor": 28.6,
+        "cohort_latest": 31.4,
+        "num_anchor": 20,
+        "num_latest": 29,
+        "verdict": "dilution"
+      },
+      "cu_v2": {
+        "dimension": "cu_v2",
+        "raw_delta": 14.0,
+        "cohort_delta": 11.4,
+        "numerator_delta": 18,
+        "raw_anchor": 10.0,
+        "raw_latest": 24.0,
+        "cohort_anchor": 10.0,
+        "cohort_latest": 21.4,
+        "num_anchor": 7,
+        "num_latest": 25,
+        "verdict": "improved"
+      }
+    },
+    "real_regressions": []
+  },
+  "forward_digest": {
+    "calibration_ladder": [
+      {
+        "date": "2026-06-18",
+        "item": "F16 try-repo harness advisory\u2192enforced flip"
+      },
+      {
+        "date": "2026-06-20",
+        "item": "W9 drift-auto-isolation calibration"
+      },
+      {
+        "date": "2026-06-21",
+        "item": "PLATFORMS_TESTED (T14) advisory\u2192enforced review (B15)"
+      },
+      {
+        "date": "2026-07-04",
+        "item": "R9 Track-B 30-day coverage read \u2192 GATE_TEST_MISSING calibration"
+      },
+      {
+        "date": "2026-08-12",
+        "item": "Data Freshness Audit #1 (uses F17 index)"
+      }
+    ],
+    "open_anomalies": 1,
+    "ranked_anomalies": [
+      {
+        "id": "R1-weekly-zero-vs-index",
+        "severity": "HIGH",
+        "message": "weekly gate trend reports distinct_gate_count=0 (2026-06-08) but F17 index has 25 gates and gate-coverage.jsonl has 21 emitting gates \u2014 the weekly observer is blind (cron-context emptiness or reader divergence)."
+      },
+      {
+        "id": "R4-snapshot-parity",
+        "severity": "LOW",
+        "message": "daily snapshot dirs differ: 0 local-only, 4 SSD-only (dual-write drift; SSD is the non-authoritative copy)."
+      },
+      {
+        "id": "R5-zero-candidate-gates",
+        "severity": "LOW",
+        "message": "4 gate(s) in F17 index with 0 candidates+0 firings (BRANCH_ISOLATION_HISTORICAL, CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE, PHASE_LIE, TIER_TAG_LIKELY_INCORRECT) \u2014 verify via GATE_COVERAGE_ZERO whether healthy-zero or mis-wired."
+      },
+      {
+        "id": "R2-adoption-vs-checkpoint",
+        "severity": "INFO",
+        "message": "live fully_adopted=9; latest daily-checkpoint (2026-06-10) fully_adopted_post_v6=9."
+      },
+      {
+        "id": "R3-corpus-growth",
+        "severity": "INFO",
+        "message": "corpus grew 70 \u2192 104 (+34) since canonical anchor 2026-05-14-platform \u2014 raw % targets are diluted by this; use cohort view."
+      }
+    ]
+  }
+}

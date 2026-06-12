@@ -16,10 +16,10 @@
     ]
   },
   "kill_criteria": [
-    "last_failed_at conflated with last_fired_at (a gate that ran but never failed shows a stale last_failed) — would mislead the meta-check.",
+    "last_failed_at conflated with last_fired_at (a gate that ran but never failed shows a stale last_failed) \u2014 would mislead the meta-check.",
     "Snapshot scan slows the index refresh beyond the <1s budget."
   ],
-  "kill_criteria_resolution": "Neither fired. last_failed_at is strictly the most-recent snapshot ts where the gate code appeared in findings[] (a real violation), distinct from last_fired_at (checked>=1 in coverage). Refresh stays <1s (14 snapshots, ~3.2k coverage rows). Refined the v7.10 mis-wire detector: a 0-candidate gate with failure history is a cycle-time code (running, not mis-wired) — cleared 4 false GATE_COVERAGE_ZERO advisories the index extension would otherwise have produced.",
+  "kill_criteria_resolution": "Neither fired. last_failed_at is strictly the most-recent snapshot ts where the gate code appeared in findings[] (a real violation), distinct from last_fired_at (checked>=1 in coverage). Refresh stays <1s (14 snapshots, ~3.2k coverage rows). Refined the v7.10 mis-wire detector: a 0-candidate gate with failure history is a cycle-time code (running, not mis-wired) \u2014 cleared 4 false GATE_COVERAGE_ZERO advisories the index extension would otherwise have produced.",
   "dispatch_pattern": "operator-driven (T13 from test-coverage master plan; extends F17)",
   "platforms_tested": {
     "ios": false,
@@ -87,7 +87,8 @@
         "ended_at": "2026-06-10T07:17:22Z"
       }
     },
-    "wall_time_seconds": 1
+    "wall_time_seconds": 1,
+    "wall_time_backfill": "excluded-dirty-timestamps"
   },
   "phases": {
     "research": {

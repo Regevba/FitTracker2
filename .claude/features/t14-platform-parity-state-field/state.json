@@ -20,7 +20,7 @@
   "requires_analytics": false,
   "state_owner": "ft2",
   "isolation_opt_out": true,
-  "isolation_opt_out_reason": "Stub-only PR created on the same chore/ branch as the F6 CLAUDE.md edit during Phase E exit batch — Mode C bypass needed for the initial research-phase scaffold commit. The feature/t14-platform-parity-state-field branch will be opened for Phase 1 PRD work (the real implementation).",
+  "isolation_opt_out_reason": "Stub-only PR created on the same chore/ branch as the F6 CLAUDE.md edit during Phase E exit batch \u2014 Mode C bypass needed for the initial research-phase scaffold commit. The feature/t14-platform-parity-state-field branch will be opened for Phase 1 PRD work (the real implementation).",
   "branch": "feature/t14-platform-parity-state-field",
   "timing": {
     "phases": {
@@ -39,28 +39,29 @@
       "implementation": {
         "started_at": "2026-06-07T09:00:00Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "scheduled_after": null,
   "linear": "FIT-162",
   "primary_metric": "Number of complete-phase transitions where platforms_tested is populated and non-empty",
   "success_metrics": [
     "100% of new current_phase=complete transitions post-promotion carry non-empty platforms_tested (T1, measured via gate-coverage.jsonl)",
-    "Zero false positives during 14-day advisory→enforced calibration window",
+    "Zero false positives during 14-day advisory\u2192enforced calibration window",
     "Backfill of 85 existing complete features done in single mechanical PR (T1, measured by grep)"
   ],
   "kill_criteria": [
-    "False positive rate >5% during advisory calibration window — gate flags legitimately-platformless features (e.g., framework-meta features that touch no platform)",
-    "Operator burden — operators routinely struggle to identify platforms_tested values OR consistently leave field empty post-backfill (signal: >20% of new complete transitions have empty array)",
-    "Field semantics unclear in practice — operators ask >3 times what 'backend' or 'ai' means in a 30-day window"
+    "False positive rate >5% during advisory calibration window \u2014 gate flags legitimately-platformless features (e.g., framework-meta features that touch no platform)",
+    "Operator burden \u2014 operators routinely struggle to identify platforms_tested values OR consistently leave field empty post-backfill (signal: >20% of new complete transitions have empty array)",
+    "Field semantics unclear in practice \u2014 operators ask >3 times what 'backend' or 'ai' means in a 30-day window"
   ],
   "kill_criteria_resolution": "",
   "dispatch_pattern": "agent-driven (schema + gate code + backfill + dev-guide update)",
   "case_study": "docs/case-studies/t14-platform-parity-state-field-case-study.md",
   "case_study_showcase": "",
-  "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md §4 T14",
+  "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md \u00a74 T14",
   "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
-  "scope_summary": "Adds `platforms_tested: {ios: bool, web: bool, backend: bool, ai: bool}` field to state.json schema. Extends FEATURE_CLOSURE_COMPLETENESS gate (currently advisory at v7.9.1, was enforced at v7.9) to require non-empty platforms_tested at current_phase=complete transition. Backfill on 85 existing complete features in single mechanical commit. Ships advisory mode in v7.9.1; advisory → enforced flip at next promotion window (~v7.10) following 14-day Mechanism A calibration. Scope explicitly OUT: per-platform test-coverage metrics (separate T15+ work item).",
+  "scope_summary": "Adds `platforms_tested: {ios: bool, web: bool, backend: bool, ai: bool}` field to state.json schema. Extends FEATURE_CLOSURE_COMPLETENESS gate (currently advisory at v7.9.1, was enforced at v7.9) to require non-empty platforms_tested at current_phase=complete transition. Backfill on 85 existing complete features in single mechanical commit. Ships advisory mode in v7.9.1; advisory \u2192 enforced flip at next promotion window (~v7.10) following 14-day Mechanism A calibration. Scope explicitly OUT: per-platform test-coverage metrics (separate T15+ work item).",
   "related_prs": [
     662
   ],
@@ -68,12 +69,12 @@
     "research": {
       "started_at": "2026-06-04T05:00:00Z",
       "ended_at": "2026-06-07T08:00:00Z",
-      "notes": "Stub created 2026-06-04 (Phase E exit batch). Research completed 2026-06-07 in research.md: Q1 — deterministic file-glob backfill heuristic + provenance flag (0 mandatory manual review); Q2 — framework-meta features EXEMPT via existing work_subtype/work_type/case_study_type predicate (no all-false); Q3 — 14-day advisory→enforced calibration per v7.9 precedent."
+      "notes": "Stub created 2026-06-04 (Phase E exit batch). Research completed 2026-06-07 in research.md: Q1 \u2014 deterministic file-glob backfill heuristic + provenance flag (0 mandatory manual review); Q2 \u2014 framework-meta features EXEMPT via existing work_subtype/work_type/case_study_type predicate (no all-false); Q3 \u2014 14-day advisory\u2192enforced calibration per v7.9 precedent."
     },
     "prd": {
       "started_at": "2026-06-07T08:00:00Z",
       "ended_at": "2026-06-07T08:30:00Z",
-      "notes": "PRD authored at prd.md — field spec locked ({ios,web,backend,ai} booleans + platforms_tested_provenance), success metrics + kill criteria pre-registered, 9-task plan with F16 try-repo fixture discipline for T3's new advisory sub-check."
+      "notes": "PRD authored at prd.md \u2014 field spec locked ({ios,web,backend,ai} booleans + platforms_tested_provenance), success metrics + kill criteria pre-registered, 9-task plan with F16 try-repo fixture discipline for T3's new advisory sub-check."
     },
     "tasks_phase": {
       "started_at": "2026-06-07T08:30:00Z",
@@ -83,11 +84,11 @@
     "implementation": {
       "started_at": "2026-06-07T09:00:00Z",
       "ended_at": null,
-      "notes": "T2+T3 shipped: platforms_tested + provenance schema validation + advisory PLATFORMS_TESTED non-empty-at-complete sub-check (own PLATFORMS_TESTED_ADVISORY_MODE flag + isolated Mechanism A coverage key + Q2 framework-meta exemption) in scripts/check-state-schema.py; 15 unit tests. T4 shipped: scripts/backfill-platforms-tested.py + 9 unit tests; backfilled 94 complete features (25 exempt, 61 inferred, 8 low-confidence flagged for optional spot-check). T5-T9 remaining: dev-guide/CLAUDE.md/glossary, case study + showcase, 14d advisory→enforced calibration."
+      "notes": "T2+T3 shipped: platforms_tested + provenance schema validation + advisory PLATFORMS_TESTED non-empty-at-complete sub-check (own PLATFORMS_TESTED_ADVISORY_MODE flag + isolated Mechanism A coverage key + Q2 framework-meta exemption) in scripts/check-state-schema.py; 15 unit tests. T4 shipped: scripts/backfill-platforms-tested.py + 9 unit tests; backfilled 94 complete features (25 exempt, 61 inferred, 8 low-confidence flagged for optional spot-check). T5-T9 remaining: dev-guide/CLAUDE.md/glossary, case study + showcase, 14d advisory\u2192enforced calibration."
     }
   },
   "calendar_gate": {
-    "phase_e_unblocker": "Phase E exit 2026-06-04 unblocked FEATURE_CLOSURE_COMPLETENESS gate extensions per v7.9.1 build window opening. T14 is the 2nd-highest RICE in Theme H of test-coverage master plan (R=8 I=2 C=100% E=0.1w → 160.0).",
+    "phase_e_unblocker": "Phase E exit 2026-06-04 unblocked FEATURE_CLOSURE_COMPLETENESS gate extensions per v7.9.1 build window opening. T14 is the 2nd-highest RICE in Theme H of test-coverage master plan (R=8 I=2 C=100% E=0.1w \u2192 160.0).",
     "rationale": "Cannot start before v7.9 promotion + Phase E exit because the gate to extend (FEATURE_CLOSURE_COMPLETENESS) was advisory before 2026-05-21 and stayed in soak through 2026-06-04. Extending an advisory gate would have added telemetry noise during the v7.9 calibration window."
   },
   "tasks": [
@@ -113,7 +114,7 @@
     },
     {
       "id": "T5",
-      "description": "Update docs/architecture/dev-guide-v1-to-v7-7.md §3 state.json schema + §4 gate catalog",
+      "description": "Update docs/architecture/dev-guide-v1-to-v7-7.md \u00a73 state.json schema + \u00a74 gate catalog",
       "status": "done"
     },
     {
@@ -125,7 +126,7 @@
       "id": "T7",
       "description": "Update fitme-story dev-guide.md mirror + glossary entry",
       "status": "complete",
-      "summary": " [reconciled 2026-06-10] fitme-story glossary platforms_tested entry shipped; dev-guide mirror auto-syncs the FT2 source (docs/architecture/dev-guide-v1-to-v7-7.md §5.4 + schema rows + gate catalog), with the v7.9.1 timeline row corrected from \"stub/queued\" to \"shipped\"."
+      "summary": " [reconciled 2026-06-10] fitme-story glossary platforms_tested entry shipped; dev-guide mirror auto-syncs the FT2 source (docs/architecture/dev-guide-v1-to-v7-7.md \u00a75.4 + schema rows + gate catalog), with the v7.9.1 timeline row corrected from \"stub/queued\" to \"shipped\"."
     },
     {
       "id": "T8",
@@ -135,7 +136,7 @@
     },
     {
       "id": "T9",
-      "description": "advisory → enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window",
+      "description": "advisory \u2192 enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window",
       "status": "pending"
     }
   ]

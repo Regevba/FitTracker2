@@ -1,50 +1,50 @@
 {
   "version": "1.0",
-  "updated": "2026-06-08T09:27:19Z",
+  "updated": "2026-06-11T06:10:12Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 101,
-    "features_scanned": 100,
-    "integrity_snapshot_files": 13,
-    "integrity_cycle_snapshots": 11,
+    "case_studies_scanned": 108,
+    "features_scanned": 105,
+    "integrity_snapshot_files": 15,
+    "integrity_cycle_snapshots": 13,
     "trend_ready": true,
     "open_debt_items": 1
   },
   "coverage": {
     "date_written": {
-      "present": 101,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 101,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 101,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 101,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 101,
+      "present": 108,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 42,
+      "present": 49,
       "missing": 59,
-      "percent": 41.6,
+      "percent": 45.4,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -54,27 +54,27 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 24,
-      "missing": 77,
-      "percent": 23.8,
+      "present": 25,
+      "missing": 83,
+      "percent": 23.1,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+        "docs/case-studies/ai-golden-set-evals-case-study.md",
+        "docs/case-studies/analytics-observability-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
+        "docs/case-studies/audit-remediation-case-study.md"
       ]
     },
     "state_case_study_linkage": {
-      "present": 100,
+      "present": 105,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 13,
-    "snapshots_available": 11,
+    "snapshot_files_available": 15,
+    "snapshots_available": 13,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": true,
     "status": "trend_ready",

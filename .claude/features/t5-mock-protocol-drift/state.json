@@ -1,0 +1,135 @@
+{
+  "name": "t5-mock-protocol-drift",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "b_medium",
+  "current_phase": "complete",
+  "isolation_opt_out": false,
+  "created_at": "2026-06-10T14:56:25Z",
+  "primary_metric": "Central protocol-conformance registry: every test-mocked protocol has a compile-time anchor so a protocol-surface drift fails the build at a single labelled point.",
+  "success_metrics": {
+    "primary": "MockProtocolConformanceTests.swift anchors all 6 test-mocked protocols (AnalyticsProvider/GoogleAuthProviding/AppleAuthProviding/EmailAuthProviding/URLSessionProtocol/AIInputAdapter); test target compiles; build-for-testing green",
+    "secondary": [
+      "2 shareable app-target mocks (MockAnalyticsAdapter, MockGoogleAuthProvider) additionally bound + smoke-tested",
+      "Documented the scoping reframe: spec's named mocks don't exist + real mocks are private-by-design"
+    ]
+  },
+  "kill_criteria": [
+    "Anchors duplicate private mocks in a way that creates maintenance burden without catching new drift.",
+    "A protocol gains an optional/defaulted method that the anchor masks (false negative)."
+  ],
+  "kill_criteria_resolution": "Neither fired. The anchors are minimal (one per protocol) and centralized — they ADD a single labelled failure point that Swift's per-mock conformance doesn't provide (the real mocks are private to their test files). No protocol in scope uses optional/defaulted requirements, so an added requirement always breaks the anchor (no masking).",
+  "dispatch_pattern": "operator-driven (T5 from test-coverage master plan)",
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "case_study": "docs/case-studies/t5-mock-protocol-drift-case-study.md",
+  "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md",
+  "tasks": [
+    {
+      "id": "T1",
+      "status": "complete",
+      "summary": "Scope: spec's named mocks absent; real mocks mostly private; conformance already compile-enforced -> reframe to central registry"
+    },
+    {
+      "id": "T2",
+      "status": "complete",
+      "summary": "MockProtocolConformanceTests.swift: 6 conformance anchors + 2 shareable-mock bindings"
+    },
+    {
+      "id": "T3",
+      "status": "complete",
+      "summary": "Register in project.pbxproj + build-for-testing verify"
+    }
+  ],
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "implement": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "test": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "review": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "merge": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "docs": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      },
+      "complete": {
+        "started_at": "2026-06-10T14:56:25Z",
+        "ended_at": "2026-06-10T14:56:25Z"
+      }
+    },
+    "wall_time_seconds": 1
+  },
+  "phases": {
+    "research": {
+      "status": "complete"
+    },
+    "prd": {
+      "status": "skipped",
+      "note": "b_medium; scope in test-coverage plan T5"
+    },
+    "tasks_phase": {
+      "status": "complete"
+    },
+    "ux_or_integration": {
+      "status": "skipped"
+    },
+    "implement": {
+      "status": "complete",
+      "started_at": "2026-06-10T14:56:25Z",
+      "ended_at": "2026-06-10T14:56:25Z"
+    },
+    "test": {
+      "status": "complete",
+      "started_at": "2026-06-10T14:56:25Z",
+      "ended_at": "2026-06-10T14:56:25Z"
+    },
+    "review": {
+      "status": "complete",
+      "started_at": "2026-06-10T14:56:25Z",
+      "ended_at": "2026-06-10T14:56:25Z"
+    },
+    "merge": {
+      "status": "complete",
+      "started_at": "2026-06-10T14:56:25Z",
+      "ended_at": "2026-06-10T14:56:25Z"
+    },
+    "docs": {
+      "status": "complete",
+      "started_at": "2026-06-10T14:56:25Z",
+      "ended_at": "2026-06-10T14:56:25Z"
+    },
+    "learn": {
+      "status": "skipped"
+    },
+    "complete": {
+      "status": "complete",
+      "started_at": "2026-06-10T14:56:25Z",
+      "ended_at": "2026-06-10T14:56:25Z"
+    }
+  }
+}

@@ -159,7 +159,8 @@
         "started_at": "2026-06-05T05:45:00Z",
         "ended_at": "2026-06-05T05:30:46Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-dirty-timestamps"
   },
   "merge_pr_number": 629,
   "merge_commit_sha": "a79aebeeb116c44c95c7f59e33a50afb220a397d",

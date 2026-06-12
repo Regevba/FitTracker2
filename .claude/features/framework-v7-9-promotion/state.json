@@ -34,7 +34,7 @@
     "False positive rate >5% during calibration window for any proposed-promotion gate",
     "Post-promotion bug surfaces requiring rollback within T+7d soak \u2014 defer promotion or restore advisory mode"
   ],
-  "kill_criteria_resolution": "All 3 kill criteria not_fired (evaluated 2026-05-28, Phase E Day 7, post-B2 baseline snapshot). K1 (Mech A 0% coverage at decision time): 18 + 13 + 13 firings observed across 14-day calibration window 2026-05-07 → 2026-05-21; 0% coverage was NEVER observed for any of the 3 candidate gates [T1, .claude/logs/gate-coverage.jsonl]. K2 (false positive rate >5% during calibration): 0 false positives across 44 total firings; rate = 0% < 5% threshold [T1, operator review of 44 rows]. K3 (post-promotion rollback within T+7d): Phase E Day 7 (2026-05-28) — scripts/check-state-schema.py:132 still reads `BRANCH_ISOLATION_ADVISORY_MODE = False` per git log; no rollback PR opened on `chore/v7-9-rollback` or equivalent [T1, git log on main]. Verdict: v7.9 promotion holds; advance docs → complete. Process regressions in adoption_pct_post_v6 (8.3% → 6.7%), timing_wall_time_pct_post_v6 (47.2% → 37.8%), cache_hits_pct_post_v6 (52.8% → 51.1%) observed via `make integrity-diff` vs 2026-05-14 anchor are denominator-dilution from +9 features added during Phase E without adoption metrics backfilled — NOT v7.9-caused; flagged for v7.9.1 backfill follow-up (see §99.2 of case study) [T1, integrity-diff output 2026-05-28T17:00Z].",
+  "kill_criteria_resolution": "All 3 kill criteria not_fired (evaluated 2026-05-28, Phase E Day 7, post-B2 baseline snapshot). K1 (Mech A 0% coverage at decision time): 18 + 13 + 13 firings observed across 14-day calibration window 2026-05-07 \u2192 2026-05-21; 0% coverage was NEVER observed for any of the 3 candidate gates [T1, .claude/logs/gate-coverage.jsonl]. K2 (false positive rate >5% during calibration): 0 false positives across 44 total firings; rate = 0% < 5% threshold [T1, operator review of 44 rows]. K3 (post-promotion rollback within T+7d): Phase E Day 7 (2026-05-28) \u2014 scripts/check-state-schema.py:132 still reads `BRANCH_ISOLATION_ADVISORY_MODE = False` per git log; no rollback PR opened on `chore/v7-9-rollback` or equivalent [T1, git log on main]. Verdict: v7.9 promotion holds; advance docs \u2192 complete. Process regressions in adoption_pct_post_v6 (8.3% \u2192 6.7%), timing_wall_time_pct_post_v6 (47.2% \u2192 37.8%), cache_hits_pct_post_v6 (52.8% \u2192 51.1%) observed via `make integrity-diff` vs 2026-05-14 anchor are denominator-dilution from +9 features added during Phase E without adoption metrics backfilled \u2014 NOT v7.9-caused; flagged for v7.9.1 backfill follow-up (see \u00a799.2 of case study) [T1, integrity-diff output 2026-05-28T17:00Z].",
   "dispatch_pattern": "operator-driven (decision) + agent-driven (per-gate flip implementation)",
   "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/34-framework-v7-9-promotion.mdx",
@@ -239,7 +239,8 @@
       "learn": {
         "started_at": "2026-05-28T17:30:00Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-multiday"
   },
   "_meta": {
     "scaffolded_by": "claude_opus_4_7",

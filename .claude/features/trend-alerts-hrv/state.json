@@ -1,6 +1,6 @@
 {
   "feature": "trend-alerts-hrv",
-  "description": "Sustained-trend HRV alert: fires when HRV stays below the user's personal baseline (or a fixed floor for cold-start users) for 3+ consecutive days. Distinct from ReadinessAlertObserver (single-day score crossing) and ReadinessAwareTrainingObserver (daily pre-training advisory) — this observer surfaces a multi-day pattern. Surfaces via push notification + Home AIInsightCard banner; the Why? affordance opens an AIIntelligenceSheet section showing the 3-day HRV mini-chart with baseline overlay. Backlog source: docs/product/backlog.md L346 (RICE 10.5 per 2026-05-31 E1 refresh).",
+  "description": "Sustained-trend HRV alert: fires when HRV stays below the user's personal baseline (or a fixed floor for cold-start users) for 3+ consecutive days. Distinct from ReadinessAlertObserver (single-day score crossing) and ReadinessAwareTrainingObserver (daily pre-training advisory) \u2014 this observer surfaces a multi-day pattern. Surfaces via push notification + Home AIInsightCard banner; the Why? affordance opens an AIIntelligenceSheet section showing the 3-day HRV mini-chart with baseline overlay. Backlog source: docs/product/backlog.md L346 (RICE 10.5 per 2026-05-31 E1 refresh).",
   "work_type": "feature",
   "current_phase": "complete",
   "platforms_tested": {
@@ -27,14 +27,14 @@
   "dependencies_met": {
     "HealthKitService": "shipped 2026-04-10 (HRV daily reads operational)",
     "ReadinessEngine_v2": "shipped 2026-04-10 (component scores incl. hrvScore)",
-    "NotificationGateway": "shipped 2026-05-07 (PR #239) — v2 dispatch platform",
+    "NotificationGateway": "shipped 2026-05-07 (PR #239) \u2014 v2 dispatch platform",
     "NotificationConsumerRegistry": "shipped 2026-05-07 (PR #239)",
     "DeepLinkRouter": "shipped 2026-05-07 (PR #239) + #556 (registry, 2026-05-31)",
     "AIInsightCard": "shipped 2026-04-10",
     "AIIntelligenceSheet": "shipped 2026-04-10",
     "EncryptedDataStore_daily_history": "shipped 2026-04-10 (daily logs persist HRV history)",
-    "ReminderPreferencesStore": "shipped 2026-05-31 (PR #550) — v2 prefs UserDefaults-backed",
-    "ReadinessAwareAlertStore": "depends_on C2 PR #560 merge — if not merged, C4 ships its own TrendAlertStore"
+    "ReminderPreferencesStore": "shipped 2026-05-31 (PR #550) \u2014 v2 prefs UserDefaults-backed",
+    "ReadinessAwareAlertStore": "depends_on C2 PR #560 merge \u2014 if not merged, C4 ships its own TrendAlertStore"
   },
   "scope_vs_c2": {
     "c2_covers": "Daily pre-training advisory: TODAY is a training day AND today's readiness suggests continue/lighten/swap",
@@ -61,7 +61,7 @@
       "started_at": "2026-06-01T07:24:00Z",
       "ended_at": "2026-06-01T14:13:53Z",
       "approved_by": "operator",
-      "approval_signal": "(implicit — operator merged PR #564)"
+      "approval_signal": "(implicit \u2014 operator merged PR #564)"
     },
     "testing": {
       "started_at": "2026-06-01T14:13:53Z",
@@ -135,7 +135,8 @@
         "started_at": "2026-06-03T18:00:00Z",
         "ended_at": "2026-06-03T18:00:00Z"
       }
-    }
+    },
+    "wall_time_backfill": "excluded-dirty-timestamps"
   },
   "prd_path": "docs/product/prd/trend-alerts-hrv.md",
   "transitions": [
@@ -149,19 +150,19 @@
       "from": "research",
       "to": "prd",
       "at": "2026-06-01T07:10:30Z",
-      "reason": "Phase 0 research approved + merged to main (PR #562, 8121294). C2 PR #560 also merged (dcf30c9) clearing the shared-file conflict risk — proceeding with Option A from research.md scope_vs_c2 plan."
+      "reason": "Phase 0 research approved + merged to main (PR #562, 8121294). C2 PR #560 also merged (dcf30c9) clearing the shared-file conflict risk \u2014 proceeding with Option A from research.md scope_vs_c2 plan."
     },
     {
       "from": "prd",
       "to": "tasks",
       "at": "2026-06-01T07:22:30Z",
-      "reason": "Operator approved PRD via 'approved' directive. Phase 2 (Tasks) tasks.md authored — 14-task breakdown covering 5 new source files + ReadinessEngine.personalBaseline stddev: extension + 4 modified UI files + 4 modified analytics/settings files + 4 test files (~41 tests total) + case study + showcase MDX + backlog strike."
+      "reason": "Operator approved PRD via 'approved' directive. Phase 2 (Tasks) tasks.md authored \u2014 14-task breakdown covering 5 new source files + ReadinessEngine.personalBaseline stddev: extension + 4 modified UI files + 4 modified analytics/settings files + 4 test files (~41 tests total) + case study + showcase MDX + backlog strike."
     },
     {
       "from": "tasks",
       "to": "implementation",
       "at": "2026-06-01T07:24:00Z",
-      "reason": "Operator approved Phase 4 (Implement) kickoff via 'go' directive. T1-T14 begin. Branch: feature/trend-alerts-hrv (Mode C compliant — no infra-path edits)."
+      "reason": "Operator approved Phase 4 (Implement) kickoff via 'go' directive. T1-T14 begin. Branch: feature/trend-alerts-hrv (Mode C compliant \u2014 no infra-path edits)."
     },
     {
       "from": "implementation",
@@ -199,7 +200,7 @@
   "merge_commit_sha": "3deab70daab66f9c0c7a3540b96fec3e3a02a09e",
   "merged_at": "2026-06-01T14:13:53Z",
   "feature_branch_merged": "feature/trend-alerts-hrv",
-  "kill_criteria_resolution": "pending_t14_eval_2026-06-17 — all 5 kill criteria carry calendar-anchored T+14d evaluations per case study frontmatter (action-taken rate 14d, false-positive 30d, push-fatigue 30d, adoption 30d, daily-trigger latency 14d post-wire-up). kill_criterion_fired: false at closure.",
+  "kill_criteria_resolution": "pending_t14_eval_2026-06-17 \u2014 all 5 kill criteria carry calendar-anchored T+14d evaluations per case study frontmatter (action-taken rate 14d, false-positive 30d, push-fatigue 30d, adoption 30d, daily-trigger latency 14d post-wire-up). kill_criterion_fired: false at closure.",
   "cache_hits": [
     {
       "ts": "2026-06-08T06:00:00Z",
