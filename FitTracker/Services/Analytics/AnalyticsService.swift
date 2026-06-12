@@ -281,6 +281,43 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Data Sources Events (garmin-health-connection / fitbit, Tier 1)
+
+    func logSettingsDataSourcesViewed() {
+        logEvent(AnalyticsEvent.settingsDataSourcesViewed, parameters: nil)
+    }
+
+    /// A source's data was found in Apple Health. `signals` = comma-sep readiness signals (e.g. "hrv,rhr,sleep").
+    func logSettingsDataSourceDetected(source: String, signals: String) {
+        logEvent(AnalyticsEvent.settingsDataSourceDetected, parameters: [
+            AnalyticsParam.source: source,
+            AnalyticsParam.signals: signals,
+        ])
+    }
+
+    func logSettingsDataSourceConnectStarted(source: String) {
+        logEvent(AnalyticsEvent.settingsDataSourceConnectStarted, parameters: [
+            AnalyticsParam.source: source,
+        ])
+    }
+
+    func logSettingsDataSourceConnectCompleted(source: String, timeToDetectSeconds: Int) {
+        logEvent(AnalyticsEvent.settingsDataSourceConnectCompleted, parameters: [
+            AnalyticsParam.source: source,
+            AnalyticsParam.timeToDetectS: timeToDetectSeconds,
+        ])
+    }
+
+    /// A source is selected but a readiness signal is absent. `missing` = comma-sep absent signals;
+    /// `reason` distinguishes "not_connected" from the Fitbit "device_or_setting" case.
+    func logSettingsDataSourceEmptyStateShown(source: String, missing: String, reason: String) {
+        logEvent(AnalyticsEvent.settingsDataSourceEmptyStateShown, parameters: [
+            AnalyticsParam.source: source,
+            AnalyticsParam.missing: missing,
+            AnalyticsParam.reason: reason,
+        ])
+    }
+
     // MARK: - Stats v2 Events (screen-prefixed)
 
     func logStatsPeriodChanged(period: String) {

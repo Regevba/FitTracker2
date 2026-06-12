@@ -13,6 +13,7 @@
 		118581B72FBA455F00678779 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 118581B62FBA455F00678779 /* GoogleService-Info.plist */; };
 		11B09D2B2F852AEF00DCB9A0 /* FitMeBrandIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2A2F852AEF00DCB9A0 /* FitMeBrandIcon.swift */; };
 		4402BE1063EE4A5EBF17F2A6 /* FitTracker/AI/Adapters/HealthKitAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF25AB3A6544B718410CBC4 /* FitTracker/AI/Adapters/HealthKitAdapter.swift */; };
+		F77A2FCB26F5932CA83FDB58 /* FitTracker/AI/Adapters/GarminAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88D285DD1D45A584BC6063D /* FitTracker/AI/Adapters/GarminAdapter.swift */; };
 		4EBF9208E18548B3B009001A /* FitTracker/AI/ValidatedRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BF2CE90DB4CFE8912F36E /* FitTracker/AI/ValidatedRecommendation.swift */; };
 		64DBA30CC1584CA6928F2F1C /* FitTracker/AI/Adapters/NutritionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401017612EDA442EA7BFB2E4 /* FitTracker/AI/Adapters/NutritionAdapter.swift */; };
 		6CE2745F57FD4DE3B57B14A9 /* FitTracker/AI/GoalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */; };
@@ -24,6 +25,7 @@
 		98DFF4A40C424A3E9B71560F /* FitTracker/AI/Adapters/TrainingAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656B9E0FD2FC47EB9F874958 /* FitTracker/AI/Adapters/TrainingAdapter.swift */; };
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
+		400F03F3A7B35E45884840FE /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9EAC7A83B4E766373C9AF74 /* DataSource.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
 		C6CP100000000000000003 /* CustomProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CP200000000000000003 /* CustomProgram.swift */; };
 		C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6TPT200000000000000003 /* TrainingProgramTemplates.swift */; };
@@ -32,6 +34,7 @@
 		A10000010000000000000004 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* AuthManager.swift */; };
 		A10000010000000000000005 /* SignInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SignInService.swift */; };
 		A10000010000000000000006 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* HealthKitService.swift */; };
+		113253403A8DF5DBC5517A38 /* HealthKitSourceProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D413FBF920AC4AEC1C1A97 /* HealthKitSourceProbe.swift */; };
 		A10000010000000000000007 /* CloudKitSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* CloudKitSyncService.swift */; };
 		A10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* AppSettings.swift */; };
 		A10000010000000000000009 /* EncryptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* EncryptionService.swift */; };
@@ -55,6 +58,8 @@
 		AC1000000000000000000200 /* DebugSinkAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000200 /* DebugSinkAdapter.swift */; };
 		AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */; };
 		AD100000000000000000AT01 /* AIAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD200000000000000000AT01 /* AIAdapterTests.swift */; };
+		BA299554834C2EFD23440E89 /* GarminAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684394967521618328494D3A /* GarminAdapterTests.swift */; };
+		C116AA24B138DA0493DA3B50 /* HealthKitSourceProbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 749A54D16F95C4C1887860DA /* HealthKitSourceProbeTests.swift */; };
 		AI100000000000000000AAA1 /* AITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA1 /* AITypes.swift */; };
 		AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA2 /* AIEngineClient.swift */; };
 		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
@@ -267,6 +272,7 @@
 		SE100000000000000000AA01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA01 /* SettingsView.swift */; };
 		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
 		SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */; };
+		9ABCEDF10660CE902565CB09 /* DataSourcesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F95C3107E784D6D309232 /* DataSourcesScreen.swift */; };
 		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
 		SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */; };
 		SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */; };
@@ -345,6 +351,7 @@
 		656B9E0FD2FC47EB9F874958 /* FitTracker/AI/Adapters/TrainingAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/TrainingAdapter.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
+		D9EAC7A83B4E766373C9AF74 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
 		C6CP200000000000000003 /* CustomProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgram.swift; sourceTree = "<group>"; };
 		C6TPT200000000000000003 /* TrainingProgramTemplates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramTemplates.swift; sourceTree = "<group>"; };
@@ -353,6 +360,7 @@
 		A20000010000000000000004 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000005 /* SignInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInService.swift; sourceTree = "<group>"; };
 		A20000010000000000000006 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		E3D413FBF920AC4AEC1C1A97 /* HealthKitSourceProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitSourceProbe.swift; sourceTree = "<group>"; };
 		A20000010000000000000007 /* CloudKitSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSyncService.swift; sourceTree = "<group>"; };
 		A20000010000000000000008 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A20000010000000000000009 /* EncryptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionService.swift; sourceTree = "<group>"; };
@@ -384,7 +392,10 @@
 		AC2000000000000000000200 /* DebugSinkAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSinkAdapter.swift; sourceTree = "<group>"; };
 		AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDeletionServiceTests.swift; sourceTree = "<group>"; };
 		AD200000000000000000AT01 /* AIAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAdapterTests.swift; sourceTree = "<group>"; };
+		684394967521618328494D3A /* GarminAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarminAdapterTests.swift; sourceTree = "<group>"; };
+		749A54D16F95C4C1887860DA /* HealthKitSourceProbeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitSourceProbeTests.swift; sourceTree = "<group>"; };
 		AEF25AB3A6544B718410CBC4 /* FitTracker/AI/Adapters/HealthKitAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/HealthKitAdapter.swift; sourceTree = "<group>"; };
+		A88D285DD1D45A584BC6063D /* FitTracker/AI/Adapters/GarminAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/GarminAdapter.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA1 /* AITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITypes.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA2 /* AIEngineClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEngineClient.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA3 /* FoundationModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationModelService.swift; sourceTree = "<group>"; };
@@ -610,6 +621,7 @@
 		SE200000000000000000AA01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSecuritySettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDevicesSettingsScreen.swift; sourceTree = "<group>"; };
+		661F95C3107E784D6D309232 /* DataSourcesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourcesScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsPreferencesSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingNutritionSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncSettingsScreen.swift; sourceTree = "<group>"; };
@@ -682,6 +694,7 @@
 				E77CA00F68CB436B88D1CDB4 /* FitTracker/AI/Adapters/AIInputAdapter.swift */,
 				22DB1AB8240F41ADB9BB8927 /* FitTracker/AI/Adapters/ProfileAdapter.swift */,
 				AEF25AB3A6544B718410CBC4 /* FitTracker/AI/Adapters/HealthKitAdapter.swift */,
+				A88D285DD1D45A584BC6063D /* FitTracker/AI/Adapters/GarminAdapter.swift */,
 				656B9E0FD2FC47EB9F874958 /* FitTracker/AI/Adapters/TrainingAdapter.swift */,
 				401017612EDA442EA7BFB2E4 /* FitTracker/AI/Adapters/NutritionAdapter.swift */,
 				1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */,
@@ -754,6 +767,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
+				D9EAC7A83B4E766373C9AF74 /* DataSource.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
 				C6CP200000000000000003 /* CustomProgram.swift */,
 				C6TPT200000000000000003 /* TrainingProgramTemplates.swift */,
@@ -835,6 +849,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000006 /* HealthKitService.swift */,
+				E3D413FBF920AC4AEC1C1A97 /* HealthKitSourceProbe.swift */,
 			);
 			path = HealthKit;
 			sourceTree = "<group>";
@@ -974,6 +989,8 @@
 				PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */,
 				RM200000000000000000AT01 /* ReminderTests.swift */,
 				AD200000000000000000AT01 /* AIAdapterTests.swift */,
+				684394967521618328494D3A /* GarminAdapterTests.swift */,
+				749A54D16F95C4C1887860DA /* HealthKitSourceProbeTests.swift */,
 				RC200000000000000000AT01 /* RecommendationMemoryTests.swift */,
 				C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */,
 				C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */,
@@ -1338,6 +1355,7 @@
 			children = (
 				SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */,
 				SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */,
+				661F95C3107E784D6D309232 /* DataSourcesScreen.swift */,
 				SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */,
 				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
@@ -1552,6 +1570,7 @@
 			files = (
 				A10000010000000000000001 /* FitTrackerApp.swift in Sources */,
 				A10000010000000000000002 /* DomainModels.swift in Sources */,
+				400F03F3A7B35E45884840FE /* DataSource.swift in Sources */,
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
 				C6CP100000000000000003 /* CustomProgram.swift in Sources */,
 				C6TPT100000000000000003 /* TrainingProgramTemplates.swift in Sources */,
@@ -1566,6 +1585,7 @@
 				A10000010000000000000005 /* SignInService.swift in Sources */,
 				A10000010000000000000015 /* AuthValidation.swift in Sources */,
 				A10000010000000000000006 /* HealthKitService.swift in Sources */,
+				113253403A8DF5DBC5517A38 /* HealthKitSourceProbe.swift in Sources */,
 				A10000010000000000000007 /* CloudKitSyncService.swift in Sources */,
 				A10000010000000000000008 /* AppSettings.swift in Sources */,
 				111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */,
@@ -1668,6 +1688,7 @@
 				SE100000000000000000AA01 /* SettingsView.swift in Sources */,
 				SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */,
 				SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */,
+				9ABCEDF10660CE902565CB09 /* DataSourcesScreen.swift in Sources */,
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
@@ -1712,6 +1733,7 @@
 				B6A594D637D8445F86E87597 /* FitTracker/AI/Adapters/AIInputAdapter.swift in Sources */,
 				8287618AAA1A42A6A6AC9EB9 /* FitTracker/AI/Adapters/ProfileAdapter.swift in Sources */,
 				4402BE1063EE4A5EBF17F2A6 /* FitTracker/AI/Adapters/HealthKitAdapter.swift in Sources */,
+				F77A2FCB26F5932CA83FDB58 /* FitTracker/AI/Adapters/GarminAdapter.swift in Sources */,
 				98DFF4A40C424A3E9B71560F /* FitTracker/AI/Adapters/TrainingAdapter.swift in Sources */,
 				64DBA30CC1584CA6928F2F1C /* FitTracker/AI/Adapters/NutritionAdapter.swift in Sources */,
 				6CE2745F57FD4DE3B57B14A9 /* FitTracker/AI/GoalProfile.swift in Sources */,
@@ -1772,6 +1794,8 @@
 				PF100000000000000000AT01 /* ProfileAnalyticsTests.swift in Sources */,
 				RM100000000000000000AT01 /* ReminderTests.swift in Sources */,
 				AD100000000000000000AT01 /* AIAdapterTests.swift in Sources */,
+				BA299554834C2EFD23440E89 /* GarminAdapterTests.swift in Sources */,
+				C116AA24B138DA0493DA3B50 /* HealthKitSourceProbeTests.swift in Sources */,
 				RC100000000000000000AT01 /* RecommendationMemoryTests.swift in Sources */,
 				C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */,
 				C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */,

@@ -103,6 +103,11 @@ Readiness,home_readiness_recommendation_shown,Custom,Home Screen,recommendation 
 Settings,settings_sync_triggered,Custom,Settings,sync_type (push/fetch),,,,,No,settings,Sync action initiated from Settings
 Settings,settings_consent_updated,Custom,Settings,consent_type (gdpr/att),setting_value (granted/denied),,,,No,settings,Consent / privacy preference change
 Settings,settings_data_deleted,Custom,Settings,delete_scope (local/all),,,,,No,settings,Destructive data action triggered
+Settings,settings_data_sources_viewed,Custom,Settings,,,,,,No,settings,Data Sources screen shown
+Settings,settings_data_source_detected,Custom,Settings,source (garmin/fitbit) | signals (csv),,,,,No,settings,A source's data found in Apple Health
+Settings,settings_data_source_connect_started,Custom,Settings,source (garmin/fitbit),,,,,No,settings,User opened a source guided-connection flow
+Settings,settings_data_source_connect_completed,Custom,Settings,source (garmin/fitbit) | time_to_detect_s,,,,,No,settings,Source data first detected after a connect flow
+Settings,settings_data_source_empty_state_shown,Custom,Settings,source | missing (csv) | reason,,,,,No,settings,Source selected but a readiness signal absent
 Reminder,reminder_scheduled,Custom,ReminderScheduler,item_category (reminder_type),,,,,No,global,Reminder scheduled (background — not screen-tied)
 Reminder,reminder_shown,Custom,Notification deliver,item_category,,,,,No,global,Reminder notification shown to user
 Reminder,reminder_tapped,Custom,Notification deliver,item_category,,,,,No,global,Reminder tap → deep-link fired

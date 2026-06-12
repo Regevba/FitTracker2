@@ -20,6 +20,20 @@ struct HealthDevicesSettingsScreen: View {
                 SettingsSupportingText(watchSummary)
             }
 
+            SettingsSectionCard(title: "Connected sources", eyebrow: "Devices") {
+                NavigationLink {
+                    DataSourcesScreen()
+                } label: {
+                    SettingsActionLabel(
+                        title: "Data Sources",
+                        subtitle: "See which wearables — Garmin, Fitbit & Apple Health — are feeding your readiness score, and connect new ones.",
+                        icon: "dot.radiowaves.left.and.right",
+                        tint: AppColor.Accent.primary
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+
             SettingsSectionCard(title: "Actions", eyebrow: "Devices") {
                 Button {
                     Task { try? await healthService.requestAuthorization() }

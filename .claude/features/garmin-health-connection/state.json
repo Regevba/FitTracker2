@@ -1,0 +1,283 @@
+{
+  "feature": "garmin-health-connection",
+  "name": "garmin-health-connection",
+  "created": "2026-06-10T17:00:38Z",
+  "created_at": "2026-06-10T17:00:38Z",
+  "updated": "2026-06-12T10:00:00Z",
+  "branch": "feature/garmin-health-connection",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "current_phase": "merge",
+  "work_type": "feature",
+  "work_subtype": "new_feature",
+  "has_ui": true,
+  "requires_analytics": true,
+  "phases": {
+    "research": {
+      "status": "complete",
+      "approved_at": "2026-06-10T17:13:16Z",
+      "sources": []
+    },
+    "prd": {
+      "status": "complete",
+      "approved_at": "2026-06-10T17:28:32Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "complete",
+      "count": 10
+    },
+    "ux_or_integration": {
+      "status": "complete",
+      "type": "ux",
+      "preflight_passed": true,
+      "spec": ".claude/features/garmin-health-connection/ux-spec.md",
+      "checklist_completed": true,
+      "placement_decision": "Data Sources = row under existing HealthDevicesSettingsScreen -> dedicated DataSourcesScreen (no new top-level category)"
+    },
+    "implementation": {
+      "status": "complete",
+      "commits": []
+    },
+    "testing": {
+      "status": "complete",
+      "ci_passed": true,
+      "tests_added": 2,
+      "instrumentation_verified": true
+    },
+    "review": {
+      "status": "approved",
+      "risks": [
+        "No high-risk files touched (no DomainModels/Encryption/Sync/Auth/AI). New HealthKit read-only probe + analytics events + 1 Settings screen. Risk: LOW."
+      ],
+      "ci_main": true,
+      "ci_feature": true,
+      "approved_at": "2026-06-12T10:00:00Z"
+    },
+    "merge": {
+      "status": "in_progress",
+      "pr_number": 705
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "% of Garmin-connected WAU with a non-empty readiness score",
+        "baseline": 0,
+        "target": ">=70% within 7 days of connect",
+        "current": null
+      },
+      "secondary": [
+        "connect-flow completion rate >=50%",
+        "readiness-score coverage delta for Garmin segment"
+      ],
+      "guardrails": [
+        "crash-free >99.5%",
+        "cold start <2s",
+        "existing HealthKit read path unaffected",
+        "zero-knowledge invariant holds"
+      ],
+      "instrumentation_ready": false,
+      "first_review_date": "2026-06-26",
+      "kill_criteria": "If <20% of users who open Data Sources with a Garmin device complete a connection within 60 days, reassess Tier 1 UX value vs jumping to a Tier-2 demand signal.",
+      "kill_criteria_resolution": "not_yet_evaluated \u2014 pre-registered threshold: <20% of Garmin-device users who open Data Sources complete a connection within 60 days. First review 14d post-launch; kill checkpoint at 60d. Tier-1 ships uninstrumented for connect-rate; baseline 0."
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "desc": "DataSourcesScreen scaffold (shared multi-source Settings v2)",
+      "complexity": "heavyweight",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T2",
+      "desc": "AIInputAdapter source-presence protocol",
+      "complexity": "standard",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T3",
+      "desc": "HealthKitSourceProbe impl + testable shim",
+      "complexity": "standard",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T4",
+      "desc": "GarminAdapter (presence/attribution, Tier-2 seam)",
+      "complexity": "standard",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T5",
+      "desc": "Garmin guided-connection flow + empty-states",
+      "complexity": "standard",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T6",
+      "desc": "UX spec for Data Sources screen (Phase 3 gateway)",
+      "complexity": "heavyweight",
+      "status": "done",
+      "pr_number": null
+    },
+    {
+      "id": "T7",
+      "desc": "Wire 5 settings_data_source_* analytics events",
+      "complexity": "standard",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T8",
+      "desc": "Analytics taxonomy rows registration",
+      "complexity": "lightweight",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T9",
+      "desc": "Unit tests (probe + GarminAdapter, device-free)",
+      "complexity": "standard",
+      "status": "done",
+      "pr_number": 705
+    },
+    {
+      "id": "T10",
+      "desc": "Phase 6 ux+design pre-merge-review",
+      "complexity": "lightweight",
+      "status": "done",
+      "pr_number": 705
+    }
+  ],
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-10T17:13:16Z",
+      "approved": true
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "at": "2026-06-10T17:28:32Z",
+      "approved": true
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "at": "2026-06-11T16:12:55Z",
+      "approved": true
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "at": "2026-06-11T16:40:17Z",
+      "approved": true
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "at": "2026-06-11T16:44:18Z",
+      "approved": true,
+      "note": "CI green PR #705 (16/16 checks incl. Build and Test + lint-ios)"
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-11T16:44:18Z",
+      "approved": true,
+      "note": "backfill \u2014 review entered post-testing"
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-12T10:00:00Z",
+      "approved": true,
+      "note": "Phase 6: ux+design pre-merge-review both passed_with_notes; ui-audit P0=0; PR #705 CI green"
+    }
+  ],
+  "sibling_feature": "fitbit-health-connection",
+  "parent_backlog": "Task 10 \u2014 Health API connections (Garmin/Whoop/Oura/Samsung/Fitbit)",
+  "timing": {
+    "session_start": "2026-06-10T17:09:49Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-06-10T17:09:49Z",
+        "ended_at": "2026-06-10T17:13:16Z",
+        "duration_minutes": null
+      },
+      "prd": {
+        "started_at": "2026-06-10T17:13:16Z",
+        "ended_at": "2026-06-10T17:28:32Z",
+        "duration_minutes": null
+      },
+      "tasks": {
+        "started_at": "2026-06-10T17:28:32Z",
+        "ended_at": "2026-06-11T16:12:55Z",
+        "duration_minutes": null
+      },
+      "ux_or_integration": {
+        "started_at": "2026-06-11T16:12:55Z",
+        "ended_at": "2026-06-11T16:40:17Z",
+        "duration_minutes": null
+      },
+      "implementation": {
+        "started_at": "2026-06-11T16:40:17Z",
+        "ended_at": "2026-06-11T16:44:18Z",
+        "duration_minutes": null
+      },
+      "testing": {
+        "started_at": "2026-06-11T16:44:18Z",
+        "ended_at": "2026-06-11T16:44:18Z",
+        "duration_minutes": 0
+      },
+      "review": {
+        "started_at": "2026-06-11T16:44:18Z",
+        "ended_at": "2026-06-12T10:00:00Z",
+        "duration_minutes": 0
+      },
+      "merge": {
+        "started_at": "2026-06-12T10:00:00Z"
+      }
+    },
+    "time_source": "measured"
+  },
+  "scope_decision": "tier_1_only_v1",
+  "scope_decision_note": "Operator approved Tier 1 (HealthKit relay) only for v1 (2026-06-10). Tier 2 (direct Garmin Connect Health API) deferred to a future demand-gated feature.",
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "implementation_note": "Offline-verified: 6 new files swiftc -parse clean; ui-audit P0=0 + DataSourcesScreen 0 findings. Full xcodebuild NOT runnable locally (SPM binary artifacts unresolved + offline) \u2014 CI enforces build+test. T9 tests written (device-free), CI-verification pending.",
+  "cache_hits": [
+    {
+      "ts": "2026-06-12T04:11:38Z",
+      "key": "settings-v2-detail-scaffold-pattern",
+      "layer": "L2",
+      "type": "adapted",
+      "skill": "pm-workflow"
+    },
+    {
+      "ts": "2026-06-12T04:11:38Z",
+      "key": "analytics-screen-prefix-convention",
+      "layer": "L3",
+      "type": "exact",
+      "skill": "analytics"
+    }
+  ],
+  "pre_merge_review": {
+    "ux": "passed_with_notes",
+    "design": "passed_with_notes"
+  },
+  "figma_build_status": "deferred_to_prompt"
+}
