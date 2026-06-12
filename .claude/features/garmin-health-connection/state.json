@@ -3,11 +3,11 @@
   "name": "garmin-health-connection",
   "created": "2026-06-10T17:00:38Z",
   "created_at": "2026-06-10T17:00:38Z",
-  "updated": "2026-06-11T16:44:18Z",
+  "updated": "2026-06-12T10:00:00Z",
   "branch": "feature/garmin-health-connection",
   "state_owner": "ft2",
   "framework_version": "v7.10",
-  "current_phase": "testing",
+  "current_phase": "merge",
   "work_type": "feature",
   "work_subtype": "new_feature",
   "has_ui": true,
@@ -46,13 +46,16 @@
       "instrumentation_verified": true
     },
     "review": {
-      "status": "in_progress",
-      "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "status": "approved",
+      "risks": [
+        "No high-risk files touched (no DomainModels/Encryption/Sync/Auth/AI). New HealthKit read-only probe + analytics events + 1 Settings screen. Risk: LOW."
+      ],
+      "ci_main": true,
+      "ci_feature": true,
+      "approved_at": "2026-06-12T10:00:00Z"
     },
     "merge": {
-      "status": "pending",
+      "status": "in_progress",
       "pr_number": 705
     },
     "documentation": {
@@ -76,8 +79,9 @@
         "zero-knowledge invariant holds"
       ],
       "instrumentation_ready": false,
-      "first_review_date": "2026-06-24",
-      "kill_criteria": "If <20% of users who open Data Sources with a Garmin device complete a connection within 60 days, reassess Tier 1 UX value vs jumping to a Tier-2 demand signal."
+      "first_review_date": "2026-06-26",
+      "kill_criteria": "If <20% of users who open Data Sources with a Garmin device complete a connection within 60 days, reassess Tier 1 UX value vs jumping to a Tier-2 demand signal.",
+      "kill_criteria_resolution": "not_yet_evaluated \u2014 pre-registered threshold: <20% of Garmin-device users who open Data Sources complete a connection within 60 days. First review 14d post-launch; kill checkpoint at 60d. Tier-1 ships uninstrumented for connect-rate; baseline 0."
     }
   },
   "tasks": [
@@ -148,8 +152,8 @@
       "id": "T10",
       "desc": "Phase 6 ux+design pre-merge-review",
       "complexity": "lightweight",
-      "status": "pending",
-      "pr_number": null
+      "status": "done",
+      "pr_number": 705
     }
   ],
   "transitions": [
@@ -183,6 +187,20 @@
       "at": "2026-06-11T16:44:18Z",
       "approved": true,
       "note": "CI green PR #705 (16/16 checks incl. Build and Test + lint-ios)"
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-11T16:44:18Z",
+      "approved": true,
+      "note": "backfill \u2014 review entered post-testing"
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-12T10:00:00Z",
+      "approved": true,
+      "note": "Phase 6: ux+design pre-merge-review both passed_with_notes; ui-audit P0=0; PR #705 CI green"
     }
   ],
   "sibling_feature": "fitbit-health-connection",
@@ -219,6 +237,14 @@
         "started_at": "2026-06-11T16:44:18Z",
         "ended_at": "2026-06-11T16:44:18Z",
         "duration_minutes": 0
+      },
+      "review": {
+        "started_at": "2026-06-11T16:44:18Z",
+        "ended_at": "2026-06-12T10:00:00Z",
+        "duration_minutes": 0
+      },
+      "merge": {
+        "started_at": "2026-06-12T10:00:00Z"
       }
     },
     "time_source": "measured"
@@ -232,5 +258,26 @@
     "ai": false
   },
   "platforms_tested_provenance": "authored",
-  "implementation_note": "Offline-verified: 6 new files swiftc -parse clean; ui-audit P0=0 + DataSourcesScreen 0 findings. Full xcodebuild NOT runnable locally (SPM binary artifacts unresolved + offline) \u2014 CI enforces build+test. T9 tests written (device-free), CI-verification pending."
+  "implementation_note": "Offline-verified: 6 new files swiftc -parse clean; ui-audit P0=0 + DataSourcesScreen 0 findings. Full xcodebuild NOT runnable locally (SPM binary artifacts unresolved + offline) \u2014 CI enforces build+test. T9 tests written (device-free), CI-verification pending.",
+  "cache_hits": [
+    {
+      "ts": "2026-06-12T04:11:38Z",
+      "key": "settings-v2-detail-scaffold-pattern",
+      "layer": "L2",
+      "type": "adapted",
+      "skill": "pm-workflow"
+    },
+    {
+      "ts": "2026-06-12T04:11:38Z",
+      "key": "analytics-screen-prefix-convention",
+      "layer": "L3",
+      "type": "exact",
+      "skill": "analytics"
+    }
+  ],
+  "pre_merge_review": {
+    "ux": "passed_with_notes",
+    "design": "passed_with_notes"
+  },
+  "figma_build_status": "deferred_to_prompt"
 }
