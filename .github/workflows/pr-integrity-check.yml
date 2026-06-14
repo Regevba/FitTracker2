@@ -300,6 +300,7 @@ jobs:
             scripts/tests/test_try_repo_isolation_gates.py \
             scripts/tests/test_repo_root_override.py \
             scripts/tests/test_sample_contract_fixtures.py \
+            scripts/tests/test_close_feature.py \
             -v --tb=short --junitxml=try-repo.xml
 
       - name: Contract-fixture freshness check (F-CONTRACT-FIXTURE-SAMPLING)
