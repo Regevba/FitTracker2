@@ -72,7 +72,11 @@
       "approval_signal": "merged"
     },
     "documentation": {
-      "status": "pending"
+      "status": "complete",
+      "started_at": "2026-06-12T19:11:27Z",
+      "ended_at": "2026-06-14T13:43:07Z",
+      "approved_by": "operator",
+      "approval_signal": "post-merge closure batch — case study + showcase MDX shipped (FT2 #709 + fitme-story #219)"
     },
     "metrics": {
       "primary": {
