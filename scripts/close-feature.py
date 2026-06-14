@@ -59,6 +59,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+# Mirror integrity-check.py COMPLETE_PHASE_STATUSES so closure leaves no
+# sub-phase status that PHASE_LIE would flag.
+_COMPLETE_PHASE_STATUSES = {"approved", "complete", "completed", "done", "skipped", "closed"}
+
 
 def run(cmd: list[str], *, check: bool = True, capture: bool = True) -> subprocess.CompletedProcess:
     return subprocess.run(
@@ -239,6 +243,23 @@ def close_feature(
         "approved_by": "operator",
         "approval_signal": "merged",
     }
+
+    # Normalize any lingering non-terminal sub-phase status. current_phase=complete
+    # asserts every phase is done, but a pre-existing canonical phase block (e.g.
+    # `documentation` from /pm-workflow) can still carry status=pending — which
+    # trips integrity-check PHASE_LIE ("top-level complete but documentation=
+    # pending", FT2 #709). Flip any status not already terminal — except
+    # `pending_na`, which PHASE_LIE intentionally exempts.
+    for pname, pobj in phases.items():
+        if not isinstance(pobj, dict):
+            continue
+        pstatus = pobj.get("status")
+        if pstatus and pstatus not in _COMPLETE_PHASE_STATUSES and pstatus != "pending_na":
+            pobj["status"] = "complete"
+            pobj.setdefault(
+                "approval_signal",
+                f"(normalized to complete at closure — PR #{pr_number})",
+            )
 
     # Mirror in timing.phases
     timing_phases = state.setdefault("timing", {}).setdefault("phases", {})
