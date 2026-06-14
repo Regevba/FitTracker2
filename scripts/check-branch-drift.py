@@ -58,11 +58,17 @@ import subprocess
 import sys
 from pathlib import Path
 
+# w9_session centralizes the real session-id source (hook stdin JSON, not the
+# never-set CLAUDE_SESSION_ID env var) + intentional-checkout detection. See
+# scripts/w9_session.py for the bug this fixes (feature fix/w9-session-id-keying).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    import w9_session as w9s
+except Exception:  # pragma: no cover - degrade to legacy behavior if absent
+    w9s = None
+
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SESSION_STATE_DIR = REPO_ROOT / ".claude" / "_session-state"
-SESSION_ID = os.environ.get("CLAUDE_SESSION_ID", "default")
-STATE_FILE = SESSION_STATE_DIR / f"{SESSION_ID}-branch.txt"
 
 
 def current_branch() -> str | None:
@@ -172,23 +178,61 @@ def _escalate_on_drift(expected: str, branch: str) -> None:
     print("", file=sys.stderr)
 
 
-def main() -> int:
+def evaluate_drift(expected: str, current: str, command: str | None) -> str:
+    """Classify a branch state into 'ok' | 'intentional' | 'drift'.
+
+    - 'ok'          — branch unchanged.
+    - 'intentional' — branch changed AND the command that just ran was itself a
+                      branch switch (`git checkout`/`switch`/`worktree add`).
+                      This suppresses the false positives that dominated the
+                      pre-fix telemetry (every deliberate checkout looked like a
+                      concurrent-session collision).
+    - 'drift'       — branch changed with no command that explains it → the real
+                      W9 pattern (another session flipped HEAD).
+    """
+    if expected == current:
+        return "ok"
+    if w9s is not None and w9s.command_indicates_branch_switch(command):
+        return "intentional"
+    return "drift"
+
+
+def _session_state_dir() -> Path:
+    return REPO_ROOT / ".claude" / "_session-state"
+
+
+def main(payload: dict | None = None) -> int:
     if os.environ.get("CLAUDE_W9_DISABLE_DRIFT_CHECK") == "1":
         return 0
+
+    # Read the hook payload once: it carries both the real session id and the
+    # command that just ran (for intentional-switch suppression).
+    if payload is None:
+        payload = w9s.hook_payload() if w9s is not None else {}
+    sid = w9s.session_id(payload=payload) if w9s is not None else "default"
+    command = w9s.command_from_payload(payload) if w9s is not None else None
 
     branch = current_branch()
     if not branch:
         # Detached HEAD or not in a repo — nothing useful to compare
         return 0
 
-    SESSION_STATE_DIR.mkdir(parents=True, exist_ok=True)
+    state_dir = _session_state_dir()
+    state_dir.mkdir(parents=True, exist_ok=True)
+    state_file = state_dir / f"{sid}-branch.txt"
 
-    if not STATE_FILE.exists():
-        STATE_FILE.write_text(branch + "\n")
+    if not state_file.exists():
+        state_file.write_text(branch + "\n")
         return 0
 
-    expected = STATE_FILE.read_text().strip()
-    if expected == branch:
+    expected = state_file.read_text().strip()
+    verdict = evaluate_drift(expected, branch, command)
+    if verdict == "ok":
+        return 0
+    if verdict == "intentional":
+        # This session deliberately switched branches — rebase the baseline
+        # silently; no alert, no escalation, no telemetry.
+        state_file.write_text(branch + "\n")
         return 0
 
     # DRIFT DETECTED — emit loud warning to stderr.
@@ -218,7 +262,7 @@ def main() -> int:
         pass
 
     # Update the state to current to avoid spamming on subsequent calls
-    STATE_FILE.write_text(branch + "\n")
+    state_file.write_text(branch + "\n")
 
     return 0
 

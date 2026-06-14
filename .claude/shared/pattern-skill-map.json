@@ -1,7 +1,7 @@
 [
   {
     "id": "#1",
-    "title": "BRANCH_ISOLATION_HISTORICAL — squash-merge + branch-cleanup artifact",
+    "title": "BRANCH_ISOLATION_HISTORICAL \u2014 squash-merge + branch-cleanup artifact",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -13,7 +13,7 @@
   },
   {
     "id": "#2",
-    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE — Mechanism C captured, writer-path manual",
+    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE \u2014 Mechanism C captured, writer-path manual",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -26,7 +26,7 @@
   },
   {
     "id": "#3",
-    "title": "BRANCH_ISOLATION_VIOLATION Mode B — infra-only commit on non-feature branch",
+    "title": "BRANCH_ISOLATION_VIOLATION Mode B \u2014 infra-only commit on non-feature branch",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -38,7 +38,7 @@
   },
   {
     "id": "#4",
-    "title": "BRANCH_ISOLATION_VIOLATION Mode C — state.json current_phase mutation off-branch",
+    "title": "BRANCH_ISOLATION_VIOLATION Mode C \u2014 state.json current_phase mutation off-branch",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -50,7 +50,7 @@
   },
   {
     "id": "#5",
-    "title": "ISOLATION_OPT_OUT_REASON_MISSING — opt-out without justification",
+    "title": "ISOLATION_OPT_OUT_REASON_MISSING \u2014 opt-out without justification",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -62,7 +62,7 @@
   },
   {
     "id": "#6",
-    "title": "FEATURE_CLOSURE_COMPLETENESS — missing frontmatter on current_phase=complete",
+    "title": "FEATURE_CLOSURE_COMPLETENESS \u2014 missing frontmatter on current_phase=complete",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -76,7 +76,7 @@
   },
   {
     "id": "#7",
-    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT — empty cache_hits[] post-v6",
+    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT \u2014 empty cache_hits[] post-v6",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -89,7 +89,7 @@
   },
   {
     "id": "#8",
-    "title": "TIER_TAG_LIKELY_INCORRECT — heuristic T1/T2/T3 mismatch (advisory permanent)",
+    "title": "TIER_TAG_LIKELY_INCORRECT \u2014 heuristic T1/T2/T3 mismatch (advisory permanent)",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -102,7 +102,7 @@
   },
   {
     "id": "#9",
-    "title": "SCHEMA_DRIFT_LEGACY_CREATED — legacy `created` key",
+    "title": "SCHEMA_DRIFT_LEGACY_CREATED \u2014 legacy `created` key",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -114,7 +114,7 @@
   },
   {
     "id": "#10",
-    "title": "FRAMEWORK_VERSION_FORMAT — unprefixed numeric values",
+    "title": "FRAMEWORK_VERSION_FORMAT \u2014 unprefixed numeric values",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -126,7 +126,7 @@
   },
   {
     "id": "#11",
-    "title": "STATE_OWNER_* (MISSING / INVALID / LOCATION_MISMATCH) — cross-repo schema",
+    "title": "STATE_OWNER_* (MISSING / INVALID / LOCATION_MISMATCH) \u2014 cross-repo schema",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -138,7 +138,7 @@
   },
   {
     "id": "#12",
-    "title": "PR_CACHE_STALE — empty/stale cache → cascading false positives",
+    "title": "PR_CACHE_STALE \u2014 empty/stale cache \u2192 cascading false positives",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/ensure-pr-cache-fresh.py",
@@ -151,7 +151,7 @@
   },
   {
     "id": "#13",
-    "title": "BROKEN_PR_CITATION — unresolved PR cite (graceful fallback when gh unavailable)",
+    "title": "BROKEN_PR_CITATION \u2014 unresolved PR cite (graceful fallback when gh unavailable)",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -164,7 +164,7 @@
   },
   {
     "id": "#14",
-    "title": "CASE_STUDY_MISSING_TIER_TAGS — forward-only on case studies dated >=2026-04-21",
+    "title": "CASE_STUDY_MISSING_TIER_TAGS \u2014 forward-only on case studies dated >=2026-04-21",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -176,7 +176,7 @@
   },
   {
     "id": "#15",
-    "title": "PARTIAL_SHIP_TERMINAL — decision fork on completion",
+    "title": "PARTIAL_SHIP_TERMINAL \u2014 decision fork on completion",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -188,7 +188,7 @@
   },
   {
     "id": "#16",
-    "title": "CASE_STUDY_MISSING_FIELDS — required frontmatter validation",
+    "title": "CASE_STUDY_MISSING_FIELDS \u2014 required frontmatter validation",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -201,7 +201,7 @@
   },
   {
     "id": "#17",
-    "title": "CU_V2_INVALID — schema-only check (presence, not magnitude)",
+    "title": "CU_V2_INVALID \u2014 schema-only check (presence, not magnitude)",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -214,7 +214,7 @@
   },
   {
     "id": "#18",
-    "title": "STATE_NO_CASE_STUDY_LINK — terminal phase requires case_study or exemption",
+    "title": "STATE_NO_CASE_STUDY_LINK \u2014 terminal phase requires case_study or exemption",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -234,11 +234,11 @@
     "skills": [
       "pm-workflow"
     ],
-    "remediation": "No action — gates auto-exempt features with created_at < 2026-05-02."
+    "remediation": "No action \u2014 gates auto-exempt features with created_at < 2026-05-02."
   },
   {
     "id": "#20",
-    "title": "GATE_COVERAGE_ZERO — meta-check for silent-pass detection",
+    "title": "GATE_COVERAGE_ZERO \u2014 meta-check for silent-pass detection",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -250,7 +250,7 @@
   },
   {
     "id": "#21",
-    "title": "case_study_type exemption tags — bypass scope",
+    "title": "case_study_type exemption tags \u2014 bypass scope",
     "section": "gate",
     "blocker": false,
     "detector": "manual",
@@ -262,7 +262,7 @@
   },
   {
     "id": "#22",
-    "title": "v7.5 pipeline regression test decay — fixture rot",
+    "title": "v7.5 pipeline regression test decay \u2014 fixture rot",
     "section": "gate",
     "blocker": false,
     "detector": "manual",
@@ -287,10 +287,10 @@
   },
   {
     "id": "#24",
-    "title": "Field-rename silent-pass in a READER/INDEX (measurement layer) — generalization of #7/#9",
+    "title": "Field-rename silent-pass in a READER/INDEX (measurement layer) \u2014 generalization of #7/#9",
     "section": "gate",
     "blocker": false,
-    "detector": "manual (audit) — no gate; surfaced by adoption/coverage cross-count",
+    "detector": "manual (audit) \u2014 no gate; surfaced by adoption/coverage cross-count",
     "autoheal": false,
     "skills": [
       "pm-workflow",
@@ -321,7 +321,7 @@
       "pm-workflow",
       "brainstorm-pm"
     ],
-    "remediation": "Never silently rewrite published artifacts; add a Correction Note / §99 addendum instead."
+    "remediation": "Never silently rewrite published artifacts; add a Correction Note / \u00a799 addendum instead."
   },
   {
     "id": "W3",
@@ -497,7 +497,7 @@
   },
   {
     "id": "W17",
-    "title": "Stale-base branches — cherry-pick onto fresh main is ground truth",
+    "title": "Stale-base branches \u2014 cherry-pick onto fresh main is ground truth",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -550,7 +550,7 @@
   },
   {
     "id": "W21",
-    "title": "Swift String.contains(\"\\n\") misses CRLF graphemes — scan unicodeScalars",
+    "title": "Swift String.contains(\"\\n\") misses CRLF graphemes \u2014 scan unicodeScalars",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -576,7 +576,7 @@
   },
   {
     "id": "W23",
-    "title": "AnalyticsService.logEvent is private — callers must use a log* method",
+    "title": "AnalyticsService.logEvent is private \u2014 callers must use a log* method",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -585,7 +585,7 @@
       "dev",
       "qa"
     ],
-    "remediation": "logEvent is private — add a named log* method, or use #if DEBUG print for can't-happen paths."
+    "remediation": "logEvent is private \u2014 add a named log* method, or use #if DEBUG print for can't-happen paths."
   },
   {
     "id": "W24",
@@ -597,11 +597,11 @@
     "skills": [
       "dev"
     ],
-    "remediation": "Resolve pbxproj merge conflicts additively — keep all branches' distinct PBXBuildFile/FileReference entries."
+    "remediation": "Resolve pbxproj merge conflicts additively \u2014 keep all branches' distinct PBXBuildFile/FileReference entries."
   },
   {
     "id": "W25",
-    "title": "@MainActor propagates to statics — test class must be @MainActor",
+    "title": "@MainActor propagates to statics \u2014 test class must be @MainActor",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -693,7 +693,7 @@
   },
   {
     "id": "W32",
-    "title": "scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation → complete directly, no testing phase)",
+    "title": "scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation \u2192 complete directly, no testing phase)",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -715,6 +715,19 @@
       "dev",
       "ops"
     ],
-    "remediation": "Verify the cache window covers the historically-cited PR range: `python3 -c \"import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))\"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 — covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set)."
+    "remediation": "Verify the cache window covers the historically-cited PR range: `python3 -c \"import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))\"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 \u2014 covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set)."
+  },
+  {
+    "id": "W35",
+    "title": "Hook session-id keyed on never-set CLAUDE_SESSION_ID env \u2192 constant \"default\" \u2192 cross-session marker suppresses the gate forever",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "pm-workflow"
+    ],
+    "remediation": "When a hook needs the session id, read it from the hook STDIN payload (`session_id`), never `os.environ['CLAUDE_SESSION_ID']` (Claude Code does not set it). Use scripts/w9_session.py::session_id(). Symptoms: a gate's once-per-session marker piles up as `.claude/_session-state/default-*`; a gate's telemetry all carries one outcome from one code path while a documented sibling path emits nothing. When one gate name has two producers, give each its own gate name so GATE_COVERAGE_ZERO can see each independently. Fixed via feature fix/w9-session-id-keying (2026-06-14)."
   }
 ]
