@@ -822,6 +822,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W32 `scripts/close-feature.py` requires `--force-incomplete` when the merged PR was the only phase | W32 | 2026-06-04 |
 | W33 Pattern↔skill preflight overlay (catalog ⇄ skill mapping + `make skill-preflight`; self-doc, map-exempt) | W33 | 2026-06-04 |
 | W34 PR cache window truncation past the 500-PR limit (raised to 2000) | W34 | 2026-06-05 |
+| W35 Hook session-id keyed on never-set `CLAUDE_SESSION_ID` env → constant `"default"` → cross-session marker suppresses gate forever | W35 | 2026-06-14 |
 
 ---
 
@@ -1599,3 +1600,37 @@ ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print
 **First observed:** 2026-06-05 (data-integrity health check). **Sibling patterns:** [#12 `PR_CACHE_STALE`](#12-pr_cache_stale-v784--emptystale-cache--cascading-false-positives), [W11 — Incomplete PR cache](#w11--incomplete-pr-cache-one-of-two-expected-repos-absent).
 
 
+
+### W35 — Hook session-id keyed on a never-set env var → constant `"default"` → cross-session marker suppresses the gate forever (2026-06-14)
+
+**Surfaced by:** a pre-promotion W9 audit (2026-06-14) before flipping `CLAUDE_W9_CONCURRENCY_ENFORCE` default-on. The Phase-2 concurrency calibration window (2026-06-07 → 2026-06-20) had collected **zero** valid telemetry; every `w9.auto_isolate` row in the window came from Phase-1 drift, not the Phase-2 path under calibration.
+
+**The pattern (generalizes beyond W9):** a hook script derives a per-session key from `os.environ.get("CLAUDE_SESSION_ID", "default")`. But Claude Code delivers the session id on the hook's **stdin JSON** (`session_id` field), NOT as an environment variable — so the env read always returns the fallback. Every session shares the constant `"default"` key. Two failure shapes follow:
+
+1. **Once-per-session marker becomes once-ever.** `w9_concurrency_check.py` wrote `.claude/_session-state/default-w9-concurrency.done` on first edit, then `_already_fired()` short-circuited every subsequent session. The gate ran exactly once (2026-06-07) and was silent thereafter — its calibration gathered no data.
+2. **Per-session baseline becomes a shared baseline.** `check-branch-drift.py` compared against one shared `default-branch.txt`, so it could not tell "this session deliberately ran `git checkout`" from "another session flipped HEAD." 45 logged "drift" rows were near-100% false positives from intentional branch switches.
+
+**Why no gate caught it:** the two W9 phases shared the gate name `w9.auto_isolate`. Phase-1 drift kept `candidates > 0`, so the v7.10 `GATE_COVERAGE_ZERO` 0-candidate mis-wire detector saw a "healthy" gate and never flagged the dead Phase-2 path. **A shared gate name masks a dead sibling check.** (Sibling of `#24` field-rename-reader: one producer/consumer updated, the other silently disjoint.)
+
+**Detection:**
+```bash
+# A gate whose telemetry all carries one outcome from one code path, while a
+# second documented code path for the same gate name emits nothing:
+grep '"w9.auto_isolate"' .claude/logs/gate-coverage.jsonl | \
+  python3 -c "import json,sys,collections; c=collections.Counter(json.loads(l).get('outcome') for l in sys.stdin); print(c)"
+# Constant 'default' markers piling up across sessions:
+ls .claude/_session-state/default-*.done .claude/_session-state/default-*.txt 2>/dev/null
+```
+
+**Remediation (feature `fix/w9-session-id-keying`):**
+1. Centralized session-id resolution in [`scripts/w9_session.py`](../../scripts/w9_session.py): env override → hook-stdin `session_id` payload → `"default"` last resort (read non-blocking so tests/manual runs don't hang).
+2. Phase 2 emits a **distinct gate `w9.concurrency`** so `GATE_COVERAGE_ZERO` observes it independently.
+3. Phase-1 drift suppresses intentional checkouts via `evaluate_drift(expected, current, command)` (reads `tool_input.command` from the payload; `git checkout`/`switch`/`worktree add` ⇒ `intentional`, no alert).
+4. Reaped the 38-day-stale lease from `agent-leases.json`; cleared the broken `default-*` markers.
+5. Calibration window **reset** — re-evaluate against `w9.concurrency` rows at fix-merge + 14d.
+
+**Silence path:** none needed — the fix is correct-by-construction; tests in [`scripts/tests/test_w9_session.py`](../../../scripts/tests/test_w9_session.py) + the new cases in `test_w9_auto_isolate.py` lock the behavior.
+
+**General lesson:** when a hook needs the session id, read it from the **hook payload (stdin)**, never from an env var the platform doesn't set. When one gate name has two producers, give each its own name so the silent-pass detectors can see each independently.
+
+**First observed:** 2026-06-14. **Sibling patterns:** [#24 field-rename reader/index mismatch](#24--field-rename-readerindex-mismatch-the-createdcreated_at-class-generalized-to-the-measurement-layer), W9 (the feature this lives in).

@@ -3,11 +3,21 @@
 W9 concurrency-proactive first-edit trigger — feature w9-drift-triggered-auto-
 isolation, T8 (Phase 2, ADVISORY).
 
-Intended to run as a PreToolUse hook on Edit|Write. On the FIRST such event in a
-session, it checks whether another session holds a fresh lease on this shared
-checkout (T6) and, if so, surfaces a concurrency advisory + emits a
-`w9.auto_isolate` Mechanism A row (T7). It runs at most once per session (a
-session-state marker prevents re-firing on every edit).
+Wired as a PostToolUse hook on Edit|Write (see .claude/settings.json). On the
+FIRST such event in a session, it checks whether another session holds a fresh
+lease on this shared checkout (T6) and, if so, surfaces a concurrency advisory +
+emits a `w9.concurrency` Mechanism A row (T7). It runs at most once per session
+(a session-state marker prevents re-firing on every edit).
+
+NOTE (fix/w9-session-id-keying): if this hook is ever promoted to ACT (auto-
+isolate) rather than advise, it must move to PreToolUse so isolation happens
+BEFORE the edit lands on the wrong branch. While advisory (telemetry-only),
+PostToolUse is correct.
+
+The session id is resolved via w9_session (the hook-stdin `session_id` payload),
+NOT the never-set CLAUDE_SESSION_ID env var — the prior code keyed every session
+on the constant "default", so the once-per-session marker permanently suppressed
+this check across all sessions (the Phase-2 calibration gathered ZERO data).
 
 Posture: ADVISORY. It NEVER blocks the edit and NEVER acts unless BOTH
 CLAUDE_W9_AUTO_ISOLATE=1 and CLAUDE_W9_CONCURRENCY_ENFORCE=1 are set. Exit 0
@@ -23,7 +33,15 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(os.environ.get("REPO_ROOT_OVERRIDE") or Path(__file__).resolve().parent.parent)
-SESSION_ID = os.environ.get("CLAUDE_SESSION_ID", "default")
+
+# Resolve the real session id (hook-stdin payload), not the never-set env var.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    import w9_session as w9s
+    SESSION_ID = w9s.session_id()
+except Exception:  # pragma: no cover - degrade gracefully if helper absent
+    w9s = None
+    SESSION_ID = os.environ.get("CLAUDE_SESSION_ID", "default")
 MARKER = REPO_ROOT / ".claude" / "_session-state" / f"{SESSION_ID}-w9-concurrency.done"
 
 

@@ -130,10 +130,16 @@ def active_feature() -> str | None:
 
 
 def emit_telemetry(*, candidates: int, checked: int, skipped: int,
-                   skip_reasons: list[str], outcome: str, drift: dict | None = None) -> None:
-    """Append a Mechanism A row for the w9.auto_isolate gate (T3). Best-effort."""
+                   skip_reasons: list[str], outcome: str, drift: dict | None = None,
+                   gate: str = "w9.auto_isolate") -> None:
+    """Append a Mechanism A row for a W9 gate (T3). Best-effort.
+
+    `gate` defaults to "w9.auto_isolate" (Phase-1 drift). Phase-2 concurrency
+    passes "w9.concurrency" so the two paths are independently observable by the
+    v7.10 GATE_COVERAGE_ZERO meta-check (sharing one name masked dead Phase-2).
+    """
     row = {
-        "gate": "w9.auto_isolate",
+        "gate": gate,
         "ts": _now_iso(),
         "candidates": candidates,
         "checked": checked,
@@ -367,14 +373,16 @@ def concurrency_isolation_decision(ttl_seconds: int = 3600) -> IsolationResult:
 
     if not another_session_live(ttl_seconds, self_feature=feature):
         emit_telemetry(candidates=1, checked=0, skipped=1,
-                       skip_reasons=["no_concurrency"], outcome="no_concurrency")
+                       skip_reasons=["no_concurrency"], outcome="no_concurrency",
+                       gate="w9.concurrency")
         return IsolationResult(result="noop", reason="no_concurrency")
 
     # Already isolated? If the current branch is this feature's branch in its own
     # worktree, we're fine — concurrency can't hurt us.
     if _current_branch() == f"feature/{feature}" and _resolve_worktree_path(feature):
         emit_telemetry(candidates=1, checked=0, skipped=1,
-                       skip_reasons=["already_isolated"], outcome="already_isolated")
+                       skip_reasons=["already_isolated"], outcome="already_isolated",
+                       gate="w9.concurrency")
         return IsolationResult(result="noop", reason="already_isolated")
 
     acting = (os.environ.get("CLAUDE_W9_AUTO_ISOLATE") == "1"
@@ -382,12 +390,35 @@ def concurrency_isolation_decision(ttl_seconds: int = 3600) -> IsolationResult:
     if not acting:
         # Advisory: record the concurrency signal but DO NOT act.
         emit_telemetry(candidates=1, checked=0, skipped=1,
-                       skip_reasons=["advisory_concurrency"], outcome="concurrency_offer")
+                       skip_reasons=["advisory_concurrency"], outcome="concurrency_offer",
+                       gate="w9.concurrency")
         return IsolationResult(result="skipped", reason="advisory_concurrency")
 
     res = isolate_current_work(reason="w9_concurrency")
-    emit_telemetry(candidates=1, checked=1, skipped=0, skip_reasons=[], outcome=res.result)
+    emit_telemetry(candidates=1, checked=1, skipped=0, skip_reasons=[],
+                   outcome=res.result, gate="w9.concurrency")
     return res
+
+
+def reap_stale_leases(leases: list[dict], *, now_epoch: float,
+                      ttl_seconds: int = 86400) -> tuple[list[dict], list[dict]]:
+    """Split `leases` into (kept, removed).
+
+    A lease is REAPED (removed) when it is not `status==active` OR its
+    `last_heartbeat` is older than `ttl_seconds` (default 24h — deliberately
+    longer than the 1h liveness TTL so only definitively-dead leases are pruned).
+    Pure function: callers persist `kept` back to agent-leases.json.
+    """
+    kept: list[dict] = []
+    removed: list[dict] = []
+    for lease in leases:
+        hb = _parse_iso(lease.get("last_heartbeat", ""))
+        fresh = hb is not None and (now_epoch - hb) <= ttl_seconds
+        if lease.get("status") == "active" and fresh:
+            kept.append(lease)
+        else:
+            removed.append(lease)
+    return kept, removed
 
 
 def main(argv: list[str] | None = None) -> int:
