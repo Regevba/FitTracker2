@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "updated": "2026-06-11T06:10:12Z",
+  "updated": "2026-06-14T06:08:09Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 108,
-    "features_scanned": 105,
+    "features_scanned": 106,
     "integrity_snapshot_files": 15,
     "integrity_cycle_snapshots": 13,
     "trend_ready": true,
-    "open_debt_items": 1
+    "open_debt_items": 2
   },
   "coverage": {
     "date_written": {
@@ -67,9 +67,11 @@
     },
     "state_case_study_linkage": {
       "present": 105,
-      "missing": 0,
-      "percent": 100.0,
-      "examples": []
+      "missing": 1,
+      "percent": 99.1,
+      "examples": [
+        "garmin-health-connection"
+      ]
     }
   },
   "integrity_cycle": {
@@ -81,6 +83,16 @@
     "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple scheduled 72h cycle snapshots; ad hoc local snapshots do not unlock trend mode."
   },
   "debt_items": [
+    {
+      "id": "state_case_study_linkage",
+      "title": "Features missing case-study linkage in state.json",
+      "severity": "low",
+      "count": 1,
+      "examples": [
+        "garmin-health-connection"
+      ],
+      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
+    },
     {
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
