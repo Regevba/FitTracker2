@@ -4,12 +4,23 @@
   "created": "2026-06-10T17:00:38Z",
   "created_at": "2026-06-10T17:00:38Z",
   "updated": "2026-06-12T10:00:00Z",
-  "branch": "feature/garmin-health-connection",
+  "branch": "chore/garmin-health-connection-post-merge-closure",
   "state_owner": "ft2",
   "framework_version": "v7.10",
-  "current_phase": "merge",
+  "current_phase": "complete",
   "work_type": "feature",
   "work_subtype": "new_feature",
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.5,
+      "blast_radius": 0.4,
+      "novelty": 0.5,
+      "verification_difficulty": 0.6
+    },
+    "total": 2.0,
+    "tier_class": "B_medium",
+    "rationale": "New multi-source Data Sources Settings v2 screen + AIInputAdapter source-presence protocol + HKSource attribution probe + thin GarminAdapter (Tier-2 seam). No high-risk files touched (read-only HealthKit, additive Settings surface, no Domain/Encryption/Sync/Auth/AI). Complexity moderate (new pattern, not a deep refactor). Blast radius low-medium (user-facing Settings, but isolated). Novelty medium (first source-attribution surface; establishes the shared adapter contract for the Fitbit/Whoop/Oura siblings). Verification medium-high: device-free unit tests cover the probe + adapter, but true connect-flow verification requires a physical Garmin device + Apple-Health export (Tier 2.1 area) — ships uninstrumented for connect-rate."
+  },
   "has_ui": true,
   "requires_analytics": true,
   "phases": {
@@ -46,17 +57,19 @@
       "instrumentation_verified": true
     },
     "review": {
-      "status": "approved",
-      "risks": [
-        "No high-risk files touched (no DomainModels/Encryption/Sync/Auth/AI). New HealthKit read-only probe + analytics events + 1 Settings screen. Risk: LOW."
-      ],
-      "ci_main": true,
-      "ci_feature": true,
-      "approved_at": "2026-06-12T10:00:00Z"
+      "started_at": "2026-06-12T19:11:27Z",
+      "ended_at": "2026-06-12T19:11:27Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     },
     "merge": {
-      "status": "in_progress",
-      "pr_number": 705
+      "started_at": "2026-06-12T19:11:27Z",
+      "ended_at": "2026-06-12T19:11:27Z",
+      "pr_number": 705,
+      "merge_commit_sha": "c8ba2993bf6986825bff97dde91af319997686a3",
+      "merged_at": "2026-06-12T19:11:27Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     },
     "documentation": {
       "status": "pending"
@@ -81,7 +94,19 @@
       "instrumentation_ready": false,
       "first_review_date": "2026-06-26",
       "kill_criteria": "If <20% of users who open Data Sources with a Garmin device complete a connection within 60 days, reassess Tier 1 UX value vs jumping to a Tier-2 demand signal.",
-      "kill_criteria_resolution": "not_yet_evaluated \u2014 pre-registered threshold: <20% of Garmin-device users who open Data Sources complete a connection within 60 days. First review 14d post-launch; kill checkpoint at 60d. Tier-1 ships uninstrumented for connect-rate; baseline 0."
+      "kill_criteria_resolution": "not_yet_evaluated — pre-registered threshold: <20% of Garmin-device users who open Data Sources complete a connection within 60 days. First review 14d post-launch; kill checkpoint at 60d. Tier-1 ships uninstrumented for connect-rate; baseline 0."
+    },
+    "docs": {
+      "started_at": "2026-06-12T19:11:27Z",
+      "ended_at": "2026-06-14T13:43:07Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-14T13:43:07Z",
+      "ended_at": "2026-06-14T13:43:07Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
     }
   },
   "tasks": [
@@ -193,7 +218,7 @@
       "to": "review",
       "at": "2026-06-11T16:44:18Z",
       "approved": true,
-      "note": "backfill \u2014 review entered post-testing"
+      "note": "backfill — review entered post-testing"
     },
     {
       "from": "review",
@@ -201,10 +226,34 @@
       "at": "2026-06-12T10:00:00Z",
       "approved": true,
       "note": "Phase 6: ux+design pre-merge-review both passed_with_notes; ui-audit P0=0; PR #705 CI green"
+    },
+    {
+      "from": "merge",
+      "to": "review",
+      "at": "2026-06-12T19:11:27Z",
+      "reason": "PR #705 squashed onto main as c8ba2993bf (operator-merged 2026-06-12T19:11:27Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-12T19:11:27Z",
+      "reason": "PR #705 squashed onto main as c8ba2993bf (operator-merged 2026-06-12T19:11:27Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-12T19:11:27Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-14T13:43:07Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/garmin-health-connection-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
   ],
   "sibling_feature": "fitbit-health-connection",
-  "parent_backlog": "Task 10 \u2014 Health API connections (Garmin/Whoop/Oura/Samsung/Fitbit)",
+  "parent_backlog": "Task 10 — Health API connections (Garmin/Whoop/Oura/Samsung/Fitbit)",
   "timing": {
     "session_start": "2026-06-10T17:09:49Z",
     "phases": {
@@ -239,12 +288,20 @@
         "duration_minutes": 0
       },
       "review": {
-        "started_at": "2026-06-11T16:44:18Z",
-        "ended_at": "2026-06-12T10:00:00Z",
-        "duration_minutes": 0
+        "started_at": "2026-06-12T19:11:27Z",
+        "ended_at": "2026-06-12T19:11:27Z"
       },
       "merge": {
-        "started_at": "2026-06-12T10:00:00Z"
+        "started_at": "2026-06-12T19:11:27Z",
+        "ended_at": "2026-06-12T19:11:27Z"
+      },
+      "docs": {
+        "started_at": "2026-06-12T19:11:27Z",
+        "ended_at": "2026-06-14T13:43:07Z"
+      },
+      "complete": {
+        "started_at": "2026-06-14T13:43:07Z",
+        "ended_at": "2026-06-14T13:43:07Z"
       }
     },
     "time_source": "measured"
@@ -258,7 +315,7 @@
     "ai": false
   },
   "platforms_tested_provenance": "authored",
-  "implementation_note": "Offline-verified: 6 new files swiftc -parse clean; ui-audit P0=0 + DataSourcesScreen 0 findings. Full xcodebuild NOT runnable locally (SPM binary artifacts unresolved + offline) \u2014 CI enforces build+test. T9 tests written (device-free), CI-verification pending.",
+  "implementation_note": "Offline-verified: 6 new files swiftc -parse clean; ui-audit P0=0 + DataSourcesScreen 0 findings. Full xcodebuild NOT runnable locally (SPM binary artifacts unresolved + offline) — CI enforces build+test. T9 tests written (device-free), CI-verification pending.",
   "cache_hits": [
     {
       "ts": "2026-06-12T04:11:38Z",
@@ -279,5 +336,10 @@
     "ux": "passed_with_notes",
     "design": "passed_with_notes"
   },
-  "figma_build_status": "deferred_to_prompt"
+  "figma_build_status": "deferred_to_prompt",
+  "merge_pr_number": 705,
+  "merge_commit_sha": "c8ba2993bf6986825bff97dde91af319997686a3",
+  "merged_at": "2026-06-12T19:11:27Z",
+  "case_study": "docs/case-studies/garmin-health-connection-case-study.md",
+  "feature_branch_merged": "feature/garmin-health-connection"
 }
