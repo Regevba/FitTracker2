@@ -37,3 +37,29 @@ default flips on.
 `another_session_live(ttl_seconds=3600)` defaults to a 1h lease-freshness TTL.
 If criterion 2 shows stale leases triggering false offers, lower the TTL (the
 heartbeat cadence of `create-isolated-worktree.py` bounds the floor).
+
+## 2026-06-14 — Calibration INVALIDATED + window RESET (fix/w9-session-id-keying)
+
+A pre-promotion audit (2026-06-14) found the original 2026-06-07 → 2026-06-20
+window collected **zero valid Phase-2 telemetry**. Root cause: the once-per-
+session marker keyed on `CLAUDE_SESSION_ID`, which Claude Code never sets (the id
+is delivered on hook **stdin JSON**). Every session shared the constant
+`"default"` marker, so `default-w9-concurrency.done` (written 2026-06-07)
+suppressed `concurrency_isolation_decision()` for every later session. The 45
+`w9.auto_isolate` rows in the window were ALL from Phase-1 drift (a different
+code path, `outcome=offer`), and were themselves near-100% false positives from
+the operator's own intentional `git checkout`s (same shared-`default` baseline
+bug in `check-branch-drift.py`).
+
+**Fixes shipped (this PR):**
+
+1. Session id resolved via `scripts/w9_session.py` (hook-stdin `session_id`), not the env var.
+2. Phase 2 now emits a **distinct gate `w9.concurrency`** (was `w9.auto_isolate`) so the v7.10 `GATE_COVERAGE_ZERO` meta-check can see it independently of Phase-1 drift.
+3. Phase-1 drift suppresses intentional checkouts (`evaluate_drift` → `intentional`) so its telemetry reflects real concurrent-session collisions only.
+4. Stale leases reaped from `agent-leases.json` (the 2026-05-07 lease was 38d dead).
+
+**Window reset:** the 14-day advisory→enforced clock for `CLAUDE_W9_CONCURRENCY_ENFORCE`
+**restarts when this fix lands on main**. Re-evaluate the four criteria against
+`w9.concurrency` rows (NOT `w9.auto_isolate`) at fix-merge + 14d. Criterion 1 now
+requires ≥7d of genuine `w9.concurrency` rows with `outcome` ∈ {`no_concurrency`,
+`concurrency_offer`, `already_isolated`}. Until then: **HOLD at advisory.**

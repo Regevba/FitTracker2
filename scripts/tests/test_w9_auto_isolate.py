@@ -301,7 +301,12 @@ def test_t7_concurrency_advisory_does_not_act(repo, monkeypatch):
     assert rows[-1]["outcome"] == "concurrency_offer"
 
 
-def test_t7_already_isolated_is_noop(repo):
+def test_t7_already_isolated_is_noop(repo, monkeypatch):
+    # Pin the clock so the fresh-lease heartbeat stays within TTL regardless of
+    # the real date (was a latent clock-dependent flake — failed >1h after the
+    # hardcoded heartbeat). Mirrors test_t7_concurrency_advisory_does_not_act.
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", str(__import__("calendar").timegm(
+        __import__("time").strptime("2026-06-06T05:40:00Z", "%Y-%m-%dT%H:%M:%SZ"))))
     wai = _wai(repo)
     _write_leases(repo, [{"feature": "other-feat", "status": "active",
                           "last_heartbeat": "2026-06-06T05:39:55Z"}])
@@ -338,3 +343,160 @@ def test_hook_clean_tree_no_escalation(repo, monkeypatch):
     # Clean tree -> no telemetry, no action.
     cbd._escalate_on_drift(f"feature/{repo['slug']}", "main")
     assert not repo["ledger"].exists() or repo["ledger"].read_text().strip() == ""
+
+
+# ── fix/w9-session-id-keying: gate-name split (#2) ──────────────────────────
+
+def test_concurrency_emits_distinct_gate_name(repo):
+    """Phase 2 (concurrency) must emit gate='w9.concurrency', NOT 'w9.auto_isolate'.
+
+    Sharing the gate name with Phase-1 drift masked the dead Phase-2 path from
+    the v7.10 GATE_COVERAGE_ZERO meta-check (Phase-1 kept candidates>0). Splitting
+    the name lets the meta-check see Phase 2 independently.
+    """
+    wai = _wai(repo)
+    _write_leases(repo, [])  # no concurrency -> no_concurrency branch still emits
+    wai.concurrency_isolation_decision()
+    rows = [json.loads(l) for l in repo["ledger"].read_text().splitlines() if l.strip()]
+    assert rows, "expected a telemetry row"
+    assert rows[-1]["gate"] == "w9.concurrency"
+
+
+def test_drift_telemetry_keeps_legacy_gate_name(repo):
+    """Phase 1 (drift) keeps gate='w9.auto_isolate' for backward-compat with the
+    status readout + the 45 historical rows."""
+    wai = _wai(repo)
+    wai.emit_telemetry(candidates=1, checked=0, skipped=1,
+                       skip_reasons=["offer_not_acted"], outcome="offer",
+                       drift={"from_branch": "a", "to_branch": "b"})
+    rows = [json.loads(l) for l in repo["ledger"].read_text().splitlines() if l.strip()]
+    assert rows[-1]["gate"] == "w9.auto_isolate"
+
+
+def test_emit_telemetry_accepts_explicit_gate(repo):
+    wai = _wai(repo)
+    wai.emit_telemetry(candidates=1, checked=1, skipped=0, skip_reasons=[],
+                       outcome="isolated", gate="w9.concurrency")
+    rows = [json.loads(l) for l in repo["ledger"].read_text().splitlines() if l.strip()]
+    assert rows[-1]["gate"] == "w9.concurrency"
+
+
+# ── fix/w9-session-id-keying: stale-lease reaping (#4) ──────────────────────
+
+def test_reap_stale_leases_removes_old_keeps_fresh(repo):
+    wai = _wai(repo)
+    now = wai._parse_iso("2026-06-14T12:00:00Z")
+    leases = [
+        {"feature": "old-dead", "status": "active", "last_heartbeat": "2026-05-07T14:34:36Z"},
+        {"feature": "fresh", "status": "active", "last_heartbeat": "2026-06-14T11:59:00Z"},
+    ]
+    kept, removed = wai.reap_stale_leases(leases, now_epoch=now, ttl_seconds=86400)
+    assert [l["feature"] for l in kept] == ["fresh"]
+    assert [l["feature"] for l in removed] == ["old-dead"]
+
+
+def test_reap_stale_leases_removes_non_active(repo):
+    wai = _wai(repo)
+    now = wai._parse_iso("2026-06-14T12:00:00Z")
+    leases = [{"feature": "released", "status": "released",
+               "last_heartbeat": "2026-06-14T11:59:00Z"}]
+    kept, removed = wai.reap_stale_leases(leases, now_epoch=now, ttl_seconds=86400)
+    assert kept == [] and [l["feature"] for l in removed] == ["released"]
+
+
+# ── fix/w9-session-id-keying: drift evaluation + per-session keying (#1, #3) ──
+
+def _load_cbd(name="cbd_fix"):
+    import importlib.util, sys
+    spec = importlib.util.spec_from_file_location(name, SCRIPTS / "check-branch-drift.py")
+    cbd = importlib.util.module_from_spec(spec)
+    sys.modules[name] = cbd
+    spec.loader.exec_module(cbd)
+    return cbd
+
+
+def test_evaluate_drift_same_branch_ok():
+    cbd = _load_cbd("cbd_eval1")
+    assert cbd.evaluate_drift("main", "main", None) == "ok"
+
+
+def test_evaluate_drift_unexpected_change_is_drift():
+    cbd = _load_cbd("cbd_eval2")
+    assert cbd.evaluate_drift("feature/x", "main", "git status") == "drift"
+
+
+def test_evaluate_drift_intentional_checkout_suppressed():
+    cbd = _load_cbd("cbd_eval3")
+    assert cbd.evaluate_drift("feature/x", "main", "git checkout main") == "intentional"
+
+
+def test_main_uses_payload_session_id_for_baseline(repo, monkeypatch):
+    """main() must key the baseline file on the payload session_id, NOT 'default'."""
+    cbd = _load_cbd("cbd_sid")
+    monkeypatch.setattr(cbd, "REPO_ROOT", repo["root"])
+    monkeypatch.delenv("CLAUDE_SESSION_ID", raising=False)
+    monkeypatch.delenv("CLAUDE_W9_DISABLE_DRIFT_CHECK", raising=False)
+    monkeypatch.setattr(cbd, "current_branch", lambda: "main")
+    rc = cbd.main(payload={"session_id": "sess-XYZ"})
+    assert rc == 0
+    sd = repo["root"] / ".claude" / "_session-state"
+    assert (sd / "sess-XYZ-branch.txt").read_text().strip() == "main"
+    assert not (sd / "default-branch.txt").exists()
+
+
+def test_main_intentional_checkout_no_drift_telemetry(repo, monkeypatch):
+    cbd = _load_cbd("cbd_intent")
+    monkeypatch.setattr(cbd, "REPO_ROOT", repo["root"])
+    monkeypatch.setenv("GATE_COVERAGE_LEDGER", str(repo["ledger"]))
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(repo["root"]))
+    monkeypatch.delenv("CLAUDE_SESSION_ID", raising=False)
+    sd = repo["root"] / ".claude" / "_session-state"
+    sd.mkdir(parents=True, exist_ok=True)
+    (sd / "sess-A-branch.txt").write_text("feature/old\n")
+    monkeypatch.setattr(cbd, "current_branch", lambda: "main")
+    (repo["root"] / "wip.txt").write_text("dirty\n")  # dirty, but switch was intentional
+    rc = cbd.main(payload={"session_id": "sess-A",
+                           "tool_input": {"command": "git checkout main"}})
+    assert rc == 0
+    assert (sd / "sess-A-branch.txt").read_text().strip() == "main"  # silently rebased
+    rows = [l for l in (repo["ledger"].read_text().splitlines() if repo["ledger"].exists() else []) if l.strip()]
+    assert rows == [], "intentional checkout must not emit drift telemetry"
+
+
+def test_main_genuine_drift_warns(repo, monkeypatch, capsys):
+    cbd = _load_cbd("cbd_drift")
+    monkeypatch.setattr(cbd, "REPO_ROOT", repo["root"])
+    monkeypatch.setenv("GATE_COVERAGE_LEDGER", str(repo["ledger"]))
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(repo["root"]))
+    monkeypatch.delenv("CLAUDE_SESSION_ID", raising=False)
+    sd = repo["root"] / ".claude" / "_session-state"
+    sd.mkdir(parents=True, exist_ok=True)
+    (sd / "sess-A-branch.txt").write_text("feature/old\n")
+    monkeypatch.setattr(cbd, "current_branch", lambda: "main")
+    # command is NOT a branch switch -> genuine drift
+    rc = cbd.main(payload={"session_id": "sess-A",
+                           "tool_input": {"command": "git status"}})
+    assert rc == 0
+    err = capsys.readouterr().err
+    assert "BRANCH DRIFT DETECTED" in err
+
+
+# ── fix/w9-session-id-keying: Phase-2 marker keyed on real session (#1, #6) ──
+
+def test_concurrency_check_wires_w9_session_helper(repo, monkeypatch):
+    """w9_concurrency_check must resolve the session id THROUGH w9_session (so the
+    hook-stdin payload source is honored), not via the bare CLAUDE_SESSION_ID env
+    read that always fell back to 'default'. Asserting the module imported the
+    helper distinguishes the fixed module from the pre-fix one.
+    """
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(repo["root"]))
+    monkeypatch.setenv("CLAUDE_SESSION_ID", "sess-REAL")
+    import importlib.util, sys
+    spec = importlib.util.spec_from_file_location("w9cc_fix", SCRIPTS / "w9_concurrency_check.py")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules["w9cc_fix"] = mod
+    spec.loader.exec_module(mod)
+    # The fixed module references the shared helper.
+    assert getattr(mod, "w9s", None) is not None, "w9_concurrency_check must import w9_session"
+    # And the marker is keyed on the resolved id, not the constant 'default'.
+    assert mod.MARKER.name == "sess-REAL-w9-concurrency.done"
