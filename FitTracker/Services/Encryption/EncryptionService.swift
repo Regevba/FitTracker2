@@ -1137,6 +1137,7 @@ final class EncryptedDataStore: ObservableObject {
         if let i = dailyLogs.firstIndex(where: {
             $0.resolvedLogicDayKey == remoteLogicDayKey
         }) {
+            guard !dailyLogs[i].needsSync else { return }  // local unsaved — skip (parity with mergeWeeklySnapshot)
             if remote.lastModified > dailyLogs[i].lastModified {
                 dailyLogs[i] = remote
             }
