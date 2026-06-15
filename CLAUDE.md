@@ -55,7 +55,7 @@ Backlog rows + v7.9.1+ docket entries carry an **impact tier label** like `(cu_v
 
 **Why this taxonomy:** before v7.9.1, the Feature/Enhancement/Fix/Chore taxonomy left an ambiguous middle for "this is bigger than a chore but doesn't need a PRD because the scope is mechanical (e.g. add a schema field + backfill)." Operators had to pick Feature (heavy) or Enhancement (technically requires parent PRD — which doesn't exist for net-new framework scaffolding). B_medium formalizes that middle: a `Feature` work_type with `work_subtype: b_medium` may skip PRD/tasks/UX phases as long as the skip reason is documented in `phases.<skipped>.skip_reason` per the existing skipped-phase audit-trail mechanism.
 
-**Forward-only:** existing backlog rows with `B_medium` labels (e.g. v8.x icebox L417 style-dictionary v5 migration) retain their label. New work items use the table above to choose. Old rows are not retroactively re-labeled.
+**Forward-only:** existing backlog rows with `B_medium` labels (e.g. the v8.x icebox style-dictionary v5 migration — since shipped 2026-06-08 via PR #677) retain their label. New work items use the table above to choose. Old rows are not retroactively re-labeled.
 
 ## Branching Strategy
 
@@ -316,7 +316,7 @@ v7.8.6 ships observability surfaces that close the **96-hour drift window** betw
 
 ## v7.9 Promotion Release (shipped 2026-05-21)
 
-v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates that completed their 14-day Mechanism A telemetry window on 2026-05-21. No new gate code; no new schema fields; no new observability surfaces. The single change is `BRANCH_ISOLATION_ADVISORY_MODE = True → False` at [`scripts/check-state-schema.py:132`](scripts/check-state-schema.py), which controls all three gates simultaneously.
+v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates that completed their 14-day Mechanism A telemetry window on 2026-05-21. No new gate code; no new schema fields; no new observability surfaces. The single change is `BRANCH_ISOLATION_ADVISORY_MODE = True → False` at [`scripts/check-state-schema.py:149`](scripts/check-state-schema.py), which controls all three gates simultaneously.
 
 **Promotion decision criteria (per [infra master plan §2.2](docs/master-plan/infra-master-plan-2026-05-12.md)):** all four required for each candidate.
 
@@ -352,7 +352,7 @@ v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates tha
 - **2026-05-28** — B2 post-v7.9 baseline snapshot via `make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation`
 - **~2026-06-04** — Phase E exit; v7.9.1 build window opens
 
-**Reversibility runbook:** if a regression surfaces during Phase E soak, flip back via single-line edit at [`scripts/check-state-schema.py:132`](scripts/check-state-schema.py) (`BRANCH_ISOLATION_ADVISORY_MODE = True`), commit on `chore/v7-9-rollback`, merge to main. <5 min end-to-end.
+**Reversibility runbook:** if a regression surfaces during Phase E soak, flip back via single-line edit at [`scripts/check-state-schema.py:149`](scripts/check-state-schema.py) (`BRANCH_ISOLATION_ADVISORY_MODE = True`), commit on `chore/v7-9-rollback`, merge to main. <5 min end-to-end.
 
 **Case study:** [`docs/case-studies/framework-v7-9-promotion-case-study.md`](docs/case-studies/framework-v7-9-promotion-case-study.md).
 **Cold-start entrypoint:** [`.claude/entrypoints/framework-v7-9.md`](.claude/entrypoints/framework-v7-9.md).
@@ -629,8 +629,8 @@ This app is data-driven at every level:
 
 The design system is a **living, evolving framework** — not a static constraint. It should serve the product.
 
-- ~125 semantic tokens in `FitTracker/Services/AppTheme.swift`
-- 13 reusable components in `FitTracker/DesignSystem/`
+- ~175 semantic tokens in `FitTracker/Services/AppTheme.swift`
+- 17 reusable components in `FitTracker/DesignSystem/`
 - Token pipeline: `design-tokens/tokens.json` → Style Dictionary → `DesignTokens.swift`
 - CI gate: `make tokens-check` prevents token drift
 - Always use semantic tokens (AppColor, AppText, AppSpacing) — never raw literals
@@ -719,8 +719,8 @@ colorset.
   (Gap-A: `Color("name")` in AppTheme without a backing colorset).
 - **Baseline:** `docs/design-system/ui-audit-baseline.md` (regenerate
   with `make ui-audit-baseline`). Baseline snapshot: 0 P0 + 103 P1
-  (P0 burndown completed 2026-05-05); current live: 0 P0 + 108 P1
-  (P1 drift +5 since baseline, fix-as-you-touch active).
+  (P0 burndown completed 2026-05-05); current live: 0 P0 + 0 P1
+  (P1 burndown fully completed since baseline; verify with `make ui-audit`).
 - **Fix-as-you-touch rule:** any PR touching a file with findings should
   clear that file's findings as part of the change. `ui-audit` is now a
   hard gate within `verify-local` (achieved 2026-05-05 once P0 baseline
@@ -875,7 +875,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
 
 ### Skills ecosystem
-- **DEV-only framework guide (v1.0 → v7.8):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](docs/architecture/dev-guide-v1-to-v7-7.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes (12 write-time + 13 cycle-time + 3 advisory in v7.8), §2.4 v7.8 bridge mechanisms (A–F), and operational walkthroughs (adding a feature, extending a check code, bumping the framework version). Filename retained at `-v7-7` for ref-stability across 16+ cross-references in FT2 + fitme-story; content tracks v7.8 (last bumped 2026-05-07).
+- **DEV-only framework guide (v1.0 → v7.9.1):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](docs/architecture/dev-guide-v1-to-v7-7.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes, §2.4 bridge mechanisms (A–F), and operational walkthroughs (adding a feature, extending a check code, bumping the framework version). Filename retained at `-v7-7` for ref-stability across 16+ cross-references in FT2 + fitme-story; content tracks v7.9.1. **Current framework state is v7.10 (shipped 2026-06-10); for canonical, machine-derived gate counts always defer to [`docs/FRAMEWORK-FACTS.md`](docs/FRAMEWORK-FACTS.md)** — the per-version count prose scattered through this file is an accurate record of each era, not necessarily current state.
 - **Lifecycle event catalog (companion to dev-guide):** [`docs/architecture/feature-lifecycle-event-catalog.md`](docs/architecture/feature-lifecycle-event-catalog.md) — answers "at any point in a feature's lifecycle, what should be triggered, logged, measured, and persisted, and which gate enforces it?" 12 sections + 2 mermaid flow diagrams (L0 phase lifecycle + per-commit fan-out across all 4 loops). Authoritative spec source for the planned `FEATURE_CLOSURE_COMPLETENESS` gate ([`framework-v7-8-branch-isolation`](.claude/features/framework-v7-8-branch-isolation/state.json)).
 - Skills one-pager: `docs/skills/README.md`
 - Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
