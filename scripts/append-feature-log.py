@@ -22,6 +22,23 @@ FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 VALID_CACHE_LEVELS = {"L1", "L2", "L3"}
 VALID_CACHE_HIT_TYPES = {"exact", "adapted", "miss"}
 
+# F5 (v8.x ready-now): Tier 2.2 event_type vocabulary. event_type stays
+# free-form (no choices= constraint, to preserve existing usage), but a value
+# outside this allowlist emits an informational stderr note so the vocabulary
+# stays discoverable. `scope_change` is formalized here: a deliberate change to
+# a feature's scope mid-lifecycle (previously logged as event_type "note").
+KNOWN_EVENT_TYPES = {
+    "phase_started",
+    "phase_completed",
+    "test_run",
+    "decision",
+    "blocker",
+    "scope_change",
+    "note",
+    "milestone",
+    "metric_captured",
+}
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -205,6 +222,17 @@ def main() -> int:
         }
     events.append(event)
     log["updated_at"] = utc_now()
+
+    # F5 (advisory, non-blocking): nudge toward the known event_type vocabulary
+    # without rejecting free-form values. Never changes the exit code.
+    if args.event_type not in KNOWN_EVENT_TYPES:
+        import sys as _sys_note
+        print(
+            f"note: event_type '{args.event_type}' is outside the known Tier 2.2 "
+            f"vocabulary ({', '.join(sorted(KNOWN_EVENT_TYPES))}). "
+            "If this is a recurring kind, consider adding it to KNOWN_EVENT_TYPES.",
+            file=_sys_note.stderr,
+        )
 
     # v7.8 Mechanism I scaffolding: flock-protect the log write too.
     import sys as _sys
