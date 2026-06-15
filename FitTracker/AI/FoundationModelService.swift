@@ -155,8 +155,9 @@ public final class FoundationModelService: FoundationModelProtocol {
         guard isAvailable else { return (recommendation, 0.0) }
 
         // The full biometric payload is inlined into the prompt for the
-        // on-device engine ONLY — it never leaves the device.
-        let context = buildPrivateContext(snapshot: snapshot, recommendation: recommendation)
+        // on-device engine ONLY — it never leaves the device. Shared builder
+        // (Tier3PromptContext) is reused by the Tier-3b PCC path.
+        let context = Tier3PromptContext.build(snapshot: snapshot, recommendation: recommendation)
         let allowed = Set(recommendation.signals).union(Tier3SignalFilter.knownLocalVocabulary)
 
         do {
@@ -206,62 +207,6 @@ public final class FoundationModelService: FoundationModelProtocol {
     diagnoses, or cite numeric health metrics.
     """
 
-    /// Build the on-device prompt context. The full biometric payload is
-    /// inlined into the prompt for the inference engine — but if the caller
-    /// wants a string suitable for *logging* (audit DEEP-AI-012), it must use
-    /// `redactedForLogging: true` to scrub raw RHR/sleep/stress values.
-    /// Production code paths that touch the inference engine pass `false`;
-    /// any debug/diagnostic emission must pass `true`.
-    private func buildPrivateContext(
-        snapshot: LocalUserSnapshot,
-        recommendation: AIRecommendation,
-        redactedForLogging: Bool = false
-    ) -> String {
-        var lines: [String] = ["[FitTracker on-device personalisation context]"]
-        lines.append("Segment: \(recommendation.segment)")
-        lines.append("Cloud signals: \(recommendation.signals.joined(separator: ", "))")
-        lines.append("Cohort confidence: \(recommendation.confidence)")
-
-        if let goal = snapshot.primaryGoal {
-            lines.append("Goal: \(goal)")
-            // Goal-aware emphasis: tell the model what to prioritize.
-            // Audit AI-014: parse the snake_case primaryGoal via the
-            // dedicated initializer (rawValue init never matched).
-            let goalMode = NutritionGoalMode(primaryGoalString: goal) ?? .fatLoss
-            let profile = GoalProfile.forGoal(goalMode)
-            if let segment = AISegment(rawValue: recommendation.segment),
-               let emphasis = profile.messagingEmphasis[segment] {
-                lines.append("Goal emphasis: \(emphasis)")
-            }
-            let drivers = profile.primaryDrivers.map { "\($0.metric) (\($0.direction.rawValue), weight \($0.weight))" }
-            lines.append("Primary drivers: \(drivers.joined(separator: "; "))")
-        }
-        if let phase = snapshot.programPhase     { lines.append("Phase: \(phase)") }
-
-        // Audit DEEP-AI-012: when this string is destined for a log sink,
-        // scrub raw biometric values — keep only a presence indicator.
-        if redactedForLogging {
-            if snapshot.avgSleepHours    != nil { lines.append("Sleep: <redacted>") }
-            if snapshot.stressLevel      != nil { lines.append("Stress: <redacted>") }
-            if snapshot.restingHeartRate != nil { lines.append("RHR: <redacted>") }
-        } else {
-            if let sleep = snapshot.avgSleepHours    { lines.append("Sleep: \(sleep)h avg") }
-            if let stress = snapshot.stressLevel     { lines.append("Stress: \(stress)") }
-            if let hr = snapshot.restingHeartRate    { lines.append("RHR: \(hr)bpm") }
-        }
-
-        if let score = snapshot.readinessScore {
-            if redactedForLogging {
-                lines.append("Readiness score: <redacted>/100")
-            } else {
-                lines.append("Readiness score: \(score)/100 (confidence: \(snapshot.readinessConfidence ?? "unknown"))")
-                lines.append("Recommended intensity: \(snapshot.readinessRecommendation ?? "unknown")")
-            }
-            if let flags = snapshot.fatigueFlags, !flags.isEmpty {
-                lines.append("Fatigue warnings: \(flags.joined(separator: ", "))")
-            }
-        }
-
-        return lines.joined(separator: "\n")
-    }
+    // Prompt context is built by the shared `Tier3PromptContext.build(...)`
+    // (see PCCEscalationService.swift) — reused by both Tier 3a and Tier 3b.
 }

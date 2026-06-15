@@ -1,7 +1,7 @@
 {
   "feature": "foundation-models-tier3",
   "created_at": "2026-06-15T06:11:47Z",
-  "updated": "2026-06-15T15:20:00Z",
+  "updated": "2026-06-15T15:40:00Z",
   "branch": "feature/foundation-models-tier3",
   "state_owner": "ft2",
   "framework_version": "v7.10",
@@ -195,39 +195,40 @@
       "title": "PCCEscalationProtocol + NoOp fallback + injection",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.4,
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-15T15:40:00Z"
     },
     {
       "id": "T10",
       "title": "Live PrivateCloudComputeLanguageModel impl (iOS26.4)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.6,
       "depends_on": [
         "T9"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-15T15:40:00Z",
+      "note": "live PCC body flag-gated (FOUNDATION_MODELS_PCC) \u2014 WWDC26 PCC API absent in iOS 26.5 SDK"
     },
     {
       "id": "T11",
       "title": "Orchestrator PCC escalation wiring (gated)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.4,
       "depends_on": [
         "T9"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-15T15:40:00Z"
     },
     {
       "id": "T12",
@@ -245,13 +246,14 @@
       "title": "Tests: PCC gating (AB4) + fallback + Settings PCC note copy",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
         "T11"
       ],
-      "completed_at": null
+      "completed_at": "2026-06-15T15:40:00Z",
+      "note": "tests done; Settings PCC note copy \u2192 Phase 8 GDPR doc"
     }
   ],
   "figma_node_ids": {
@@ -333,5 +335,10 @@
         "started_at": "2026-06-15T15:02:20Z"
       }
     }
+  },
+  "sdk_gap": {
+    "finding": "WWDC26 PCC API (PrivateCloudComputeLanguageModel/ContextOptions/reasoningLevel) absent in iOS 26.5 SDK",
+    "disposition": "Tier 3b live path gated behind FOUNDATION_MODELS_PCC flag; no-ops until SDK ships symbols",
+    "verified_at": "2026-06-15"
   }
 }

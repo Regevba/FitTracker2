@@ -63,6 +63,7 @@
 		AI100000000000000000AAA1 /* AITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA1 /* AITypes.swift */; };
 		AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA2 /* AIEngineClient.swift */; };
 		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
+		AI100000000000000000AAB3 /* PCCEscalationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAB3 /* PCCEscalationService.swift */; };
 		AI100000000000000000AAA4 /* AIOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA4 /* AIOrchestrator.swift */; };
 		AI100000000000000000AAA5 /* AISnapshotBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA5 /* AISnapshotBuilder.swift */; };
 		AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AT01 /* AIAnalyticsTests.swift */; };
@@ -399,6 +400,7 @@
 		AI200000000000000000AAA1 /* AITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITypes.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA2 /* AIEngineClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEngineClient.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA3 /* FoundationModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationModelService.swift; sourceTree = "<group>"; };
+		AI200000000000000000AAB3 /* PCCEscalationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCCEscalationService.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA4 /* AIOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestrator.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA5 /* AISnapshotBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISnapshotBuilder.swift; sourceTree = "<group>"; };
 		AI200000000000000000AT01 /* AIAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalyticsTests.swift; sourceTree = "<group>"; };
@@ -954,6 +956,7 @@
 				AI200000000000000000AAA1 /* AITypes.swift */,
 				AI200000000000000000AAA2 /* AIEngineClient.swift */,
 				AI200000000000000000AAA3 /* FoundationModelService.swift */,
+				AI200000000000000000AAB3 /* PCCEscalationService.swift */,
 				AI200000000000000000AAA4 /* AIOrchestrator.swift */,
 				AI200000000000000000AAA5 /* AISnapshotBuilder.swift */,
 			);
@@ -1719,6 +1722,7 @@
 				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
 				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
+				AI100000000000000000AAB3 /* PCCEscalationService.swift in Sources */,
 				AI100000000000000000AAA4 /* AIOrchestrator.swift in Sources */,
 				AI100000000000000000AAA5 /* AISnapshotBuilder.swift in Sources */,
 				FB1000001000000000000001 /* SupabaseClient.swift in Sources */,

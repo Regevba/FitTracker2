@@ -137,3 +137,26 @@ This becomes a Phase 2 task (docs/settings copy) and a Phase 8 GDPR-doc update; 
 
 Non-determinism (mitigated by `@Generable` + signal filter); device-only live verification; PCC entitlement
 (confirm at build); summary quality (KC2 + manual eval). See research.md §8.
+
+## 10. SDK-gap finding (added 2026-06-15, during Phase 4)
+
+**The WWDC26 Private Cloud Compute API is not in the shipping iOS 26.5 SDK.** Verified against
+`FoundationModels.swiftinterface` (Xcode 26.5): the framework exposes only `SystemLanguageModel`
+(+ `LanguageModelSession`, `@Generable`, `respond(to:generating:options:)`, `UseCase`). There is
+**no** `PrivateCloudComputeLanguageModel`, `ContextOptions`, `reasoningLevel`, or `LanguageModel`
+provider protocol — the WWDC26 (2026-06-09) press coverage these were sourced from describes
+announced features not present in this SDK seed.
+
+**Impact + disposition:**
+- **Tier 3a (on-device, `SystemLanguageModel`)** — real, shipped, 23 tests green (commit `2068044`). Unaffected.
+- **Tier 3b (PCC)** — the full architecture ships (protocol seam, `NoOpPCCEscalation`, orchestrator
+  gating, FitTrackerApp injection, 4 mock-based tests, all green). The **live PCC call is gated behind
+  the `FOUNDATION_MODELS_PCC` compile flag (undefined → excluded)**; the service no-ops at runtime
+  (`escalateToLLM` stays inert, no behavior change vs. pre-feature) until the SDK exposes the symbols.
+  Flipping the flag activates the real path with no other code change.
+- **Primary metric correction:** until the flag is enabled, terminal `source_tier` can be
+  `on_device` (Tier 3a) but never `pcc`. The 60% Tier-3 adoption target is carried by Tier 3a alone
+  for now; `pcc` contribution is 0 by construction.
+- **Lesson (process):** Phase-0 feasibility confirmed the framework existed but not that the specific
+  symbols did. Forward rule: grep the actual `.swiftinterface` for required symbols before asserting
+  an API is buildable — don't rely on release-announcement coverage.

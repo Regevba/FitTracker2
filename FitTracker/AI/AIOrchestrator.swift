@@ -28,6 +28,9 @@ public final class AIOrchestrator: ObservableObject {
 
     private let engineClient:   any AIEngineClientProtocol
     private let foundationModel: any FoundationModelProtocol
+    /// Tier 3b — Apple Private Cloud Compute escalation (foundation-models-tier3).
+    /// Defaults to NoOpPCCEscalation so existing call sites/tests are unaffected.
+    private let pccEscalation:  any PCCEscalationProtocol
     private let snapshot:       () -> LocalUserSnapshot
     var goalMode:               () -> NutritionGoalMode
 
@@ -51,6 +54,7 @@ public final class AIOrchestrator: ObservableObject {
     init(
         engineClient: some AIEngineClientProtocol,
         foundationModel: some FoundationModelProtocol,
+        pccEscalation: some PCCEscalationProtocol = NoOpPCCEscalation(),
         snapshot: @escaping @Sendable () -> LocalUserSnapshot,
         goalMode: @escaping @Sendable () -> NutritionGoalMode,
         feedbackMemory: RecommendationMemory? = nil,
@@ -59,6 +63,7 @@ public final class AIOrchestrator: ObservableObject {
     ) {
         self.engineClient    = engineClient
         self.foundationModel = foundationModel
+        self.pccEscalation   = pccEscalation
         self.snapshot        = snapshot
         self.goalMode        = goalMode
         self.feedbackMemory   = feedbackMemory
@@ -127,7 +132,7 @@ public final class AIOrchestrator: ObservableObject {
         // gating (see FoundationModelService), but a runtime guard ensures
         // we never attempt inference if the implementation reports it isn't
         // ready — for example a future iOS where the model is downloading.
-        let finalRecommendation: AIRecommendation
+        var finalRecommendation: AIRecommendation
         if foundationModel.isAvailable {
             do {
                 let (adapted, confidence) = try await foundationModel.adapt(
@@ -145,6 +150,30 @@ public final class AIOrchestrator: ObservableObject {
             }
         } else {
             finalRecommendation = baseRecommendation
+        }
+
+        // Tier 3b (foundation-models-tier3) — escalate to Apple Private Cloud
+        // Compute ONLY when: the cohort backend flagged escalate_to_llm, Tier 3a
+        // did NOT produce an accepted on-device result, the confidence is still
+        // below the personalisation threshold, and PCC is available. This bounds
+        // PCC cost/latency to genuinely low-confidence cases. Failure/offline →
+        // keep the Tier-3a result (confidence < threshold from escalate()).
+        if inferenceSourceTier != "on_device",
+           baseRecommendation.escalateToLLM,
+           finalRecommendation.confidence < personalisationThreshold,
+           pccEscalation.isAvailable {
+            do {
+                let (escalated, confidence) = try await pccEscalation.escalate(
+                    recommendation: finalRecommendation,
+                    snapshot: userSnapshot
+                )
+                if confidence >= personalisationThreshold {
+                    finalRecommendation = escalated
+                    inferenceSourceTier = "pcc"
+                }
+            } catch {
+                // Keep the Tier-3a/baseline result on any PCC failure.
+            }
         }
 
         // HADF Phase 3A T5a — emit honest inference observability (advisory;
