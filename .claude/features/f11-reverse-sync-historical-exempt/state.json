@@ -1,6 +1,6 @@
 {
   "feature_name": "f11-reverse-sync-historical-exempt",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "platforms_tested": {},
   "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-15T14:00:00Z",
@@ -11,7 +11,7 @@
   "has_ui": false,
   "requires_analytics": false,
   "state_owner": "ft2",
-  "branch": "feature/f11-reverse-sync-historical-exempt",
+  "branch": "chore/f11-reverse-sync-historical-exempt-post-merge-closure",
   "scheduled_after": null,
   "primary_metric": "BRANCH_ISOLATION_HISTORICAL no longer false-positives on reverse-sync-mirrored fitme-story-native state.json (state_owner_sync_origin ends with '-reverse'). F11 from the v8.x ready-now docket \u2014 additive narrowing of an existing advisory (no new calibration window; same posture as F-LAUNCHD sub-fix (a)).",
   "success_metrics": [
@@ -31,7 +31,24 @@
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-06-15T14:00:00Z"
+        "started_at": "2026-06-15T14:00:00Z",
+        "ended_at": "2026-06-15T13:33:16Z"
+      },
+      "review": {
+        "started_at": "2026-06-15T13:33:16Z",
+        "ended_at": "2026-06-15T13:33:16Z"
+      },
+      "merge": {
+        "started_at": "2026-06-15T13:33:16Z",
+        "ended_at": "2026-06-15T13:33:16Z"
+      },
+      "docs": {
+        "started_at": "2026-06-15T13:33:16Z",
+        "ended_at": "2026-06-15T18:11:21Z"
+      },
+      "complete": {
+        "started_at": "2026-06-15T18:11:21Z",
+        "ended_at": "2026-06-15T18:11:21Z"
       }
     }
   },
@@ -53,5 +70,68 @@
     }
   ],
   "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-sync-historical-exempt",
-  "updated": "2026-06-15T13:24:59Z"
+  "updated": "2026-06-15T13:24:59Z",
+  "merge_pr_number": 722,
+  "merge_commit_sha": "2aeb86e4c1722b370eafc5d17c46774c4437c10c",
+  "merged_at": "2026-06-15T13:33:16Z",
+  "feature_branch_merged": "feature/f11-reverse-sync-historical-exempt",
+  "phases": {
+    "review": {
+      "started_at": "2026-06-15T13:33:16Z",
+      "ended_at": "2026-06-15T13:33:16Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-15T13:33:16Z",
+      "ended_at": "2026-06-15T13:33:16Z",
+      "pr_number": 722,
+      "merge_commit_sha": "2aeb86e4c1722b370eafc5d17c46774c4437c10c",
+      "merged_at": "2026-06-15T13:33:16Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-15T13:33:16Z",
+      "ended_at": "2026-06-15T18:11:21Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-15T18:11:21Z",
+      "ended_at": "2026-06-15T18:11:21Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-15T13:33:16Z",
+      "reason": "PR #722 squashed onto main as 2aeb86e4c1 (operator-merged 2026-06-15T13:33:16Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-15T13:33:16Z",
+      "reason": "PR #722 squashed onto main as 2aeb86e4c1 (operator-merged 2026-06-15T13:33:16Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-15T13:33:16Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-15T18:11:21Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/f11-reverse-sync-historical-exempt-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ],
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "Mechanical framework_feature chore (gate/enum/exemption); thin change per the six-features-roundup principle \u2014 no dedicated narrative warranted.",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Bundled post-merge closure of 3 co-shipped framework_feature chores (PRs #719/#720/#722) in one reconciliation PR 2026-06-15."
 }
