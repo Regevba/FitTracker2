@@ -2,7 +2,7 @@
   "feature_name": "fitme-story-dual-audience-redesign",
   "current_phase": "complete",
   "created_at": "2026-06-09T05:20:00Z",
-  "updated_at": "2026-06-09T17:45:00Z",
+  "updated_at": "2026-06-15T17:10:00Z",
   "platforms_tested": {
     "ios": false,
     "web": true,
@@ -85,8 +85,14 @@
       "repo": "Regevba/fitme-story",
       "role": "implementation_squash_merge",
       "merge_commit": "1f5bd0989c303bcb2748f2ff51c6418fb23b14f6"
+    },
+    {
+      "number": 214,
+      "repo": "Regevba/fitme-story",
+      "role": "post_review_refinements"
     }
   ],
+  "merge_note": "PR #213 (feature) SQUASH-MERGED to fitme-story main by operator after preview review (2026-06-09). Production has all 6 asks. Operator review refinements (about->home, case-study chronological order + stripes + date backfill, era-pill clarity, story nav->footer, toggle redesign) on PR #214 (fresh branch off main, refinements-only diff; corrected an accidental push to the merged #213 branch which was then deleted). Salvaged 2026-06-15 from superseded local commit c0ac269 (kept total_wall_time_minutes + structured related_prs).",
   "phases": {
     "research": {
       "status": "approved",
