@@ -1,8 +1,8 @@
-# `/pm-workflow` — The Hub (v7.8)
+# `/pm-workflow` — The Hub (v7.10)
 
 > **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
 >
-> **Updated:** 2026-05-04 — v7.8 Bridge layer fully shipped. v7.9 measurement window opens 2026-05-11.
+> **Updated:** 2026-06-15 — current framework **v7.10** (shipped 2026-06-10). Phase 0 now runs `make preflight` (0.0 unified preflight, v7.8.6) + `make phase-0-reality-check` (0.1, v7.9.1) + `make skill-preflight` pattern↔skill overlay (v7.9.1). The per-version history table below is historical; canonical current counts: [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md).
 
 **Agent-facing prompt:** [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md)
 

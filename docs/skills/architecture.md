@@ -1,6 +1,8 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 6.0 | **Updated:** 2026-04-16 | **Branch:** `main`
+> **Version:** 7.10 | **Updated:** 2026-06-15 | **Branch:** `main`
+>
+> The hub-and-spoke skills architecture below (shared-data connectors, L1/L2/L3 cache, validation gate, skill lifecycle, SoC token optimizations) is **unchanged and still accurate at framework v7.10**. The v6.0 → v7.10 work (measurement, write-time/cycle-time integrity gates, branch-isolation enforcement, the pattern↔skill overlay) layered on top of this substrate without re-architecting it. Canonical current gate/feature counts: [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md) (26 instrumented gates = 17 write-time + 7 cycle-time + 2 W9 hooks; 106 features). Skill ecosystem: **12 skills** = 1 hub (`pm-workflow`) + 11 spokes.
 >
 > This is the **full deep-dive guide** for the skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 > For a quick-reference system overview with diagrams and tables, see the [Architecture One-Pager](architecture-one-pager.md).
@@ -122,7 +124,8 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 │   ├── marketing/SKILL.md          # ASO, campaigns, content, email, launches
 │   ├── ops/SKILL.md                # Infrastructure, incidents, cost, alerts
 │   ├── research/SKILL.md           # Cross-industry → same-category → feature-specific
-│   └── release/SKILL.md            # Version bumps, changelogs, submission
+│   ├── release/SKILL.md            # Version bumps, changelogs, submission
+│   └── brainstorm-pm/SKILL.md      # PM brainstorming — 4 modes + three-option trade-off + 4 frameworks; Phase 0 discovery entry
 │
 ├── shared/                         # Shared data layer (15 JSON files)
 │   ├── context.json                # Global product context
@@ -1009,7 +1012,7 @@ health-status.json ───────── /ops, /dev, /qa write
 
 ## 18. Quick Reference
 
-### All 11 Skills
+### All 12 Skills
 
 | # | Skill | Sub-commands | One-liner |
 |---|-------|-------------|-----------|
@@ -1024,6 +1027,7 @@ health-status.json ───────── /ops, /dev, /qa write
 | 7 | `/ops` | `health`, `incident`, `cost`, `alerts` | Infrastructure monitoring, incidents, cost, alerting |
 | 8 | `/research` | `wide`, `narrow`, `feature`, `competitive`, `market`, `ux-patterns`, `aso` | Cross-industry → same-category → feature-specific research |
 | 9 | `/release` | `prepare`, `checklist`, `notes`, `submit` | Version bumps, changelogs, readiness checks, App Store submission |
+| 10 | `/brainstorm-pm` | `problem`, `solution`, `assumption`, `strategy`, `three-option` | PM brainstorming — 4 modes + 1 trade-off mode + 4 frameworks (HMW / JTBD / First Principles / OST). Default Phase 0 discovery entry for new-feature work. Added 2026-05-14 |
 
 ### All 15 Shared Data Files
 
@@ -1342,7 +1346,7 @@ Industry benchmark from the 2026-04-04 analysis, with current delta:
 | Email marketing | Yes | Yes | Yes | **No** | **Skill shipped** (`/marketing email`) |
 | NPS/CSAT | Yes | Yes | No | **No** | **Skill shipped** (`/cx nps`) |
 | Design system CI | No | No | No | **Yes** (unique) | **Yes** (unique) |
-| PM lifecycle skill | No | No | No | **Yes** (unique) | **Yes** (unique, now with 11-skill ecosystem) |
+| PM lifecycle skill | No | No | No | **Yes** (unique) | **Yes** (unique, now with 12-skill ecosystem) |
 | Analytics instrumentation gate | No | No | No | **Yes** (unique) | **Yes** (unique) |
 | **UX Foundations v2 refactor flow** | No | No | No | — | **Yes** (unique, shipped 2026-04-08) |
 
@@ -1382,7 +1386,7 @@ The original analysis drew the ecosystem as a single hub with missing side-layer
              └──────────────────────────────────────┘
 ```
 
-Compare this to the current 11-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.
+Compare this to the current 12-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.
 
 ---
 

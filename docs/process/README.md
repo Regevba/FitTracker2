@@ -2,6 +2,8 @@
 
 Operational playbooks and groundwork tied to the 2026-04-21 Google Gemini 2.5 Pro independent audit. Each doc describes the **status** and **current limits** of the named Tier recommendation from that audit, not just what's aspirational.
 
+> **Currency note:** framework is at **v7.10** (shipped 2026-06-10); the unclosable-gaps status below is unchanged since v7.7 (the four Class B gaps remain mechanically unclosable by design). Canonical current counts: [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md).
+>
 > **State at v7.7 (Validity Closure, shipped 2026-04-27):** four of the original Tier recommendations are now formalized as **mechanically unclosable Class B gaps** — v7.7 closed one (cache_hits writer-path) via `CACHE_HITS_EMPTY_POST_V6` pre-commit hook, reducing the count from 5 to 4. Their status will not "complete" because they cannot be mechanized without lying about what the framework can verify. See [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md). v7.7 case study: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md).
 
 ## Contents
@@ -15,7 +17,7 @@ Operational playbooks and groundwork tied to the 2026-04-21 Google Gemini 2.5 Pr
 
 ## Related canonical artifacts
 
-- **Developer guide (v1.0 → v7.7 technical reference):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md)
+- **Developer guide (v1.0 → v7.10 technical reference):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md)
 - **v7.5 case study (8 cooperating defenses, audit policy response):** [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](../case-studies/data-integrity-framework-v7.5-case-study.md)
 - **v7.6 case study (mechanical enforcement layer):** [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md)
 - **Class B unclosable-gaps inventory:** [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
