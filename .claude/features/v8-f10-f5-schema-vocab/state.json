@@ -1,0 +1,56 @@
+{
+  "feature_name": "v8-f10-f5-schema-vocab",
+  "current_phase": "implementation",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "created_at": "2026-06-15T13:00:00Z",
+  "updated_at": "2026-06-15T13:00:00Z",
+  "framework_version": "v7.10",
+  "work_type": "Chore",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "branch": "feature/v8-f10-f5-schema-vocab",
+  "scheduled_after": null,
+  "primary_metric": "Two v8.x ready-now non-gate formalizations bundled (per #627 precedent): F10 experiment_outcome enum on tasks[] (documented + advisory) + F5 scope_change Tier 2.2 vocabulary event (documented + advisory KNOWN_EVENT_TYPES note). Neither adds a blocking gate \u2014 no calibration walk required.",
+  "success_metrics": [
+    "F10: experiment_outcome {shipped|deferred|cancelled|superseded} documented as an optional tasks[] field in the schema doc + dev-guide; advisory-only (T1, doc + example presence)",
+    "F5: scope_change documented as an official Tier 2.2 event_type in contemporaneous-logging.md; append-feature-log.py emits an informational (non-blocking) note when event_type is outside KNOWN_EVENT_TYPES (T1, presence)",
+    "docket + ready-now workplan F10 + F5 rows marked shipped (T1, section presence)"
+  ],
+  "kill_criteria": [
+    "Advisory note becomes noisy \u2014 mitigated: KNOWN_EVENT_TYPES is a generous allowlist; note is stderr-only and never changes exit code",
+    "experiment_outcome conflicts with existing tasks[].status \u2014 mitigated: experiment_outcome is orthogonal (records the disposition of a task whose work is finished: shipped vs deferred vs cancelled vs superseded), documented as complementary to status"
+  ],
+  "dispatch_pattern": "agent-driven (1 script advisory + 2 doc updates + example backfill)",
+  "spec": "docs/master-plan/v8-0-ready-now-workplan-2026-06-15.md Batch 2 (F10 + F5) + v8-x-build-docket-2026-06-15.md \u00a70.B",
+  "scope_summary": "Bundles the two non-gate v8.x ready-now formalizations. F10: define experiment_outcome enum on tasks[] (doc + advisory, no blocking validator). F5: formalize scope_change as a Tier 2.2 event_type (doc + advisory KNOWN_EVENT_TYPES note in append-feature-log.py). Explicitly NOT new gates \u2014 no Mechanism A coverage, no calibration walk, no try-repo fixture (same posture as documentation formalizations).",
+  "related_prs": [],
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-15T13:00:00Z"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "F5: add scope_change to KNOWN_EVENT_TYPES advisory note in append-feature-log.py + document in contemporaneous-logging.md",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "F10: document experiment_outcome enum on tasks[] in schema doc/dev-guide (advisory, optional field)",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "Mark F10 + F5 shipped in docket + ready-now workplan",
+      "status": "complete"
+    }
+  ],
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-f5-schema-vocab",
+  "updated": "2026-06-15T12:28:31Z"
+}

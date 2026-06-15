@@ -57,7 +57,11 @@ Every event should try to answer four questions:
 Recommended fields:
 
 - `timestamp`
-- `event_type`
+- `event_type` — free-form, but the known Tier 2.2 vocabulary (F5) is:
+  `phase_started`, `phase_completed`, `test_run`, `decision`, `blocker`,
+  **`scope_change`** (a deliberate mid-lifecycle scope change — formerly logged
+  as `note`), `note`, `milestone`, `metric_captured`. Values outside this set
+  still log, but `append-feature-log.py` prints an informational note.
 - `phase`
 - `summary`
 - `artifacts`

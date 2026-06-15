@@ -845,6 +845,16 @@ The hub creates `.claude/features/widget-customization/state.json` with:
 
 It also creates `.claude/logs/widget-customization.log.json` with a `phase_started` event.
 
+**`tasks[].experiment_outcome` (F10, v8.x — optional, advisory).** Each task in
+`tasks[]` may carry an `experiment_outcome` enum recording the *disposition* of a
+task whose work has concluded: `"shipped"` / `"deferred"` / `"cancelled"` /
+`"superseded"`. This is orthogonal to `tasks[].status` (`pending`/`in_progress`/
+`complete`) — `status` tracks execution state; `experiment_outcome` records *why*
+a non-shipped task ended (a deferred task and a cancelled one are both "not
+complete" but mean different things). Previously this distinction lived only in
+case-study prose. The field is **optional and advisory** — no blocking gate
+validates it (it is a vocabulary formalization, not a new enforcement layer).
+
 ### 13.2 Phase progression
 
 For each phase transition (e.g., `research → prd`):

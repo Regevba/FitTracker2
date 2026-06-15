@@ -41,9 +41,9 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | F12 | `actionlint` in pre-commit stack | Write-time gate | **100.0 (highest)** | none — ready |
 | F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | Cycle-time gate | 40.0 | none |
 | F4 | Auto-update `framework_version` on protocol writes | Write-time/migration | 32.0 | partial — `FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` (#659) cover part |
-| F10 | `experiment_outcome` enum on `tasks[]` | Schema | 32.0 | none |
+| ~~F10~~ ✅ | `experiment_outcome` enum on `tasks[]` (documented, advisory — not a blocking gate) | Schema | 32.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | F13 | `source_commit` `workflow_dispatch` input | GH Actions | 32.0 | none |
-| F5 | `scope_change` Tier 2.2 vocabulary event | Vocabulary | 20.0 | none |
+| ~~F5~~ ✅ | `scope_change` Tier 2.2 vocabulary event (advisory KNOWN_EVENT_TYPES note) | Vocabulary | 20.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | F1 | `STATE_TASKS_FILESYSTEM_DRIFT` advisory | Cycle-time gate | 19.2 | none |
 | F3 | Phase 2 dependency-graph cycle check | Workflow gate | 14.4 | none |
 | T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** |
