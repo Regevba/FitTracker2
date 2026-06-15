@@ -7,7 +7,7 @@
 
 | # | ID | Item | RICE | Effort | Class | Infra-glob? |
 |---|---|---|---|---|---|---|
-| 1 | **F12** | `actionlint` in pre-commit + CI | **100.0** | ~0.2w | Write-time gate | yes (`.githooks/`, `.github/workflows/`) |
+| 1 | **F12** ✅ SHIPPED | `actionlint` warn-only CI (`.github/workflows/actionlint.yml`) + `make actionlint` — reclassified CI linter (like R18), not a state.json gate | **100.0** | ~0.2w | CI linter | yes (`.github/workflows/`) |
 | 2 | **F11** | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | 40.0 | ~0.3w | Cycle-time gate | yes (`scripts/`) |
 | 3 | **F10** ✅ SHIPPED | `experiment_outcome` enum on `tasks[]` (documented + advisory; not a gate) | 32.0 | ~0.3w | Schema extension | yes (`scripts/` schema) |
 | 4 | **F13** | `source_commit` `workflow_dispatch` input | 32.0 | ~0.4w | GH Actions infra | yes (`.github/workflows/`) |

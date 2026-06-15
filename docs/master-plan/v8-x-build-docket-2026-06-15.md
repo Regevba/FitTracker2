@@ -38,7 +38,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 
 | ID | Item | Class | RICE-est | Gating |
 |---|---|---|---|---|
-| F12 | `actionlint` in pre-commit stack | Write-time gate | **100.0 (highest)** | none — ready |
+| ~~F12~~ ✅ | `actionlint` warn-only CI on `.github/workflows/**` + `make actionlint` | ~~Write-time gate~~ → **CI linter** (reclassified: warn-only tooling like R18, not a state.json gate → no calibration walk) | **100.0 (highest)** | **SHIPPED** (feature `f12-actionlint-gate`; `.github/workflows/actionlint.yml` + Makefile target) |
 | F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | Cycle-time gate | 40.0 | none |
 | F4 | Auto-update `framework_version` on protocol writes | Write-time/migration | 32.0 | partial — `FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` (#659) cover part |
 | ~~F10~~ ✅ | `experiment_outcome` enum on `tasks[]` (documented, advisory — not a blocking gate) | Schema | 32.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |

@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f12-actionlint-gate",
+  "title": "f12 actionlint gate",
+  "work_type": "Chore",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-15T12:14:53Z",
+  "updated_at": "2026-06-15T12:14:53Z",
+  "events": [
+    {
+      "timestamp": "2026-06-15T12:14:53Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F12 actionlint warn-only CI gate \u2014 ready-now workplan Batch 1, highest RICE (100); implementation start",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
