@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture One-Pager
 
-> **Version:** 6.1 | **Updated:** 2026-05-24 (v7.9 promoted 2026-05-21; Phase E soak 2026-05-21 → 2026-06-04; 37 mechanical gates + 5 advisories post-promotion)
+> **Version:** 6.2 | **Updated:** 2026-06-15 (framework **v7.10** shipped 2026-06-10). Current canonical counts: **106 features · 26 instrumented gates (17 write-time + 7 cycle-time + 2 W9 hooks), 19 firing · 0 integrity findings** — see [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). (Earlier "37 mechanical gates + 5 advisories" counted mechanisms+CI+hooks, a different denominator.)
 >
 > Quick-reference system schematics and information flow for the entire PM-flow ecosystem.
 > For the full deep-dive (per-skill sub-commands, shared data field descriptions, gap analysis, design decisions, evolution history), see [architecture.md](architecture.md).
