@@ -1,0 +1,57 @@
+{
+  "feature_name": "f11-reverse-sync-historical-exempt",
+  "current_phase": "implementation",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "created_at": "2026-06-15T14:00:00Z",
+  "updated_at": "2026-06-15T14:00:00Z",
+  "framework_version": "v7.10",
+  "work_type": "Chore",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "branch": "feature/f11-reverse-sync-historical-exempt",
+  "scheduled_after": null,
+  "primary_metric": "BRANCH_ISOLATION_HISTORICAL no longer false-positives on reverse-sync-mirrored fitme-story-native state.json (state_owner_sync_origin ends with '-reverse'). F11 from the v8.x ready-now docket \u2014 additive narrowing of an existing advisory (no new calibration window; same posture as F-LAUNCHD sub-fix (a)).",
+  "success_metrics": [
+    "check_branch_isolation_historical() exempts any feature whose state_owner_sync_origin ends with '-reverse' (reverse-sync mirror) \u2014 verified by a new unit test (T1, test pass)",
+    "reverse-sync/* branch refs also count as legitimate origin in the ref-walk (secondary signal) (T1)",
+    "existing BRANCH_ISOLATION_HISTORICAL dispatch test still passes (no regression) (T1)",
+    "docket + ready-now workplan F11 row marked shipped (T1, section presence)"
+  ],
+  "kill_criteria": [
+    "Exemption too broad \u2014 silences real isolation violations. Mitigated: exemption keyed strictly on the '-reverse' suffix of state_owner_sync_origin (only the reverse-sync bot writes it) + the existing forward-only/opt-out/merge-PR guards remain.",
+    "Reverse-sync marker spoofable to bypass the advisory. Accepted: BRANCH_ISOLATION_HISTORICAL is ADVISORY (non-blocking); gaming an advisory has no enforcement payoff, and the morphed C-5 write-time gate already governs the same marker at commit time."
+  ],
+  "dispatch_pattern": "agent-driven (1 advisory narrowing in integrity-check.py + 1 unit test)",
+  "spec": "docs/master-plan/v8-0-ready-now-workplan-2026-06-15.md Batch 3 (F11) + v8-x-build-docket-2026-06-15.md \u00a70.B; original Source C F11",
+  "scope_summary": "F11: extend the BRANCH_ISOLATION_HISTORICAL cycle-time advisory to exempt reverse-sync-mirrored fitme-story-native state.json. The reverse-sync bot writes files on a reverse-sync/* branch with state_owner_sync_origin ending in '-reverse'; those legitimately never touch a feature/* or chore/* branch in FT2 (the isolation discipline lives in the source repo), so the historical advisory false-positives on them. Adds (a) an early skip when state_owner_sync_origin ends with '-reverse', and (b) 'reverse-sync/' as a recognized origin ref. Additive narrowing of an existing advisory \u2014 no new gate, no calibration window; ships with a unit test.",
+  "related_prs": [],
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-15T14:00:00Z"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Add reverse-sync exemption to check_branch_isolation_historical() (state_owner_sync_origin '-reverse' skip + reverse-sync/ ref signal)",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "Add unit test asserting reverse-sync-mirrored state.json is exempt; confirm existing dispatch test still passes",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "Mark F11 shipped in docket + ready-now workplan",
+      "status": "complete"
+    }
+  ],
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-sync-historical-exempt",
+  "updated": "2026-06-15T13:24:59Z"
+}
