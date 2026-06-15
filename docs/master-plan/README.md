@@ -2,8 +2,8 @@
 
 > The master plan for FitMe's overall direction and the handoff documents that capture state-of-repo checkpoints between sessions. Kept in one folder so anyone resuming work (human or agent) can find the current plan and the most recent handoff without hunting through scattered folders.
 
-> **Framework state at last update:** PM Framework **v7.8.4** (Pre-v7.9 Telemetry Calibration & Doc-Debt Cleanup, shipped 2026-05-12 via [PR #314](https://github.com/Regevba/FitTracker2/pull/314)). Predecessor v7.8.3 (Cross-Repo State-Sync, shipped 2026-05-11). v7.9 promotion decision date: 2026-05-21. Canonical entry points:
-> - Developer guide (v1.0 → v7.8.4 technical reference): [`../architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (filename retained for ref-stability; content tracks v7.8.4)
+> **Framework state at last update:** PM Framework **v7.10** (GATE_COVERAGE_ZERO observability + field-rename closure, shipped 2026-06-10). Lineage: v7.9 promotion 2026-05-21 → v7.9.1 build window 2026-06-04 → v7.10 2026-06-10. Current canonical counts: **106 features · 26 instrumented gates (17 write-time + 7 cycle-time + 2 W9 hooks), 19 firing · 0 integrity findings** (reconciled 2026-06-15) — see [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). Canonical entry points:
+> - Developer guide (v1.0 → v7.10 technical reference): [`../architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (filename retained for ref-stability; content tracks v7.10)
 > - Feature lifecycle event catalog (companion): [`../architecture/feature-lifecycle-event-catalog.md`](../architecture/feature-lifecycle-event-catalog.md) — every event/log/gate fired during a feature's 9-phase lifecycle, with 2 mermaid flow diagrams
 > - **v7.8.4 cold-start entrypoint (current):** [`../../.claude/entrypoints/framework-v7-8-4.md`](../../.claude/entrypoints/framework-v7-8-4.md) — pre-v7.9 calibration + PR_CACHE_STALE gate + TIER_TAG heuristic narrowing
 > - v7.8.3 cold-start entrypoint: [`../../.claude/entrypoints/framework-v7-8-3.md`](../../.claude/entrypoints/framework-v7-8-3.md) — cross-repo state-sync release umbrella
