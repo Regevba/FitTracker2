@@ -100,11 +100,36 @@ public struct AIRecommendation: Codable, Sendable {
     /// Population-level supporting data returned by the AI engine.
     /// Uses [String: AnyCodable] for Swift 6 Sendable compliance.
     public let supportingData: [String: AnyCodable]
+    /// On-device-generated natural-language coaching summary (Tier 3a/3b,
+    /// foundation-models-tier3). `nil` for cloud/local recommendations — the
+    /// backend never emits it, so JSON decoding leaves it nil (decodeIfPresent).
+    /// Only populated by FoundationModelService / PCC escalation.
+    public let summary: String?
 
     enum CodingKeys: String, CodingKey {
-        case segment, signals, confidence
+        case segment, signals, confidence, summary
         case escalateToLLM  = "escalate_to_llm"
         case supportingData = "supporting_data"
+    }
+
+    /// Explicit memberwise init with a defaulted `summary` so the existing
+    /// construction sites (localFallback, withConfidence, FoundationModelService,
+    /// the cloud decoder, and test mocks) compile unchanged. Adding the stored
+    /// property without this default would break every positional/labeled caller.
+    public init(
+        segment: String,
+        signals: [String],
+        confidence: Double,
+        escalateToLLM: Bool,
+        supportingData: [String: AnyCodable],
+        summary: String? = nil
+    ) {
+        self.segment = segment
+        self.signals = signals
+        self.confidence = confidence
+        self.escalateToLLM = escalateToLLM
+        self.supportingData = supportingData
+        self.summary = summary
     }
 }
 
@@ -119,7 +144,8 @@ extension AIRecommendation {
             signals: signals,
             confidence: newConfidence,
             escalateToLLM: escalateToLLM,
-            supportingData: supportingData
+            supportingData: supportingData,
+            summary: summary
         )
     }
 

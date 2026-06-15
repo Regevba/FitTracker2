@@ -1,0 +1,337 @@
+{
+  "feature": "foundation-models-tier3",
+  "created_at": "2026-06-15T06:11:47Z",
+  "updated": "2026-06-15T15:20:00Z",
+  "branch": "feature/foundation-models-tier3",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "current_phase": "implementation",
+  "work_type": "feature",
+  "work_subtype": "new_ui",
+  "has_ui": true,
+  "requires_analytics": true,
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-06-15T14:44:33Z",
+      "sources": [
+        "wwdc2026/241",
+        "wwdc2025/286",
+        "createwithswift FM API"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-06-15T14:49:05Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "approved",
+      "count": 13
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "approved_at": "2026-06-15T15:02:20Z",
+      "type": "ux",
+      "preflight_passed": true
+    },
+    "implementation": {
+      "status": "in_progress",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "tier3_adoption_rate (source_tier in {on_device,pcc})",
+        "baseline": 0,
+        "target": 60,
+        "current": null
+      },
+      "secondary": [
+        "on_device_p50_latency_ms",
+        "summary_present_rate",
+        "ai_insight_tap_through_rate"
+      ],
+      "guardrails": [
+        "crash_free_gt_99.5",
+        "cloud_local_fallback_unchanged",
+        "ui_audit_p0_zero",
+        "ai_engine_golden_set_pass"
+      ],
+      "instrumentation_ready": false,
+      "first_review_date": "2026-06-29",
+      "kill_criteria": "KC1 on-device p50 latency > 3000ms; KC2 >20% summaries with medical claims/hallucinated metrics bypassing filter; KC3 crash-free < 99.5% attributable to FM calls"
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Add optional summary:String? to AIRecommendation",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "Define @Generable PersonalizedInsight (iOS26)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "Pure filterToAllowedSignals anti-hallucination helper + clamp",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T4",
+      "title": "Rewrite FoundationModelService.adapt() with real LanguageModelSession",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.7,
+      "depends_on": [
+        "T2",
+        "T3"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "Render summary in AIRecommendationCard + AIInsightCard",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T6",
+      "title": "Add home_ai_summary_generated analytics event + CSV row",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T7",
+      "title": "Tests: summary flow + filter (AB1-AB3) + analytics/consent",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.6,
+      "depends_on": [
+        "T4",
+        "T5",
+        "T6"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T8",
+      "title": "Phase-1 verify (verify-ios + ui-audit + tokens-check)",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T7"
+      ],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T9",
+      "title": "PCCEscalationProtocol + NoOp fallback + injection",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T10",
+      "title": "Live PrivateCloudComputeLanguageModel impl (iOS26.4)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.6,
+      "depends_on": [
+        "T9"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T11",
+      "title": "Orchestrator PCC escalation wiring (gated)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T9"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T12",
+      "title": "Backend comment-only disposition (config.py + insight_service.py)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "low",
+      "effort_days": 0.2,
+      "depends_on": [],
+      "completed_at": "2026-06-15T15:20:00Z"
+    },
+    {
+      "id": "T13",
+      "title": "Tests: PCC gating (AB4) + fallback + Settings PCC note copy",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T11"
+      ],
+      "completed_at": null
+    }
+  ],
+  "figma_node_ids": {
+    "ai_recommendation_card_summary": {
+      "file": "PXGDruVvboaOpiaJ5sc4qT",
+      "node_id": "1:2"
+    },
+    "ai_insight_card_summary": {
+      "file": "PXGDruVvboaOpiaJ5sc4qT",
+      "node_id": "1:12"
+    }
+  },
+  "figma_build_status": "completed",
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-06-15T14:44:33Z",
+      "approved_by": "user",
+      "note": "Phase 0 approved via 'continue'; main fast-forwarded to 2aeb86e (AI files unchanged)."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-06-15T14:49:05Z",
+      "approved_by": "user",
+      "note": "PRD approved ('go'); PCC privacy = document + settings note."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-06-15T14:51:33Z",
+      "approved_by": "user",
+      "note": "Tasks approved; operator chose full Phase 3 UX chain."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-06-15T15:02:20Z",
+      "approved_by": "user",
+      "note": "Phase 3 approved; figma bridge / Code Connect to be used for card mapping in T5."
+    }
+  ],
+  "plan_ref": "/Users/regevbarak/.claude/plans/curried-exploring-kahn.md",
+  "cache_hits": [
+    {
+      "ts": "2026-06-15T15:00:30Z",
+      "key": "ux-foundations:summary-surface-spec",
+      "layer": "L3",
+      "type": "adapted",
+      "skill": "ux"
+    }
+  ],
+  "timing": {
+    "session_start": "2026-06-15T06:11:47Z",
+    "time_source": "measured",
+    "phases": {
+      "research": {
+        "started_at": "2026-06-15T06:11:47Z",
+        "ended_at": "2026-06-15T14:44:33Z"
+      },
+      "prd": {
+        "started_at": "2026-06-15T14:44:33Z",
+        "ended_at": "2026-06-15T14:49:05Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-15T14:49:05Z",
+        "ended_at": "2026-06-15T14:51:33Z"
+      },
+      "ux_or_integration": {
+        "started_at": "2026-06-15T14:51:33Z",
+        "ended_at": "2026-06-15T15:02:20Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-15T15:02:20Z"
+      }
+    }
+  }
+}

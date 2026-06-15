@@ -1,0 +1,12 @@
+{
+  "feature": "foundation-models-tier3",
+  "checked_at": "2026-06-15T14:51:33Z",
+  "mcp_liveness": "live",
+  "authenticated_as": "Regev Barak",
+  "design_system_library_file": "0Ai7s3fCFqR5JXDW8JvgmD",
+  "design_system_library_accessible": true,
+  "ios26_ui_kit_available": true,
+  "ux_preflight": "passed",
+  "design_preflight": "passed",
+  "notes": "All ux-spec symbols verified present except AIRecommendation.summary (new T1 field). Surfaces are additive text on existing app cards (AIRecommendationCard, AIInsightCard) — not design-system components."
+}

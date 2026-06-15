@@ -150,12 +150,23 @@ public final class AIOrchestrator: ObservableObject {
         // HADF Phase 3A T5a — emit honest inference observability (advisory;
         // optional-chained so it no-ops when analytics isn't wired, preserving
         // existing test paths). duration_ms = end-to-end wall-time; source_tier
-        // = terminal substrate (cloud / on_device / local_fallback).
+        // = terminal substrate (cloud / on_device / local_fallback / pcc).
+        let inferenceDurationMs = Int(Date().timeIntervalSince(inferenceStart) * 1000)
         analytics?.logAiInferenceCompleted(
             segment: segment.rawValue,
             sourceTier: inferenceSourceTier,
-            durationMs: Int(Date().timeIntervalSince(inferenceStart) * 1000)
+            durationMs: inferenceDurationMs
         )
+
+        // foundation-models-tier3 (Tier 3a/3b) — emit when on-device/PCC produced
+        // a natural-language summary. Mirrors the inference-completed scope.
+        if let summary = finalRecommendation.summary, !summary.isEmpty {
+            analytics?.logAiSummaryGenerated(
+                segment: segment.rawValue,
+                sourceTier: inferenceSourceTier,
+                durationMs: inferenceDurationMs
+            )
+        }
 
         // C5 ai-user-feedback-loop reinforcement-loop block — apply per-segment
         // confidence-tier adjustment from RecommendationMemory before publishing.

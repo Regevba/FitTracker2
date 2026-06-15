@@ -9,6 +9,8 @@
 
 | Screen | Figma Node | Code File | Status | Notes |
 |---|---|---|---|---|
+| **AI summary — full card** | `1:2` (file `PXGDruVvboaOpiaJ5sc4qT`) | `AIRecommendationCard.swift` | **Spec built** | foundation-models-tier3 Phase 3. Summary-present state. Feature spec file (not DS library — additive text on existing app card). |
+| **AI summary — Home card** | `1:12` (file `PXGDruVvboaOpiaJ5sc4qT`) | `AIInsightCard.swift` | **Spec built** | foundation-models-tier3 Phase 3. Summary-as-title state. |
 | **Home v3** | `859:27` (Code Truth) | `MainScreenView.swift` (v2/) | **Synced** | Built 2026-04-15. Frosted glass removed, dividers, sample data. |
 | **Training v2** | `761:2` (in section `438:2135`) | `TrainingPlanView.swift` (v2/) | **Minor drift** | Figma shows hamburger icon — code uses profile icon. Figma has eye icon top-right — code has none. |
 | **Nutrition v2** | `768:2` | `NutritionView.swift` (v2/) | **Minor drift** | Same toolbar icon difference. Content matches. |

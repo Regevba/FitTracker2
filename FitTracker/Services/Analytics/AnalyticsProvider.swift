@@ -262,6 +262,11 @@ enum AnalyticsEvent {
     /// the LLM streaming boundary + provider/model are server-side only; true
     /// per-token timing is deferred to a server-side metric, T5b). screen_scope=global.
     static let aiInferenceCompleted            = "ai_inference_completed"
+    /// foundation-models-tier3 (Tier 3a/3b): fired when the on-device model or
+    /// PCC produces a non-nil natural-language `summary`. Global (orchestrator-
+    /// fired, not a screen interaction) — mirrors aiInferenceCompleted's scope.
+    /// screen_scope=global. Carries segment + source_tier (on_device|pcc) + duration_ms.
+    static let aiSummaryGenerated              = "ai_summary_generated"
     // Removed 2026-05-13 (analytics-observability Phase 1.A.3):
     // aiRecommendationAccepted + aiRecommendationDismissed were declared but
     // never fired in production. Their semantics duplicate `homeAiFeedbackSubmitted`
