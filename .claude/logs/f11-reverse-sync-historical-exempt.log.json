@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f11-reverse-sync-historical-exempt",
+  "title": "f11 reverse sync historical exempt",
+  "work_type": "Chore",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-15T13:24:57Z",
+  "updated_at": "2026-06-15T13:24:57Z",
+  "events": [
+    {
+      "timestamp": "2026-06-15T13:24:57Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F11 reverse-sync exemption for BRANCH_ISOLATION_HISTORICAL \u2014 implementation start",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

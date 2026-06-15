@@ -8,7 +8,7 @@
 | # | ID | Item | RICE | Effort | Class | Infra-glob? |
 |---|---|---|---|---|---|---|
 | 1 | **F12** ✅ SHIPPED | `actionlint` warn-only CI (`.github/workflows/actionlint.yml`) + `make actionlint` — reclassified CI linter (like R18), not a state.json gate | **100.0** | ~0.2w | CI linter | yes (`.github/workflows/`) |
-| 2 | **F11** | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | 40.0 | ~0.3w | Cycle-time gate | yes (`scripts/`) |
+| 2 | **F11** ✅ SHIPPED | `BRANCH_ISOLATION_HISTORICAL` reverse-sync exemption (advisory narrowing, no calibration) | 40.0 | ~0.3w | Cycle-time gate | yes (`scripts/`) |
 | 3 | **F10** ✅ SHIPPED | `experiment_outcome` enum on `tasks[]` (documented + advisory; not a gate) | 32.0 | ~0.3w | Schema extension | yes (`scripts/` schema) |
 | 4 | **F13** ✅ SHIPPED | `source_commit` `workflow_dispatch` input + full-repo-scan fallback | 32.0 | ~0.4w | GH Actions infra (fitme-story) | fitme-story PR #221 |
 | 5 | **F4** | Auto-update `framework_version` on protocol writes | 32.0 | ~0.5w | Write-time/migration | yes (`scripts/`) |
