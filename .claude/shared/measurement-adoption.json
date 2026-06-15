@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-06-14T06:08:09Z",
+  "updated": "2026-06-15T06:52:01Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -45,13 +45,13 @@
       "post_v6_derived": 0
     },
     "cu_v2": {
-      "overall_present": 25,
-      "overall_percent": 23.6,
-      "post_v6_present": 25,
-      "post_v6_percent": 34.7,
-      "overall_instrumented": 25,
+      "overall_present": 26,
+      "overall_percent": 24.5,
+      "post_v6_present": 26,
+      "post_v6_percent": 36.1,
+      "overall_instrumented": 26,
       "overall_derived": 0,
-      "post_v6_instrumented": 25,
+      "post_v6_instrumented": 26,
       "post_v6_derived": 0
     }
   },
@@ -352,7 +352,7 @@
         "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
-        "cu_v2": false
+        "cu_v2": true
       }
     },
     {
@@ -1844,18 +1844,18 @@
       "feature": "garmin-health-connection",
       "created": "2026-06-10",
       "post_v6": true,
-      "current_phase": "merge",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
-        "cu_v2": false
+        "cu_v2": true
       },
       "provenance": {
         "timing_wall_time": null,
         "per_phase_timing": "instrumented",
         "cache_hits": "instrumented",
-        "cu_v2": null
+        "cu_v2": "instrumented"
       },
       "fully_adopted": false,
       "any_adopted": true
