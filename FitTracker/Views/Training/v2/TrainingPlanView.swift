@@ -28,6 +28,7 @@ struct TrainingPlanView: View {
     @State private var restTimerEnd: Date?
     @State private var restPresetSeconds = 90
     @State private var restTimerTick: Date = .now
+    @State private var restTimer: Timer?
     @State private var isLoading = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -145,7 +146,7 @@ struct TrainingPlanView: View {
                 }
             }
             .onAppear { onViewAppear() }
-            .onDisappear { saveLog() }
+            .onDisappear { saveLog(); restTimer?.invalidate(); restTimer = nil }
             .onChange(of: taskStatusSignature) { _, _ in handleStatusChange() }
             .onChange(of: selectedDay) { _, _ in syncAfterDayChange() }
         }
@@ -416,7 +417,8 @@ struct TrainingPlanView: View {
         restPresetSeconds = focusedExercise?.restSeconds ?? 90
         restTimerEnd = Date().addingTimeInterval(TimeInterval(restPresetSeconds))
         analytics.logTrainingRestTimerStarted(restDurationSeconds: restPresetSeconds)
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        restTimer?.invalidate()
+        restTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             DispatchQueue.main.async {
                 restTimerTick = .now
                 if restTimerEnd == nil { timer.invalidate() }
@@ -427,7 +429,11 @@ struct TrainingPlanView: View {
         analytics.logTrainingRestTimerSkipped(restDurationSeconds: restTimeRemaining)
         clearRestTimer()
     }
-    private func clearRestTimer() { restTimerEnd = nil }
+    private func clearRestTimer() {
+        restTimerEnd = nil
+        restTimer?.invalidate()
+        restTimer = nil
+    }
 
     // MARK: - Data Operations
 
