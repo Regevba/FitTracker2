@@ -94,9 +94,19 @@ struct FitTrackerApp: App {
                 return FallbackFoundationModel()
             }
         }()
+        // Tier 3b (foundation-models-tier3): PCC escalation needs iOS 26.4+
+        // (WWDC26 reasoning). NoOp on earlier OS keeps the Tier-3a result.
+        let pccEscalation: any PCCEscalationProtocol = {
+            if #available(iOS 26.4, *) {
+                return PCCEscalationService()
+            } else {
+                return NoOpPCCEscalation()
+            }
+        }()
         return AIOrchestrator(
             engineClient:    client,
             foundationModel: foundationModel,
+            pccEscalation:   pccEscalation,
             snapshot: {
                 #if DEBUG
                 print("[AIOrchestrator] WARNING: Using empty fallback snapshot — caller should pass overrideSnapshot")

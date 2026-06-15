@@ -19,6 +19,16 @@ struct AIRecommendationCard: View {
                     .foregroundStyle(AppColor.Text.secondary)
             }
 
+            // On-device coaching summary (foundation-models-tier3, Tier 3a/3b).
+            // Only present when the on-device model / PCC personalised the
+            // recommendation; cloud/local recommendations render as before.
+            if let summary = recommendation.summary, !summary.isEmpty {
+                Text(summary)
+                    .font(AppText.subheading)
+                    .foregroundStyle(AppColor.Text.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             // Recommendation text
             Text(recommendationText)
                 .font(AppText.body)
@@ -49,7 +59,7 @@ struct AIRecommendationCard: View {
         .padding(AppSpacing.medium)
         .background(AppColor.Surface.secondary, in: RoundedRectangle(cornerRadius: AppRadius.card))
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(segment.rawValue) recommendation: \(recommendationText). Confidence: \(confidenceLabel)")
+        .accessibilityLabel("\(segment.rawValue) recommendation: \(recommendation.summary ?? recommendationText). Confidence: \(confidenceLabel)")
     }
 
     // MARK: - Helpers

@@ -630,6 +630,17 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    /// foundation-models-tier3 (Tier 3a/3b): on-device model or PCC produced a
+    /// non-nil natural-language `summary`. Global event — mirrors
+    /// logAiInferenceCompleted's scope. sourceTier ∈ {on_device, pcc}.
+    func logAiSummaryGenerated(segment: String, sourceTier: String, durationMs: Int) {
+        logEvent(AnalyticsEvent.aiSummaryGenerated, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.sourceTier: sourceTier,
+            AnalyticsParam.durationMs: durationMs,
+        ])
+    }
+
     /// User taps AI insight card
     func logAiInsightTap(segment: String) {
         logEvent(AnalyticsEvent.homeAiInsightTap, parameters: [

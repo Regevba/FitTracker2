@@ -72,17 +72,22 @@ private struct ConfigurableFoundationModel: FoundationModelProtocol {
     let confidence: Double
     let shouldThrow: Bool
     let signalsToAppend: [String]
+    /// foundation-models-tier3: optional on-device coaching summary the mock
+    /// attaches to the adapted recommendation.
+    let summaryToReturn: String?
 
     init(
         isAvailable: Bool = true,
         confidence: Double = 0.8,
         shouldThrow: Bool = false,
-        signalsToAppend: [String] = ["adapted_local_signal"]
+        signalsToAppend: [String] = ["adapted_local_signal"],
+        summaryToReturn: String? = nil
     ) {
         self.isAvailable = isAvailable
         self.confidence = confidence
         self.shouldThrow = shouldThrow
         self.signalsToAppend = signalsToAppend
+        self.summaryToReturn = summaryToReturn
     }
 
     func adapt(
@@ -98,10 +103,61 @@ private struct ConfigurableFoundationModel: FoundationModelProtocol {
             signals: recommendation.signals + signalsToAppend,
             confidence: recommendation.confidence,
             escalateToLLM: recommendation.escalateToLLM,
-            supportingData: recommendation.supportingData
+            supportingData: recommendation.supportingData,
+            summary: summaryToReturn
         )
         return (adapted, confidence)
     }
+}
+
+/// PCC escalation mock (Tier 3b) with configurable confidence + optional throw.
+private struct ConfigurablePCCEscalation: PCCEscalationProtocol {
+    let isAvailable: Bool
+    let confidence: Double
+    let shouldThrow: Bool
+    let summaryToReturn: String?
+
+    init(
+        isAvailable: Bool = true,
+        confidence: Double = 0.8,
+        shouldThrow: Bool = false,
+        summaryToReturn: String? = "PCC reasoned coaching summary."
+    ) {
+        self.isAvailable = isAvailable
+        self.confidence = confidence
+        self.shouldThrow = shouldThrow
+        self.summaryToReturn = summaryToReturn
+    }
+
+    func escalate(
+        recommendation: AIRecommendation,
+        snapshot: LocalUserSnapshot
+    ) async throws -> (recommendation: AIRecommendation, confidence: Double) {
+        if shouldThrow {
+            struct EscalationFailure: Error {}
+            throw EscalationFailure()
+        }
+        let escalated = AIRecommendation(
+            segment: recommendation.segment,
+            signals: recommendation.signals + ["pcc_escalated_marker"],
+            confidence: recommendation.confidence,
+            escalateToLLM: recommendation.escalateToLLM,
+            supportingData: recommendation.supportingData,
+            summary: summaryToReturn
+        )
+        return (escalated, confidence)
+    }
+}
+
+/// Cloud recommendation that triggers escalation: low confidence + escalate_to_llm.
+private func escalatableCloudRec() -> AIRecommendation {
+    AIRecommendation(
+        segment: AISegment.training.rawValue,
+        signals: ["cloud_cohort_signal"],
+        confidence: 0.2,
+        escalateToLLM: true,
+        supportingData: [:]
+    )
 }
 
 // MARK: - Snapshot factory
@@ -526,5 +582,217 @@ final class AIOrchestratorTests: XCTestCase {
         XCTAssertTrue(orchestrator.latestRecommendations.isEmpty,
                       "clearRecommendations must wipe latestRecommendations (sign-out path)")
         XCTAssertNil(orchestrator.lastError)
+    }
+
+    // ── foundation-models-tier3 (Tier 3a) — summary surfacing ───────────────
+
+    /// On-device adapt accepted with a non-nil summary → summary surfaces on the
+    /// published recommendation AND exactly one ai_summary_generated event fires.
+    func testProcess_onDeviceSummary_surfacesAndEmitsEvent() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(),
+            foundationModel: ConfigurableFoundationModel(
+                confidence: 0.8,
+                summaryToReturn: "Keep today light — your sleep's been short."
+            ),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        XCTAssertEqual(orchestrator.latestRecommendations[.training]?.summary,
+                       "Keep today light — your sleep's been short.",
+                       "Accepted on-device summary must surface on the published recommendation")
+        let summaryEvents = mockAdapter.capturedEvents.filter { $0.name == AnalyticsEvent.aiSummaryGenerated }
+        XCTAssertEqual(summaryEvents.count, 1, "Exactly one ai_summary_generated when a summary is produced")
+        XCTAssertEqual(summaryEvents.first?.parameters?[AnalyticsParam.sourceTier] as? String, "on_device")
+    }
+
+    /// On-device adapt rejected (confidence < 0.4) → base recommendation kept,
+    /// so no summary surfaces and NO ai_summary_generated event fires.
+    func testProcess_belowThreshold_noSummaryNoEvent() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(),
+            foundationModel: ConfigurableFoundationModel(
+                confidence: 0.2,
+                summaryToReturn: "This should be dropped with the rejected adaptation."
+            ),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        XCTAssertNil(orchestrator.latestRecommendations[.training]?.summary,
+                     "Rejected adaptation must not leak its summary onto the base recommendation")
+        let summaryEvents = mockAdapter.capturedEvents.filter { $0.name == AnalyticsEvent.aiSummaryGenerated }
+        XCTAssertTrue(summaryEvents.isEmpty, "No summary → no ai_summary_generated event")
+    }
+
+    // ── Tier3SignalFilter (AB2/AB3, SDK-independent) ────────────────────────
+
+    func testSignalFilter_keepsOnlyAllowed() {
+        let out = Tier3SignalFilter.filterToAllowedSignals(
+            ["a", "b", "hallucinated_x"],
+            allowed: ["a", "b"],
+            baseline: ["base"]
+        )
+        XCTAssertEqual(out, ["a", "b"], "Only allowed signals survive; hallucinated dropped")
+    }
+
+    func testSignalFilter_allHallucinated_fallsBackToBaseline() {
+        let out = Tier3SignalFilter.filterToAllowedSignals(
+            ["x", "y"],
+            allowed: ["a", "b"],
+            baseline: ["base_signal"]
+        )
+        XCTAssertEqual(out, ["base_signal"],
+                       "When the filter empties the list, fall back to baseline (never signal-less)")
+    }
+
+    func testSignalFilter_dedupesPreservingOrder() {
+        let out = Tier3SignalFilter.filterToAllowedSignals(
+            ["a", "a", "b", "a"],
+            allowed: ["a", "b"],
+            baseline: []
+        )
+        XCTAssertEqual(out, ["a", "b"], "Duplicates removed, first-seen order preserved")
+    }
+
+    func testSignalFilter_clampConfidence() {
+        XCTAssertEqual(Tier3SignalFilter.clampConfidence(1.5), 1.0)
+        XCTAssertEqual(Tier3SignalFilter.clampConfidence(-0.2), 0.0)
+        XCTAssertEqual(Tier3SignalFilter.clampConfidence(0.55), 0.55, accuracy: 0.0001)
+        XCTAssertEqual(Tier3SignalFilter.clampConfidence(.nan), 0.0, "Non-finite confidence clamps to 0")
+    }
+
+    // ── foundation-models-tier3 (Tier 3b) — PCC escalation gating (AB4) ──────
+
+    /// escalate_to_llm + low confidence + Tier 3a not on_device + PCC available
+    /// → escalation runs, source_tier=pcc, escalated summary + signal surface.
+    func testEscalation_firesWhenGated_setsPccTier() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(behavior: .success(escalatableCloudRec())),
+            foundationModel: ConfigurableFoundationModel(isAvailable: false),
+            pccEscalation: ConfigurablePCCEscalation(confidence: 0.8, summaryToReturn: "Escalated."),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let tier = mockAdapter.capturedEvents
+            .first { $0.name == AnalyticsEvent.aiInferenceCompleted }?
+            .parameters?[AnalyticsParam.sourceTier] as? String
+        XCTAssertEqual(tier, "pcc", "Gated escalation must mark terminal tier as pcc")
+        let rec = orchestrator.latestRecommendations[.training]
+        XCTAssertEqual(rec?.summary, "Escalated.", "Escalated summary must surface")
+        XCTAssertTrue(rec?.signals.contains("pcc_escalated_marker") ?? false)
+    }
+
+    /// escalate_to_llm == false → PCC never runs even when available.
+    func testEscalation_skippedWhenNotFlagged() async {
+        let nonEscalatable = AIRecommendation(
+            segment: AISegment.training.rawValue,
+            signals: ["cloud_cohort_signal"],
+            confidence: 0.2,
+            escalateToLLM: false,
+            supportingData: [:]
+        )
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(behavior: .success(nonEscalatable)),
+            foundationModel: ConfigurableFoundationModel(isAvailable: false),
+            pccEscalation: ConfigurablePCCEscalation(confidence: 0.8),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain }
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let signals = orchestrator.latestRecommendations[.training]?.signals ?? []
+        XCTAssertFalse(signals.contains("pcc_escalated_marker"),
+                       "escalate_to_llm=false must not trigger PCC")
+    }
+
+    /// PCC throws → keep the Tier-3a/baseline result, never mark tier pcc.
+    func testEscalation_throws_keepsBaseResult() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consent = ConsentManager()
+        consent.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consent)
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(behavior: .success(escalatableCloudRec())),
+            foundationModel: ConfigurableFoundationModel(isAvailable: false),
+            pccEscalation: ConfigurablePCCEscalation(shouldThrow: true),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain },
+            analytics: analytics
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let tier = mockAdapter.capturedEvents
+            .first { $0.name == AnalyticsEvent.aiInferenceCompleted }?
+            .parameters?[AnalyticsParam.sourceTier] as? String
+        XCTAssertNotEqual(tier, "pcc", "PCC throw must not mark tier pcc")
+        XCTAssertNil(orchestrator.latestRecommendations[.training]?.summary,
+                     "Failed escalation leaves no summary")
+    }
+
+    /// PCC unavailable → escalation skipped, base result kept.
+    func testEscalation_unavailable_noPcc() async {
+        let orchestrator = AIOrchestrator(
+            engineClient: StubAIEngineClient(behavior: .success(escalatableCloudRec())),
+            foundationModel: ConfigurableFoundationModel(isAvailable: false),
+            pccEscalation: ConfigurablePCCEscalation(isAvailable: false),
+            snapshot: { completeTrainingSnapshot() },
+            goalMode: { .gain }
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: completeTrainingSnapshot()
+        )
+
+        let signals = orchestrator.latestRecommendations[.training]?.signals ?? []
+        XCTAssertFalse(signals.contains("pcc_escalated_marker"),
+                       "Unavailable PCC must not escalate")
     }
 }

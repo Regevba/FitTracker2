@@ -2,7 +2,13 @@
 InsightService: rule-based signal generation from cohort frequency data.
 Produces population-level signals the iOS device uses to contextualise
 its on-device Foundation Models personalisation layer.
-LLM-based insight is gated behind LLM_API_KEY (unset by default; requires DPA).
+
+`escalate_to_llm` (set when confidence < _LOW_CONFIDENCE) is now consumed
+ON-DEVICE via Apple Private Cloud Compute (Tier 3b in the iOS AIOrchestrator,
+foundation-models-tier3, 2026-06-15). It is no longer a server-side LLM call:
+the boolean stays as the trigger, but no LLM_API_KEY / DPA is required because
+PCC runs the escalation privately on the user's device. This service's
+behaviour is unchanged — it still only computes the boolean.
 """
 
 from __future__ import annotations
