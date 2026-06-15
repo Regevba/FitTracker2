@@ -225,101 +225,13 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 
 ---
 
-### 3.1 v7.9 Candidate Features (F-series) — Surfaced from Three Sources
+### 3.1–3.4 v8.x Candidate Docket → extracted to dedicated sub-plan (2026-06-15)
 
-**Source A — Roadmap stress-test (2026-05-07 session, [case study](../case-studies/roadmap-stress-test-2026-05-07-case-study.md) §99):**
-
-| ID | Item | Class | RICE-est | Source notes |
-|---|---|---|---|---|
-| **F1** | `STATE_TASKS_FILESYSTEM_DRIFT` advisory — detect pre-v7.6 features with empty `tasks[]` despite shipped work | Cycle-time gate | M (R=6 I=2 C=80% E=0.5w → 19.2) | Surfaced when 5-of-10 stress-test sub-features had this drift |
-| **F2** | Phase 0 sub-step: reality-check completed work against current state before scheduling | Workflow gate | M (R=8 I=2 C=80% E=0.3w → 42.7) | Roadmap had 1 step done as "TODO" |
-| **F3** | Phase 2 dependency-graph cycle/mismatch check for multi-feature roadmaps | Workflow gate | M (R=6 I=2 C=60% E=0.5w → 14.4) | 1 dep-cycle caught manually post-hoc |
-| **F4** | Auto-update `framework_version` on protocol-touching writes OR explicit migration pass | Write-time gate or migration | H (R=10 I=2 C=80% E=0.5w → 32.0) | 9 features had stale `framework_version` post-v7.6 |
-| **F5** | Formalize `scope_change` event in Tier 2.2 vocabulary | Vocabulary extension | L (R=4 I=1 C=100% E=0.2w → 20.0) | Currently logged as `event: "note"` |
-| **F6** | Document B_medium tier in CLAUDE.md: PRD/tasks/UX optional; formalize skipped-phase reasons | CLAUDE.md doc | L (R=6 I=1 C=100% E=0.2w → 30.0) | Currently ambiguous between Feature and Enhancement |
-
-**Source B — Stress-test closure session (2026-05-07 evening):**
-
-| ID | Item | Class | RICE-est | Source notes |
-|---|---|---|---|---|
-| **F9** | `make complete-feature` pre-flight OR gate-batch mode for closure UX | Workflow ergonomics | H (R=8 I=2 C=100% E=0.4w → 40.0) | 3 closure PRs required ≥3 commit retries each |
-| **F10** | Formalize `experiment_outcome` enum (`shipped`/`deferred`/`cancelled`/`superseded`) on `tasks[]` | Schema extension | M (R=6 I=2 C=80% E=0.3w → 32.0) | Deferred tasks currently distinguished only by case-study prose |
-
-**Source C — v7.8.3 cutover ceremony (2026-05-11, [case study](../case-studies/cross-repo-state-sync-impl-case-study.md)):**
-
-| ID | Layer | Item | Class | RICE-est |
-|---|---|---|---|---|
-| **F11** | Cycle-time advisory | Extend `BRANCH_ISOLATION_HISTORICAL` allowlist to `reverse-sync/*` branches OR morph to read `state_owner_sync_origin` | Cycle-time gate | M (R=6 I=2 C=100% E=0.3w → 40.0) |
-| **F12** | Pre-commit gate | Add `actionlint` to pre-commit stack | Write-time gate | H (R=10 I=2 C=100% E=0.2w → 100.0) |
-| **F13** | Workflow bootstrap | `source_commit` input on `workflow_dispatch` OR full-repo scan fallback for unmirrored fitme-story-native state.json files | GH Actions infra | M (R=8 I=2 C=80% E=0.4w → 32.0) |
-
-**Source D — PR #317 + test-suite audit + external research (2026-05-12 session, [v7.9 candidates spec §2](../superpowers/specs/2026-05-08-framework-v7-9-candidates.md)):**
-
-| ID | Layer | Item | Class | RICE-est |
-|---|---|---|---|---|
-| **F14** ✅ **SHIPPED 2026-05-22 → 05-23** | Test infrastructure | Per-gate `test_main_dispatch_<gate_id>()` requirement — every write-time gate must have ≥1 test driving `main()` end-to-end (Semgrep `rule.yml↔rule.test.yml` enforced-pairing pattern). 4 gates covered: `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`. Shipped via PRs #451 (`86084c4`) + #452 (`3686f98`) + closure #455 (`98ca1ad7`). Layer-stacking constraint relaxed (see §3.6.2 below) — in-repo monkey-patch pattern from PR #317 proved sufficient without waiting on F16 try-repo harness. | Test discipline (write-time) | H (R=10 I=3 C=80% E=0.5w → 48.0) |
-| **F15** ✅ **SHIPPED 2026-05-22 → 05-23** | Test infrastructure | Unit tests for 5 zero-coverage gates — `PHASE_TRANSITION_NO_LOG` + `PHASE_TRANSITION_NO_TIMING` (highest risk, guard most frequent state mutation), `BRANCH_ISOLATION_HISTORICAL`, `BRANCH_ISOLATION_LAUNCHD_DRIFT`, `PR_CACHE_STALE`. Shipped via same feature `framework-f14-f15-dispatch-test-coverage` (joint scope). Combined coverage delta: write-time 1/16→8/16=50%; cycle-time 0/3→2/3=67%; total 1/19→10/19=53%. T1 GATE_TEST_MISSING meta-gate (RICE 53.3) opened as successor — depends on F14 reaching Phase E (T+90d post-ship = 2026-08-22). | Test discipline (Class B closure) | H (R=10 I=2 C=100% E=0.5w → 40.0) |
-| **F16** | Test infrastructure | pre-commit `try-repo`-style end-to-end harness — spawn throwaway git repo, stage fixtures from `tests/fixtures/<gate-id>/{positive,negative}/`, run real `.githooks/pre-commit` via subprocess, assert each gate fires/skips per fixture. Run in CI nightly. **Highest-leverage single change** per external research synthesis. | Test infrastructure foundation | H (R=10 I=3 C=80% E=0.5w → 48.0) |
-| **F17** | Telemetry materialization | Per-gate `last_fired_at` derived nightly index — `scripts/refresh-gate-last-fired.py` writes `.claude/shared/gate-last-fired.json` from `gate-coverage.jsonl`. AWS Config Rules `LastSuccessfulInvocationTime` pattern. Enables planned `GATE_COVERAGE_ZERO` meta-check at O(1) instead of O(records × gates). | Telemetry materialization | H (R=10 I=2 C=100% E=0.3w → 66.7) |
-| **F18** | Test infrastructure | Nightly mutation testing on dispatcher files (`mutmut run --paths-to-mutate scripts/check-state-schema.py,scripts/check-case-study-preflight.py,scripts/integrity-check.py`). Pitest "Remove Conditionals" + "Statement Deletion" operators surface surviving mutants on early-return patterns like PR #317's. Calibrate baseline 7d, then fail PR if surviving mutants on touched files rise vs main. | Mutation testing (advisory → enforced) | M (R=8 I=2 C=60% E=0.7w → 13.7) |
-
-**Source E — post-v7.9 candidate plan (2026-05-20 session):**
-
-| ID | Layer | Item | Class | RICE-est |
-|---|---|---|---|---|
-| **F19** | Analytics observability | Phase 1.B GA4 conversions (D-2) + dashboard wiring for `dashboard_*` event call-sites in `/control-room/*` | Production telemetry wiring | M (deferred to v7.9.1 — `analytics-observability` Phase 3.B; gated on Phase E exit ~2026-06-04) |
-| **F20** | Analytics observability | Phase 1.B conversion event mapping + Firebase event-name cleanup (D-4) | Schema cleanup | L (deferred to v7.9.1 build window) |
-| ~~**F21**~~ | ~~Error tracking~~ | ~~Sentry full integration (SDK init + `/ops health` crash-free rate read + 1 test event)~~ | ~~Production observability~~ | **PAUSED 2026-05-21 → pre-launch trigger** ([PR #418](https://github.com/Regevba/FitTracker2/pull/418)). Pre-launch context: iOS app is TestFlight beta only — crash data is not actionable until App Store launch. Resume preconditions: App Store submission ≤2 weeks + `ConsentManager.crashScreenshotConsent` decision finalized. |
-| **F22** | Product analytics | Funnel Analysis Dashboards — GA4 funnel exploration + `/control-room/analytics` page + per-funnel metric definitions (onboarding, training, nutrition, home engagement, AI recommendation, readiness) | Product observability | M (depends on F19 Phase 3.B; post-Phase-E ~2026-06-04+; ~5-7 days) |
-| **F23** | Stakeholder ops | `/ops digest` skill — weekly stakeholder summary (DAU/WAU trend, top funnel breaks, P0/P1 audit drift, framework version, advisory ledger snapshot) | Skill extension | M (depends on F22 + Sentry pre-launch resume; ~3-4 days) |
-
-**Resolved already (no v7.9 promotion needed):**
-
-| ID | Item | Resolution |
-|---|---|---|
-| **F7** | Cross-repo gate parity (Tier 2.2 per-phase emission for fitme-story) | RESOLVED v7.8.2 — documented exemption in [2026-05-08-cross-repo-gate-asymmetry.md](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md) |
-| **F8** | Mechanism A `gate-coverage.jsonl` parity for fitme-story | RESOLVED v7.8.2 — documented exemption + hook cwd-guard fix in PR #258 |
-
-### 3.2 v8.0 Icebox (7 items from `branch-isolation-out-of-scope.md`)
-
-Source: [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md). Each gated on its own re-evaluation trigger; default disposition is "not promoted to v8.0 unless trigger fires."
-
-| ID | Item | cu_v2 | Re-eval trigger | Disposition |
-|---|---|---|---|---|
-| **V8-I1** | Agent Smartlog UI — `/control-room/agents` live awareness + path-overlap detection | 2.2 (B_med) | ≥5 concurrent active features for 7+ days | Visibility layer; prevention is gated already |
-| **V8-I2** | Op-log Replay — jj-style per-session rollback + GC | 2.9 (A_high) | ≥3 manual-cleanup incidents in 90d OR `git stash list` >5 for 30d | Recovery primitive; v7.8.3 `--no-verify` ledger is bridge |
-| **V8-I3** | Vercel Sandbox / Firecracker microVM | 3.1 (A_high) | Untrusted-code-execution use case emerges | Overkill for cooperative agents |
-| **V8-I4** | FS kernel sandboxing — Linux Landlock / macOS App Sandbox | 3.05 (A_high) | Regulatory mandate (HIPAA audit trail) | OS-specific; multi-tenant context needed |
-| **V8-I5** | inotify/fsevents broadcast mediator | 1.9 (B_med) | ≥2 concurrent-write collisions in 60d w/ >30min reconciliation | Detection-only; additive to existing gates |
-| **V8-I6** | Cross-feature dependency analysis | 2.0 (B_med) | `path-reducers.json` ≥20 entries + ≥2 conflicts surface organically | Requires path-reducer registry to mature |
-| **V8-I7** | Auto-rollback on kill-criteria fire | 3.05 (A_high) | T+7d telemetry of clean firing + ≥2 manual dry-run successes | Safety verification needed |
-
-### 3.3 v8.0 Docket Decision (2026-05-21 — T29 Phase 9 prioritization pass)
-
-The 2026-05-21 prioritization pass at `framework-v7-8-branch-isolation` Phase 9 closure produces the final v8.0 docket by:
-
-1. **Ranking** F1–F6 + F9–F18 + V8-I1 through V8-I7 (23 candidates after F7/F8 resolution) by RICE × 7-day telemetry signal strength
-2. **Top-3-per-theme rule** (relaxed 2026-05-12 from prior "top-3 absolute") — pick top 3 by RICE within each theme so v8.0 covers breadth, not just the highest-RICE items. With 7 themes (A roadmap, B cross-repo asymmetry RESOLVED, C schema, D vocabulary, E ergonomics, F v7.8.3 cutover, G test discipline), v8.0 max docket = 18 items. Rest defer to v8.1.
-3. **Companion case study** — Phase 9 produces `framework-v7-8-branch-isolation-case-study.md` with the prioritization decision recorded in Section 99 + ranked output to `docs/superpowers/specs/2026-05-21-v8-0-docket.md` (new file)
-4. **Sub-experiment with hold-out** — if telemetry suggests *zero* F-items warrant promotion (rare but possible), v8.0 ships as a pure protocol patch and v8.x deferred to v8.1
-5. **Test-discipline foundation precedence (added 2026-05-12)** — Theme G items (F14, F15, F16, F17, F18) have a dependency graph among themselves: F16 (try-repo harness) is foundation; F14 (per-gate dispatch tests) and F18 (mutation testing) depend on it; F15 is independent; F17 is independent. If ANY Theme G item enters v8.0, F16 MUST also enter v8.0 OR ship earlier as v7.9.1.
-
-The Phase 9 task is tracked as **T29** in [`.claude/features/framework-v7-8-branch-isolation/state.json`](../../.claude/features/framework-v7-8-branch-isolation/state.json).
-
-### 3.4 Theme distribution (after 2026-05-12 expansion)
-
-| Theme | Items | Open count | Notes |
-|---|---|---|---|
-| **A — Roadmap/multi-feature realism** | F1, F2, F3 | 3 | Stress-test session |
-| **B — Cross-repo asymmetry** | F7, F8 | 0 (both RESOLVED v7.8.2) | Documented exemption |
-| **C — Schema drift / migration** | F4, F10 | 2 | `framework_version` + `experiment_outcome` enum |
-| **D — Vocabulary / latitude** | F5, F6 | 2 | `scope_change` event + B_medium tier doc |
-| **E — Workflow ergonomics** | F9 | 1 | `make complete-feature` pre-flight |
-| **F — v7.8.3 cutover follow-up** | F11, F12, F13 | 3 | All independent |
-| **G — Test discipline** (NEW 2026-05-12; expanded 2026-05-13) | F14, F15, F16, F17, F18, F19, F20 | 7 | F16 is foundation for F14 + F18; F19/F20 from analytics-observability ride on F16 harness |
-| **H — Application-layer test coverage** (NEW 2026-05-13; see [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md)) | T1–T16 | 16 | iOS + web + backend + AI + analytics test discipline; T6 (Web PR gate) RICE 200; T14 (platform-parity field) RICE 160; full ranking at 2026-05-21 |
-| **Icebox** | V8-I1 through V8-I7 | 7 | Each gated on own re-eval trigger |
-| **TOTAL** | 43 | **41 open** | F7/F8 resolved; 41 in 2026-05-21 ranking (+16 from test-coverage sub-doc) |
+> **The full v8.x candidate docket — F-series tables (Sources A–E), V8-I icebox, the T29 decision process, and the theme distribution — now lives in its own sub-plan: → [`v8-x-build-docket-2026-06-15.md`](v8-x-build-docket-2026-06-15.md)**
+>
+> This was separated 2026-06-15 to mirror how `test-coverage-master-plan`, `data-integrity-and-rollback`, and `analytics-master-plan` are standalone sub-plans under this parent. The **§3.0 reconciled roll-up above remains the at-a-glance**; the sub-plan is authoritative for per-candidate detail. The frozen T29 ranking stays at [`v8-0-docket-ranking-2026-05-13.md`](v8-0-docket-ranking-2026-05-13.md); the ready-now execution sequence is at [`v8-0-ready-now-workplan-2026-06-15.md`](v8-0-ready-now-workplan-2026-06-15.md).
+>
+> **§3.5 (Calibration Protocol for new layers) and §3.6 (Forward Plan v7.9 → v8.2) remain below in this parent** — they are general process/timeline content referenced by name across the doc tree, not part of the candidate docket.
 
 ---
 
