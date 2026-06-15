@@ -1,0 +1,49 @@
+name: actionlint
+
+# F12 (v8.x ready-now workplan Batch 1; RICE 100): actionlint on GitHub Actions
+# workflow YAML under .github/workflows/. Posture: warn-only baseline;
+# continue-on-error: true. Strict mode is a future calibration step.
+# Mirrors the R18 shellcheck.yml warn-only pattern.
+#
+# All inputs static. Uses the official download-actionlint.bash method so the
+# job does not depend on a third-party action's version tag.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - '.github/workflows/actionlint.yml'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: actionlint-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Download actionlint
+        id: get_actionlint
+        run: bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+        shell: bash
+
+      - name: Run actionlint
+        continue-on-error: true
+        run: ${{ steps.get_actionlint.outputs.executable }} -color
+        shell: bash
