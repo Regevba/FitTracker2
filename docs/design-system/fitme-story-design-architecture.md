@@ -1,5 +1,7 @@
 # fitme-story Design System Architecture
 
+> ⛔ **Code Connect DISABLED 2026-06-15.** Figma Code Connect requires an Org/Enterprise plan; this account is Pro, so the web `.figma.tsx` publish bridge is non-operational (workflow is a disabled stub; the Figma file `fsjHfFLAHELACZHku8Rfcl` is empty/partial). The `globals.css` → component architecture described below is real and operational; only the Code Connect / Figma-Dev-Mode mapping layer is inert. **Code is the source of truth.** See [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md) + honesty ledger FT2-FH-005.
+
 **Created:** 2026-05-08
 **Closes:** [fitme-story-public-enhancements](../../.claude/features/fitme-story-public-enhancements/state.json) T21 (audit ID **FIG-W6**)
 **Source:** [`fitme-story/src/app/globals.css`](https://github.com/Regevba/fitme-story/blob/main/src/app/globals.css)

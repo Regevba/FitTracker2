@@ -660,7 +660,17 @@ Phase 3 + Phase 6 of the PM workflow now mechanically gate the spec ↔ code ↔
 
 Full documentation: [`docs/skills/evolution.md`](docs/skills/evolution.md) §26.
 
-### v4.X+CC Cross-repo Code Connect bridge (added 2026-05-09 → 2026-05-10)
+### v4.X+CC Cross-repo Code Connect bridge (added 2026-05-09 → 2026-05-10; ⛔ DISABLED 2026-06-15)
+
+> ⛔ **DISABLED 2026-06-15 — Code Connect is not operational.** A full design-system audit found the
+> Code Connect publish bridge has **failed on every real run since 2026-05-10** in both repos. Root
+> cause: Figma Code Connect requires an **Organization/Enterprise** plan; this account is **Pro**
+> (iOS publish → 403 "Invalid scope(s)"; web publish → W14, page-frame mappings `31-3`/`31-106`
+> abort validation). The Figma library files are also empty/partial, so the node IDs cited in this
+> section do not exist live. Both `figma-code-connect-publish.yml` workflows are now disabled stubs.
+> The `.figma.{swift,tsx}` mappings + configs remain in-tree but **inert**. **Code is the source of
+> truth.** Decision + rebuild plan: [`docs/design-system/figma-source-of-truth-plan-2026-06-15.md`](docs/design-system/figma-source-of-truth-plan-2026-06-15.md);
+> honesty ledger [FT2-FH-005](docs/case-studies/framework-honesty-ledger.md). The historical record below is retained for context.
 
 Closes the loop in the OTHER direction: `/design build` pushes screens INTO Figma; the Code Connect bridge maps Figma library frames BACK to source code so Dev Mode shows the actual React/SwiftUI snippet for each component. Cross-repo, both web and iOS.
 
@@ -689,7 +699,7 @@ Closes the loop in the OTHER direction: `/design build` pushes screens INTO Figm
 - Figma↔code matrix + Code Connect verification contract: [`docs/design-system/figma-code-sync-status.md`](docs/design-system/figma-code-sync-status.md)
 - Public showcase: fitme-story `/pm-flow` page §`#code-connect`
 
-**Manual steps per new UI feature: 2 → 0** once operator setup completes (which it has, as of 2026-05-10). Tracked feature: [`code-connect-automation`](.claude/features/code-connect-automation/) — 4/5 tasks done (T1-T4 shipped; T5 = end-to-end test on next real new UI feature).
+**Manual steps per new UI feature:** the code-side automation (scaffold + skill hook) shipped, but the **publish step never worked** — operator setup did *not* complete operationally (the `code_connect:write` scope is not grantable on Pro). The "2 → 0" target was **not** achieved; effective state is "Code Connect publishing unavailable on this plan." Tracked feature: [`code-connect-automation`](.claude/features/code-connect-automation/) — T1-T4 code shipped, T5 (E2E publish) permanently blocked by plan tier; bridge decommissioned 2026-06-15 (see plan above).
 
 ### Verification Layer (added 2026-04-20)
 

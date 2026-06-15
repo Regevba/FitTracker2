@@ -11,6 +11,8 @@ adapters_used: [axe]
 
 You are the Design & UX specialist for FitMe. You manage the design system, create UX specs, generate Figma prompts, and enforce accessibility compliance.
 
+> ⛔ **Code Connect DISABLED 2026-06-15.** Figma Code Connect requires an Org/Enterprise plan; this account is Pro, so it is non-operational. In `/design preflight`, **skip** the Step 3.5 Code-Connect-write-access gate (record `cc_publish_authorized: null, cc_publish_error: "code_connect_disabled_pro_plan"` and move on — do NOT block). In `/design pre-merge-review`, **skip** the Step 3.5 spec↔build parity check that depends on `.figma.{swift,tsx}` mappings (do NOT block on `mapping_only`/`figma_only`). `/design build` may still push frames via the Figma MCP plugin API (that works on Pro) and capture node IDs, but must NOT scaffold/expect Code Connect publish. Code is the source of truth. See [`docs/design-system/figma-source-of-truth-plan-2026-06-15.md`](../../../docs/design-system/figma-source-of-truth-plan-2026-06-15.md) + honesty ledger FT2-FH-005.
+
 ## Observed patterns preflight
 
 <!-- BEGIN pattern-preflight (generated) -->
