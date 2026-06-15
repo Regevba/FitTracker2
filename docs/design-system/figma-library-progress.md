@@ -2,6 +2,8 @@
 
 # FitTracker Figma Library Progress
 
+> ⚠️ **Reconciled 2026-06-15.** The progress recorded below does not reflect the live Figma file — `0Ai7s3fCFqR5JXDW8JvgmD` currently holds only a placeholder "Cover" page. A rebuild via the Figma MCP plugin API is planned; see [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md). Code is the source of truth.
+
 ## Current file
 
 - File name: `FitTracker Design System Library`
