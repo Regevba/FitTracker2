@@ -1,5 +1,13 @@
 # iOS Code Connect Workflow
 
+> ⛔ **SUPERSEDED / DISABLED 2026-06-15.** iOS Code Connect publishing is **not operational** and
+> has been disabled. Figma Code Connect requires an Organization/Enterprise plan; this account is
+> **Pro**, so the `code_connect:write` scope cannot be granted (publish returns HTTP 403 "Invalid
+> scope(s)"). The `figma-code-connect-publish.yml` workflow is now a manual-only disabled stub.
+> This doc is retained as a reference for the (inert) `.figma.swift` mappings and for re-enablement
+> after a plan upgrade. **Decision + re-enablement steps:**
+> [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md).
+
 **Created:** 2026-05-09
 **Closes:** [ios-code-connect](../../.claude/features/ios-code-connect/state.json) T5
 **Source-of-truth Figma file:** [`FitTracker-Design-System-Library`](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library) (key `0Ai7s3fCFqR5JXDW8JvgmD`)

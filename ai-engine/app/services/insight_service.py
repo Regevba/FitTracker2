@@ -39,21 +39,28 @@ class InsightService:
 
         total_cohort_size = sum(cohort_totals.values())
         populated_buckets = sum(1 for v in cohort_totals.values() if v > 0)
+        # NOTE: coverage_ratio divides cohort buckets by user-field count. These
+        # are only commensurable because the production caller
+        # (CohortService.get_cohort_totals) returns exactly one bucket per user
+        # field — keyed "<field>:<value>". If a future caller passes cohort_totals
+        # with a different cardinality, this ratio loses its "coverage" meaning and
+        # confidence scores shift. Keep the 1:1 field↔bucket contract, or redesign
+        # this metric, before changing get_cohort_totals's return shape.
         coverage_ratio = populated_buckets / max(len(user_fields), 1)
 
         # ── Segment-specific rules ─────────────────────────────
 
         if segment == "training":
-            signals.extend(self._training_signals(user_fields, cohort_totals))
+            signals.extend(self._training_signals(user_fields))
 
         elif segment == "nutrition":
-            signals.extend(self._nutrition_signals(user_fields, cohort_totals))
+            signals.extend(self._nutrition_signals(user_fields))
 
         elif segment == "recovery":
-            signals.extend(self._recovery_signals(user_fields, cohort_totals))
+            signals.extend(self._recovery_signals(user_fields))
 
         elif segment == "stats":
-            signals.extend(self._stats_signals(user_fields, cohort_totals))
+            signals.extend(self._stats_signals(user_fields))
 
         # ── Confidence scoring ─────────────────────────────────
         # Coverage ratio × normalised cohort size signal
@@ -77,9 +84,7 @@ class InsightService:
 
     # ── Private rule helpers ───────────────────────────────────
 
-    def _training_signals(
-        self, fields: dict[str, str], totals: dict[str, int]
-    ) -> list[str]:
+    def _training_signals(self, fields: dict[str, str]) -> list[str]:
         signals: list[str] = []
 
         goal = fields.get("primary_goal", "")
@@ -95,9 +100,7 @@ class InsightService:
 
         return signals
 
-    def _nutrition_signals(
-        self, fields: dict[str, str], totals: dict[str, int]
-    ) -> list[str]:
+    def _nutrition_signals(self, fields: dict[str, str]) -> list[str]:
         signals: list[str] = []
 
         balance = fields.get("caloric_balance_band", "")
@@ -112,9 +115,7 @@ class InsightService:
 
         return signals
 
-    def _recovery_signals(
-        self, fields: dict[str, str], totals: dict[str, int]
-    ) -> list[str]:
+    def _recovery_signals(self, fields: dict[str, str]) -> list[str]:
         signals: list[str] = []
 
         sleep = fields.get("sleep_duration_band", "")
@@ -130,9 +131,7 @@ class InsightService:
 
         return signals
 
-    def _stats_signals(
-        self, fields: dict[str, str], totals: dict[str, int]
-    ) -> list[str]:
+    def _stats_signals(self, fields: dict[str, str]) -> list[str]:
         signals: list[str] = []
 
         consistency = fields.get("workout_consistency_band", "")

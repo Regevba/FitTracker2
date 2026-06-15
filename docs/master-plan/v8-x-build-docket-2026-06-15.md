@@ -58,7 +58,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 
 **D. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **8 shipped** (F2, F6, F9, F14, F15, F16, F17 + GATE_COVERAGE_ZERO) + 2 resolved-by-exemption (F7, F8) → **8 F-items remain open** (F1, F3, F4, F5, F10, F11, F12, F13) + F18 + F19–F23. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
+**Roll-up:** of the original 18 F-candidates, **13 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 — the last five all merged to main 2026-06-15 via PRs #719/#720/#721/#722) + 2 resolved-by-exemption (F7, F8) → **3 F-items remain open** (F1, F3, F4) + F18 + F19–F23. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
 
 ---
 

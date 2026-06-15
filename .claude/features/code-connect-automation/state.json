@@ -137,5 +137,6 @@
     "scaffold_session": "1acfe748-7927-4116-a46e-c87c989a4253",
     "scaffold_origin": "User answer to 'Automate Code Connect for new UI features?' on 2026-05-10 \u2014 chose 'All 3 layers (A + B + C)'. Surfaced as follow-up to ios-code-connect T1-T5 wrap-up + the question 'is the cmd automated when building a new ui feature' \u2014 answer was 'no' across both web + iOS, this feature closes that gap."
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "decommission_note": "2026-06-15: Code Connect bridge formally DECOMMISSIONED (not just T5-deferred). Root cause confirmed via full design-system audit: Code Connect requires Figma Org/Enterprise; account is Pro. Both figma-code-connect-publish.yml workflows disabled to disabled-stubs. .figma.{swift,tsx} mappings left in-tree but inert. Re-activation path unchanged (plan upgrade). See docs/design-system/figma-source-of-truth-plan-2026-06-15.md + honesty ledger FT2-FH-005."
 }
