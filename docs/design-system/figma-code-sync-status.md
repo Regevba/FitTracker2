@@ -14,7 +14,34 @@
 >
 > **As of 2026-05-06 (skill-layer v4.X):** rows in this matrix *were* auto-updated by `/design build` during Phase 3.j. **Superseded 2026-06-15:** `/design build`'s Figma-push + Code Connect path is no longer the source of truth — see the banner above. The status label "Synced (auto-built)" only ever meant "`/design build` ran"; it did **not** verify a live Figma frame.
 
+## Rebuilt Figma Mirror (2026-06-15) — real, verified node IDs
+
+After the Code Connect decommission, both Figma files were rebuilt as an honest **visual mirror** of the code design system via the Figma MCP plugin API (works on Pro — not Code Connect). The node IDs below **exist and were verified live** (screenshots taken at build time). Code remains the source of truth; "mirror" = visually reflects the code tokens/components, maintained manually.
+
+**iOS — `0Ai7s3fCFqR5JXDW8JvgmD`:**
+
+| Surface | Figma node | Source of truth | Notes |
+|---|---|---|---|
+| Token variables collection | `985:2` — "FitTracker Tokens (code mirror)", 80 vars | `design-tokens/tokens.json` | 47 color + 33 numeric (spacing/radius/size/opacity/layout), variable-bound |
+| Foundations page | `10:3` | tokens.json | colors `987:2` · spacing `988:2` · radius `988:28` · typography `988:60` |
+| Components catalog page | `10:5` | `AppComponents.swift` | catalog `989:2` — Card, primary CTA, chips, progress bar, metric tile, segmented control |
+
+**Web — `fsjHfFLAHELACZHku8Rfcl`:**
+
+| Surface | Figma node | Source of truth | Notes |
+|---|---|---|---|
+| Token variables collection | "FitMe Web Tokens (code mirror)", 12 vars | `src/app/globals.css` | indigo/coral brand + neutral ramp |
+| Foundations page | `34:75` | globals.css | color swatches `34:76` |
+| Primitives catalog | `34:127` | `src/components/ui/*.tsx` | Button, Tag (3 variants), Card |
+| UCC sign-in auth (pre-existing) | `30:61`, `31:3`, `31:106` | control-room sign-in | the only real content that existed before the rebuild |
+
+**Screens** (Home / Training / Nutrition / Stats / Settings / Onboarding) are **code-sourced** — the SwiftUI `v2/` files are the source of truth and are intentionally NOT re-mocked in Figma (mocking risks drift/misrepresentation). The historical "Screen Sync Matrix" below is retained for reference, but its node IDs predate the rebuild and most do **not** resolve in the live file.
+
+---
+
 ## Screen Sync Matrix
+
+> ⚠️ **Historical (pre-2026-06-15).** Node IDs below largely do not exist in the live Figma file — see the Rebuilt Figma Mirror section above for current truth.
 
 | Screen | Figma Node | Code File | Status | Notes |
 |---|---|---|---|---|

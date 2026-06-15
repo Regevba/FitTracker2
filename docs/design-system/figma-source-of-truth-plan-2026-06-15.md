@@ -26,8 +26,8 @@
 
 - [x] FT2 `.github/workflows/figma-code-connect-publish.yml` → disabled stub (no auto-trigger; manual dispatch prints the reason).
 - [x] fitme-story `.github/workflows/figma-code-connect-publish.yml` → disabled stub.
-- [ ] Reconcile docs (§3).
-- [ ] Honesty-ledger entry FT2-FH-005 + observed-pattern W36.
+- [x] Reconcile docs (§3) — done (PR #723 + #222).
+- [x] Honesty-ledger entry FT2-FH-005 + observed-pattern W36 — done.
 
 `.figma.swift` / `.figma.tsx` mapping files, `figma.config.json`, `.figma-cc-tools/` are left **in place but inert** (no publish consumes them). Removing them is a separate, approval-gated cleanup (§5, open question OQ-1).
 
@@ -59,6 +59,12 @@ Mechanism: **Figma MCP plugin API** (`use_figma` / `figma-generate-library` / `f
 - **Phase B — Web file rebuild** (`fsjHfFLAHELACZHku8Rfcl`): the 8 `ui/` primitives + tokens from `globals.css`; keep existing auth/sign-in frames.
 - **Phase C — New verification contract:** "Synced" = Figma frame visually matches rendered code + real node ID recorded + recent date. Drift = manual matrix + web `figma-drift-weekly.yml` (manifest-based, already green). **No** Code Connect.
 - **Rewrite the sync matrix** with the real node IDs from Phases A/B and status "Mirror (MCP-built)".
+
+**Status (2026-06-15) — executed:**
+- ✅ **Phase A (iOS)** — token variable collection `985:2` (80 vars from tokens.json) + Foundations page `10:3` (colors `987:2`, spacing `988:2`, radius `988:28`, typography `988:60`) + Components catalog `10:5` (`989:2`). Screens left code-sourced (not re-mocked).
+- ✅ **Phase B (web)** — "FitMe Web Tokens" collection (12 vars from globals.css) + Foundations `34:75` (`34:76`) + Primitives catalog `34:127`.
+- ✅ **Phase C** — sync matrix rewritten with the real node IDs ([`figma-code-sync-status.md`](./figma-code-sync-status.md) "Rebuilt Figma Mirror" section).
+- All node IDs verified live via screenshots at build time.
 
 ## 5. Open questions
 - **OQ-1:** delete the now-inert `.figma.{swift,tsx}` + `.figma-cc-tools/` + `figma.config.json`, or keep for a future Org/Enterprise upgrade? (deletion is approval-gated)
