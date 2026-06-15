@@ -42,7 +42,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | Cycle-time gate | 40.0 | none |
 | F4 | Auto-update `framework_version` on protocol writes | Write-time/migration | 32.0 | partial — `FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` (#659) cover part |
 | ~~F10~~ ✅ | `experiment_outcome` enum on `tasks[]` (documented, advisory — not a blocking gate) | Schema | 32.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
-| F13 | `source_commit` `workflow_dispatch` input | GH Actions | 32.0 | none |
+| ~~F13~~ ✅ | `source_commit` `workflow_dispatch` input + full-repo-scan fallback (reverse-sync) | GH Actions | 32.0 | **SHIPPED** (fitme-story PR #221 — reverse-sync workflow lives in fitme-story) |
 | ~~F5~~ ✅ | `scope_change` Tier 2.2 vocabulary event (advisory KNOWN_EVENT_TYPES note) | Vocabulary | 20.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | F1 | `STATE_TASKS_FILESYSTEM_DRIFT` advisory | Cycle-time gate | 19.2 | none |
 | F3 | Phase 2 dependency-graph cycle check | Workflow gate | 14.4 | none |
