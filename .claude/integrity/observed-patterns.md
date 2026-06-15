@@ -1634,3 +1634,29 @@ ls .claude/_session-state/default-*.done .claude/_session-state/default-*.txt 2>
 **General lesson:** when a hook needs the session id, read it from the **hook payload (stdin)**, never from an env var the platform doesn't set. When one gate name has two producers, give each its own name so the silent-pass detectors can see each independently.
 
 **First observed:** 2026-06-14. **Sibling patterns:** [#24 field-rename reader/index mismatch](#24--field-rename-readerindex-mismatch-the-createdcreated_at-class-generalized-to-the-measurement-layer), W9 (the feature this lives in).
+
+### W36 — A plan/seat-gated external capability documented as "operational" while it never once succeeded (2026-06-15)
+
+**Surfaced by:** a full design-system audit (2026-06-15). The Figma Code Connect bridge was presented across CLAUDE.md + `figma-code-sync-status.md` as "Synced (auto-built)" / "operator setup complete (2026-05-10)", but the `figma-code-connect-publish.yml` workflow had **failed on every real run since 2026-05-10** in both repos, and the live Figma files were empty/partial.
+
+**The pattern (generalizes beyond Figma):** a capability gated by an **account plan or seat entitlement** gets full scaffolding — a CI workflow, a repo secret, generated mapping/config files, and docs — and the scaffolding's *presence* is mistaken for the capability *working*. Here Code Connect requires a Figma Org/Enterprise plan; the account is Pro, so:
+- iOS publish → HTTP **403 "Invalid scope(s): need File Read + Code Connect Write"** (scope not grantable on Pro).
+- web publish → **W14**: page-frame mappings (`31-3`/`31-106`) abort validation.
+
+Every signal an operator usually trusts was green-ish: the workflow file existed, the `FIGMA_ACCESS_TOKEN` secret existed, `.figma.{swift,tsx}` files existed, and the docs said "Synced." Only the *run history* (all red) and the *live Figma state* (empty) told the truth. One state.json (`code-connect-automation`) had honestly recorded the blocker, but the high-visibility surfaces had not.
+
+**Detection:**
+```bash
+# A publish/deploy workflow that is "set up" but has never actually succeeded on a real run:
+gh run list --workflow=<name>.yml --limit 20 | grep -c success   # scaffold runs only?
+gh run view "$(gh run list --workflow=<name>.yml --status failure --limit 1 --json databaseId -q '.[0].databaseId')" --log-failed | grep -iE '403|invalid scope|not a component|plan|enterprise'
+# For Figma specifically — does the live file actually contain the claimed nodes?
+#   MCP get_metadata (no nodeId) → if only a "Cover" page exists, the library is empty.
+#   MCP get_code_connect_map → "need a Developer seat in an Organization or Enterprise plan" = plan-gated.
+```
+
+**Remediation (2026-06-15):** disabled both publish workflows to manual-only stubs (no more red runs); reconciled CLAUDE.md + `figma-code-sync-status.md` + `ios-code-connect-workflow.md` to state code-is-source-of-truth + Code Connect unavailable on Pro; recorded honesty-ledger [FT2-FH-005]; wrote the rebuild plan `docs/design-system/figma-source-of-truth-plan-2026-06-15.md` (make Figma a visual mirror via the MCP plugin API, which *does* work on Pro).
+
+**General lesson:** treat a plan/seat-gated capability as an **external dependency** and verify it end-to-end (did it actually publish/deploy?) before any doc says "operational" or "setup complete." Scaffolding present ≠ pipeline working. A workflow's *run history*, not its *existence*, is the source of truth.
+
+**First observed:** 2026-06-15. **Sibling patterns:** [W14 — Code Connect rejects page frames](#w14), FT2-FH-005 (honesty ledger), #24 (reader/producer disjoint).

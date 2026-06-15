@@ -1,9 +1,18 @@
 # Figma ↔ Code Sync Status
 
-> **Last synced:** 2026-04-29
+> ⚠️ **RECONCILED 2026-06-15 — read this first.** A full design-system audit found that the
+> Figma files referenced below are **empty/partial**, the Code Connect publish bridge is
+> **disabled** (requires a Figma Org/Enterprise plan; this account is Pro), and most node IDs
+> in the matrix below **do not exist** in the live Figma files. **Code is the source of truth.**
+> The matrix rows marked "Synced" / "Synced (auto-built)" reflect what `/design build` *intended*
+> to push, **not** verified live Figma frames — treat them as historical intent, not current truth.
+> Full decision + rebuild plan: [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md).
+> Honesty ledger: [FT2-FH-005](../case-studies/framework-honesty-ledger.md).
+>
+> **Last synced:** 2026-04-29 (matrix below); **last reconciled:** 2026-06-15
 > **Figma file:** `0Ai7s3fCFqR5JXDW8JvgmD`
 >
-> **As of 2026-05-06 (skill-layer v4.X):** rows in this matrix are **auto-updated by `/design build`** during Phase 3.j of the PM workflow. The auto-update writes the Figma node ID, code-file path, and a status of "Synced (auto-built)" for any newly built feature. Manual rows (the historical entries below) remain valid; the auto-update does not modify them. See `docs/skills/design.md` for the auto-update contract.
+> **As of 2026-05-06 (skill-layer v4.X):** rows in this matrix *were* auto-updated by `/design build` during Phase 3.j. **Superseded 2026-06-15:** `/design build`'s Figma-push + Code Connect path is no longer the source of truth — see the banner above. The status label "Synced (auto-built)" only ever meant "`/design build` ran"; it did **not** verify a live Figma frame.
 
 ## Screen Sync Matrix
 
