@@ -823,6 +823,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W33 Pattern↔skill preflight overlay (catalog ⇄ skill mapping + `make skill-preflight`; self-doc, map-exempt) | W33 | 2026-06-04 |
 | W34 PR cache window truncation past the 500-PR limit (raised to 2000) | W34 | 2026-06-05 |
 | W35 Hook session-id keyed on never-set `CLAUDE_SESSION_ID` env → constant `"default"` → cross-session marker suppresses gate forever | W35 | 2026-06-14 |
+| W37 Bot-authored (GITHUB_TOKEN) PR + `strict` branch protection → required checks never run / re-block → permanent "expected" merge deadlock | W37 | 2026-06-15 |
 
 ---
 
@@ -1660,3 +1661,30 @@ gh run view "$(gh run list --workflow=<name>.yml --status failure --limit 1 --js
 **General lesson:** treat a plan/seat-gated capability as an **external dependency** and verify it end-to-end (did it actually publish/deploy?) before any doc says "operational" or "setup complete." Scaffolding present ≠ pipeline working. A workflow's *run history*, not its *existence*, is the source of truth.
 
 **First observed:** 2026-06-15. **Sibling patterns:** [W14 — Code Connect rejects page frames](#w14), FT2-FH-005 (honesty ledger), #24 (reader/producer disjoint).
+
+### W37 — Bot-authored (GITHUB_TOKEN) PR can never satisfy required checks under `strict` branch protection → permanent "expected" deadlock (2026-06-15)
+
+**Surfaced by:** the 2026-06-14 docs-quirk root-cause analysis across the last 200 PRs (since `ci-docs-skip.yml`, #558). Empirically: human docs-only PRs merge cleanly (104/108), but **all 13 GITHUB_TOKEN-authored PRs needed an operator web-UI admin-merge, and 3 were abandoned (#614, #676, #706)**. Distinct from W35 (which was a session-id keying bug); this is a CI/branch-protection interaction.
+
+**The pattern:** a workflow opens (or updates) a PR using the default `GITHUB_TOKEN`, on a repo whose `main` has classic branch protection with `required_status_checks.strict = true` + `enforce_admins = true`. Two compounding failures:
+
+1. **GITHUB_TOKEN recursion-prevention:** commits/PRs created with `GITHUB_TOKEN` do **not** trigger `pull_request` workflows. So `ci-docs-skip`/`pr-integrity` never run on the bot head → a required context can be entirely **absent** (proven: #614's head had `integrity` ×2 + CodeQL etc. but **no `Build and Test` check-run at all**) → unsatisfiable → hard deadlock.
+2. **`strict` (require-up-to-date):** even when checks DID run and succeed (#676/#706), once `main` advances the bot PR goes BEHIND; `update-branch` makes a new bot-authored head that again won't trigger CI → required contexts revert to "expected." The API `--admin` merge is refused ("N of N required status checks are expected"); only the **web-UI admin bypass** works (hence every bot-PR merge shows `mergedBy=<operator>`).
+
+`ci-docs-skip` fixed the human case but architecturally **cannot** help bots — the bot's `pull_request` event never reaches it.
+
+**Detection:**
+```bash
+# Bot PRs that deadlocked: author is app/github-actions, BEHIND, required checks absent on head
+gh pr list --repo <repo> --state open --json number,author,mergeStateStatus \
+  --jq '.[]|select(.author.login=="app/github-actions" and .mergeStateStatus=="BEHIND")|.number'
+# Confirm an absent required context on the head SHA:
+gh api repos/<repo>/commits/<sha>/check-runs --jq '[.check_runs[]|select(.name=="Build and Test")]|length'  # 0 = absent
+```
+
+**Remediation (option B, shipped 2026-06-15):** the three ledger/snapshot workflows (`integrity-cycle.yml`, `framework-status-weekly.yml`, `ucc-audit-log-sync.yml`) write **append-only** machine ledgers, so they no longer open a PR — they **commit + push straight to `main`** (primary path), falling back to the legacy create-PR path only if the push is rejected (graceful, no-regression before the bypass is configured). Activation requires a one-time operator step: add the `github-actions` app to `main`'s `bypass_pull_request_allowances` (classic protection) so the bot push skips the PR requirement. Reversible by removing it.
+**Alternative (option A, not chosen):** mint a GitHub App token (`actions/create-github-app-token`) for the PR so it triggers CI + `enable-auto-merge`.
+
+**Silence path:** none — the fix removes the bot PR entirely. Until the bypass is added the workflows self-heal to the old PR path (operator still hand-merges, as before).
+
+**First observed:** recurring since 2026-06-04 (#614). Root-caused 2026-06-14; fixed 2026-06-15. **Sibling patterns:** W35 (W9 session-id), [#12 PR_CACHE_STALE], W11/W34 (cache window). **Note:** numbered W37 because W36 was concurrently claimed by the Figma plan-gating pattern (2026-06-15).
