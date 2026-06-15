@@ -6,6 +6,8 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+> **Framework work (v7.5 → v7.10, 2026-04-24 → 2026-06-10) is tracked elsewhere, not here.** This changelog froze at 2026-04-07 for the product app; the Data Integrity Framework's per-version history lives in the version sections of [`CLAUDE.md`](CLAUDE.md), the cold-start summaries in [`.claude/entrypoints/`](.claude/entrypoints/), the per-feature case studies in [`docs/case-studies/`](docs/case-studies/), and the canonical machine-derived gate counts in [`docs/FRAMEWORK-FACTS.md`](docs/FRAMEWORK-FACTS.md). Product-app feature changes resume below.
+
 ## 2026-04-07 — Onboarding v2 UX Alignment + 4-Day Branch Consolidation
 
 PR #59 — squash-merged to main as `66e42cf`. Pilot run for the sequential UX alignment initiative; first feature in the feature-by-feature pass against `docs/design-system/ux-foundations.md`. Also consolidates 4 days of unmerged design system, UX foundations, marketing website, GDPR, GA4, and skills ecosystem work.
