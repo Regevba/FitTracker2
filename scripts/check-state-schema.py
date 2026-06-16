@@ -163,6 +163,68 @@ PLATFORMS_TESTED_KEYS = ("ios", "web", "backend", "ai")
 # on a single canonical form. Added 2026-05-01 per Gap B in the audit.
 _FRAMEWORK_VERSION_RE = re.compile(r"^(pre-)?v\d+\.\d+(\.\d+)?$")
 
+# F4 (v8.x docket, Theme C): FRAMEWORK_VERSION_STALE advisory gate.
+# Fires when a feature is actively advanced (current_phase transition) while its
+# `framework_version` is strictly older than the canonical current version.
+# Ships ADVISORY for a 14-day calibration window; its own flag keeps the
+# advisory→enforced flip independent of any sibling gate (mirrors
+# PLATFORMS_TESTED_ADVISORY_MODE). Phase A artifacts:
+# .claude/features/f4-framework-version-stale/calibration-artifacts.md
+FRAMEWORK_VERSION_STALE_ADVISORY_MODE = True
+
+# Canonical-version override (tests + operator escape hatch). When unset, the
+# resolver parses docs/FRAMEWORK-FACTS.md — the declared machine-derived SoT.
+_FRAMEWORK_VERSION_CANONICAL_OVERRIDE = os.environ.get(
+    "FRAMEWORK_VERSION_CANONICAL_OVERRIDE"
+)
+# Matches the FRAMEWORK-FACTS.md row: `| **Framework version** | **v7.10** ...`
+_FRAMEWORK_FACTS_VERSION_RE = re.compile(
+    r"\|\s*\*\*Framework version\*\*\s*\|\s*\*\*((?:pre-)?v\d+\.\d+(?:\.\d+)?)\*\*"
+)
+
+
+def _parse_framework_version(raw: str) -> tuple[int, int, int, int] | None:
+    """Parse `vX.Y[.Z]` / `pre-vX.Y[.Z]` into a comparable tuple.
+
+    Returns `(major, minor, patch, release_rank)` where `release_rank` is 0 for
+    a `pre-` version and 1 for a release — so `pre-v7.0` sorts strictly before
+    `v7.0`. Missing patch defaults to 0. Returns None if the string is not
+    canonical (the FRAMEWORK_VERSION_FORMAT gate owns malformed input).
+    """
+    if not isinstance(raw, str):
+        return None
+    m = _FRAMEWORK_VERSION_RE.match(raw)
+    if not m:
+        return None
+    is_pre = raw.startswith("pre-")
+    nums = raw[len("pre-v"):] if is_pre else raw[len("v"):]
+    parts = nums.split(".")
+    try:
+        major = int(parts[0])
+        minor = int(parts[1])
+        patch = int(parts[2]) if len(parts) > 2 else 0
+    except (ValueError, IndexError):
+        return None
+    return (major, minor, patch, 0 if is_pre else 1)
+
+
+def _canonical_framework_version() -> str | None:
+    """Resolve the canonical current framework version.
+
+    Priority: (1) FRAMEWORK_VERSION_CANONICAL_OVERRIDE env var; (2) the
+    `Framework version` row in docs/FRAMEWORK-FACTS.md under REPO_ROOT. Returns
+    None when neither is available — the caller skips (fail-open; never blocks).
+    """
+    if _FRAMEWORK_VERSION_CANONICAL_OVERRIDE:
+        return _FRAMEWORK_VERSION_CANONICAL_OVERRIDE.strip()
+    facts = REPO_ROOT / "docs" / "FRAMEWORK-FACTS.md"
+    try:
+        text = facts.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    m = _FRAMEWORK_FACTS_VERSION_RE.search(text)
+    return m.group(1) if m else None
+
 
 # Event types that count as satisfying a phase transition.
 PHASE_TRANSITION_EVENT_TYPES = {
@@ -852,6 +914,28 @@ def validate_file(
             print(
                 f"[ADVISORY] {finding['code']}: {finding.get('feature', '?')}\n"
                 f"  Violation: {finding.get('violation')}\n"
+                f"  Remediation: {finding['remediation']}",
+                file=sys.stderr,
+            )
+        else:
+            errors.append(
+                f"{path}: [{finding['code']}] {finding.get('violation', 'unknown')}: "
+                f"{finding['remediation']}"
+            )
+
+    # Check 12 (F4, v8.x docket Theme C): FRAMEWORK_VERSION_STALE advisory.
+    # Fires when a feature is advanced (current_phase transition) while its
+    # framework_version is older than the canonical current version. ADVISORY
+    # during the 14-day calibration window (FRAMEWORK_VERSION_STALE_ADVISORY_MODE);
+    # prints to stderr, does not block. Flip adds findings to errors.
+    for finding in check_framework_version_stale(
+        d, path, coverage=coverage, enforce_transition=enforce_transition
+    ):
+        if finding.get("advisory"):
+            print(
+                f"[ADVISORY] {finding['code']}: {finding.get('feature', '?')}\n"
+                f"  Recorded: {finding.get('recorded')}  Canonical: {finding.get('canonical')}\n"
+                f"  Phase transition: {finding.get('phase_transition')}\n"
                 f"  Remediation: {finding['remediation']}",
                 file=sys.stderr,
             )
@@ -1557,6 +1641,99 @@ def check_platforms_tested(
                 "(no key set to true). Set the platforms whose tests this feature "
                 "exercised among {ios, web, backend, ai}; or, for framework-meta "
                 "work, mark work_subtype=framework_feature / work_type=chore (exempt)."),
+        })
+    return findings
+
+
+def check_framework_version_stale(
+    state: dict, path: Path, *, coverage: GateCoverage | None = None,
+    enforce_transition: bool = True,
+) -> list[dict]:
+    """F4 (v8.x docket, Theme C): FRAMEWORK_VERSION_STALE advisory sub-check.
+
+    Fires when a feature is actively advanced (a `current_phase` transition is
+    detected against committed HEAD) while its recorded `framework_version` is
+    strictly older than the canonical current version (FRAMEWORK-FACTS.md or the
+    FRAMEWORK_VERSION_CANONICAL_OVERRIDE env var).
+
+    Closes the F4 gap: at the 2026-05-07 roadmap stress-test, 9 features advanced
+    post-v7.6 while their framework_version stayed stale. Format-only validation
+    (FRAMEWORK_VERSION_FORMAT) could not catch this. Advisory-first — the chosen
+    scope is detection, NOT silent auto-mutation of operator state.json.
+
+    Staged mode only (the transition signal needs a committed-HEAD diff). Exempt:
+    reverse-sync mirrors (`state_owner_sync_origin` ends '-reverse') and explicit
+    `framework_version_stale_exempt: true`.
+    """
+    findings: list[dict] = []
+    GATE = "FRAMEWORK_VERSION_STALE"
+    if coverage is not None:
+        coverage.candidate(GATE)
+    feature_slug = _feature_slug_from_path(path)
+
+    # Full-corpus scans can't detect a transition — skip.
+    if not enforce_transition:
+        if coverage is not None:
+            coverage.skip(GATE, "not_staged_mode")
+        return findings
+
+    fv = state.get("framework_version")
+    if fv is None:
+        if coverage is not None:
+            coverage.skip(GATE, "field_absent")
+        return findings
+    recorded = _parse_framework_version(str(fv))
+    if recorded is None:
+        # Malformed — FRAMEWORK_VERSION_FORMAT owns this.
+        if coverage is not None:
+            coverage.skip(GATE, "malformed_version")
+        return findings
+
+    canonical_str = _canonical_framework_version()
+    canonical = _parse_framework_version(canonical_str) if canonical_str else None
+    if canonical is None:
+        if coverage is not None:
+            coverage.skip(GATE, "canonical_version_unknown")
+        return findings
+
+    # Exemptions (false-positive guards).
+    sync_origin = state.get("state_owner_sync_origin")
+    if isinstance(sync_origin, str) and sync_origin.endswith("-reverse"):
+        if coverage is not None:
+            coverage.skip(GATE, "reverse_sync_mirror")
+        return findings
+    if state.get("framework_version_stale_exempt") is True:
+        if coverage is not None:
+            coverage.skip(GATE, "explicit_exempt")
+        return findings
+
+    # Active-advancement signal: current_phase transition vs committed HEAD.
+    new_phase = state.get("current_phase")
+    committed = _load_committed_state(path)
+    old_phase = committed.get("current_phase") if committed else None
+    if new_phase == old_phase:
+        if coverage is not None:
+            coverage.skip(GATE, "no_phase_change")
+        return findings
+
+    # Comparison runs — recorded ≥ canonical is the healthy case (no finding).
+    if coverage is not None:
+        coverage.checked(GATE)
+    if recorded < canonical:
+        findings.append({
+            "code": GATE, "feature": feature_slug,
+            "violation": "framework_version_stale",
+            "advisory": FRAMEWORK_VERSION_STALE_ADVISORY_MODE,
+            "recorded": str(fv),
+            "canonical": canonical_str,
+            "phase_transition": f"{old_phase} → {new_phase}",
+            "remediation": (
+                f"framework_version={fv!r} is older than the current framework "
+                f"version ({canonical_str}), but this feature is being advanced "
+                f"({old_phase} → {new_phase}). Bump framework_version to "
+                f"{canonical_str} (the version this work ships under). If the old "
+                f"version is intentional, set framework_version_stale_exempt: true."
+            ),
         })
     return findings
 

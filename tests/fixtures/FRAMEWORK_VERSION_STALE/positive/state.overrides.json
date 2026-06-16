@@ -1,0 +1,4 @@
+{
+  "_comment": "framework_version v7.5 is older than the injected canonical v7.10. Baseline current_phase=implementation; in the throwaway repo there is no committed HEAD state.json so old_phase=None != implementation = a transition. Stale + transition => FRAMEWORK_VERSION_STALE advisory fires (stderr; rc stays 0 in advisory mode). Test injects FRAMEWORK_VERSION_CANONICAL_OVERRIDE=v7.10.",
+  "framework_version": "v7.5"
+}
