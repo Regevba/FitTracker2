@@ -5,13 +5,15 @@
 
 ## The 8 ready-now items
 
+> **Status 2026-06-16:** 6 of 8 shipped (F12, F11, F10, F13, F5, **F4 ← PR #740**). **2 remain open: F1 (RICE 19.2) then F3 (14.4).**
+
 | # | ID | Item | RICE | Effort | Class | Infra-glob? |
 |---|---|---|---|---|---|---|
 | 1 | **F12** ✅ SHIPPED | `actionlint` warn-only CI (`.github/workflows/actionlint.yml`) + `make actionlint` — reclassified CI linter (like R18), not a state.json gate | **100.0** | ~0.2w | CI linter | yes (`.github/workflows/`) |
 | 2 | **F11** ✅ SHIPPED | `BRANCH_ISOLATION_HISTORICAL` reverse-sync exemption (advisory narrowing, no calibration) | 40.0 | ~0.3w | Cycle-time gate | yes (`scripts/`) |
 | 3 | **F10** ✅ SHIPPED | `experiment_outcome` enum on `tasks[]` (documented + advisory; not a gate) | 32.0 | ~0.3w | Schema extension | yes (`scripts/` schema) |
 | 4 | **F13** ✅ SHIPPED | `source_commit` `workflow_dispatch` input + full-repo-scan fallback | 32.0 | ~0.4w | GH Actions infra (fitme-story) | fitme-story PR #221 |
-| 5 | **F4** | Auto-update `framework_version` on protocol writes | 32.0 | ~0.5w | Write-time/migration | yes (`scripts/`) |
+| 5 | **F4** ✅ SHIPPED | `FRAMEWORK_VERSION_STALE` advisory gate — stale-version detector on phase-advance (PR #740, 2026-06-16; advisory→enforced ~2026-06-30) | 32.0 | ~0.5w | Write-time gate (advisory) | yes (`scripts/`) |
 | 6 | **F5** ✅ SHIPPED | `scope_change` Tier 2.2 vocabulary event (advisory note) | 20.0 | ~0.2w | Vocabulary | yes (`scripts/` + log schema) |
 | 7 | **F1** | `STATE_TASKS_FILESYSTEM_DRIFT` advisory | 19.2 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
 | 8 | **F3** | Phase 2 dependency-graph cycle check | 14.4 | ~0.5w | Workflow gate | yes (`scripts/`) |
@@ -35,7 +37,7 @@
 **Batch 2 — schema + vocabulary (coordinated, low risk):**
 - **F10 experiment_outcome enum** — add enum to `tasks[]` schema + backfill existing deferred tasks + validator. Not a gate.
 - **F5 scope_change event** — add to Tier 2.2 vocabulary + `append-feature-log.py`. Not a gate.
-- **F4 framework_version auto-update** — partial coverage exists (`FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` #659); scope to the *auto-update on protocol-touching writes* gap. Write-time → calibration + try-repo fixture.
+- **F4 framework_version auto-update** — ✅ **SHIPPED 2026-06-16 (PR #740)** as `FRAMEWORK_VERSION_STALE` advisory detector (operator chose detection over auto-mutation). 28 tests + try-repo fixture pair + Phase A doc. Advisory→enforced flip ~2026-06-30.
 
 **Batch 3 — cycle-time advisories (read-only, lowest risk to commits):**
 - **F11 reverse-sync allowlist** — extend `BRANCH_ISOLATION_HISTORICAL` to read `state_owner_sync_origin` / `reverse-sync/*`.
@@ -50,7 +52,7 @@
 
 ## Suggested first action
 
-Start **F12 (actionlint)** — highest RICE, smallest effort, lowest schema risk, and it hardens the very CI-workflow surface the other infra items edit. `scripts/create-isolated-worktree.py` → `/pm-workflow f12-actionlint-gate` (work-type: chore) → Phase A artifacts → advisory ship.
+~~Start **F12 (actionlint)**~~ — DONE, along with F11/F10/F13/F5/F4. **Next open item: F1 (`STATE_TASKS_FILESYSTEM_DRIFT`, RICE 19.2)**, then F3 (dep-graph cycle check, 14.4). Both are cycle-time advisories (read-only, lowest commit risk) — unit + dispatch test layers, no try-repo fixture needed. `scripts/create-isolated-worktree.py` → `/pm-workflow f1-state-tasks-filesystem-drift` → Phase A artifacts → advisory ship.
 
 ## Cross-references
 - Docket: [`v8-x-build-docket-2026-06-15.md`](v8-x-build-docket-2026-06-15.md)

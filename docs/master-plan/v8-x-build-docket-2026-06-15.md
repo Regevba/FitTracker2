@@ -18,6 +18,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | ID | Item | Shipped | PR(s) |
 |---|---|---|---|
 | F2 | Phase 0 reality-check sub-step | v7.9.1 | #618 |
+| F4 | `FRAMEWORK_VERSION_STALE` advisory gate (stale-version detector on phase-advance) | 2026-06-16 | #740 · advisory→enforced ~2026-06-30 |
 | F6 | B_medium tier documented in CLAUDE.md | done | CLAUDE.md "Impact tier labels" § + "Work Item Types" |
 | F9 | `make close-feature` closure automation | shipped | #591 + #711 (sub-phase normalize) |
 | F14 | Per-gate dispatch tests | 2026-05-22/23 | #451 / #452 / #455 |
@@ -40,7 +41,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 |---|---|---|---|---|
 | ~~F12~~ ✅ | `actionlint` warn-only CI on `.github/workflows/**` + `make actionlint` | ~~Write-time gate~~ → **CI linter** (reclassified: warn-only tooling like R18, not a state.json gate → no calibration walk) | **100.0 (highest)** | **SHIPPED** (feature `f12-actionlint-gate`; `.github/workflows/actionlint.yml` + Makefile target) |
 | ~~F11~~ ✅ | `BRANCH_ISOLATION_HISTORICAL` reverse-sync exemption (state_owner_sync_origin '-reverse' + reverse-sync/ ref) | Cycle-time gate | 40.0 | **SHIPPED** (feature `f11-reverse-sync-historical-exempt`; advisory narrowing — no calibration window) |
-| F4 | Auto-update `framework_version` on protocol writes | Write-time/migration | 32.0 | partial — `FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` (#659) cover part |
+| ~~F4~~ ✅ | `FRAMEWORK_VERSION_STALE` advisory gate — fires when a feature is advanced (current_phase transition) while `framework_version` < canonical (FRAMEWORK-FACTS.md). Scope = detection, NOT auto-mutation (operator-chosen) | Write-time gate (advisory) | 32.0 | **SHIPPED 2026-06-16** (feature `f4-framework-version-stale`, PR #740; advisory→enforced flip ~2026-06-30) |
 | ~~F10~~ ✅ | `experiment_outcome` enum on `tasks[]` (documented, advisory — not a blocking gate) | Schema | 32.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | ~~F13~~ ✅ | `source_commit` `workflow_dispatch` input + full-repo-scan fallback (reverse-sync) | GH Actions | 32.0 | **SHIPPED** (fitme-story PR #221 — reverse-sync workflow lives in fitme-story) |
 | ~~F5~~ ✅ | `scope_change` Tier 2.2 vocabulary event (advisory KNOWN_EVENT_TYPES note) | Vocabulary | 20.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
@@ -58,7 +59,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 
 **D. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **13 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 — the last five all merged to main 2026-06-15 via PRs #719/#720/#721/#722) + 2 resolved-by-exemption (F7, F8) → **3 F-items remain open** (F1, F3, F4) + F18 + F19–F23. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
+**Roll-up:** of the original 18 F-candidates, **14 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + **F4 shipped 2026-06-16 via PR #740**) + 2 resolved-by-exemption (F7, F8) → **2 F-items remain open** (F1, F3) + F18 + F19–F23. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
 
 ---
 
@@ -73,7 +74,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | **F1** | `STATE_TASKS_FILESYSTEM_DRIFT` advisory — detect pre-v7.6 features with empty `tasks[]` despite shipped work | Cycle-time gate | 19.2 | Surfaced when 5-of-10 stress-test sub-features had this drift |
 | **F2** ✅ | Phase 0 sub-step: reality-check completed work against current state before scheduling | Workflow gate | 42.7 | SHIPPED v7.9.1 (#618) |
 | **F3** | Phase 2 dependency-graph cycle/mismatch check for multi-feature roadmaps | Workflow gate | 14.4 | 1 dep-cycle caught manually post-hoc |
-| **F4** | Auto-update `framework_version` on protocol-touching writes OR explicit migration pass | Write-time/migration | 32.0 | 9 features had stale `framework_version` post-v7.6 |
+| **F4** ✅ | Auto-update `framework_version` on protocol-touching writes OR explicit migration pass | Write-time/migration | 32.0 | SHIPPED 2026-06-16 (#740) as `FRAMEWORK_VERSION_STALE` advisory detector (not auto-mutation) — 9 features had stale `framework_version` post-v7.6 |
 | **F5** | Formalize `scope_change` event in Tier 2.2 vocabulary | Vocabulary extension | 20.0 | Currently logged as `event: "note"` |
 | **F6** ✅ | Document B_medium tier in CLAUDE.md | CLAUDE.md doc | 30.0 | DONE — "Impact tier labels" section |
 
@@ -143,8 +144,8 @@ The 2026-05-21 prioritization pass at `framework-v7-8-branch-isolation` Phase 9 
 | Theme | Open items | Notes |
 |---|---|---|
 | A — Roadmap realism | F1, F3 | F2 shipped |
-| C — Schema drift | F4, F10 | |
-| D — Vocabulary | F5 | F6 shipped |
+| C — Schema drift | — | F4 (PR #740) + F10 shipped |
+| D — Vocabulary | — | F5 + F6 shipped |
 | E — Ergonomics | — | F9 shipped |
 | F — v7.8.3 cutover | F11, F12, F13 | F12 highest-RICE (100) |
 | G — Test discipline | F18, F19, F20, T1 | F14/F15/F16/F17 shipped |
