@@ -1687,4 +1687,11 @@ gh api repos/<repo>/commits/<sha>/check-runs --jq '[.check_runs[]|select(.name==
 
 **Silence path:** none — the fix removes the bot PR entirely. Until the bypass is added the workflows self-heal to the old PR path (operator still hand-merges, as before).
 
+**Manual unblock recipe — VERIFIED 2026-06-16 (corrects the "only the web-UI admin bypass works" claim in failure #2):** the API `gh pr merge --admin` **does** work, and a deadlocked bot PR **can** be made to fire its required checks — as long as the *operator's user token* (not the bot) drives the update:
+
+1. `gh pr update-branch <N>` run by the operator creates a merge commit authored by the **user**, which **does** trigger `pull_request` CI. The recursion-prevention only suppresses `GITHUB_TOKEN`-authored events, so `integrity` + `Build and Test` run and pass even on `.claude/shared/*`-only changes — there is no real path-filter exclusion for these ledger paths.
+2. Poll until the required contexts are green on the **new** head, then `gh pr merge <N> --squash --admin --delete-branch`. The `--admin` API merge **succeeds** for a repo admin despite `enforce_admins=true`, once the up-to-date head carries the green required contexts. It is refused only while the branch is `BEHIND` ("N of N required status checks are expected") — which step 1 resolves.
+
+Applied 2026-06-16 to clear #741 (already up-to-date → direct `--admin`) and #716 (`BEHIND` → operator `update-branch` → CI re-ran green → `--admin`). Both merged via the API (`mergedBy=Regevba`), no web UI needed. This is the fast manual path until the option-B operator bypass is configured; option B remains the durable fix that removes the bot PR entirely.
+
 **First observed:** recurring since 2026-06-04 (#614). Root-caused 2026-06-14; fixed 2026-06-15. **Sibling patterns:** W35 (W9 session-id), [#12 PR_CACHE_STALE], W11/W34 (cache window). **Note:** numbered W37 because W36 was concurrently claimed by the Figma plan-gating pattern (2026-06-15).
