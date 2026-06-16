@@ -31,7 +31,7 @@
   "dispatch_pattern": "agent-driven (single-file gate add in check-state-schema.py + unit/dispatch/try-repo tests)",
   "spec": ".claude/features/f4-framework-version-stale/calibration-artifacts.md (Phase A); docs/master-plan/v8-x-build-docket-2026-06-15.md \u00a70.B (F4, RICE 32.0, Theme C)",
   "scope_summary": "Add the FRAMEWORK_VERSION_STALE advisory write-time gate: fires when a feature is actively advanced (current_phase transition) while its framework_version is strictly older than the canonical current version (docs/FRAMEWORK-FACTS.md or FRAMEWORK_VERSION_CANONICAL_OVERRIDE). Closes the F4 gap (9 features advanced post-v7.6 with stale framework_version; format-only validation could not catch it). Advisory-first per the user-chosen scope (detection, not silent auto-mutation). Exemptions: reverse-sync mirrors + framework_version_stale_exempt. Out of scope: auto-mutating framework_version; full migration pass.",
-  "related_prs": [],
+  "related_prs": [740],
   "tasks": [
     {
       "id": "T1",
