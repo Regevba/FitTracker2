@@ -1,54 +1,54 @@
 {
   "version": "1.0",
-  "updated": "2026-06-15T06:52:01Z",
+  "updated": "2026-06-16T09:28:09Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 106,
-    "features_post_v6": 72,
+    "features_total": 111,
+    "features_post_v6": 77,
     "features_pre_v6": 34,
     "fully_adopted": 9,
-    "partial_adopted": 61,
-    "zero_adopted": 36,
+    "partial_adopted": 65,
+    "zero_adopted": 37,
     "fully_adopted_post_v6": 9,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 36,
-      "overall_percent": 34.0,
+      "overall_percent": 32.4,
       "post_v6_present": 36,
-      "post_v6_percent": 50.0,
+      "post_v6_percent": 46.8,
       "overall_instrumented": 17,
       "overall_derived": 19,
       "post_v6_instrumented": 17,
       "post_v6_derived": 19
     },
     "per_phase_timing": {
-      "overall_present": 70,
-      "overall_percent": 66.0,
-      "post_v6_present": 67,
-      "post_v6_percent": 93.1,
-      "overall_instrumented": 70,
+      "overall_present": 74,
+      "overall_percent": 66.7,
+      "post_v6_present": 71,
+      "post_v6_percent": 92.2,
+      "overall_instrumented": 74,
       "overall_derived": 0,
-      "post_v6_instrumented": 67,
+      "post_v6_instrumented": 71,
       "post_v6_derived": 0
     },
     "cache_hits": {
-      "overall_present": 30,
-      "overall_percent": 28.3,
-      "post_v6_present": 29,
-      "post_v6_percent": 40.3,
-      "overall_instrumented": 30,
+      "overall_present": 31,
+      "overall_percent": 27.9,
+      "post_v6_present": 30,
+      "post_v6_percent": 39.0,
+      "overall_instrumented": 31,
       "overall_derived": 0,
-      "post_v6_instrumented": 29,
+      "post_v6_instrumented": 30,
       "post_v6_derived": 0
     },
     "cu_v2": {
       "overall_present": 26,
-      "overall_percent": 24.5,
+      "overall_percent": 23.4,
       "post_v6_present": 26,
-      "post_v6_percent": 36.1,
+      "post_v6_percent": 33.8,
       "overall_instrumented": 26,
       "overall_derived": 0,
       "post_v6_instrumented": 26,
@@ -194,6 +194,24 @@
       }
     },
     {
+      "feature": "f11-reverse-sync-historical-exempt",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "f12-actionlint-gate",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
       "feature": "f16-try-repo-harness",
       "adoption": {
         "timing_wall_time": true,
@@ -269,6 +287,15 @@
       "feature": "fitme-story-website-design-system",
       "adoption": {
         "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "foundation-models-tier3",
+      "adoption": {
+        "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
         "cu_v2": false
@@ -608,6 +635,15 @@
       }
     },
     {
+      "feature": "v8-f10-f5-schema-vocab",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
       "feature": "w9-drift-triggered-auto-isolation",
       "adoption": {
         "timing_wall_time": true,
@@ -676,6 +712,11 @@
     {
       "feature": "dispatch-intelligence-v5.2",
       "created": "2026-04-16",
+      "post_v6": true
+    },
+    {
+      "feature": "f4-framework-version-stale",
+      "created": "2026-06-16",
       "post_v6": true
     },
     {
@@ -1401,6 +1442,46 @@
       "any_adopted": true
     },
     {
+      "feature": "f11-reverse-sync-historical-exempt",
+      "created": "2026-06-15",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "provenance": {
+        "timing_wall_time": null,
+        "per_phase_timing": "instrumented",
+        "cache_hits": null,
+        "cu_v2": null
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "f12-actionlint-gate",
+      "created": "2026-06-15",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "provenance": {
+        "timing_wall_time": null,
+        "per_phase_timing": "instrumented",
+        "cache_hits": null,
+        "cu_v2": null
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
       "feature": "f16-try-repo-harness",
       "created": "2026-06-04",
       "post_v6": true,
@@ -1459,6 +1540,26 @@
       },
       "fully_adopted": false,
       "any_adopted": true
+    },
+    {
+      "feature": "f4-framework-version-stale",
+      "created": "2026-06-16",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "provenance": {
+        "timing_wall_time": null,
+        "per_phase_timing": null,
+        "cache_hits": null,
+        "cu_v2": null
+      },
+      "fully_adopted": false,
+      "any_adopted": false
     },
     {
       "feature": "fitme-story-design-system-p2-cleanup",
@@ -1573,6 +1674,26 @@
       },
       "provenance": {
         "timing_wall_time": "instrumented",
+        "per_phase_timing": "instrumented",
+        "cache_hits": "instrumented",
+        "cu_v2": null
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "foundation-models-tier3",
+      "created": "2026-06-15",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      },
+      "provenance": {
+        "timing_wall_time": null,
         "per_phase_timing": "instrumented",
         "cache_hits": "instrumented",
         "cu_v2": null
@@ -2899,6 +3020,26 @@
       },
       "fully_adopted": false,
       "any_adopted": false
+    },
+    {
+      "feature": "v8-f10-f5-schema-vocab",
+      "created": "2026-06-15",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "provenance": {
+        "timing_wall_time": null,
+        "per_phase_timing": "instrumented",
+        "cache_hits": null,
+        "cu_v2": null
+      },
+      "fully_adopted": false,
+      "any_adopted": true
     },
     {
       "feature": "w9-drift-triggered-auto-isolation",
