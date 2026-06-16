@@ -1,11 +1,13 @@
 {
-  "version": "1.0",
-  "updated": "2026-05-17T19:35:00Z",
+  "version": "1.1",
+  "updated": "2026-06-15T00:00:00Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
     "healthy": true,
     "alerts": 0,
-    "source_truth_score": 95
+    "source_truth_score": 95,
+    "last_live_probe": "2026-06-15",
+    "last_live_probe_note": "Refreshed 2026-06-15 via gh CLI (GitHub) + Linear/Notion/Vercel/GA4/Supabase MCP. Per-source summary numbers (Linear counts, Vercel deploys, Notion timestamps, GA4 DAU) updated to live values; older narrative findings retained for history."
   },
   "sources": {
     "github": {
@@ -13,15 +15,19 @@
       "alerts": 0,
       "repo": "Regevba/FitTracker2",
       "repo_summary": {
-        "current_branch": "main",
-        "remote_branch": "origin/main",
+        "current_branch": "docs/audit-remaining-fixes-spec",
+        "remote_branch": "origin/docs/audit-remaining-fixes-spec",
         "remote_sync": "aligned",
-        "working_tree_changes": 0,
-        "local_branches": 8,
-        "remote_branches": 7,
-        "live_issue_api_connected": false
+        "working_tree_changes": 6,
+        "local_branches": 15,
+        "remote_branches": 31,
+        "open_prs_ft2": 1,
+        "open_prs_fitme_story": 0,
+        "live_issue_api_connected": true,
+        "as_of": "2026-06-15"
       },
       "findings": [
+        "2026-06-15 live probe: on branch docs/audit-remaining-fixes-spec (aligned with origin), 6 working-tree changes (shared ledger JSON). 1 open PR FT2 (#716 weekly framework-status snapshot), 0 open fitme-story. 15 local / 31 remote branches. Framework v7.10 shipped 2026-06-10; 102/106 features complete.",
         "Repo is on main, aligned with origin/main. 44 shipped features, 197+ tests passing.",
         "Full Linear + Notion sync completed 2026-04-15 with 42 Linear issues and 8 Notion pages aligned.",
         "Dashboard tab navigation and case study link bugs fixed and deployed to production.",
@@ -39,33 +45,29 @@
       "workspace_team": "Fitme project",
       "project": {
         "name": "FitTracker Roadmap",
-        "status": "Started",
-        "updated_at": "2026-04-26T05:00:00Z",
+        "status": "In Progress",
+        "updated_at": "2026-06-15T00:00:00Z",
         "url": "https://linear.app/fitme-project/project/fittracker-roadmap-cf39fc387606"
       },
       "issue_summary": {
-        "total": 49,
+        "total": 48,
         "todo": 9,
-        "backlog": 2,
-        "in_progress": 6,
-        "done": 28,
-        "canceled": 4
+        "backlog": 15,
+        "in_progress": 1,
+        "done": 23,
+        "canceled": 4,
+        "as_of": "2026-06-15",
+        "note": "Live counts via list_issues 2026-06-15 (excludes 4 canceled from the 48 active total). Prior snapshot 2026-05-17 read 49 total / 28 done / 6 in_progress / 2 backlog."
       },
       "milestones": [
-        {
-          "name": "Milestone 1 \u2014 Foundations",
-          "progress": "67%"
-        },
-        {
-          "name": "Milestone 3 \u2014 Experience cleanup",
-          "progress": "33%"
-        },
-        {
-          "name": "Milestone 5 \u2014 Brand and release readiness",
-          "progress": "0%"
-        }
+        { "name": "Milestone 1 \u2014 Foundations", "progress": "100%" },
+        { "name": "Milestone 2 \u2014 Clinical data foundation", "progress": "0%" },
+        { "name": "Milestone 3 \u2014 Experience cleanup", "progress": "33%" },
+        { "name": "Milestone 4 \u2014 Health intelligence and insights", "progress": "0%" },
+        { "name": "Milestone 5 \u2014 Brand and release readiness", "progress": "13%" }
       ],
       "findings": [
+        "2026-06-15 live probe: 48 active issues \u2014 23 Done, 15 Backlog, 9 Todo, 1 In Progress (+4 canceled). Milestones: M1 Foundations 100%, M2 Clinical data 0%, M3 Experience cleanup 33%, M4 Health intelligence 0%, M5 Brand/release 13%.",
         "Full sync completed 2026-04-15: 42 issues total, 18 Done, 7 In Progress, 11 Todo, 4 Canceled (FIT-1\u2013FIT-4 onboarding stubs).",
         "14 new Done issues created for shipped v2 screens, cards, formulas, and infrastructure (FIT-27 through FIT-40).",
         "FIT-41 (User Profile Settings) and FIT-42 (Smart Reminders) created for active/planned work.",
@@ -173,7 +175,10 @@
       "page_summary": {
         "tracked_pages": 9,
         "status_pages": 7,
-        "pages_with_known_drift": 0
+        "pages_with_known_drift": 0,
+        "as_of": "2026-06-15",
+        "roadmap_last_updated": "2026-06-15T16:24:00Z",
+        "live_probe_note": "2026-06-15 search confirmed Roadmap page updated today (2026-06-15 16:24Z); 'Framework v7.9 — Promotion Release' page last touched 2026-06-07; Project Hub + Product Hub reachable."
       },
       "tracked_pages": [
         {
@@ -250,6 +255,16 @@
       "healthy": true,
       "alerts": 0,
       "team": "regevba-3729's projects",
+      "live_probe_2026_06_15": {
+        "active_project": "fitme-story",
+        "project_id": "prj_poCIThWeTrYTMtarke0OxEu7CZMB",
+        "latest_production_deploy": "dpl_ce3zRFfoC5zPD6TqGYY4yBpirerG",
+        "latest_production_state": "READY",
+        "latest_production_commit": "fix(control-room): update framework version badge v7.8 -> v7.10 (#223)",
+        "latest_production_ref": "main",
+        "control_room_url": "https://fitme-story.vercel.app/control-room",
+        "note": "2026-06-15: fitme-story is now the sole active Vercel project (legacy fit-tracker2 + dashboard Astro projects superseded by the Next.js control-room migration). Latest production deploy READY. A few ERROR builds 2026-06-09->06-10 (caseStudyHref type error #218) were resolved same-day; current prod healthy."
+      },
       "projects": {
         "fit_tracker2": {
           "name": "fit-tracker2",
@@ -320,7 +335,10 @@
         "requires_external": 5
       },
       "runtime_health": {
-        "firebase": "connected",
+        "firebase": "live",
+        "ga4_active_users_last_probe": { "as_of": "2026-06-15", "trailing_7d": { "20260608": 6, "20260609": 2, "20260610": 13, "20260611": 10, "20260612": 2, "20260614": 4, "20260615": 13 } },
+        "supabase": "live",
+        "supabase_security_advisors": 0,
         "crash_free_rate": "unknown",
         "ci_pass_rate": "100%",
         "fit_tracker2_runtime_logs_last_1h": 0,
