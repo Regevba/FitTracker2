@@ -729,5 +729,18 @@
       "pm-workflow"
     ],
     "remediation": "When a hook needs the session id, read it from the hook STDIN payload (`session_id`), never `os.environ['CLAUDE_SESSION_ID']` (Claude Code does not set it). Use scripts/w9_session.py::session_id(). Symptoms: a gate's once-per-session marker piles up as `.claude/_session-state/default-*`; a gate's telemetry all carries one outcome from one code path while a documented sibling path emits nothing. When one gate name has two producers, give each its own gate name so GATE_COVERAGE_ZERO can see each independently. Fixed via feature fix/w9-session-id-keying (2026-06-14)."
+  },
+  {
+    "id": "W37",
+    "title": "Bot-authored (GITHUB_TOKEN) PR can never satisfy required checks under strict branch protection \u2192 permanent 'expected' deadlock",
+    "section": "workflow",
+    "blocker": true,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "ops"
+    ],
+    "remediation": "GITHUB_TOKEN-created PRs don't trigger pull_request CI; with strict+enforce_admins the required checks stay 'expected' and API --admin merge is refused (web-UI admin bypass only). For append-only ledger workflows: commit+push straight to main (option B, shipped 2026-06-15) with the github-actions app in main's bypass_pull_request_allowances; PR fallback if push rejected. Alternative: GitHub App token so the PR triggers CI + enable-auto-merge (option A). See observed-patterns.md W37."
   }
 ]
