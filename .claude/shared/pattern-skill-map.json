@@ -299,6 +299,19 @@
     "remediation": "Make the reader accept BOTH field representations (d.get('new') or d.get('legacy')); add a unit test pinning both; grep every reader of a renamed field in the same change."
   },
   {
+    "id": "#25",
+    "title": "Derived index from gitignored session-local source regresses on overwrite — union-merge, don't overwrite",
+    "section": "gate",
+    "blocker": false,
+    "detector": "manual (audit) — no gate; committed index entry-count drop vs prior commit",
+    "autoheal": false,
+    "skills": [
+      "pm-workflow",
+      "dev"
+    ],
+    "remediation": "A committed artifact derived from a gitignored session-local source must union-merge with the existing committed copy (max counters, min first_seen, max last_*, carry over entries present only in committed), never overwrite. A thin/empty local source must not shrink it. Provide a --rebuild escape hatch for intentional resets. Fixed in scripts/refresh-gate-last-fired.py (PR #749)."
+  },
+  {
     "id": "W1",
     "title": "SSH signing requires loaded agent before headless commits",
     "section": "workflow",
