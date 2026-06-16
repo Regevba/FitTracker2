@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.10",
   "started_at": "2026-06-16T05:47:52Z",
-  "updated_at": "2026-06-16T05:47:52Z",
+  "updated_at": "2026-06-16T09:27:17Z",
   "events": [
     {
       "timestamp": "2026-06-16T05:47:52Z",
@@ -21,6 +21,17 @@
       ],
       "metrics": {},
       "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-16T09:27:17Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "summary": "Added W36 to pattern-skill-map.json (plan/seat-gated capability pattern); regenerated dev/design/ops SKILL.md preflight tables. Clears PATTERN_SKILL_UNMAPPED advisory from PR #745 integrity bot.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
