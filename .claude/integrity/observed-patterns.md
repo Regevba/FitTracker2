@@ -443,6 +443,22 @@ Each entry follows the format:
 
 ---
 
+### #25 Derived index rebuilt from a gitignored session-local source regresses when a thin session commits it — overwrite-vs-union
+
+**Trigger:** A *committed* artifact is **derived** from a **gitignored, session-local** source, and the producer **overwrites** it on each run. A fresh clone / isolated worktree has a thin (or empty) copy of the source, so when that session runs the producer and commits, the artifact **shrinks** — dropping entries and resetting counts an earlier, fuller session recorded. No gate fires (the producer "succeeded"); the loss is silent. The measurement-layer sibling of #24 — there a reader read the wrong field; here a producer overwrites accumulated history with a partial view.
+
+**Why expected:** the source-of-truth stream is gitignored to avoid churn (e.g. `.claude/logs/gate-coverage.jsonl`), so the committed *index* (`.claude/shared/gate-last-fired.json`) is the only durable record — yet the producer treats the local stream as authoritative and clobbers the index.
+
+**Distinguishing real signal:** the committed index's entry count drops across commits with no corresponding source removal; the producer's metadata shows a low `source_rows_read` (e.g. 12) right after a commit that previously read thousands. Confirm: `git log -p <index>` shows a sudden shrink authored by a fresh-worktree / CI session.
+
+**Silence path:** the producer **union-merges** with the existing committed artifact instead of overwriting — counters take `max` (high-water mark), `first_seen_at` takes `min`, `last_*_at` take `max`, and entries present only in the committed artifact are **carried over** (never dropped). Provide a `--rebuild` escape hatch for intentional resets. NOT "version the noisy raw stream" — guard the producer.
+
+**First observed:** 2026-06-16 — PR #745 rebuilt the F17 index from a 12-row session log → committed index regressed **25 gates → 8**, dropping all soak/enforced-gate telemetry (`PLATFORMS_TESTED`, `BRANCH_ISOLATION_VIOLATION`, `FEATURE_CLOSURE_COMPLETENESS`). Fixed PR #749 (`refresh-gate-last-fired.py` union-merge default + 5 tests; index restored to 26 gates).
+
+**Notes:** v7.10. Sibling of #24 (reader/source coupling) + #23 (`.gitignore` blocks remote-agent visibility — same root: gitignored telemetry). **Lesson: a committed artifact derived from a gitignored source must merge, never overwrite.**
+
+---
+
 ## Section 2 — Workflow / operational patterns
 
 Non-gate patterns: situations where operator action (or inaction) causes confusion.
@@ -788,6 +804,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | v7.5 pipeline fixture rot | #22 | 2026-05-01 |
 | `.gitignore` blocks remote-agent visibility | #23 | 2026-05-09 |
 | Field-rename silent-pass in a READER/INDEX (measurement layer) — generalizes #7/#9 | #24 | 2026-06-10 (PRs #687/#688/#689) |
+| Derived index from gitignored session-local source regresses on overwrite — union-merge | #25 | 2026-06-16 (PR #749) |
 | W1 SSH signing | W1 | 2026-05-13 |
 | W2 Publish verbatim | W2 | — |
 | W3 Check CI before local panic | W3 | — |
@@ -1558,7 +1575,7 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 
 **What it is:** before the overlay, each of the 12 skills referenced the catalog generically ("23 gate + 28 workflow patterns; here are a few highest-leverage ones") and operators discovered blockers reactively, mid-work, when a gate fired. The overlay makes the catalog↔skill relationship explicit and proactive:
 
-1. **Source of truth** — [`.claude/shared/pattern-skill-map.json`](../../shared/pattern-skill-map.json) maps each of the **57** work-blocking catalog patterns (24 gate `#1`–`#24` + 33 workflow `W1`–`W32`, `W34`) to the skill(s) whose work it can block, plus `{detector, blocker, autoheal, remediation}`. Many-to-many — a pattern can block several skills.
+1. **Source of truth** — [`.claude/shared/pattern-skill-map.json`](../../shared/pattern-skill-map.json) maps each of the **58** work-blocking catalog patterns (25 gate `#1`–`#25` + 33 workflow `W1`–`W32`, `W34`–`W37`) to the skill(s) whose work it can block, plus `{detector, blocker, autoheal, remediation}`. Many-to-many — a pattern can block several skills.
 2. **HYBRID probing** — `make skill-preflight SKILL=<name>` (→ [`scripts/skill-preflight.py`](../../../scripts/skill-preflight.py)) selects the skill's mapped patterns, *probes* the mechanized ones (`integrity-check`, `ensure-pr-cache-fresh`, `check-ssh-agent`, `check-branch-drift`, workflow-name collision), and emits an *awareness checklist* for the manual/compile/discipline ones. Writes an additive `skill_overlay.<skill>` block to `.claude/shared/preflight-cache.json`.
 3. **Self-generating docs** — [`scripts/generate-skill-preflight-sections.py`](../../../scripts/generate-skill-preflight-sections.py) (`make gen-skill-preflight`) regenerates the table inside each SKILL.md's preflight section between `<!-- BEGIN pattern-preflight (generated) -->` / `<!-- END pattern-preflight -->` delimiters. Idempotent.
 4. **Self-auditing** — `integrity-check.py`'s `PATTERN_SKILL_UNMAPPED` advisory flags any catalog ID absent from the map (or mapped to zero skills), so the map can't silently fall behind the append-only catalog.
@@ -1567,7 +1584,7 @@ Bare `- 623` becomes the string `"623"` (no `#`), the regex doesn't match, and t
 
 **Operator obligation:** when you append a NEW catalog pattern, also (a) add it to `pattern-skill-map.json` with ≥1 skill, then (b) run `make gen-skill-preflight`. The `PATTERN_SKILL_UNMAPPED` advisory reminds you if you forget (a).
 
-**Note on this entry's own mapping:** W33 documents the overlay *tool*, not a work-blocking pattern, so it is intentionally NOT in `pattern-skill-map.json` and is exempted from `PATTERN_SKILL_UNMAPPED` (via the `SELF_DOC_EXEMPT` set in `integrity-check.py`). The map tracks the 57 work-blocking patterns only.
+**Note on this entry's own mapping:** W33 documents the overlay *tool*, not a work-blocking pattern, so it is intentionally NOT in `pattern-skill-map.json` and is exempted from `PATTERN_SKILL_UNMAPPED` (via the `SELF_DOC_EXEMPT` set in `integrity-check.py`). The map tracks the 58 work-blocking patterns only.
 
 **Silence path:** none needed — informational tooling surface.
 
