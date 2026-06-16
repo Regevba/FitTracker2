@@ -399,3 +399,105 @@ def test_merge_failure_history_malformed_snapshot_skipped(tmp_path):
     _write_snapshot(snap, "2026-06-01T00:00:00Z", [{"code": "OK", "severity": "WARN"}])
     scanned = _mod.merge_failure_history(gates, snap)
     assert scanned == 1 and "OK" in gates  # bad one skipped, good one counted
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# Union-merge with existing committed index (#745 regression class)
+# ────────────────────────────────────────────────────────────────────────────
+
+
+def _gate(first, last_fired=None, fires=0, skips=0, cands=0, **extra):
+    """Build a minimal gate entry dict for merge tests."""
+    e = {
+        "last_fired_at": last_fired,
+        "last_checked_at": last_fired,
+        "last_skipped_at": None,
+        "first_seen_at": first,
+        "total_firings": fires,
+        "total_skips": skips,
+        "total_candidates": cands,
+        "last_failed_at": None,
+        "total_failure_snapshots": 0,
+        "last_failure_severity": None,
+    }
+    e.update(extra)
+    return e
+
+
+def test_merge_carries_over_committed_only_gate():
+    # A thin fresh index missing a gate must NOT drop it (the #745 bug).
+    fresh = {"gates": {"A": _gate("2026-06-16T00:00:00Z", fires=1, cands=1)}}
+    existing = {"gates": {
+        "A": _gate("2026-06-16T00:00:00Z", fires=1, cands=1),
+        "B": _gate("2026-05-01T00:00:00Z", "2026-06-10T00:00:00Z", fires=99, cands=200),
+    }}
+    merged, carried = _mod.merge_indexes(fresh, existing)
+    assert set(merged) == {"A", "B"}
+    assert carried == 1
+    assert merged["B"]["total_firings"] == 99  # carried verbatim
+
+
+def test_merge_takes_high_water_mark_counts():
+    # Thin local ledger has lower counts than committed — merge keeps the max.
+    fresh = {"gates": {"A": _gate("2026-06-16T00:00:00Z", "2026-06-16T00:00:00Z", fires=2, skips=1, cands=3)}}
+    existing = {"gates": {"A": _gate("2026-05-01T00:00:00Z", "2026-06-10T00:00:00Z", fires=163, skips=193, cands=356)}}
+    merged, carried = _mod.merge_indexes(fresh, existing)
+    assert carried == 0
+    a = merged["A"]
+    assert a["total_firings"] == 163        # max, not the thin 2
+    assert a["total_skips"] == 193
+    assert a["total_candidates"] == 356
+    assert a["first_seen_at"] == "2026-05-01T00:00:00Z"  # min (earliest)
+    assert a["last_fired_at"] == "2026-06-16T00:00:00Z"  # max (most recent)
+
+
+def test_merge_severity_follows_most_recent_failure():
+    fresh = {"gates": {"A": _gate("2026-06-16T00:00:00Z", last_failed_at="2026-06-16T00:00:00Z", last_failure_severity="WARN")}}
+    existing = {"gates": {"A": _gate("2026-05-01T00:00:00Z", last_failed_at="2026-06-01T00:00:00Z", last_failure_severity="CRITICAL")}}
+    merged, _ = _mod.merge_indexes(fresh, existing)
+    # fresh has the later last_failed_at → its severity wins
+    assert merged["A"]["last_failed_at"] == "2026-06-16T00:00:00Z"
+    assert merged["A"]["last_failure_severity"] == "WARN"
+
+
+def test_main_merge_does_not_regress_committed_index(tmp_path, monkeypatch, capsys):
+    # End-to-end: a THIN ledger refresh against a RICH committed index must
+    # produce a union (no gate dropped, counts not shrunk). This is the exact
+    # #745 shape reproduced.
+    output = tmp_path / "gate-last-fired.json"
+    rich = {"schema_version": _mod.SCHEMA_VERSION, "gates": {
+        "BRANCH_ISOLATION_VIOLATION": _gate("2026-05-19T00:00:00Z", "2026-06-15T00:00:00Z", fires=163, cands=356),
+        "FEATURE_CLOSURE_COMPLETENESS": _gate("2026-05-19T00:00:00Z", "2026-06-14T00:00:00Z", fires=73, cands=3395),
+    }}
+    output.write_text(json.dumps(rich))
+    thin = _write_ledger(tmp_path / "thin.jsonl", [
+        {"gate": "PHASE_LIE", "timestamp": "2026-06-16T09:00:00Z", "candidates": 1, "checked": 0, "skipped": 1},
+    ])
+    rc = _mod.main_with_args(["--ledger", str(thin), "--output", str(output)]) if hasattr(_mod, "main_with_args") else None
+    if rc is None:
+        # main() reads argv — drive it via monkeypatched sys.argv
+        monkeypatch.setattr(sys, "argv", ["prog", "--ledger", str(thin), "--output", str(output), "--quiet"])
+        rc = _mod.main()
+    assert rc == 0
+    result = json.loads(output.read_text())
+    # All three present: 2 carried over from committed + 1 fresh.
+    assert set(result["gates"]) == {"BRANCH_ISOLATION_VIOLATION", "FEATURE_CLOSURE_COMPLETENESS", "PHASE_LIE"}
+    assert result["gates"]["BRANCH_ISOLATION_VIOLATION"]["total_firings"] == 163  # not shrunk
+    assert result["merged_with_committed"] is True
+    assert result["merged_carried_over_gates"] == 2
+
+
+def test_main_rebuild_flag_bypasses_merge(tmp_path, monkeypatch):
+    # --rebuild = intentional reset → committed-only gates are dropped.
+    output = tmp_path / "gate-last-fired.json"
+    output.write_text(json.dumps({"schema_version": _mod.SCHEMA_VERSION, "gates": {
+        "OLD_GATE": _gate("2026-05-01T00:00:00Z", "2026-06-01T00:00:00Z", fires=10, cands=10),
+    }}))
+    thin = _write_ledger(tmp_path / "thin.jsonl", [
+        {"gate": "NEW_GATE", "timestamp": "2026-06-16T09:00:00Z", "candidates": 1, "checked": 1, "skipped": 0},
+    ])
+    monkeypatch.setattr(sys, "argv", ["prog", "--ledger", str(thin), "--output", str(output), "--rebuild", "--quiet"])
+    assert _mod.main() == 0
+    result = json.loads(output.read_text())
+    assert set(result["gates"]) == {"NEW_GATE"}  # OLD_GATE dropped by --rebuild
+    assert result["merged_with_committed"] is False

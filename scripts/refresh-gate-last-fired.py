@@ -269,6 +269,92 @@ def merge_failure_history(gates: dict[str, dict[str, Any]], snapshots_dir: Path)
     return scanned
 
 
+def _min_iso(a: str | None, b: str | None) -> str | None:
+    """Earliest of two ISO timestamps; tolerates None on either side."""
+    vals = [v for v in (a, b) if v]
+    return min(vals) if vals else None
+
+
+def _max_iso(a: str | None, b: str | None) -> str | None:
+    """Most-recent of two ISO timestamps; tolerates None on either side."""
+    vals = [v for v in (a, b) if v]
+    return max(vals) if vals else None
+
+
+def merge_indexes(
+    fresh: dict[str, Any], existing: dict[str, Any]
+) -> tuple[dict[str, dict[str, Any]], int]:
+    """Union-merge freshly-derived per-gate stats with an existing committed index.
+
+    Rationale (the #745 regression class): `.claude/logs/gate-coverage.jsonl` is
+    gitignored and session-local, so the freshly-derived index reflects ONLY the
+    rows present in *this* checkout's ledger. A fresh clone / isolated worktree
+    has a thin (or empty) ledger, so a plain overwrite would shrink the committed
+    index — dropping gates and resetting high-water-mark counts that earlier,
+    fuller sessions recorded. Merging makes the committed index a monotonic
+    high-water mark that a thin local log cannot regress.
+
+    Merge rule, per gate present in either side:
+      - counters (`total_*`)    → max (never shrink; high-water mark)
+      - `first_seen_at`         → min (earliest wins)
+      - `last_*_at` timestamps  → max (most-recent wins, None-tolerant)
+      - `last_failure_severity` → from whichever side has the later `last_failed_at`
+      - gate only in `existing`  → carried over verbatim (never dropped)
+
+    Returns (merged_gates, carried_over_count) where carried_over_count is the
+    number of gates that existed only in the committed index (pure carry-overs).
+    """
+    fresh_gates: dict[str, dict[str, Any]] = fresh.get("gates", {})
+    existing_gates: dict[str, dict[str, Any]] = (
+        existing.get("gates", {}) if isinstance(existing, dict) else {}
+    )
+
+    merged: dict[str, dict[str, Any]] = {}
+    carried_over = 0
+    counters = (
+        "total_firings",
+        "total_skips",
+        "total_candidates",
+        "total_failure_snapshots",
+    )
+
+    for gate in set(fresh_gates) | set(existing_gates):
+        f = fresh_gates.get(gate)
+        e = existing_gates.get(gate)
+        if f is None:
+            # Gate known only to the committed index — carry over so a thin
+            # local ledger can't drop it.
+            merged[gate] = dict(e)
+            carried_over += 1
+            continue
+        if e is None:
+            merged[gate] = dict(f)
+            continue
+        # Present in both — take the high-water mark field-wise.
+        m = dict(f)
+        for c in counters:
+            m[c] = max(_as_int(f.get(c, 0)), _as_int(e.get(c, 0)))
+        m["first_seen_at"] = _min_iso(f.get("first_seen_at"), e.get("first_seen_at"))
+        m["last_fired_at"] = _max_iso(f.get("last_fired_at"), e.get("last_fired_at"))
+        m["last_checked_at"] = _max_iso(f.get("last_checked_at"), e.get("last_checked_at"))
+        m["last_skipped_at"] = _max_iso(f.get("last_skipped_at"), e.get("last_skipped_at"))
+        m["last_failed_at"] = _max_iso(f.get("last_failed_at"), e.get("last_failed_at"))
+        # Severity follows the most-recent failure.
+        if (e.get("last_failed_at") or "") > (f.get("last_failed_at") or ""):
+            m["last_failure_severity"] = e.get("last_failure_severity")
+        merged[gate] = m
+
+    return merged, carried_over
+
+
+def load_existing_index(path: Path) -> dict[str, Any]:
+    """Load an existing committed index; return {} if absent or unparseable."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
 def write_index(index: dict[str, Any], path: Path) -> None:
     """Serialize the index dict to JSON at `path`. Creates parent dirs."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -328,6 +414,16 @@ def main() -> int:
         action="store_true",
         help="Suppress stdout summary (errors still go to stderr)",
     )
+    parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help=(
+            "Pure overwrite from the ledger — do NOT union-merge with the existing "
+            "committed index. Use only for an intentional reset; the default merge "
+            "prevents a thin/empty local ledger from regressing the committed index "
+            "(the #745 regression class)."
+        ),
+    )
     args = parser.parse_args()
 
     ledger = Path(args.ledger)
@@ -338,6 +434,19 @@ def main() -> int:
     except FileNotFoundError as e:
         print(f"error: {e}", file=sys.stderr)
         return 1
+
+    # Default: union-merge with the existing committed index so a thin local
+    # ledger (fresh clone / isolated worktree) cannot shrink it. `--rebuild`
+    # opts into the old pure-overwrite behavior for intentional resets.
+    merged_carried_over = 0
+    merged = False
+    if not args.rebuild:
+        existing = load_existing_index(output)
+        if existing.get("gates"):
+            index["gates"], merged_carried_over = merge_indexes(index, existing)
+            merged = True
+    index["merged_with_committed"] = merged
+    index["merged_carried_over_gates"] = merged_carried_over
 
     if not args.dry_run:
         try:
