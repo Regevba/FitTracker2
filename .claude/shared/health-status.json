@@ -1,26 +1,33 @@
 {
-  "version": "1.1",
-  "updated": "2026-04-15",
-  "note": "Operational monitoring not yet wired. Values below reflect local verification only — runtime infrastructure checks require deployed services and credentials.",
+  "version": "1.2",
+  "updated": "2026-06-15",
+  "note": "Live-probe refresh 2026-06-15: Supabase + GA4/Firebase + Vercel now confirmed live via MCP. Railway + CloudKit remain unprobed (no live MCP/credentials path). Sentry + runtime quality-gate metrics still require deployed-runtime instrumentation. See live_probe block for what was actually checked this run.",
+  "live_probe": {
+    "ran_at": "2026-06-15",
+    "method": "MCP source probes (Supabase, GA4, Vercel) + gh CLI (GitHub) — source-refresh session",
+    "probed_live": ["supabase", "firebase_ga4", "vercel", "github"],
+    "not_probed": ["railway", "cloudkit", "sentry"],
+    "not_probed_reason": "Railway: FastAPI URL not configured + no Railway MCP. CloudKit: requires device/CKTool. Sentry: MCP not connected (adapter exists, unwired)."
+  },
   "infrastructure": {
-    "railway": { "status": "unknown", "service": "AI Engine (FastAPI)", "url": null, "last_check": null },
-    "supabase": { "status": "configured", "service": "PostgreSQL + Realtime + Storage", "project": "hwbbdzwaismlajtfsbed", "region": "ap-northeast-1 (Tokyo)", "region_note": "Will migrate to eu-west-1 (Ireland) before launch — region is permanent per project, requires new project + migration", "last_check": "2026-04-15", "project_name": "FitmeBe&AI engine15042026", "note": "Canonical project: cohort_stats + sync_records + cardio_assets + user_profiles + cardio-images bucket + Email/Google auth. Info.plist still has placeholders — local credential injection needed for runtime verification." },
-    "cloudkit": { "status": "unknown", "service": "iCloud Private DB", "last_check": null },
-    "firebase": { "status": "unknown", "service": "Analytics (GA4)", "last_check": null, "note": "GoogleService-Info.plist not in repo — local file required" },
-    "vercel_website": { "status": "deployed", "service": "Marketing Website", "url": "fitme.app", "last_check": "2026-04-15", "note": "Built and deployed but has launch blockers (placeholder GA4 IDs, placeholder App Store links)" },
-    "vercel_dashboard": { "status": "live", "service": "Operations Control Room", "url": "https://fit-tracker2.vercel.app", "last_check": "2026-04-15", "note": "Live at fit-tracker2.vercel.app. Tab navigation and case study links fixed 2026-04-15." }
+    "railway": { "status": "unknown", "service": "AI Engine (FastAPI)", "url": null, "last_check": null, "note": "Not probed 2026-06-15 — no Railway MCP and no configured service URL. Live status genuinely unknown." },
+    "supabase": { "status": "live", "service": "PostgreSQL + Realtime + Storage", "project": "hwbbdzwaismlajtfsbed", "region": "ap-northeast-1 (Tokyo)", "region_note": "Will migrate to eu-west-1 (Ireland) before launch — region is permanent per project, requires new project + migration", "last_check": "2026-06-15", "project_name": "FitmeBe&AI engine15042026", "advisors": { "security": 0, "checked": "2026-06-15" }, "note": "MCP get_advisors returned 0 security lints 2026-06-15 — project reachable and healthy. Canonical project: cohort_stats + sync_records + cardio_assets + user_profiles + cardio-images bucket + Email/Google auth. Info.plist still has placeholders — local credential injection still needed for iOS-runtime verification." },
+    "cloudkit": { "status": "unknown", "service": "iCloud Private DB", "last_check": null, "note": "Not probeable from CLI/MCP — requires device or CKTool session." },
+    "firebase": { "status": "live", "service": "Analytics (GA4)", "last_check": "2026-06-15", "ga4_active_users_7d": { "20260608": 6, "20260609": 2, "20260610": 13, "20260611": 10, "20260612": 2, "20260614": 4, "20260615": 13 }, "note": "GA4 MCP returned live activeUsers/newUsers for the trailing 7 days 2026-06-15 — analytics pipeline is flowing. (Prior 'unknown' status reflected missing local GoogleService-Info.plist for the iOS build, not the GA4 property itself.)" },
+    "vercel_website": { "status": "deployed", "service": "Marketing Website", "url": "fitme.app", "last_check": "2026-06-15", "note": "Built and deployed; pre-launch blockers persist (placeholder GA4 IDs, placeholder App Store links). Not individually re-probed this run." },
+    "vercel_dashboard": { "status": "live", "service": "Operations Control Room (UCC)", "url": "https://fitme-story.vercel.app/control-room", "legacy_url": "https://fit-tracker2.vercel.app", "last_check": "2026-06-15", "last_production_deploy": { "id": "dpl_ce3zRFfoC5zPD6TqGYY4yBpirerG", "state": "READY", "commit": "fix(control-room): update framework version badge v7.8 -> v7.10 (#223)", "ref": "main", "created": "2026-06-15" }, "note": "Live. Latest production deploy READY 2026-06-15 (#223). Control Room migrated FROM the legacy Astro dashboard at fit-tracker2.vercel.app TO Next.js at fitme-story.vercel.app/control-room (basic-auth gated). Note: a few ERROR preview/prod builds 2026-06-09->06-10 (caseStudyHref type error #218) were resolved; current prod is healthy." }
   },
   "ci": {
-    "last_build": { "status": null, "branch": null, "timestamp": null },
+    "last_build": { "status": null, "branch": null, "timestamp": null, "note": "Not re-run this probe session — local-only signal; CI truth lives in GitHub Actions." },
     "tokens_check": { "status": "passing", "last_run": "2026-04-15" },
-    "xcode_build": { "status": "passing", "last_run": "2026-04-15", "note": "verified via xcodebuild build" },
-    "xcode_test": { "status": "passing", "tests": 197, "last_run": "2026-04-15", "note": "197 tests pass including 29 eval tests" }
+    "xcode_build": { "status": "passing", "last_run": "2026-04-15", "note": "verified via xcodebuild build (stale — last local verification 2026-04-15)" },
+    "xcode_test": { "status": "passing", "tests": 197, "last_run": "2026-04-15", "note": "Stale snapshot (2026-04-15, 197 tests). Current suite is larger (~672 iOS per 2026-06-10 self-test) — re-run make verify-local to refresh." }
   },
   "quality_gates": {
     "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0, "source": "sentry", "note": "requires Sentry SDK + MCP — see docs/setup/sentry-setup-guide.md" },
     "cold_start_ms": { "current": null, "target": 2000, "alert_threshold": 3000, "note": "requires instrumented launch" },
     "sync_success_rate": { "current": null, "target": 99, "alert_threshold": 95, "note": "requires signed-in runtime" },
-    "ci_pass_rate": { "current": "100%", "target": 95, "alert_threshold": 85, "note": "local make verify-local passing" }
+    "ci_pass_rate": { "current": "100%", "target": 95, "alert_threshold": 85, "note": "local make verify-local passing (last local run; not CI-sourced)" }
   },
   "error_tracking": {
     "source": "sentry",
@@ -31,7 +38,7 @@
     "affected_users": null,
     "top_issues": [],
     "last_pull": null,
-    "note": "Sentry adapter exists at .claude/integrations/sentry/ but MCP is not connected yet. Run setup guide to wire."
+    "note": "Sentry adapter exists at .claude/integrations/sentry/ but MCP is not connected yet. Run setup guide to wire. (Deferred to pre-launch per project plan.)"
   },
   "incidents": [],
   "cost": {

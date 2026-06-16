@@ -1,0 +1,4 @@
+{
+  "_comment": "framework_version v7.10 equals the injected canonical v7.10 => not stale => no advisory. Gate reaches checked() but emits no finding (the healthy case). Test injects FRAMEWORK_VERSION_CANONICAL_OVERRIDE=v7.10.",
+  "framework_version": "v7.10"
+}
