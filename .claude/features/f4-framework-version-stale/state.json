@@ -1,0 +1,87 @@
+{
+  "feature_name": "f4-framework-version-stale",
+  "current_phase": "implementation",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "created_at": "2026-06-16T05:47:52Z",
+  "updated_at": "2026-06-16T05:47:52Z",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "chore/f4-framework-version-stale",
+  "scheduled_after": null,
+  "primary_metric": "FRAMEWORK_VERSION_STALE advisory emits Mechanism A coverage on every staged state.json that carries a framework_version, across a 14-day calibration window with 0 false positives",
+  "success_metrics": [
+    "Gate appears in .claude/logs/gate-coverage.jsonl with candidates>=1 within the first staged commit that touches a versioned state.json (T1, set-membership)",
+    "0 false positives across the advisory window \u2014 every fire maps to a genuinely stale-while-advancing feature (T1, manual review of fire rows)",
+    "Skip-reason distribution is legitimate (not_staged_mode / no_phase_change dominate; field_absent / canonical_version_unknown are rare and explained) (T2)",
+    "Try-repo positive fixture emits the advisory marker; negative stays silent; both rc==0 (T1, CI)"
+  ],
+  "kill_criteria": [
+    "Any false positive in the advisory window that maps to a legitimately-stale-by-design feature -> narrow exemptions before promoting; do NOT flip to enforced",
+    "Canonical-version resolution breaks on a FRAMEWORK-FACTS.md reformat -> pin a machine-readable source before enforcing",
+    "Zero candidates across the entire window (gate never reaches a transition) -> mis-wire; investigate via GATE_COVERAGE_ZERO"
+  ],
+  "kill_criteria_resolution": "Evaluated at the Phase C calibration review (~2026-06-23 -> -30). Advisory at ship; advisory->enforced flip (FRAMEWORK_VERSION_STALE_ADVISORY_MODE=False) only after 0 false positives over >=14 days.",
+  "dispatch_pattern": "agent-driven (single-file gate add in check-state-schema.py + unit/dispatch/try-repo tests)",
+  "spec": ".claude/features/f4-framework-version-stale/calibration-artifacts.md (Phase A); docs/master-plan/v8-x-build-docket-2026-06-15.md \u00a70.B (F4, RICE 32.0, Theme C)",
+  "scope_summary": "Add the FRAMEWORK_VERSION_STALE advisory write-time gate: fires when a feature is actively advanced (current_phase transition) while its framework_version is strictly older than the canonical current version (docs/FRAMEWORK-FACTS.md or FRAMEWORK_VERSION_CANONICAL_OVERRIDE). Closes the F4 gap (9 features advanced post-v7.6 with stale framework_version; format-only validation could not catch it). Advisory-first per the user-chosen scope (detection, not silent auto-mutation). Exemptions: reverse-sync mirrors + framework_version_stale_exempt. Out of scope: auto-mutating framework_version; full migration pass.",
+  "related_prs": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "_parse_framework_version + _canonical_framework_version helpers (override > FRAMEWORK-FACTS resolution)",
+      "status": "done",
+      "completed_at": "2026-06-16T05:47:52Z"
+    },
+    {
+      "id": "T2",
+      "description": "check_framework_version_stale gate fn + FRAMEWORK_VERSION_STALE_ADVISORY_MODE flag + dispatch in validate_file",
+      "status": "done",
+      "completed_at": "2026-06-16T05:47:52Z"
+    },
+    {
+      "id": "T3",
+      "description": "Unit + dispatch tests (scripts/tests/test_framework_version_stale.py)",
+      "status": "done",
+      "completed_at": "2026-06-16T05:47:52Z"
+    },
+    {
+      "id": "T4",
+      "description": "Try-repo fixture pair + advisory-stderr test (scripts/tests/test_try_repo_framework_version_stale.py)",
+      "status": "done",
+      "completed_at": "2026-06-16T05:47:52Z"
+    },
+    {
+      "id": "T5",
+      "description": "Phase A calibration-artifacts.md",
+      "status": "done",
+      "completed_at": "2026-06-16T05:47:52Z"
+    },
+    {
+      "id": "T6",
+      "description": "Advisory window measurement (B) -> calibration (C) -> promote decision (D) -> enforced validate (E)",
+      "status": "pending"
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-16T05:47:52Z",
+      "ended_at": null,
+      "notes": "Single-file gate add. Phase 0/1/2 skipped: concrete spec (calibration-artifacts.md), mechanical scope, framework_feature. Advisory ship; 14-day calibration window per \u00a73.5."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-16T05:47:52Z"
+      }
+    },
+    "total_wall_time_minutes_provenance": "in-flight"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "feature": "f4-framework-version-stale",
+  "title": "F4 framework-version-stale advisory gate",
+  "work_type": "Feature",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-16T05:47:52Z",
+  "updated_at": "2026-06-16T05:47:52Z",
+  "events": [
+    {
+      "timestamp": "2026-06-16T05:47:52Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F4 FRAMEWORK_VERSION_STALE advisory gate implemented: helpers + gate fn + dispatch in check-state-schema.py, unit+dispatch tests (16), try-repo fixture pair + advisory-stderr test (2), Phase A calibration-artifacts.md. 28/28 new tests pass; full-corpus schema check clean.",
+      "artifacts": [
+        "scripts/check-state-schema.py",
+        "scripts/tests/test_framework_version_stale.py",
+        "scripts/tests/test_try_repo_framework_version_stale.py",
+        "tests/fixtures/FRAMEWORK_VERSION_STALE/"
+      ],
+      "metrics": {},
+      "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
