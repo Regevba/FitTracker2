@@ -1,0 +1,59 @@
+name: push-state-bundle
+
+# UCC live-feed Phase 2 PR D — publish the FT2 control-room state bundle to a
+# public Vercel Blob whenever the relevant .claude/* state changes on main.
+# The fitme-story control-room reads it at request time (FT2_STATE_BLOB_URL).
+#
+# No GitHub write permissions needed (only PUTs to Vercel Blob), so this avoids
+# the bot-PR/GITHUB_TOKEN strict-deadlock class entirely.
+#
+# Security: the only ${{ }} expansion is secrets.BLOB_READ_WRITE_TOKEN, passed
+# via env: (never interpolated into a run: command). No github.event.* / head_ref
+# untrusted input is used anywhere — no workflow-injection surface.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.claude/shared/**'
+      - '.claude/features/**/state.json'
+      - '.claude/logs/gate-coverage.jsonl'
+      - 'scripts/push-state-bundle.py'
+      - 'scripts/put-state-bundle.mjs'
+  workflow_dispatch: {}
+
+concurrency:
+  group: push-state-bundle
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble bundle
+        run: python3 scripts/push-state-bundle.py --out .build/ft2-state-bundle.json --summary
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Push to Vercel Blob
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          if [ -z "${BLOB_READ_WRITE_TOKEN:-}" ]; then
+            echo "BLOB_READ_WRITE_TOKEN not set — skipping blob push (no-op until operator wires it in PR E)."
+            exit 0
+          fi
+          npm init -y >/dev/null 2>&1
+          npm install @vercel/blob@^1 >/dev/null 2>&1
+          node scripts/put-state-bundle.mjs .build/ft2-state-bundle.json
