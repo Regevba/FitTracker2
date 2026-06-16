@@ -153,6 +153,11 @@ struct AIInsightCard: View {
         guard let rec = primaryRecommendation else {
             return "Analyzing your data..."
         }
+        // foundation-models-tier3: prefer the on-device coaching summary when
+        // present; otherwise fall back to the signal→copy mapping (cloud/local).
+        if let summary = rec.summary, !summary.isEmpty {
+            return summary
+        }
         // Map internal signals to human-readable copy
         return rec.signals.first.map(Self.humanReadableSignal) ?? "Check your latest insights"
     }

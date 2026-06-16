@@ -1,49 +1,28 @@
 name: figma-code-connect-publish
+# ─────────────────────────────────────────────────────────────────────────────
+# DISABLED 2026-06-15. Figma Code Connect requires an Organization/Enterprise
+# plan; this account is Pro, so Code Connect is not available (MCP
+# get_code_connect_map returns "need a Developer seat in an Organization or
+# Enterprise plan"). Every real publish run failed since 2026-05-10:
+#   - iOS: 403 "Invalid scope(s): need File Read + Code Connect Write" (scope
+#     not grantable on Pro).
+#   - web: W14 — page-frame mappings (31-3 / 31-106) fail validation and abort
+#     the whole publish.
+# The auto-trigger is removed so this workflow no longer runs (and no longer
+# fails red). It is kept as a manual-only stub to preserve the option of
+# re-enabling after a plan upgrade. Re-enablement steps + rationale:
+#   docs/design-system/figma-source-of-truth-plan-2026-06-15.md
+# ─────────────────────────────────────────────────────────────────────────────
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'FitTracker/**/*.figma.swift'
-      - 'figma.config.json'
-      - '.figma-cc-tools/**'
-      - '.github/workflows/figma-code-connect-publish.yml'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  publish:
-    runs-on: macos-15
+  disabled:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - name: Skip if FIGMA_ACCESS_TOKEN not set
-        id: gate
-        env:
-          HAS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN != '' }}
+      - name: Code Connect publish is disabled
         run: |
-          if [ "$HAS_TOKEN" != "true" ]; then
-            echo "FIGMA_ACCESS_TOKEN repo secret not set; skipping publish"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          fi
-      - uses: actions/setup-node@v6
-        if: steps.gate.outputs.skip != 'true'
-        with:
-          node-version: '24'
-      - name: Cache SPM build artifacts
-        if: steps.gate.outputs.skip != 'true'
-        uses: actions/cache@v5
-        with:
-          path: |
-            .figma-cc-tools/.build
-            ~/Library/Caches/org.swift.swiftpm
-          key: spm-figma-cc-${{ hashFiles('.figma-cc-tools/Package.swift', '.figma-cc-tools/Package.resolved') }}
-          restore-keys: spm-figma-cc-
-      - name: Pre-resolve SPM (warms cache for npm CLI subprocess)
-        if: steps.gate.outputs.skip != 'true'
-        working-directory: .figma-cc-tools
-        run: swift package resolve
-      - name: Publish Code Connect mappings
-        if: steps.gate.outputs.skip != 'true'
-        env:
-          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
-        run: |
-          npx --yes --package=@figma/code-connect figma connect publish --token "$FIGMA_ACCESS_TOKEN" --skip-update-check
+          echo "Figma Code Connect publish is DISABLED."
+          echo "Reason: Code Connect requires a Figma Organization/Enterprise plan; this account is Pro."
+          echo "See docs/design-system/figma-source-of-truth-plan-2026-06-15.md for the decision + re-enablement steps."

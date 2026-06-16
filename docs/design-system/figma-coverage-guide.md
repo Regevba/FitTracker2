@@ -3,6 +3,8 @@
 **Figma file:** [FitTracker Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library)
 **Swift source of truth:** `AppTheme.swift`, `AppPalette.swift`, `design-tokens/tokens.json`
 
+> ⚠️ **Reconciled 2026-06-15.** The live iOS Figma file `0Ai7s3fCFqR5JXDW8JvgmD` is currently a single placeholder "Cover" page (0 published components/variables/styles) — the coverage described below does **not** exist in the file today. A rebuild via the Figma MCP plugin API is planned. Code (the Swift sources above) is the source of truth. See [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md).
+
 ---
 
 ## Goal: Intent-Perfect Coverage

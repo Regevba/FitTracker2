@@ -253,6 +253,33 @@ This compared **raw percentages** against the canonical anchor with no rule for 
 
 ---
 
+## FT2-FH-005 — Figma Code Connect bridge claimed "Synced" / "operator setup complete" while it never once published (2026-06-15)
+
+**Surfaced by:** a full design-system audit (iOS + web) requested 2026-06-15. The audit compared the live Figma files (via the Figma MCP) against what the repo + docs claimed.
+
+**The claim vs reality.**
+- `docs/design-system/figma-code-sync-status.md` marked screens **"Synced (auto-built)"** with Figma node IDs (Smart Reminders `907:2`, Import `916:2`, Push Notifications `936:2`, plus iOS Code Connect targets `973:x`/`974:x`).
+- `CLAUDE.md` (v4.X+CC) stated **"Manual steps per new UI feature: 2 → 0 once operator setup completes (which it has, as of 2026-05-10)."**
+- **Reality:** the live iOS Figma library `0Ai7s3fCFqR5JXDW8JvgmD` is a single "Cover" placeholder page (0 published components/variables/styles); the web file `fsjHfFLAHELACZHku8Rfcl` contains only the UCC sign-in auth surface. Almost every cited node ID does not exist. The `figma-code-connect-publish.yml` workflow **failed on every real run since 2026-05-10** in both repos.
+
+**Root cause.** Figma Code Connect requires an **Organization/Enterprise** plan; this account is **Pro**. MCP `get_code_connect_map` returns *"You need a Developer seat in an Organization or Enterprise plan."* iOS publish → 403 *"Invalid scope(s): need File Read + Code Connect Write"* (not grantable on Pro). Web publish → **W14**: the sign-in/recover mappings target page **frames** (`31-3`/`31-106`), not components, so `figma connect publish` validation aborts the entire publish. The `code-connect-automation` state.json had *honestly* recorded the T5 plan-tier blocker — but the higher-visibility surfaces (CLAUDE.md, the sync matrix, public pages) presented the bridge as operational. Classic silent-pass: workflow file + repo secret + `.figma.*` mappings + green-looking docs masking a pipeline at 0% success.
+
+**Resolution (this change).**
+1. **Disabled** both `figma-code-connect-publish.yml` workflows (auto-trigger removed → no more red runs; manual-only stubs documenting the reason).
+2. **Reconciled** the authoritative docs (CLAUDE.md v4.X+CC section, `figma-code-sync-status.md` banner, `ios-code-connect-workflow.md` SUPERSEDED banner) to state plainly: code is the source of truth; Code Connect is unavailable on this plan.
+3. **Plan** to make Figma an honest visual mirror without Code Connect (Figma MCP plugin API, which works on Pro): [`docs/design-system/figma-source-of-truth-plan-2026-06-15.md`](../design-system/figma-source-of-truth-plan-2026-06-15.md).
+4. **Pattern** recorded as observed-pattern W36.
+
+**General lesson.** A capability gated by an account plan/seat is an *external* dependency — verify it end-to-end (does it actually publish?) before any doc says "operational" or "setup complete." Scaffolding existing ≠ pipeline working. Grep every surface that asserts a status when the underlying capability turns out to be unavailable.
+
+**Cross-references:**
+- Disabled workflows: `.github/workflows/figma-code-connect-publish.yml` (both repos)
+- Plan: [`docs/design-system/figma-source-of-truth-plan-2026-06-15.md`](../design-system/figma-source-of-truth-plan-2026-06-15.md)
+- Observed pattern: W36 ([`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md))
+- Honestly-recorded predecessor: `.claude/features/code-connect-automation/state.json` (T5 deferred, `final_status: partial_success_external_blocker`)
+
+---
+
 > _Next entry will be appended below this line when needed. Format
 > is FT2-FH-NNN with immutable monotonic numbering. Entries are never
 > silently edited; revisions are themselves new entries that

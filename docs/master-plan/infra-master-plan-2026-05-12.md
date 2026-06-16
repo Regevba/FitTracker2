@@ -7,6 +7,22 @@
 
 ---
 
+## ⏱️ STATUS UPDATE — 2026-06-15 (v7.10 shipped + doc-review refresh)
+
+> **Supersedes the 2026-06-07 banner below** for current reality. v7.10 SHIPPED 2026-06-10; cross-repo doc-review alignment 2026-06-15. Reconciled v8.0 docket (shipped vs open vs icebox) now lives at **§3.0** below.
+
+**Since the 2026-06-07 banner:**
+- **v7.10 SHIPPED 2026-06-10** — GATE_COVERAGE_ZERO observability hardening (#673 + #689: cycle-time Mechanism A coverage for 3 previously-blind checks + 0-candidate mis-wire detector) + measurement-layer field-rename closure (#687 `cu_v2` dual-read, #688 F17 `ts`-key). No new product-facing gates.
+- **Theme H test-coverage items shipped 2026-06-10/11:** T3 SignInService passkey/WebAuthn tests (#695) · T5 mock-protocol drift registry (#698) · T10 AI golden-set evals (#691) · T13 per-gate `last_failed_at` index, extends F17 (#694) · T4 Swift snapshot testing Phase A scaffold (#700, in flight) · T14 `platforms_tested` advisory (calibration B15 2026-06-21).
+- **Style-Dictionary v3→v5 migration SHIPPED 2026-06-10 (#677)** — closes the v8.x B_medium icebox item "Design-Tokens-Pipeline v5 Migration" (was backlog L417/L435 icebox).
+- **Doc-review alignment 2026-06-15** (FT2 #712 + fitme-story #220, both merged) — new canonical [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md); living docs + public `versions.json` aligned to v7.10; historical corpus left frozen per chronological-truth rule.
+
+**Canonical current state (reconciled 2026-06-15):** **v7.10 · 106 features · 26 instrumented gates (17 write-time + 7 cycle-time + 2 W9 hooks), 19 firing · 0 integrity findings, 0 real regressions.** Live ref: [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md).
+
+**Calibration ladder still pending → v7.10.x / v8.0:** F16 advisory→enforced **2026-06-18** · W9 concurrency **2026-06-20** · PLATFORMS_TESTED (T14) **2026-06-21** · R9 30-day read → `GATE_TEST_MISSING` **2026-07-04** · Data Freshness Audit #1 **2026-08-12** · F14 Phase E → T1 build **2026-08-22**.
+
+---
+
 ## ⏱️ STATUS UPDATE — 2026-06-07 (sync refresh)
 
 > This banner is the current-reality overlay; sections below retain their original dated framing for the audit trail. Where a section still says "v7.9.1 opens ~2026-06-04" or "Phase E runs through 2026-06-04," read it through this banner.
@@ -154,101 +170,68 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 
 ## 3. Build Docket (v8.x — 18 F-candidates + 7 V8-I icebox = 25 items)
 
-### 3.1 v7.9 Candidate Features (F-series) — Surfaced from Three Sources
+### 3.0 v8.x Docket — Reconciled Status (2026-06-15)
 
-**Source A — Roadmap stress-test (2026-05-07 session, [case study](../case-studies/roadmap-stress-test-2026-05-07-case-study.md) §99):**
+> **This is the live docket.** The dated Source A–E tables in §3.1 + the icebox in §3.2 retain their original framing for the audit trail; read statuses through this table. No separate `2026-05-21-v8-0-docket.md` spec was ever produced (the §3.3 T29 plan) — **this section IS the docket**, cross-referenced to merged PRs + memory.
 
-| ID | Item | Class | RICE-est | Source notes |
-|---|---|---|---|---|
-| **F1** | `STATE_TASKS_FILESYSTEM_DRIFT` advisory — detect pre-v7.6 features with empty `tasks[]` despite shipped work | Cycle-time gate | M (R=6 I=2 C=80% E=0.5w → 19.2) | Surfaced when 5-of-10 stress-test sub-features had this drift |
-| **F2** | Phase 0 sub-step: reality-check completed work against current state before scheduling | Workflow gate | M (R=8 I=2 C=80% E=0.3w → 42.7) | Roadmap had 1 step done as "TODO" |
-| **F3** | Phase 2 dependency-graph cycle/mismatch check for multi-feature roadmaps | Workflow gate | M (R=6 I=2 C=60% E=0.5w → 14.4) | 1 dep-cycle caught manually post-hoc |
-| **F4** | Auto-update `framework_version` on protocol-touching writes OR explicit migration pass | Write-time gate or migration | H (R=10 I=2 C=80% E=0.5w → 32.0) | 9 features had stale `framework_version` post-v7.6 |
-| **F5** | Formalize `scope_change` event in Tier 2.2 vocabulary | Vocabulary extension | L (R=4 I=1 C=100% E=0.2w → 20.0) | Currently logged as `event: "note"` |
-| **F6** | Document B_medium tier in CLAUDE.md: PRD/tasks/UX optional; formalize skipped-phase reasons | CLAUDE.md doc | L (R=6 I=1 C=100% E=0.2w → 30.0) | Currently ambiguous between Feature and Enhancement |
+**A. Shipped since the docket opened — no longer v8.0 candidates:**
 
-**Source B — Stress-test closure session (2026-05-07 evening):**
-
-| ID | Item | Class | RICE-est | Source notes |
-|---|---|---|---|---|
-| **F9** | `make complete-feature` pre-flight OR gate-batch mode for closure UX | Workflow ergonomics | H (R=8 I=2 C=100% E=0.4w → 40.0) | 3 closure PRs required ≥3 commit retries each |
-| **F10** | Formalize `experiment_outcome` enum (`shipped`/`deferred`/`cancelled`/`superseded`) on `tasks[]` | Schema extension | M (R=6 I=2 C=80% E=0.3w → 32.0) | Deferred tasks currently distinguished only by case-study prose |
-
-**Source C — v7.8.3 cutover ceremony (2026-05-11, [case study](../case-studies/cross-repo-state-sync-impl-case-study.md)):**
-
-| ID | Layer | Item | Class | RICE-est |
-|---|---|---|---|---|
-| **F11** | Cycle-time advisory | Extend `BRANCH_ISOLATION_HISTORICAL` allowlist to `reverse-sync/*` branches OR morph to read `state_owner_sync_origin` | Cycle-time gate | M (R=6 I=2 C=100% E=0.3w → 40.0) |
-| **F12** | Pre-commit gate | Add `actionlint` to pre-commit stack | Write-time gate | H (R=10 I=2 C=100% E=0.2w → 100.0) |
-| **F13** | Workflow bootstrap | `source_commit` input on `workflow_dispatch` OR full-repo scan fallback for unmirrored fitme-story-native state.json files | GH Actions infra | M (R=8 I=2 C=80% E=0.4w → 32.0) |
-
-**Source D — PR #317 + test-suite audit + external research (2026-05-12 session, [v7.9 candidates spec §2](../superpowers/specs/2026-05-08-framework-v7-9-candidates.md)):**
-
-| ID | Layer | Item | Class | RICE-est |
-|---|---|---|---|---|
-| **F14** ✅ **SHIPPED 2026-05-22 → 05-23** | Test infrastructure | Per-gate `test_main_dispatch_<gate_id>()` requirement — every write-time gate must have ≥1 test driving `main()` end-to-end (Semgrep `rule.yml↔rule.test.yml` enforced-pairing pattern). 4 gates covered: `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`. Shipped via PRs #451 (`86084c4`) + #452 (`3686f98`) + closure #455 (`98ca1ad7`). Layer-stacking constraint relaxed (see §3.6.2 below) — in-repo monkey-patch pattern from PR #317 proved sufficient without waiting on F16 try-repo harness. | Test discipline (write-time) | H (R=10 I=3 C=80% E=0.5w → 48.0) |
-| **F15** ✅ **SHIPPED 2026-05-22 → 05-23** | Test infrastructure | Unit tests for 5 zero-coverage gates — `PHASE_TRANSITION_NO_LOG` + `PHASE_TRANSITION_NO_TIMING` (highest risk, guard most frequent state mutation), `BRANCH_ISOLATION_HISTORICAL`, `BRANCH_ISOLATION_LAUNCHD_DRIFT`, `PR_CACHE_STALE`. Shipped via same feature `framework-f14-f15-dispatch-test-coverage` (joint scope). Combined coverage delta: write-time 1/16→8/16=50%; cycle-time 0/3→2/3=67%; total 1/19→10/19=53%. T1 GATE_TEST_MISSING meta-gate (RICE 53.3) opened as successor — depends on F14 reaching Phase E (T+90d post-ship = 2026-08-22). | Test discipline (Class B closure) | H (R=10 I=2 C=100% E=0.5w → 40.0) |
-| **F16** | Test infrastructure | pre-commit `try-repo`-style end-to-end harness — spawn throwaway git repo, stage fixtures from `tests/fixtures/<gate-id>/{positive,negative}/`, run real `.githooks/pre-commit` via subprocess, assert each gate fires/skips per fixture. Run in CI nightly. **Highest-leverage single change** per external research synthesis. | Test infrastructure foundation | H (R=10 I=3 C=80% E=0.5w → 48.0) |
-| **F17** | Telemetry materialization | Per-gate `last_fired_at` derived nightly index — `scripts/refresh-gate-last-fired.py` writes `.claude/shared/gate-last-fired.json` from `gate-coverage.jsonl`. AWS Config Rules `LastSuccessfulInvocationTime` pattern. Enables planned `GATE_COVERAGE_ZERO` meta-check at O(1) instead of O(records × gates). | Telemetry materialization | H (R=10 I=2 C=100% E=0.3w → 66.7) |
-| **F18** | Test infrastructure | Nightly mutation testing on dispatcher files (`mutmut run --paths-to-mutate scripts/check-state-schema.py,scripts/check-case-study-preflight.py,scripts/integrity-check.py`). Pitest "Remove Conditionals" + "Statement Deletion" operators surface surviving mutants on early-return patterns like PR #317's. Calibrate baseline 7d, then fail PR if surviving mutants on touched files rise vs main. | Mutation testing (advisory → enforced) | M (R=8 I=2 C=60% E=0.7w → 13.7) |
-
-**Source E — post-v7.9 candidate plan (2026-05-20 session):**
-
-| ID | Layer | Item | Class | RICE-est |
-|---|---|---|---|---|
-| **F19** | Analytics observability | Phase 1.B GA4 conversions (D-2) + dashboard wiring for `dashboard_*` event call-sites in `/control-room/*` | Production telemetry wiring | M (deferred to v7.9.1 — `analytics-observability` Phase 3.B; gated on Phase E exit ~2026-06-04) |
-| **F20** | Analytics observability | Phase 1.B conversion event mapping + Firebase event-name cleanup (D-4) | Schema cleanup | L (deferred to v7.9.1 build window) |
-| ~~**F21**~~ | ~~Error tracking~~ | ~~Sentry full integration (SDK init + `/ops health` crash-free rate read + 1 test event)~~ | ~~Production observability~~ | **PAUSED 2026-05-21 → pre-launch trigger** ([PR #418](https://github.com/Regevba/FitTracker2/pull/418)). Pre-launch context: iOS app is TestFlight beta only — crash data is not actionable until App Store launch. Resume preconditions: App Store submission ≤2 weeks + `ConsentManager.crashScreenshotConsent` decision finalized. |
-| **F22** | Product analytics | Funnel Analysis Dashboards — GA4 funnel exploration + `/control-room/analytics` page + per-funnel metric definitions (onboarding, training, nutrition, home engagement, AI recommendation, readiness) | Product observability | M (depends on F19 Phase 3.B; post-Phase-E ~2026-06-04+; ~5-7 days) |
-| **F23** | Stakeholder ops | `/ops digest` skill — weekly stakeholder summary (DAU/WAU trend, top funnel breaks, P0/P1 audit drift, framework version, advisory ledger snapshot) | Skill extension | M (depends on F22 + Sentry pre-launch resume; ~3-4 days) |
-
-**Resolved already (no v7.9 promotion needed):**
-
-| ID | Item | Resolution |
-|---|---|---|
-| **F7** | Cross-repo gate parity (Tier 2.2 per-phase emission for fitme-story) | RESOLVED v7.8.2 — documented exemption in [2026-05-08-cross-repo-gate-asymmetry.md](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md) |
-| **F8** | Mechanism A `gate-coverage.jsonl` parity for fitme-story | RESOLVED v7.8.2 — documented exemption + hook cwd-guard fix in PR #258 |
-
-### 3.2 v8.0 Icebox (7 items from `branch-isolation-out-of-scope.md`)
-
-Source: [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md). Each gated on its own re-evaluation trigger; default disposition is "not promoted to v8.0 unless trigger fires."
-
-| ID | Item | cu_v2 | Re-eval trigger | Disposition |
-|---|---|---|---|---|
-| **V8-I1** | Agent Smartlog UI — `/control-room/agents` live awareness + path-overlap detection | 2.2 (B_med) | ≥5 concurrent active features for 7+ days | Visibility layer; prevention is gated already |
-| **V8-I2** | Op-log Replay — jj-style per-session rollback + GC | 2.9 (A_high) | ≥3 manual-cleanup incidents in 90d OR `git stash list` >5 for 30d | Recovery primitive; v7.8.3 `--no-verify` ledger is bridge |
-| **V8-I3** | Vercel Sandbox / Firecracker microVM | 3.1 (A_high) | Untrusted-code-execution use case emerges | Overkill for cooperative agents |
-| **V8-I4** | FS kernel sandboxing — Linux Landlock / macOS App Sandbox | 3.05 (A_high) | Regulatory mandate (HIPAA audit trail) | OS-specific; multi-tenant context needed |
-| **V8-I5** | inotify/fsevents broadcast mediator | 1.9 (B_med) | ≥2 concurrent-write collisions in 60d w/ >30min reconciliation | Detection-only; additive to existing gates |
-| **V8-I6** | Cross-feature dependency analysis | 2.0 (B_med) | `path-reducers.json` ≥20 entries + ≥2 conflicts surface organically | Requires path-reducer registry to mature |
-| **V8-I7** | Auto-rollback on kill-criteria fire | 3.05 (A_high) | T+7d telemetry of clean firing + ≥2 manual dry-run successes | Safety verification needed |
-
-### 3.3 v8.0 Docket Decision (2026-05-21 — T29 Phase 9 prioritization pass)
-
-The 2026-05-21 prioritization pass at `framework-v7-8-branch-isolation` Phase 9 closure produces the final v8.0 docket by:
-
-1. **Ranking** F1–F6 + F9–F18 + V8-I1 through V8-I7 (23 candidates after F7/F8 resolution) by RICE × 7-day telemetry signal strength
-2. **Top-3-per-theme rule** (relaxed 2026-05-12 from prior "top-3 absolute") — pick top 3 by RICE within each theme so v8.0 covers breadth, not just the highest-RICE items. With 7 themes (A roadmap, B cross-repo asymmetry RESOLVED, C schema, D vocabulary, E ergonomics, F v7.8.3 cutover, G test discipline), v8.0 max docket = 18 items. Rest defer to v8.1.
-3. **Companion case study** — Phase 9 produces `framework-v7-8-branch-isolation-case-study.md` with the prioritization decision recorded in Section 99 + ranked output to `docs/superpowers/specs/2026-05-21-v8-0-docket.md` (new file)
-4. **Sub-experiment with hold-out** — if telemetry suggests *zero* F-items warrant promotion (rare but possible), v8.0 ships as a pure protocol patch and v8.x deferred to v8.1
-5. **Test-discipline foundation precedence (added 2026-05-12)** — Theme G items (F14, F15, F16, F17, F18) have a dependency graph among themselves: F16 (try-repo harness) is foundation; F14 (per-gate dispatch tests) and F18 (mutation testing) depend on it; F15 is independent; F17 is independent. If ANY Theme G item enters v8.0, F16 MUST also enter v8.0 OR ship earlier as v7.9.1.
-
-The Phase 9 task is tracked as **T29** in [`.claude/features/framework-v7-8-branch-isolation/state.json`](../../.claude/features/framework-v7-8-branch-isolation/state.json).
-
-### 3.4 Theme distribution (after 2026-05-12 expansion)
-
-| Theme | Items | Open count | Notes |
+| ID | Item | Shipped | PR(s) |
 |---|---|---|---|
-| **A — Roadmap/multi-feature realism** | F1, F2, F3 | 3 | Stress-test session |
-| **B — Cross-repo asymmetry** | F7, F8 | 0 (both RESOLVED v7.8.2) | Documented exemption |
-| **C — Schema drift / migration** | F4, F10 | 2 | `framework_version` + `experiment_outcome` enum |
-| **D — Vocabulary / latitude** | F5, F6 | 2 | `scope_change` event + B_medium tier doc |
-| **E — Workflow ergonomics** | F9 | 1 | `make complete-feature` pre-flight |
-| **F — v7.8.3 cutover follow-up** | F11, F12, F13 | 3 | All independent |
-| **G — Test discipline** (NEW 2026-05-12; expanded 2026-05-13) | F14, F15, F16, F17, F18, F19, F20 | 7 | F16 is foundation for F14 + F18; F19/F20 from analytics-observability ride on F16 harness |
-| **H — Application-layer test coverage** (NEW 2026-05-13; see [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md)) | T1–T16 | 16 | iOS + web + backend + AI + analytics test discipline; T6 (Web PR gate) RICE 200; T14 (platform-parity field) RICE 160; full ranking at 2026-05-21 |
-| **Icebox** | V8-I1 through V8-I7 | 7 | Each gated on own re-eval trigger |
-| **TOTAL** | 43 | **41 open** | F7/F8 resolved; 41 in 2026-05-21 ranking (+16 from test-coverage sub-doc) |
+| F2 | Phase 0 reality-check sub-step | v7.9.1 | #618 |
+| F6 | B_medium tier documented in CLAUDE.md | done | CLAUDE.md "Impact tier labels" § + "Work Item Types" |
+| F9 | `make close-feature` closure automation | shipped | #591 + #711 (sub-phase normalize) |
+| F14 | Per-gate dispatch tests | 2026-05-22/23 | #451 / #452 / #455 |
+| F15 | Zero-coverage gate unit tests | 2026-05-22/23 | (same feature) |
+| F16 | try-repo harness | v7.9.1 | #607–#612 · **advisory→enforced 2026-06-18** |
+| F17 | `last_fired_at` index (+ T13 `last_failed_at`) | v7.9.1 / v7.10 | #617 / #694 |
+| — | GATE_COVERAGE_ZERO meta-check | v7.10 | #673 + #689 |
+| T3 | SignInService passkey/WebAuthn tests | v7.10 | #695 |
+| T5 | mock-protocol drift registry | v7.10 | #698 |
+| T10 | AI golden-set evals | v7.10 | #691 |
+| T14 | `platforms_tested` field + advisory gate | 2026-06-07 | #662 · calibration B15 2026-06-21 |
+| V8-I | Style-Dictionary v3→v5 migration | 2026-06-10 | #677 (was icebox L417/L435) |
+| F-DEPLOYED-URL-PROBE | FT2 substrate (`scripts/probe-deployed-url.sh`) | v7.9.1 | fitme-story integration still open |
+| F-CONTRACT-FIXTURE-SAMPLING | FT2 substrate + producer sampling | 2026-06-07 | #664 · consumer adoption still open |
+| F-LAUNCHD-DRIFT-EXTENSION | all 3 sub-fixes | v7.9.1 | #621–#624 |
+
+**B. Open — carried into the v8.0 build (kickoff ~2026-06-18, after F16 enforce flip):**
+
+| ID | Item | Class | RICE-est | Gating |
+|---|---|---|---|---|
+| F12 | `actionlint` in pre-commit stack | Write-time gate | **100.0 (highest)** | none — ready |
+| F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | Cycle-time gate | 40.0 | none |
+| F4 | Auto-update `framework_version` on protocol writes | Write-time/migration | 32.0 | partial — `FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` (#659) cover part |
+| F10 | `experiment_outcome` enum on `tasks[]` | Schema | 32.0 | none |
+| F13 | `source_commit` `workflow_dispatch` input | GH Actions | 32.0 | none |
+| F5 | `scope_change` Tier 2.2 vocabulary event | Vocabulary | 20.0 | none |
+| F1 | `STATE_TASKS_FILESYSTEM_DRIFT` advisory | Cycle-time gate | 19.2 | none |
+| F3 | Phase 2 dependency-graph cycle check | Workflow gate | 14.4 | none |
+| T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** |
+| F18 | Mutation testing on dispatcher files | Test infra | 13.7 | F16 Phase E (post 2026-06-18) + F14 |
+| F22 | Funnel Analysis Dashboards | Product observability | M | F19 + GA4 data |
+| F23 | `/ops digest` skill | Skill extension | M | F22 + Sentry resume |
+| F19/F20 | Analytics Phase 1.B GA4 conversions + gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | D-2 operator (GA4) + post-launch signal |
+| T4 | Swift snapshot testing | iOS test infra | — | Phase A scaffold shipped (#700); build pending |
+| F-CONTRACT (consumer) | fitme-story consumer adoption + weekly re-sample → promote CI gate to blocking | Cross-repo | — | cross-repo session |
+
+**C. Paused / launch-gated:** F21 Sentry (pre-launch trigger; PR #418) · F-AUTH-LATENCY-SERVER-METRIC shipped FT2-side (fitme-story #208).
+
+**D. Icebox (V8-I — re-eval on trigger, see §3.2):** 6 remaining branch-isolation-out-of-scope items — Agent Smartlog UI, Op-log Replay, Vercel Sandbox, Landlock/App-Sandbox, Path-Watcher Daemon, Cross-Feature Dependency Graph, Auto-Rollback. (Style-Dictionary v5, formerly the 7th, now SHIPPED — see table A.)
+
+**E. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
+
+**Roll-up:** of the original 18 F-candidates, **8 shipped** (F2, F6, F9, F14, F15, F16, F17 + GATE_COVERAGE_ZERO) + 2 resolved-by-exemption (F7, F8) → **8 F-items remain open** (F1, F3, F4, F5, F10, F11, F12, F13) + F18 + F19–F23. Theme H (test-coverage T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target unchanged: ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
+
+---
+
+### 3.1–3.4 v8.x Candidate Docket → extracted to dedicated sub-plan (2026-06-15)
+
+> **The full v8.x candidate docket — F-series tables (Sources A–E), V8-I icebox, the T29 decision process, and the theme distribution — now lives in its own sub-plan: → [`v8-x-build-docket-2026-06-15.md`](v8-x-build-docket-2026-06-15.md)**
+>
+> This was separated 2026-06-15 to mirror how `test-coverage-master-plan`, `data-integrity-and-rollback`, and `analytics-master-plan` are standalone sub-plans under this parent. The **§3.0 reconciled roll-up above remains the at-a-glance**; the sub-plan is authoritative for per-candidate detail. The frozen T29 ranking stays at [`v8-0-docket-ranking-2026-05-13.md`](v8-0-docket-ranking-2026-05-13.md); the ready-now execution sequence is at [`v8-0-ready-now-workplan-2026-06-15.md`](v8-0-ready-now-workplan-2026-06-15.md).
+>
+> **§3.5 (Calibration Protocol for new layers) and §3.6 (Forward Plan v7.9 → v8.2) remain below in this parent** — they are general process/timeline content referenced by name across the doc tree, not part of the candidate docket.
 
 ---
 

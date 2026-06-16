@@ -1,0 +1,156 @@
+{
+  "version": "1.0",
+  "feature": "foundation-models-tier3",
+  "title": "foundation models tier3",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-15T06:14:04Z",
+  "updated_at": "2026-06-15T15:40:40Z",
+  "events": [
+    {
+      "timestamp": "2026-06-15T06:14:04Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 opened. Research+approved plan: replace FoundationModelService stub with real on-device LanguageModelSession (@Generable hybrid output) + wire escalate_to_llm to on-device PrivateCloudComputeLanguageModel. Isolated worktree off origin/main. SDK feasibility verified (Xcode 26.5, FoundationModels.framework present).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T14:45:20Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved. Approach confirmed: on-device Tier 3a (@Generable hybrid) + Tier 3b PCC escalation; one feature, two phases.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T14:45:20Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened \u2014 defining success metrics, kill criteria, analytics spec (aiSummaryGenerated), eval-coverage plan, and PCC privacy-surface disposition.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T14:47:02Z",
+      "event_type": "prd_drafted",
+      "phase": "prd",
+      "summary": "PRD drafted: primary metric tier3_adoption (target 60%), 3 kill criteria, analytics spec (home_ai_summary_generated, reuses existing params), eval-coverage plan (4 AI behaviors AB1-AB4), PCC privacy-surface disposition pending operator decision.",
+      "artifacts": [
+        ".claude/features/foundation-models-tier3/prd.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T14:50:46Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened. 13 tasks: T1-T8 Tier 3a (summary field, @Generable, real adapt(), anti-hallucination filter, card UI, analytics, tests, verify); T9-T13 Tier 3b PCC (protocol, live impl, orchestrator gating, backend disposition, tests).",
+      "artifacts": [
+        ".claude/features/foundation-models-tier3/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T14:52:57Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX, full chain) opened for the summary-headline surface on AIRecommendationCard + AIInsightCard.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T15:00:30Z",
+      "event_type": "cache_hit_logged",
+      "phase": "ux_or_integration",
+      "summary": "ux-foundations:summary-surface-spec (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "ux-foundations:summary-surface-spec",
+        "hit_type": "adapted",
+        "skill": "ux"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T15:01:20Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX full chain) complete: ux-research + ux-spec (5 states, a11y, token compliance) + /ux preflight PASS (all symbols verified) + /design preflight PASS (Figma MCP live) + /design build (2 frames in feature file PXGDruVvboaOpiaJ5sc4qT, nodes 1:2 + 1:12) + ux/design build prompts.",
+      "artifacts": [
+        ".claude/features/foundation-models-tier3/ux-spec.md",
+        "docs/prompts/ux/2026-06-15-foundation-models-tier3-ux-build.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T15:03:05Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implement) opened. Starting Tier 3a backend: T1 summary field, T2 @Generable PersonalizedInsight, T3 anti-hallucination filter, T4 real FoundationModelService.adapt().",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T15:23:01Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "Tier 3a implemented + verified: T1-T8 + T12. 23/23 AIOrchestratorTests pass; ui-audit P0=0; build green (iOS 26.5 SDK). Committing Tier 3a.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T15:23:30Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Tier 3a complete (T1-T8 + T12), committing. 23/23 tests pass; ui-audit P0=0; build green.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T15:40:40Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "Tier 3b architecture complete (T9-T11, T13): PCCEscalationProtocol + NoOp + orchestrator gating + FitTrackerApp injection + 4 mock tests. SDK-GAP: WWDC26 PCC API absent in iOS 26.5 SDK; live body gated behind FOUNDATION_MODELS_PCC flag (no-ops). 27/27 tests pass.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

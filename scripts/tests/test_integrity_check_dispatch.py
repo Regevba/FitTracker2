@@ -144,6 +144,50 @@ def test_main_dispatch_branch_isolation_historical(monkeypatch, tmp_path, capsys
     )
 
 
+# ─── F11: reverse-sync exemption for BRANCH_ISOLATION_HISTORICAL ───────────
+
+
+def test_branch_isolation_historical_reverse_sync_exempt(monkeypatch, tmp_path):
+    """F11 — a reverse-sync-mirrored fitme-story-native state.json (with
+    state_owner_sync_origin ending in '-reverse') must NOT trigger the
+    BRANCH_ISOLATION_HISTORICAL advisory, while a normal direct-on-main
+    feature still does. Proves the exemption narrows, not silences, the gate.
+    """
+    tmp_repo = tmp_path / "repo"
+    features_dir = tmp_repo / ".claude" / "features"
+    features_dir.mkdir(parents=True)
+
+    # Reverse-synced mirror — should be EXEMPT
+    _make_feature_state(
+        features_dir,
+        "reverse-synced-feature",
+        created_at="2026-05-15T00:00:00Z",
+        extra={"state_owner_sync_origin": "fitme-story-reverse"},
+    )
+    # Normal direct-on-main feature — should still be FLAGGED
+    _make_feature_state(
+        features_dir,
+        "direct-on-main-feature",
+        created_at="2026-05-15T00:00:00Z",
+    )
+
+    monkeypatch.setattr(_mod, "REPO_ROOT", tmp_repo)
+    monkeypatch.setattr(_mod, "FEATURES_DIR", features_dir)
+    monkeypatch.setattr(_mod, "CASE_STUDIES_DIR", tmp_repo / "docs" / "case-studies")
+    # Force git to report no feature/* or chore/* branch so the advisory would
+    # fire for any non-exempt feature.
+    monkeypatch.setattr(_mod.subprocess, "check_output", lambda cmd, **kw: "")
+
+    findings = _mod.check_branch_isolation_historical()
+    flagged = {f["feature"] for f in findings}
+    assert "reverse-synced-feature" not in flagged, (
+        f"F11: reverse-synced feature must be exempt; got flagged: {flagged}"
+    )
+    assert "direct-on-main-feature" in flagged, (
+        f"F11: normal direct-on-main feature must still be flagged; got: {flagged}"
+    )
+
+
 # ─── T9: BRANCH_ISOLATION_LAUNCHD_DRIFT dispatch test ──────────────────────
 
 

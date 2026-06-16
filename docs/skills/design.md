@@ -4,6 +4,8 @@
 
 **Agent-facing prompt:** [`.claude/skills/design/SKILL.md`](../../.claude/skills/design/SKILL.md)
 
+> ⛔ **Code Connect DISABLED 2026-06-15.** The `/design preflight` Code-Connect-write-access gate, the `/design pre-merge-review` spec↔build parity / `.figma.{swift,tsx}` checks, and the `/design build` Figma-push path are **non-operational**: Figma Code Connect requires an Org/Enterprise plan and this account is Pro (publish 403s; both `figma-code-connect-publish.yml` are disabled stubs). Treat those sub-steps as skip-cleanly no-ops. **Code is the source of truth.** See [`docs/design-system/figma-source-of-truth-plan-2026-06-15.md`](../design-system/figma-source-of-truth-plan-2026-06-15.md) + honesty ledger FT2-FH-005.
+
 ---
 
 ## What it does

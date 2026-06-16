@@ -5,7 +5,8 @@
 > **Framework state at last update:** PM Framework **v7.10** (GATE_COVERAGE_ZERO observability + field-rename closure, shipped 2026-06-10). Lineage: v7.9 promotion 2026-05-21 → v7.9.1 build window 2026-06-04 → v7.10 2026-06-10. Current canonical counts: **106 features · 26 instrumented gates (17 write-time + 7 cycle-time + 2 W9 hooks), 19 firing · 0 integrity findings** (reconciled 2026-06-15) — see [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). Canonical entry points:
 > - Developer guide (v1.0 → v7.10 technical reference): [`../architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (filename retained for ref-stability; content tracks v7.10)
 > - Feature lifecycle event catalog (companion): [`../architecture/feature-lifecycle-event-catalog.md`](../architecture/feature-lifecycle-event-catalog.md) — every event/log/gate fired during a feature's 9-phase lifecycle, with 2 mermaid flow diagrams
-> - **v7.8.4 cold-start entrypoint (current):** [`../../.claude/entrypoints/framework-v7-8-4.md`](../../.claude/entrypoints/framework-v7-8-4.md) — pre-v7.9 calibration + PR_CACHE_STALE gate + TIER_TAG heuristic narrowing
+> - **v7.10 cold-start entrypoint (current):** [`../../.claude/entrypoints/framework-v7-10.md`](../../.claude/entrypoints/framework-v7-10.md) — GATE_COVERAGE_ZERO observability + field-rename closure
+> - v7.8.4 cold-start entrypoint: [`../../.claude/entrypoints/framework-v7-8-4.md`](../../.claude/entrypoints/framework-v7-8-4.md) — pre-v7.9 calibration + PR_CACHE_STALE gate + TIER_TAG heuristic narrowing
 > - v7.8.3 cold-start entrypoint: [`../../.claude/entrypoints/framework-v7-8-3.md`](../../.claude/entrypoints/framework-v7-8-3.md) — cross-repo state-sync release umbrella
 > - v7.8.1 case study: [`../case-studies/framework-v7-8-branch-isolation-case-study.md`](../case-studies/framework-v7-8-branch-isolation-case-study.md) — 3 new write-time gates + 3 cycle-time advisories, first feature shipped via v7.8 protocol (Mechanism C + isolated worktree)
 > - v7.8 Bridge case study: [`../case-studies/framework-v7-8-bridge-case-study.md`](../case-studies/framework-v7-8-bridge-case-study.md)
@@ -42,7 +43,10 @@
 
 | File | Date | Purpose |
 |---|---|---|
-| `infra-master-plan-2026-05-12.md` | 2026-05-12 | **CURRENT infra plan.** Forward-looking framework master plan covering v7.9 promotion docket, v8.x candidate ranking (F1–F13 + 7 icebox items), HADF Phase 2-bis pre-launch calendar, and the date-gated roadmap through Q3 2026. Separate from product master plan. |
+| `infra-master-plan-2026-05-12.md` | 2026-05-12 · refreshed 2026-06-15 | **CURRENT infra plan.** Forward-looking framework master plan. §3.5 Calibration Protocol + §3.6 Forward Plan v7.9→v8.2 + HADF Phase 2-bis calendar. The v8.x candidate docket was extracted 2026-06-15 → see sub-plan below. |
+| `v8-x-build-docket-2026-06-15.md` | 2026-06-15 | **CURRENT v8.x build docket** (sub-plan of infra plan). Reconciled candidate status (shipped/open/icebox), F-series + V8-I tables, T29 decision, theme distribution. |
+| `v8-0-ready-now-workplan-2026-06-15.md` | 2026-06-15 | **Ready-now execution plan** — the 8 ungated open v8.x items (F1/F3/F4/F5/F10/F11/F12/F13), sequenced into 3 batches with calibration + isolated-worktree constraints. |
+| `v8-0-docket-ranking-2026-05-13.md` | 2026-05-13 · decided 2026-05-21 | Frozen T29 RICE ranking artifact (historical). Superseded for live status by the v8.x build docket sub-plan above. |
 | `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-05-12 | **CURRENT product master plan.** Adds all v4.3 → v7.8.4 work, M-series decomposition sprints, audit remediation, cross-repo state-sync, and pre-v7.9 telemetry calibration patch. |
 | `master-plan-2026-04-06.md` | 2026-04-06 | DEPRECATED — superseded by 2026-04-15. Kept as a historical snapshot. |
 | `_archive/master-plan-reconciled-2026-04-05.md` | 2026-04-05 | DEPRECATED — superseded by 2026-04-06, then 2026-04-15. **Archived 2026-05-24 to `_archive/` per D-PLAN-9** (38+ days SUPERSEDED). |

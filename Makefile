@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -122,9 +122,19 @@ lint-md:
 		echo "lint-md: markdownlint-cli2 not installed; skipping (install via 'npm i -g markdownlint-cli2')"; \
 	fi
 
-# Meta-target: run all 3 lint surfaces.
+# F12 (v8.x ready-now workplan Batch 1): actionlint on GitHub Actions workflow
+# YAML under .github/workflows/. Warn-only baseline (CI job uses
+# continue-on-error: true). Skip cleanly if `actionlint` not installed.
+actionlint:
+	@if command -v actionlint >/dev/null 2>&1; then \
+		actionlint -color || echo "⚠ actionlint found issues (warn-only locally; CI enforces this gate)"; \
+	else \
+		echo "⚠ actionlint not installed — SKIPPING locally. CI enforces this gate. Install: https://github.com/rhysd/actionlint/blob/main/docs/install.md"; \
+	fi
+
+# Meta-target: run all lint surfaces.
 # Used inside verify-local + the lint.yml CI workflow.
-lint: lint-ios lint-py lint-md
+lint: lint-ios lint-py lint-md actionlint
 
 # R9 Track B (dev-env-master-plan §3): code-coverage aggregator + CI hook.
 # Track A shipped 2026-05-25 (`.slather.yml` + `[tool.coverage.*]` config);

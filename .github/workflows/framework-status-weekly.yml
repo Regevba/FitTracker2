@@ -166,6 +166,33 @@ jobs:
             echo "Snapshot staged for ${today}."
           fi
 
+      # W37 fix (option B, 2026-06-15): try a direct push of the append-only
+      # weekly snapshot to main FIRST. Bot PRs (GITHUB_TOKEN) never trigger CI,
+      # so under strict branch protection they deadlock ("expected" forever).
+      # Direct push needs the github-actions app in main's
+      # bypass_pull_request_allowances; until configured the push is rejected,
+      # the commit is rolled back (reset --soft), and the legacy PR paths below
+      # run unchanged (no regression). See observed-patterns.md W37.
+      - name: Push weekly snapshot to main (W37 direct path)
+        id: direct-push
+        if: steps.stage.outputs.has_changes == 'true'
+        env:
+          TODAY: ${{ steps.stage.outputs.today }}
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(framework-status): weekly snapshot ${TODAY} (Regression=${REGRESSION})"
+          if git push origin "HEAD:main"; then
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+            echo "✓ Weekly snapshot pushed directly to main (${TODAY})."
+          else
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=W37 fallback::Direct push to main rejected (bypass not configured?) — restoring staged changes for the PR path."
+            git reset --soft HEAD~1
+          fi
+
       # B14 (2026-05-30): peter-evans/create-pull-request@v8 fails when GitHub
       # returns 500 on the internal push (2 transient failures observed in last
       # 5 weeks: 2026-05-04 + 2026-05-25). continue-on-error keeps the workflow
@@ -177,7 +204,7 @@ jobs:
       # ${{ ... }} substitution inside run: blocks.
       - name: Open PR with weekly snapshot (primary path)
         id: open-pr
-        if: steps.stage.outputs.has_changes == 'true'
+        if: steps.stage.outputs.has_changes == 'true' && steps.direct-push.outputs.pushed != 'true'
         continue-on-error: true
         uses: peter-evans/create-pull-request@v8
         env:
@@ -207,6 +234,7 @@ jobs:
       - name: Open PR with weekly snapshot (shell fallback on primary-path failure)
         if: |
           steps.stage.outputs.has_changes == 'true' &&
+          steps.direct-push.outputs.pushed != 'true' &&
           steps.open-pr.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

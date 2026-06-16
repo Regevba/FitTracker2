@@ -1,9 +1,9 @@
-# PM Framework — Developer Guide (v1.0 → v7.9.1)
+# PM Framework — Developer Guide (v1.0 → v7.10)
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Current version:** **v7.9.1** (build window closed 2026-06-04) — single-day build window that opened at v7.9 Phase E exit and shipped 8 observability surfaces, doc updates, and warn-only CI workflows across 14 PRs. **0 new enforcement gates** (Phase E exit discipline preserved). Synthesis case study: [`framework-v7-9-1-promotion-case-study.md`](../case-studies/framework-v7-9-1-promotion-case-study.md). For v7.9 (the enforcement-flip release shipped 2026-05-21 — 3 advisory gates → enforced via single-flag flip at `scripts/check-state-schema.py:138`) see [§2.0](#20-predecessor-snapshot-v79-shipped-2026-05-21). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v79).
-> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.9.1).
+> **Current version:** **v7.10** (shipped 2026-06-10) — observability hardening of the gates themselves: the `GATE_COVERAGE_ZERO` meta-check gained a 0-candidate mis-wire detector, three cycle-time checks (`BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `PATTERN_SKILL_UNMAPPED`) now emit Mechanism A coverage so the F17 index can see them, and a field-rename silent-pass class was closed in the measurement layer (observed-patterns #24). T10 AI golden-set evals also shipped. **0 new product-facing enforcement gates.** Predecessor v7.9.1 (single-day build window, 8 observability ships across 14 PRs, closed 2026-06-04) is the most recent gate-shipping window; synthesis case study: [`framework-v7-9-1-promotion-case-study.md`](../case-studies/framework-v7-9-1-promotion-case-study.md). For v7.9 (the enforcement-flip release shipped 2026-05-21 — 3 advisory gates → enforced via single-flag flip at `scripts/check-state-schema.py:149`) see [§2.0](#20-predecessor-snapshot-v79-shipped-2026-05-21). For canonical current gate counts always defer to [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v710).
+> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.10).
 > **Companion docs:** [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) (event/log/gate catalog with mermaid flow diagrams), [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
 > **Reading order:** §0 is a 90-second tour. §1 is audience and reading hints. §1.5 is the glossary. §§ 2–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs. § 16 is the cross-repo Code Connect bridge. § 17 is references.
 
@@ -14,7 +14,7 @@
 - [§0. TL;DR — 90-second tour](#0-tldr--90-second-tour)
 - [§1. Audience and how to read](#1-audience-and-how-to-read)
 - [§1.5 Glossary](#15-glossary)
-- [§2. Big picture (current state — v7.9.1, build window closed 2026-06-04)](#2-big-picture-current-state--v791-build-window-closed-2026-06-04)
+- [§2. Big picture (current state — v7.10, shipped 2026-06-10)](#2-big-picture-current-state--v710-shipped-2026-06-10)
 - [§3. Where the code lives](#3-where-the-code-lives)
 - [§4. The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
 - [§5. `state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
@@ -24,7 +24,7 @@
 - [§9. Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
 - [§10. Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
 - [§11. Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
-- [§12. Compressed evolution timeline (v1.0 → v7.9)](#12-compressed-evolution-timeline-v10--v79)
+- [§12. Compressed evolution timeline (v1.0 → v7.10)](#12-compressed-evolution-timeline-v10--v710)
 - [§13. Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
 - [§14. Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
 - [§15. Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
@@ -97,11 +97,13 @@ Cross-cutting terms used throughout this guide and in commit messages, PR descri
 
 ---
 
-## 2. Big picture (current state — v7.9.1, build window closed 2026-06-04)
+## 2. Big picture (current state — v7.10, shipped 2026-06-10)
 
-### Current version snapshot (v7.9.1, build window closed 2026-06-04)
+### Current version snapshot (v7.10, shipped 2026-06-10)
 
-**v7.9.1 was a single-day build window** that opened at v7.9 Phase E exit (2026-06-04) and closed the same day. **0 new enforcement gates** added — Phase E exit discipline preserved (no new gates for the first 14 days post-promotion). 8 ships across 14 PRs, all observability surfaces, doc updates, reusable substrates, or warn-only CI workflows.
+**v7.10 hardens the observability of the gates themselves** — the meta-layer that watches whether each gate is actually running. No new product-facing gates. Three changes: (1) `GATE_COVERAGE_ZERO` (built v7.9.1 #673, extended #689) gained a 0-candidate mis-wire detector — a gate registered in the F17 index with `candidates==checked==skipped==0` runs but never reaches a candidate (the `cache_hits`-keying / unreachable-loop class), distinct from a healthy zero-firing gate; (2) three cycle-time checks (`BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `PATTERN_SKILL_UNMAPPED`) now emit `mode="cycle"` Mechanism A coverage (#689) — previously the F17 index was blind to them; (3) observed-patterns #24 closed a field-rename silent-pass in the measurement layer (#687/#688). T10 AI golden-set evals also shipped (#691). For canonical current gate counts defer to [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md).
+
+**Predecessor — v7.9.1 was a single-day build window** that opened at v7.9 Phase E exit (2026-06-04) and closed the same day. **0 new enforcement gates** added — Phase E exit discipline preserved (no new gates for the first 14 days post-promotion). 8 ships across 14 PRs, all observability surfaces, doc updates, reusable substrates, or warn-only CI workflows.
 
 **Ships (cascade order, grouped by theme):**
 
@@ -566,7 +568,7 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 
 ## 10. Integrity layer — write-time + per-PR + cycle-time + weekly
 
-### 10.1 Check codes (write-time + cycle-time, current through v7.9, 2026-05-21)
+### 10.1 Check codes (write-time + cycle-time, current through v7.10, 2026-06-10)
 
 > The table below enumerates every check code emitted by the enforcement scripts. The v7.8.1 branch-isolation + feature-closure family and the v7.8.3 cross-repo `state_owner` family were promoted/added after the original §10.1 table was written; they are now included. When debugging a gate that fired, **check the [Observed Patterns Catalog](#105-observed-patterns-catalog-v785) (§10.5) first** — most fire-patterns are documented there with a signal-vs-noise rule and a silence path.
 
@@ -594,7 +596,7 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 | `SCHEMA_DRIFT_LEGACY_CREATED` (2026-05-01 honesty-fixes patch, PR #169) | Write | `check-state-schema.py` | Legacy `created` key on state.json (canonical: `created_at`). Closes the silent-pass that left v7.7 `CACHE_HITS_EMPTY_POST_V6` at 0/46 effective coverage when 43/46 features used the legacy field name. |
 | `FRAMEWORK_VERSION_FORMAT` (2026-05-01 honesty-fixes patch, PR #169) | Write | `check-state-schema.py` | When `framework_version` is set, must match `(pre-)?v<major>.<minor>`. Presence-required deferred to v7.9 backfill. |
 | **`CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (v7.8 advisory, Mechanism C)** | Cycle (advisory) | `integrity-check.py` | Session ledger (`.claude/logs/_session-<id>.events.jsonl`) attributes Read events to a feature, but `state.json::cache_hits[]` is empty/absent. Mechanism C captures session events; state.json::cache_hits requires manual `scripts/log-cache-hit.py` until v7.9 promotes `observe-cache-hit.py` to dual-write. **Advisory only** in v7.8; v7.9 promotes to enforced. |
-| **`GATE_COVERAGE_ZERO` (v7.8 advisory, Mechanism A; v7.9-enforced)** | Cycle (advisory) | `integrity-check.py` (planned) | Write-time gate that fired with `checked=0` (every candidate skipped) for 7+ days. Catches the failure mode where a gate's predicate is too restrictive and silently passes everything. Coverage data lands in `.claude/logs/gate-coverage.jsonl` per Mechanism A. **Advisory in v7.8** (need 7+ days of stats to calibrate); v7.9 promotes to enforced once the threshold is empirically grounded. |
+| **`GATE_COVERAGE_ZERO` (built v7.9.1 #673; extended v7.10 #689, advisory)** | Cycle (advisory) | `integrity-check.py` | Reads the F17 `gate-last-fired.json` index and flags a gate that went silent relative to the active corpus. v7.10 added a **0-candidate mis-wire detector**: a gate in the index with `candidates==checked==skipped==0` has a check site that runs but never reaches a candidate (the `cache_hits`-keying / unreachable-loop class) — distinct from a healthy zero-firing gate (e.g. `STATE_OWNER_MISSING`: many candidates, 0 violations). Coverage lands in `.claude/logs/gate-coverage.jsonl` per Mechanism A. **Remains advisory.** |
 | `BRANCH_ISOLATION_VIOLATION` Mode B (v7.8.1 advisory → **enforced v7.9**, 2026-05-21) | Write | `check-state-schema.py` | Infra-path commit (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`, OR `work_subtype: framework_feature` / `work_type: chore`) on a non-feature branch. Per-feature `isolation_opt_out` does NOT bypass Mode B (Q3 infra override). Auto-isolation dispatches `scripts/create-isolated-worktree.py`. |
 | `BRANCH_ISOLATION_VIOLATION` Mode C (v7.8.1 advisory → **enforced v7.9**) | Write | `check-state-schema.py` (`BRANCH_ISOLATION_VIOLATION_MODE_C`) | `state.json::current_phase` mutation from a non-feature branch. Per-feature `isolation_opt_out: true` + reason bypasses Mode C only. |
 | `ISOLATION_OPT_OUT_REASON_MISSING` (v7.8.1, **enforced at ship**) | Write | `check-state-schema.py` | `isolation_opt_out: true` with empty/missing `isolation_opt_out_reason`. |
@@ -637,7 +639,7 @@ Defined in `.github/workflows/framework-status-weekly.yml` (v7.6 Phase 2c). Cron
 
 When a gate fires, the finding alone does not tell you whether it is a real problem or an expected artifact (a squash-merge leaving no branch attribution, an empty PR cache, a heuristic over-trigger, etc.). The **Observed Patterns Catalog** at [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) is the canonical manifest of every recognized fire-pattern. Each entry carries a **trigger**, a **why-expected** classification (by-design / cleanup-artifact / silent-pass-then-fixed / heuristic-FP / schema-drift), a **distinguishing-real-signal** rule, and a **silence path**.
 
-- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 32 workflow/operational patterns (Section 2, `W1`–`W32`) + 1 self-doc entry (`W33` — the pattern↔skill preflight overlay tool itself).
+- **Coverage (current):** 24 gate-firing patterns (Section 1, `#1`–`#24`) + workflow/operational patterns through `W36` (Section 2; `W33` is the pattern↔skill preflight overlay self-doc entry). See `.claude/integrity/observed-patterns.md` for the live ceiling — this number advances every time a novel pattern is appended.
 - **CLI:** `make observed-patterns`.
 - **Preflight-loaded** by `/pm-workflow` and referenced by all spoke skills.
 - **Operator obligation (mandatory):** when any framework gate or advisory fires, the FIRST step is to consult this catalog. Apply the documented remediation if the pattern matches; investigate only if novel; and **append a new entry** to the catalog before the feature that surfaced the novel pattern is closed. The catalog is append-only-by-default.
@@ -763,7 +765,7 @@ All dynamic values used inside `run:` blocks **MUST** be routed through the `env
 
 ---
 
-## 12. Compressed evolution timeline (v1.0 → v7.9)
+## 12. Compressed evolution timeline (v1.0 → v7.10)
 
 Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). This section is the compressed dev-only summary — what each version changed structurally.
 
@@ -844,6 +846,16 @@ The hub creates `.claude/features/widget-customization/state.json` with:
 ```
 
 It also creates `.claude/logs/widget-customization.log.json` with a `phase_started` event.
+
+**`tasks[].experiment_outcome` (F10, v8.x — optional, advisory).** Each task in
+`tasks[]` may carry an `experiment_outcome` enum recording the *disposition* of a
+task whose work has concluded: `"shipped"` / `"deferred"` / `"cancelled"` /
+`"superseded"`. This is orthogonal to `tasks[].status` (`pending`/`in_progress`/
+`complete`) — `status` tracks execution state; `experiment_outcome` records *why*
+a non-shipped task ended (a deferred task and a cancelled one are both "not
+complete" but mean different things). Previously this distinction lived only in
+case-study prose. The field is **optional and advisory** — no blocking gate
+validates it (it is a vocabulary formalization, not a new enforcement layer).
 
 ### 13.2 Phase progression
 

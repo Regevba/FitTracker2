@@ -633,6 +633,16 @@ def check_branch_isolation_historical() -> list[dict]:
         if state.get("isolation_opt_out") is True:
             continue
 
+        # F11: exempt reverse-sync-mirrored files. The reverse-sync bot mirrors
+        # fitme-story-native state.json into FT2 on a `reverse-sync/*` branch and
+        # stamps `state_owner_sync_origin` ending in "-reverse". Such files
+        # legitimately never touch an FT2 `feature/*` or `chore/*` branch — the
+        # isolation discipline lives in the source repo — so the historical
+        # advisory would false-positive on them.
+        sync_origin = state.get("state_owner_sync_origin", "")
+        if isinstance(sync_origin, str) and sync_origin.endswith("-reverse"):
+            continue
+
         # Skip features that have a recorded merge PR — the PR existed on a
         # feature branch even if squash-merge erased the attribution from
         # `git log --source`. The advisory targets features that never had
@@ -675,7 +685,9 @@ def check_branch_isolation_historical() -> list[dict]:
             parts = line.split(None, 2)
             if len(parts) >= 2:
                 ref = parts[1] if "/" in parts[1] else ""
-                if "feature/" in ref or "chore/" in ref:
+                # F11: reverse-sync/* is also a legitimate origin (secondary
+                # signal alongside the state_owner_sync_origin "-reverse" skip).
+                if "feature/" in ref or "chore/" in ref or "reverse-sync/" in ref:
                     on_feature_branch = True
                     break
 

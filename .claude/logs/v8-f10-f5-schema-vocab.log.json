@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "feature": "v8-f10-f5-schema-vocab",
+  "title": "v8 f10 f5 schema vocab",
+  "work_type": null,
+  "current_phase": null,
+  "framework_version": null,
+  "started_at": "2026-06-15T12:30:26Z",
+  "updated_at": "2026-06-15T18:11:23Z",
+  "events": [
+    {
+      "timestamp": "2026-06-15T12:30:26Z",
+      "event_type": "scope_change",
+      "phase": "implementation",
+      "summary": "smoke: scope_change is now a known event_type",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T12:30:26Z",
+      "event_type": "frobnicate",
+      "phase": "implementation",
+      "summary": "smoke: unknown type triggers advisory",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T12:32:41Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F10+F5 formalization bundle \u2014 implementation (worktree); ready to commit",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-15T18:11:23Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Phase 9 CLOSED via close-feature.py. PR #720 squashed onto main as 5d8b530edb (operator-merged 2026-06-15T12:36:06Z). state.json implementation\u2192complete with full audit transitions + merge metadata.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

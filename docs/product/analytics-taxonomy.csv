@@ -69,6 +69,7 @@ AI,home_ai_avatar_state_changed,Custom,Home Screen,from_state (breathe/rotate/pu
 AI,home_ai_feedback_submitted,Custom,AI sheet,segment,rating (positive/negative),reason (optional),,,No,home,Recommendation feedback captured
 AI,home_ai_insight_shown,Custom,Home Screen,segment,confidence (low/medium/high),source_tier (local/cloud/foundation),,,No,home,AI insight card impression
 AI,ai_inference_completed,Custom,Global (AI pipeline),segment,source_tier (cloud/on_device/local_fallback),duration_ms (int ms),,,No,global,HADF Phase 3A T5a — honest end-to-end inference latency + terminal substrate; NO ttft/tps (server-side T5b)
+AI,ai_summary_generated,Custom,Global (AI pipeline),segment,source_tier (on_device/pcc),duration_ms (int ms),,,No,global,foundation-models-tier3 Tier 3a/3b — fired when on-device model or PCC produced a non-nil natural-language summary
 AI,home_ai_insight_tap,Custom,Home Screen,segment,confidence,,,,No,home,AI insight card tap → expand
 AI,home_ai_recommendation_viewed,Custom,AI sheet,segment,confidence,,,,No,home,Recommendation viewed in sheet
 AI,home_ai_sheet_opened,Custom,Home Screen,entry_point (insight_card/readiness_tap/more_button),,,,,No,home,AI sheet opened from home

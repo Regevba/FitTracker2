@@ -112,29 +112,37 @@ jobs:
             echo "Snapshot staged for commit ${TIMESTAMP}."
           fi
 
-      - name: Open PR with snapshot
+      # W37 fix (option B, 2026-06-15): commit the append-only snapshot straight
+      # to main. Bot PRs (GITHUB_TOKEN) never trigger CI, so under strict branch
+      # protection the required checks stay "expected" and the PR deadlocks
+      # (13/13 bot PRs needed hand-merge, 3 abandoned). Direct push needs the
+      # github-actions app in main's bypass_pull_request_allowances; until that
+      # is configured the push is rejected and we fall back to the legacy PR
+      # (no regression). See .claude/integrity/observed-patterns.md W37.
+      - name: Commit snapshot to main (direct push; PR fallback)
         if: steps.stage.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: |
-            chore(integrity): cycle snapshot ${{ steps.paths.outputs.timestamp }}
-
-            Automated 72h integrity cycle. Diff vs prior snapshot in the workflow run.
-          title: "chore(integrity): cycle snapshot ${{ steps.paths.outputs.timestamp }}"
-          body: |
-            Automated 72h integrity cycle snapshot.
-
-            - Snapshot: `${{ steps.paths.outputs.new }}`
-            - Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Branch protection on `main` blocks direct cron push, so the snapshot is opened as a PR.
-            Merging this PR persists the cron-tagged snapshot — required for Tier 3.2 trend mode unlock (3 cron snapshots needed).
-          branch: integrity-cycle/${{ steps.paths.outputs.timestamp }}
-          base: main
-          committer: Integrity Cycle Bot <integrity-cycle@actions>
-          author: Integrity Cycle Bot <integrity-cycle@actions>
-          labels: integrity-cycle,automated
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TIMESTAMP: ${{ steps.paths.outputs.timestamp }}
+          NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .claude/integrity/snapshots/
+          git commit -m "chore(integrity): cycle snapshot ${TIMESTAMP}" \
+                     -m "Automated 72h integrity cycle. Run: ${RUN_URL}"
+          if git push origin "HEAD:main"; then
+            echo "✓ Snapshot pushed directly to main (${TIMESTAMP})."
+            exit 0
+          fi
+          echo "::warning title=W37 fallback::Direct push to main rejected (bypass_pull_request_allowances not configured?) — opening a PR instead."
+          BRANCH="integrity-cycle/${TIMESTAMP}"
+          git push -u origin "HEAD:${BRANCH}" --force-with-lease
+          gh pr create --base main --head "${BRANCH}" \
+            --title "chore(integrity): cycle snapshot ${TIMESTAMP}" \
+            --body "Automated 72h integrity cycle snapshot. Snapshot: \`${NEW_SNAPSHOT}\`. Run: ${RUN_URL}. (W37 fallback — direct push rejected.)" \
+            --label "integrity-cycle,automated" || true
 
       - name: Package report for issue body
         if: steps.check.outputs.regression == 'true'
