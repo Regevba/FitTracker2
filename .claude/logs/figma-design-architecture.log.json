@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "figma-design-architecture",
+  "title": "figma design architecture",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-17T20:12:37Z",
+  "updated_at": "2026-06-17T20:12:37Z",
+  "events": [
+    {
+      "timestamp": "2026-06-17T20:12:37Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 Research opened \u2014 figma design + per-surface architecture (item 1). Preflight clean, on feature branch.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

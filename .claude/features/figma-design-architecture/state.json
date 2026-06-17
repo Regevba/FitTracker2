@@ -1,0 +1,98 @@
+{
+    "feature": "figma-design-architecture",
+    "feature_name": "figma-design-architecture",
+    "created": "2026-06-17T20:12:00Z",
+    "created_at": "2026-06-17T20:12:00Z",
+    "updated": "2026-06-17T20:20:00Z",
+    "updated_at": "2026-06-17T20:20:00Z",
+    "branch": "feature/figma-design-architecture",
+    "current_phase": "research",
+    "work_type": "feature",
+    "state_owner": "ft2",
+    "framework_version": "v7.10",
+    "isolation_opt_out": false,
+    "isolation_opt_out_reason": "",
+    "has_ui": null,
+    "requires_analytics": null,
+    "phases": {
+        "research": {
+            "status": "in_progress",
+            "approved_at": null,
+            "sources": []
+        },
+        "prd": {
+            "status": "pending",
+            "approved_at": null,
+            "analytics_spec_complete": false
+        },
+        "tasks": {
+            "status": "pending",
+            "count": 0
+        },
+        "ux_or_integration": {
+            "status": "pending",
+            "type": null,
+            "preflight_passed": null
+        },
+        "implementation": {
+            "status": "pending",
+            "commits": []
+        },
+        "testing": {
+            "status": "pending",
+            "ci_passed": false,
+            "tests_added": 0,
+            "instrumentation_verified": false
+        },
+        "review": {
+            "status": "pending",
+            "risks": [],
+            "ci_main": false,
+            "ci_feature": false
+        },
+        "merge": {
+            "status": "pending",
+            "pr_number": null
+        },
+        "documentation": {
+            "status": "pending"
+        },
+        "metrics": {
+            "primary": {
+                "name": "",
+                "baseline": null,
+                "target": null,
+                "current": null
+            },
+            "secondary": [],
+            "guardrails": [],
+            "instrumentation_ready": false,
+            "first_review_date": null,
+            "kill_criteria": ""
+        }
+    },
+    "tasks": [],
+    "figma_node_ids": {},
+    "figma_build_status": null,
+    "pre_merge_review": {
+        "ux": null,
+        "design": null
+    },
+    "transitions": [],
+    "paused": true,
+    "pause_reason": "Session ended after Phase 0 research approval-gate. Awaiting operator decision on 2 questions before Phase 1 PRD.",
+    "resume_notes": [
+        "Phase 0 research complete (research.md). Recommended: Approach A \u2014 close gaps B (iOS Figma\u2194code audit) + C (per-surface arch docs) + D (mirror-maintenance protocol) as a ~2-3 day Feature, has_ui=false.",
+        "DECISION 1 (Phase 0\u2192PRD): approve Approach A as-is / narrow to docs-only (C) / re-scope.",
+        "DECISION 2 (Gap D depth): doc-only protocol / + lightweight staleness advisory.",
+        "Key reframe: the expensive Figma-mirror rebuild already shipped 2026-06-15 (both surfaces, verified node IDs). This feature is the B+C+D closure of FT2-FH-005, NOT a 2-3 week design build."
+    ],
+    "timing": {
+        "phases": {
+            "research": {
+                "started_at": "2026-06-17T20:12:00Z"
+            }
+        },
+        "time_source": "measured"
+    }
+}
