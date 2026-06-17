@@ -301,7 +301,7 @@ struct MainScreenView: View {
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                         .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
+                        .frame(minHeight: AppSize.ctaHeight)
                         .background(
                             recommendationAccent,
                             in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
@@ -320,7 +320,7 @@ struct MainScreenView: View {
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Accent.primary)
                         .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
+                        .frame(minHeight: AppSize.ctaHeight)
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
                                 .strokeBorder(AppColor.Accent.primary, lineWidth: 1.5)
