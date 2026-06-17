@@ -18,6 +18,7 @@ struct OnboardingWelcomeView: View {
                 FitMeBrandIcon(size: 180, renderingMode: .template)
                     .foregroundStyle(AppGradient.brand)
                     .padding(.bottom, AppSpacing.xSmall)
+                    .accessibilityHidden(true)
 
                 // Audit DS-005 / UI-008: hero title uses AppText.displayHeadline
                 // (32pt bold rounded) instead of a hardcoded `.system(size:)`,
@@ -56,6 +57,8 @@ struct OnboardingWelcomeView: View {
                 y: AppShadow.ctaYOffset
             )
             .buttonStyle(.plain)
+            .accessibilityLabel("Get started")
+            .accessibilityHint("Begins setting up your profile")
             .padding(.horizontal, AppSpacing.medium)
             .padding(.bottom, AppSpacing.large)
         }

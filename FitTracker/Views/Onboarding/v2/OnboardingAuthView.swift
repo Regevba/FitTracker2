@@ -167,6 +167,9 @@ struct OnboardingAuthView: View {
                 .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.subtle, lineWidth: 1))
             }
             .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Continue with email")
+            .accessibilityHint("Register with your email address")
             .accessibilityIdentifier("onboarding.auth.email")
 
             // Google
@@ -199,6 +202,9 @@ struct OnboardingAuthView: View {
                     .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.hairline, lineWidth: 1))
                 }
                 .buttonStyle(.plain)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Continue with Google")
+                .accessibilityHint("Use your Google account")
                 .accessibilityIdentifier("onboarding.auth.google")
             }
 
@@ -230,6 +236,9 @@ struct OnboardingAuthView: View {
                 .background(AppColor.Surface.inverse, in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
             .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Continue with Apple")
+            .accessibilityHint("Use your Apple Account")
             .accessibilityIdentifier("onboarding.auth.apple")
         }
         .padding(.horizontal, AppSpacing.small)

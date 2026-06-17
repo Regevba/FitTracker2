@@ -117,6 +117,9 @@ struct OnboardingHealthKitView: View {
                 .buttonStyle(.plain)
                 .disabled(isRequestingAuthorization)
                 .sensoryFeedback(.impact(weight: .light), trigger: isRequestingAuthorization)
+                .accessibilityHint(isHealthAvailable
+                    ? "Opens the iOS Health permission dialog for heart rate, heart rate variability, steps, and sleep"
+                    : "Continues to the next step")
 
                 Button(action: onSkip) {
                     Text("Skip")
@@ -190,6 +193,10 @@ private struct HealthDataRow: View {
             AppColor.Surface.elevated,
             in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
         )
+        // Decorative icon + trailing checkmark add no information for VoiceOver;
+        // read each row as a single element named for its data type.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
     }
 }
 

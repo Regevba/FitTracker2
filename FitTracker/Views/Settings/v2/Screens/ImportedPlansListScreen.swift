@@ -126,6 +126,7 @@ struct ImportedPlansListScreen: View {
                     } label: {
                         ImportedPlanRow(plan: plan)
                     }
+                    .accessibilityHint("Opens plan details and edit options")
                     .listRowBackground(rowBackground(for: plan))
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
