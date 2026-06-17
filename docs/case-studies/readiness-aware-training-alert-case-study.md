@@ -6,7 +6,7 @@ framework_version: v7.9
 work_type: enhancement
 work_subtype: sub_feature
 case_study_type: shipped
-tier_tags_required: true
+tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/readiness-aware-training-alert-case-study.md
 case_study_showcase: fitme-story/content/04-case-studies/40-readiness-aware-training-alert.mdx

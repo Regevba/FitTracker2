@@ -22,7 +22,7 @@
 | Framework version | v4.3 → v4.4 |
 | Work type | Feature |
 | Complexity | Cross-feature infrastructure + new model schema |
-| Wall time | ~45 min (spec 15 min + implementation 25 min + framework docs 5 min) |
+| Wall time | ~55 min (spec 15 min + implementation 25 min + framework docs 5 min + ProfileEvals 10 min) |
 | Tests added | 29 eval tests across 4 files |
 | Analytics events | 0 (infrastructure, not user-facing) |
 | Cache hit rate | N/A (first-of-kind, no prior cache) |

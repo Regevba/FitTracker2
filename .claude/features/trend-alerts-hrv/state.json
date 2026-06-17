@@ -205,6 +205,7 @@
     }
   ],
   "case_study": "docs/case-studies/trend-alerts-hrv-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/41-trend-alerts-hrv.mdx",
   "merge_pr_number": 564,
   "merge_commit_sha": "3deab70daab66f9c0c7a3540b96fec3e3a02a09e",
   "merged_at": "2026-06-01T14:13:53Z",

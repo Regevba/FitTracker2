@@ -6,7 +6,7 @@ framework_version: v7.9.1
 work_type: Feature
 work_subtype: framework_feature
 case_study_type: shipped
-tier_tags_required: true
+tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/f17-last-fired-at-index-case-study.md
 case_study_showcase: fitme-story/content/04-case-studies/45-f17-last-fired-at-index.mdx

@@ -6,7 +6,7 @@ framework_version: v7.9.1
 work_type: Feature
 work_subtype: framework_feature
 case_study_type: shipped
-tier_tags_required: true
+tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/f2-phase-0-reality-check-case-study.md
 case_study_showcase: fitme-story/content/04-case-studies/46-f2-phase-0-reality-check.mdx

@@ -14,7 +14,7 @@
   "dispatch_pattern": "subagent-driven-tdd-sequential-phased",
   "created_at": "2026-05-11T07:00:00Z",
   "case_study": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
-  "case_study_showcase": "../../fitme-story/content/04-case-studies/29-cross-repo-state-sync-impl.mdx",
+  "case_study_showcase": "fitme-story/content/04-case-studies/29-cross-repo-state-sync-impl.mdx",
   "related_prs": [
     "PR #298",
     "PR #299",

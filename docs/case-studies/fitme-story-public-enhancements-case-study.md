@@ -44,11 +44,6 @@ related_prs:
   - "FT2#260"
   - "FT2#261"
   - "FT2#266"
-pr_citation_exempt:
-  - pr_number: 75
-    reason: "fitme-story#75 (T20 Code Connect foundation, 17 component node IDs + 4 primitives) shipped per the v4.X+CC cross-repo Code Connect bridge axis (CLAUDE.md \"v4.X+CC\" section), NOT as an audit-finding closure. Cited in state.json::tasks[T20].pr_number; intentionally not cited in case-study body because the case-study scope is audit-finding closure metrics, not Code Connect track."
-  - pr_number: 129
-    reason: "fitme-story#129 (T13 v9 mirror predecessor) shipped 2026-05-21 as the first ship of T13 dev-guide v7.9 bump; superseded the same-day by fitme-story#134 (the canonical T13 ship). Retained in state.json::tasks[T13].related_prs for full provenance; case-study body cites only the canonical #134 to avoid redundant narrative."
 outlier_disclosure: |
   This is the first case study in the corpus written MIDSTREAM (current_phase=implementation,
   17/24 tasks done) rather than at closure. Written 2026-05-09 per direct user directive after
@@ -83,6 +78,10 @@ pr_citation_exempt:
     reason: "Cross-repo citation to fitme-story repo (T10 search + bundled UX polish). Verified live; merged squash 809a709."
   - pr_number: 71
     reason: "Cross-repo citation to fitme-story repo (T24 mobile-readiness). Verified live; merged squash e675fe9."
+  - pr_number: 75
+    reason: "fitme-story#75 (T20 Code Connect foundation, 17 component node IDs + 4 primitives) shipped per the v4.X+CC cross-repo Code Connect bridge axis (CLAUDE.md \"v4.X+CC\" section), NOT as an audit-finding closure. Cited in state.json::tasks[T20].pr_number; intentionally not cited in case-study body because the case-study scope is audit-finding closure metrics, not Code Connect track."
+  - pr_number: 129
+    reason: "fitme-story#129 (T13 v9 mirror predecessor) shipped 2026-05-21 as the first ship of T13 dev-guide v7.9 bump; superseded the same-day by fitme-story#134 (the canonical T13 ship). Retained in state.json::tasks[T13].related_prs for full provenance; case-study body cites only the canonical #134 to avoid redundant narrative."
 pr_citation_exempt_meta_note: |
   Every entry above demonstrates the asymmetry this rollup itself surfaces (Phase B of the
   2026-05-09 directive ports the framework to fitme-story repo, which would let the

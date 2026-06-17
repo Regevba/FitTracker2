@@ -8,7 +8,6 @@ work_type: enhancement
 work_subtype: unified-control-center
 parent_feature: unified-control-center
 case_study_type: shipped
-tier_tags_required: true
 tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/control-room-live-feed-case-study.md

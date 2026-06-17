@@ -345,6 +345,7 @@
   "merge_commit_sha": "c8ba2993bf6986825bff97dde91af319997686a3",
   "merged_at": "2026-06-12T19:11:27Z",
   "case_study": "docs/case-studies/garmin-health-connection-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/49-garmin-health-connection.mdx",
   "feature_branch_merged": "feature/garmin-health-connection",
   "linear_issue": "FIT-199"
 }

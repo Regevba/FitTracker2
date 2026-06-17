@@ -6,7 +6,7 @@ framework_version: v7.9.1
 work_type: Chore
 work_subtype: framework_feature
 case_study_type: shipped
-tier_tags_required: true
+tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md
 case_study_showcase: ""

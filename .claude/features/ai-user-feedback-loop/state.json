@@ -154,6 +154,7 @@
   "tasks_path": ".claude/features/ai-user-feedback-loop/tasks.md",
   "prd_path": "docs/product/prd/ai-user-feedback-loop.md",
   "case_study": "docs/case-studies/ai-user-feedback-loop-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/43-ai-user-feedback-loop.mdx",
   "primary_metric": "home_ai_feedback_submitted events per WAU >= 0.10 at T+30d (T1, baseline 0.03)",
   "success_metrics": [
     "home_ai_feedback_submitted events per WAU (T1, baseline 0.03 \u2192 target >=0.10 at T+30d)",

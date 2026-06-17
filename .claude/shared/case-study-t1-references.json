@@ -87,6 +87,20 @@
       },
       "instrumentation_source": "make ui-audit (scripts/ui-audit.py) — P1 finding count from .swift files under FitTracker/Views and FitTracker/DesignSystem",
       "note": "Audit-1 correction C-004 (closes Gemini D-006). Final closure pass — 14 → 0 (100% from this sweep, against rolling baseline of 103 across all three burndown passes)."
+    },
+    {
+      "case_study": "f16-try-repo-harness-case-study.md",
+      "claim": "try-repo end-to-end coverage of write-time gates",
+      "value": 15,
+      "unit": "/16",
+      "computed_from": {
+        "covered": 15,
+        "total_write_time_gates": 16,
+        "documented_skip": "STATE_OWNER_LOCATION_MISMATCH (path_neutral in throwaway repo; deferred to F16.1)",
+        "as_percent": 93.75
+      },
+      "instrumentation_source": "scripts/tests/test_try_repo_*_gates.py — real .githooks/pre-commit subprocess runs over tests/fixtures/<GATE_ID>/{positive,negative}",
+      "note": "Clears the standing TIER_TAG_LIKELY_INCORRECT advisory on '15/16'. The count is a genuine instrumented gate-set total (15 of 16 covered end-to-end + 1 documented skip), correctly tagged T1 — the heuristic had no ledger row to match against. Confirmed correct in the 2026-06-17 case-study data-integrity audit."
     }
   ]
 }
