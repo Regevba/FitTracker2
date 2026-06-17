@@ -1,7 +1,12 @@
 {
   "feature_name": "fitme-story-design-system-p2-cleanup",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-05-10T18:13:57Z",
   "updated_at": "2026-05-10T18:51:19Z",
@@ -143,7 +148,16 @@
       "kill_criteria_resolution": "Not_yet_triggered. Operator visual spot-check pending post-deploy (PR #84 lists this as a checkbox). Migrations were mechanical (Card / Stat / ExternalLink / .divider-row) so confidence in no-regression is high; but visual regression IS the kill criterion if discovered."
     }
   },
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "P2 design-system audit cleanup \u2014 Card\u00d75 + Stat\u00d71 + ExternalLink + divider class (fitme-story)",
+      "status": "done",
+      "pr_number": 84,
+      "provenance": "backfill-from-merge-pr-2026-06-17",
+      "completed_at": "2026-05-10T18:45:11Z"
+    }
+  ],
   "figma_node_ids": {},
   "figma_build_status": "tokens_published_2026-05-10",
   "pre_merge_review": {
