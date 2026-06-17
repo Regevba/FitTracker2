@@ -78,7 +78,7 @@ struct OnboardingConsentView: View {
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                         .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
+                        .frame(minHeight: AppSize.ctaHeight)
                 }
                 .background(AppColor.Brand.primary, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
                 .shadow(color: AppShadow.ctaColor, radius: AppShadow.ctaRadius, y: AppShadow.ctaYOffset)

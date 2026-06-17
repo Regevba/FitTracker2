@@ -113,7 +113,7 @@ struct BodyCompositionCard: View {
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                         .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
+                        .frame(minHeight: AppSize.ctaHeight)
                         .background(AppColor.Accent.recovery, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
                 }
                 .buttonStyle(.plain)
@@ -140,7 +140,7 @@ struct BodyCompositionCard: View {
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Accent.primary)
                         .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
+                        .frame(minHeight: AppSize.ctaHeight)
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
                                 .strokeBorder(AppColor.Accent.primary, lineWidth: 1.5)
@@ -196,7 +196,7 @@ struct BodyCompositionCard: View {
             if let value {
                 HStack(alignment: .lastTextBaseline, spacing: AppSpacing.micro) {
                     Text(value)
-                        .font(AppText.metricM)
+                        .scaledFont(size: 25, weight: .bold, design: .rounded, relativeTo: .title)
                         .monospacedDigit()
                         .foregroundStyle(AppColor.Text.primary)
                     Text(unit)
@@ -207,7 +207,7 @@ struct BodyCompositionCard: View {
                 .accessibilityValue("\(value) \(unit)")
             } else {
                 Text("—")
-                    .font(AppText.metricM)
+                    .scaledFont(size: 25, weight: .bold, design: .rounded, relativeTo: .title)
                     .foregroundStyle(AppColor.Text.tertiary)
             }
 
