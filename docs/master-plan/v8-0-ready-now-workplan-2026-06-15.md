@@ -5,7 +5,7 @@
 
 ## The 8 ready-now items
 
-> **Status 2026-06-16:** 6 of 8 shipped (F12, F11, F10, F13, F5, **F4 ← PR #740**). **2 remain open: F1 (RICE 19.2) then F3 (14.4).**
+> **Status 2026-06-17:** 7 of 8 shipped (F12, F11, F10, F13, F5, F4, **F1 ← advisory, this branch**). **1 remains open: F3 (dep-graph cycle check, RICE 14.4).**
 
 | # | ID | Item | RICE | Effort | Class | Infra-glob? |
 |---|---|---|---|---|---|---|
@@ -15,7 +15,7 @@
 | 4 | **F13** ✅ SHIPPED | `source_commit` `workflow_dispatch` input + full-repo-scan fallback | 32.0 | ~0.4w | GH Actions infra (fitme-story) | fitme-story PR #221 |
 | 5 | **F4** ✅ SHIPPED | `FRAMEWORK_VERSION_STALE` advisory gate — stale-version detector on phase-advance (PR #740, 2026-06-16; advisory→enforced ~2026-06-30) | 32.0 | ~0.5w | Write-time gate (advisory) | yes (`scripts/`) |
 | 6 | **F5** ✅ SHIPPED | `scope_change` Tier 2.2 vocabulary event (advisory note) | 20.0 | ~0.2w | Vocabulary | yes (`scripts/` + log schema) |
-| 7 | **F1** | `STATE_TASKS_FILESYSTEM_DRIFT` advisory | 19.2 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
+| 7 | **F1** ✅ SHIPPED | `STATE_TASKS_FILESYSTEM_DRIFT` cycle-time advisory — complete feature + empty `tasks[]` + shipped artifact = ledger drift (advisory-permanent; 5 baseline fires) | 19.2 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
 | 8 | **F3** | Phase 2 dependency-graph cycle check | 14.4 | ~0.5w | Workflow gate | yes (`scripts/`) |
 
 **Total effort:** ~2.9 engineer-weeks. All 8 touch infra-glob paths.

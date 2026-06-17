@@ -990,6 +990,104 @@ def check_feature_closure_completeness_cycle() -> list[dict]:
     return findings
 
 
+def check_state_tasks_filesystem_drift(coverage: "GateCoverage | None" = None) -> list[dict]:
+    """F1 (v8.x docket, Theme A): STATE_TASKS_FILESYSTEM_DRIFT cycle-time advisory.
+
+    Detects the task ledger (state.json::tasks[]) drifting from the work that
+    actually shipped. For every feature with current_phase=complete and an
+    empty/missing tasks[], fires when (a) the feature was created on/after the
+    v7.6 task-discipline date AND (b) it is not a framework-meta feature AND
+    (c) the filesystem shows shipped artifacts (a case study, related_prs, or a
+    merge PR number). The fire means: the work shipped, but the ledger is empty.
+
+    Empirically surfaced when 5-of-10 roadmap-stress-test sub-features were
+    `complete` with empty tasks[] despite shipped work (the post-squash-merge
+    drift class F2 catches at Phase 0; this is its standing cycle-time mirror).
+
+    Severity: ADVISORY only — never affects finding_count or exit code. This is
+    a backlog-surfacing advisory (like TIER_TAG_LIKELY_INCORRECT), not a
+    promotion candidate. Pre-task-discipline features (created < 2026-04-25) are
+    skipped as bounded backfill-debt, not active drift.
+
+    Emits Mechanism A coverage (gate STATE_TASKS_FILESYSTEM_DRIFT) when
+    `coverage` is supplied — one candidate per complete+empty-tasks feature.
+
+    Full design: .claude/features/f1-state-tasks-filesystem-drift/calibration-artifacts.md
+    """
+    GATE = "STATE_TASKS_FILESYSTEM_DRIFT"
+    TASK_DISCIPLINE_DATE = "2026-04-25"  # v7.6 ship — task-ledger discipline began
+    BACKFILL_EXEMPT = {
+        "pre_pm_workflow_backfill", "roundup",
+        "no_case_study_required", "framework_meta_retroactive",
+    }
+    findings: list[dict] = []
+    if not FEATURES_DIR.exists():
+        if coverage is not None:
+            coverage.skip(GATE, "features_dir_missing")
+        return findings
+
+    for state_path in sorted(FEATURES_DIR.glob("*/state.json")):
+        name = state_path.parent.name
+        try:
+            d = json.loads(state_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+
+        if d.get("current_phase") != "complete":
+            continue
+        tasks = d.get("tasks") or []
+        if tasks:
+            continue  # populated ledger — not a candidate
+
+        # Candidate: complete + empty tasks[].
+        if coverage is not None:
+            coverage.candidate(GATE)
+
+        created = (d.get("created_at") or d.get("created") or "")[:10]
+        if created and created < TASK_DISCIPLINE_DATE:
+            if coverage is not None:
+                coverage.skip(GATE, "pre_task_discipline")
+            continue
+
+        if (
+            name.startswith("framework-v")
+            or (d.get("work_type") or "").lower() == "framework"
+            or (d.get("work_subtype") or "").startswith("framework")
+            or d.get("case_study_type") in BACKFILL_EXEMPT
+            or (d.get("platforms_tested_provenance") or "").startswith("exempt:")
+        ):
+            if coverage is not None:
+                coverage.skip(GATE, "exempt_framework_meta")
+            continue
+
+        # Filesystem half: is there shipped-artifact evidence?
+        if (CASE_STUDIES_DIR / f"{name}-case-study.md").exists():
+            artifact = "case study"
+        elif d.get("related_prs"):
+            artifact = "related_prs"
+        elif (d.get("phases", {}).get("merge", {}) or {}).get("pr_number"):
+            artifact = f"merge PR #{d['phases']['merge']['pr_number']}"
+        else:
+            if coverage is not None:
+                coverage.skip(GATE, "no_shipped_artifact")
+            continue
+
+        if coverage is not None:
+            coverage.checked(GATE)
+        findings.append({
+            "feature": name,
+            "severity": "ADVISORY",
+            "code": GATE,
+            "message": (
+                f"{name}: complete with shipped artifacts ({artifact}) but "
+                f"tasks[] is empty — the task ledger drifted from the work. "
+                f"Backfill tasks[] (e.g. `make close-feature FEATURE={name}`) "
+                f"or tag the feature exempt (case_study_type / framework-meta)."
+            ),
+        })
+    return findings
+
+
 def check_gate_coverage_zero() -> list[dict]:
     """GATE_COVERAGE_ZERO (advisory, v7.10 candidate — built 2026-06-08).
 
@@ -1372,6 +1470,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + pr_cache_failed_advisory  # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b)
         + check_pattern_skill_unmapped(coverage=cycle_coverage)  # v7.9.1 overlay
         + check_gate_coverage_zero()  # v7.10 candidate (built 2026-06-08, advisory)
+        + check_state_tasks_filesystem_drift(coverage=cycle_coverage)  # F1 (v8.x Theme A)
     )
     all_findings = findings + advisory_findings
 

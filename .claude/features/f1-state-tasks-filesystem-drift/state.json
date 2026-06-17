@@ -1,0 +1,63 @@
+{
+  "feature_name": "f1-state-tasks-filesystem-drift",
+  "current_phase": "implementation",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "created_at": "2026-06-17T00:00:00Z",
+  "updated_at": "2026-06-17T00:00:00Z",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "chore/f1-state-tasks-filesystem-drift",
+  "scheduled_after": null,
+  "primary_metric": "STATE_TASKS_FILESYSTEM_DRIFT advisory emits Mechanism A cycle coverage on every complete feature with an empty tasks[] ledger, across a 14-day calibration window with 0 false positives (every fire is a genuine ledger-vs-shipped-work drift).",
+  "success_metrics": [
+    "Gate appears in .claude/logs/gate-coverage.jsonl with mode=cycle + candidates>=1 on the first integrity-check run after merge (T1, set-membership)",
+    "0 false positives across the advisory window — every fire maps to a complete feature that shipped artifacts (case study / related_prs / merge PR) yet left tasks[] empty (T1, manual review of fire rows)",
+    "Skip-reason distribution is legitimate (pre_task_discipline dominates; exempt_framework_meta + no_shipped_artifact explained; not a wiring bug) (T2)",
+    "Baseline fire-set at ship is the expected 5 features (case-study-presentation, ios-ui-audit-p1-burndown, trend-alerts-hrv, fitme-story-design-system-p2-cleanup, smart-reminders-behavioral-learning) (T1, snapshot)",
+    "docket + ready-now workplan F1 row marked shipped (T1, section presence)"
+  ],
+  "kill_criteria": [
+    "Any false positive that maps to a legitimately task-less complete feature (e.g. a thin chore that genuinely had no task decomposition) -> widen exemptions before promoting; do NOT flip to enforced.",
+    "Fire count balloons past ~10 with corpus growth such that the advisory becomes noise rather than signal -> add a forward-only created_at cutoff or convert to a documentation-debt-style ledger.",
+    "Zero candidates across the entire window (gate never reaches a complete+empty-tasks feature) -> mis-wire; investigate via GATE_COVERAGE_ZERO."
+  ],
+  "kill_criteria_resolution": "Evaluated at the Phase C calibration review (~2026-07-01 -> -08). Advisory at ship; advisory-permanent unless a false positive surfaces (this is a backlog-surfacing advisory, not a promotion candidate by default). Reversibility: single-line removal from the advisory_findings tuple in build_snapshot().",
+  "dispatch_pattern": "agent-driven (single cycle-time advisory add in integrity-check.py + unit/dispatch tests)",
+  "spec": ".claude/features/f1-state-tasks-filesystem-drift/calibration-artifacts.md (Phase A); docs/master-plan/v8-0-ready-now-workplan-2026-06-15.md Batch 3 (F1) + v8-x-build-docket-2026-06-15.md §0.B (F1, RICE 19.2, Theme A)",
+  "scope_summary": "Add the STATE_TASKS_FILESYSTEM_DRIFT cycle-time ADVISORY: for every feature with current_phase=complete and an empty/missing tasks[] ledger, fire when (a) created post-task-discipline (>=2026-04-25 v7.6) AND (b) not framework-meta AND (c) the filesystem shows shipped artifacts (a case study, related_prs, or a merge PR number). The fire means the task ledger drifted from the work that actually shipped. Surfaced when 5-of-10 roadmap-stress-test sub-features had empty tasks[] despite shipped work. Pre-v7.6 features are skipped (pre_task_discipline) as bounded backfill-debt, not active drift. Out of scope: auto-backfilling tasks[]; git-log evidence scans (filesystem artifact signal only, à la F2 reality-check but cycle-time + read-only).",
+  "related_prs": [],
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-17T00:00:00Z"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "check_state_tasks_filesystem_drift(coverage) advisory fn in integrity-check.py (complete + empty tasks[] + post-discipline + non-meta + has shipped artifact) with cycle-mode Mechanism A emission",
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z"
+    },
+    {
+      "id": "T2",
+      "description": "Wire into build_snapshot() advisory_findings tuple with coverage=cycle_coverage",
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z"
+    },
+    {
+      "id": "T3",
+      "description": "Unit + dispatch tests (scripts/tests/test_state_tasks_filesystem_drift.py): fire/skip per reason + dispatch wiring + coverage emission",
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z"
+    }
+  ]
+}
