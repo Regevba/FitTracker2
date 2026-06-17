@@ -18,6 +18,7 @@ struct OnboardingWelcomeView: View {
                 FitMeBrandIcon(size: 180, renderingMode: .template)
                     .foregroundStyle(AppGradient.brand)
                     .padding(.bottom, AppSpacing.xSmall)
+                    .accessibilityHidden(true)
 
                 // Audit DS-005 / UI-008: hero title is the 32pt bold rounded display
                 // size, rendered via `.scaledFont` so it scales with Dynamic Type
@@ -57,6 +58,10 @@ struct OnboardingWelcomeView: View {
                 y: AppShadow.ctaYOffset
             )
             .buttonStyle(.plain)
+            // Label must match the visible text exactly — SignInUITests /
+            // AuthPolishV2UITests query this button by "Get Started".
+            .accessibilityLabel("Get Started")
+            .accessibilityHint("Begins setting up your profile")
             .padding(.horizontal, AppSpacing.medium)
             .padding(.bottom, AppSpacing.large)
         }
