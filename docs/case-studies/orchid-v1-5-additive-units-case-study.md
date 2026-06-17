@@ -8,7 +8,7 @@ work_subtype: research
 dispatch_pattern: serial
 status: draft_for_review
 case_study_type: live_pm_workflow
-tier_tags_required: true
+tier_tags_present: true
 case_study: docs/case-studies/orchid-v1-5-additive-units-case-study.md
 predecessor_case_studies:
   - docs/case-studies/orchid-ai-accelerator-case-study.md

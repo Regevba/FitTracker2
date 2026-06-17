@@ -6,7 +6,7 @@ framework_version: v7.9.1
 work_type: Feature
 work_subtype: framework_feature
 case_study_type: in_progress
-tier_tags_required: true
+tier_tags_present: true
 status: implementation
 case_study: docs/case-studies/t14-platform-parity-state-field-case-study.md
 case_study_showcase: ""

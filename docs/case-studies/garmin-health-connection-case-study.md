@@ -7,7 +7,6 @@ framework_version: v7.10
 work_type: feature
 work_subtype: new_feature
 case_study_type: shipped
-tier_tags_required: true
 tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/garmin-health-connection-case-study.md

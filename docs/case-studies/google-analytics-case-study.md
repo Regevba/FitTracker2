@@ -4,13 +4,15 @@ date_written: 2026-05-05
 work_type: Feature
 dispatch_pattern: serial
 success_metrics:
-  primary: "Analytics events landing in GA4 with screen-prefix taxonomy compliance ≥ 95% [T1 once dashboards live]. The substrate every other feature's success metrics depend on."
+  primary: "Analytics events landing in GA4 with screen-prefix taxonomy compliance ≥ 95% [T2 target; T1 once dashboards live]. The substrate every other feature's success metrics depend on."
   secondary:
-    - "Consent rate > 50% after ATT prompt [T1 once instrumented]"
-    - "Event coverage of declared metrics 14/40 at merge growing toward 40/40 as downstream features land [T1]"
+    - "Consent rate > 50% after ATT prompt [T2 target; T1 once instrumented]"
+    - "Event coverage of declared metrics 14/40 at merge growing toward 40/40 as downstream features land [T1 for the 14/40 measured at merge; 40/40 is a T2 projection]"
     - "Zero PII leakage in event payloads [T1 — schema-validated]"
 kill_criteria:
   - "Data-driven foundation — cannot be killed. If consent rate < 5%, simplify consent flow rather than removing analytics."
+kill_criteria_resolution: "not_fired — foundational/data-driven feature; cannot be killed. The consent-flow-simplification trigger (consent rate < 5%) was not met. Consent rate was not instrumented at backfill time, so the trigger remains a forward guard rather than an evaluated outcome."
+tier_tags_present: true
 case_study_type: pre_pm_workflow_backfill
 parent_case_study: "docs/case-studies/six-features-roundup-case-study.md"
 predecessor_case_studies: []

@@ -6,7 +6,7 @@ framework_version: v7.8
 work_type: enhancement
 work_subtype: sub_feature
 case_study_type: shipped
-tier_tags_required: true
+tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/smart-reminders-behavioral-learning-case-study.md
 case_study_showcase: fitme-story/content/04-case-studies/23-smart-reminders-behavioral.mdx
@@ -28,13 +28,14 @@ success_metrics:
     target: 5.0
     significance: p < 0.05
     review_at: 2026-05-23
-    tier: T1
-    note: "Cannot evaluate until PR-2 ships + 14 ± 4 day per-user window completes"
+    tier: T2
+    note: "Declared target (T2); promotes to T1 once instrumented. Cannot evaluate until PR-2 ships + 14 ± 4 day per-user window completes."
 kill_criteria:
   - condition: "Aggregate tap-through lift < +0 pp at end of per-user readout AND post-population aggregate also fails"
   - condition: "Any single personalised type regresses by >= -3 pp vs static baseline → per-type rollback"
   - condition: "Disable rate +>= 3 pp OR dismiss rate >= +5 pp from baseline (advisory composite)"
 kill_criterion_fired: false
+kill_criteria_resolution: "pending — behavioral measurement window never opened. PR-1 shipped the iOS data layer (#190) + backend half (#198); PR-2 aggregation execution shipped only as a plan (#199), so the per-user readout the kill criteria depend on was never produced. kill_criterion_fired=false reflects 'not yet evaluable', NOT 'evaluated and passed'. Re-evaluate if/when the PR-2 readout window is executed."
 ---
 
 # Smart Reminders Behavioral Learning — PR-1 Case Study

@@ -11,6 +11,8 @@ success_metrics:
     - "JSON export returns all user data in machine-readable form [T2]"
 kill_criteria:
   - "Legal requirement — cannot be killed. If implementation surfaces a 9-store-clear failure mode under load, downgrade to a synchronous-with-rollback design rather than removing the feature."
+kill_criteria_resolution: "not_applicable — legal/compliance requirement; cannot be killed. The synchronous-with-rollback downgrade mitigation was never triggered (no 9-store-clear failure mode surfaced under load)."
+tier_tags_present: true
 case_study_type: pre_pm_workflow_backfill
 parent_case_study: "docs/case-studies/six-features-roundup-case-study.md"
 predecessor_case_studies: []

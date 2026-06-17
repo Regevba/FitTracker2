@@ -7,7 +7,7 @@ work_type: feature
 work_subtype: v2_refactor
 status: shipped
 case_study_type: shipped
-tier_tags_required: true
+tier_tags_present: true
 case_study: docs/case-studies/stats-v2-case-study.md
 case_study_showcase: fitme-story/content/04-case-studies/22c-stats-v2.mdx
 predecessor_case_studies:
@@ -28,12 +28,13 @@ success_metrics:
     baseline: 0.27
     target: 0.90
     review_at: 2026-05-14
-    tier: T1
+    tier: T2  # Declared target at ship; T1 production readout deferred to +14d (2026-05-14) per §250
   - name: motion_token_compliance
     baseline: 0.0
     target: 1.0
     tier: T1
 kill_criteria: a11y coverage drops below 70% after merge
+kill_criteria_resolution: "not_fired — VoiceOver/a11y annotation coverage increased 9 → 18 in v2/StatsView.swift post-merge (PR #164, commit 027abf0), so coverage did not drop below 70%. This is distinct from the stats_voiceover_coverage primary-metric T1 production readout, which was separately deferred to +14d (2026-05-14)."
 dispatch_pattern: serial (per F6-F9 concurrent-dispatch hygiene block)
 ---
 

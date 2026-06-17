@@ -1,7 +1,9 @@
 ---
 title: Framework v7.7 — Validity Closure
 date_written: 2026-04-27
+framework_version: v7.7
 work_type: Feature
+tier_tags_present: true
 dispatch_pattern: serial
 success_metrics:
   primary: "post-v6 fully-adopted ratio: baseline 2/9 = 22.2% → target ≥8/11 = 72.7%"
@@ -16,6 +18,7 @@ kill_criteria:
   - "PR-1 instrumentation introduces >100ms latency to skill loading"
   - "Pre-commit hook FP rate >10% on legitimate commits in week-1 dogfooding"
   - "Framework-health dashboard reveals contradictions in ledgers"
+kill_criteria_resolution: "none fired. Cache-hits writer-path closed via Mechanism C auto-instrumentation (PR #144); tier-tag checker FP rate stayed <25% (heuristic narrowed at v7.8.4); PR-1 added no measurable skill-load latency; week-1 dogfooding pre-commit FP rate stayed <10%; framework-health dashboard surfaced no ledger contradictions. B1/B2 verification: PR #201 (2026-05-06). Shipped-banner flip: PR #364 (2026-05-15). Full narrative: §99.2 / §99.7."
 predecessor_case_studies:
   - "docs/case-studies/data-integrity-framework-v7.5-case-study.md"
   - "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md"

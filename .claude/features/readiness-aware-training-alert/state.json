@@ -261,6 +261,7 @@
   "merge_commit_sha": "dcf30c905eb67058394818a0100dd457cc43c349",
   "merged_at": "2026-06-01T06:47:06Z",
   "case_study": "docs/case-studies/readiness-aware-training-alert-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/40-readiness-aware-training-alert.mdx",
   "feature_branch_merged": "feature/readiness-aware-training-alert",
   "kill_criteria_resolution": "pending_t14_eval_2026-06-15"
 }
