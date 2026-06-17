@@ -1,5 +1,21 @@
 # Android and Pixel Adaptation Notes
 
+## Generated token layer (AND-1, shipped 2026-06-17)
+
+The token half of this strategy is **live and generated**, not aspirational. `design-tokens/tokens.json`
+(the same iOS source of truth) builds three committed, drift-gated Android artifacts via
+[`sd.config.android.mjs`](../../sd.config.android.mjs):
+
+- [`android/FitMeDesignTokens.kt`](../../android/FitMeDesignTokens.kt) — Jetpack Compose objects
+  (`FitMeColors`, `FitMeSpacing`, `FitMeRadius`, `FitMeSize`, `FitMeLayout`, `FitMeElevation`,
+  `FitMeOpacity`, `FitMeMotion`).
+- [`android/res/values/colors.xml`](../../android/res/values/colors.xml) + `dimens.xml` — Android resources.
+
+Build with `make tokens-android`; the `tokens:android:check` gate fails if the artifacts drift from
+`tokens.json`. The MD3 *role* mapping below is the design intent; the generated `.kt`/`.xml` are the
+literal values. **No Android app code exists** — these artifacts are the consumable token layer for
+when one is built (`android-app-implementation` remains deferred indefinitely; re-eval 2027-05-26).
+
 ## Strategy
 
 Android is a second platform layer built on the same FitTracker semantics, not a second independent system.
@@ -19,7 +35,7 @@ The order is:
 | `AppColor.Surface.*` | surface, surface container, surface container high |
 | `AppColor.Text.*` | on-surface, on-surface variant |
 | `AppColor.Status.*` | success/warning/error app roles mapped into Material-compatible status tokens |
-| `AppColor.Focus.ring` | focused / selected emphasis token |
+| `AppColor.Selection.*` | focused / selected emphasis token (was `Focus.ring`, removed in audit DS-015) |
 | `AppRadius.*` | shape scale for small, medium, and large components |
 
 ## Component translation

@@ -2,7 +2,40 @@
 
 > Maps the FitMe iOS design tokens to Material Design 3 equivalents for Jetpack Compose.
 > Source of truth: `design-tokens/tokens.json`
-> Last updated: 2026-05-25 (AND-2 audit pass; per-row mappings still reflect 2026-04-04 schema)
+> Last updated: 2026-06-17 (AND-1 shipped — pipeline now generates real artifacts)
+
+---
+
+## 0a. AND-1 SHIPPED — the pipeline is real (2026-06-17)
+
+The Android token layer is **no longer a broken config + a doc**. `design-tokens/tokens.json`
+now generates committed, drift-gated artifacts via the same Style Dictionary pipeline as iOS:
+
+| Artifact | What it is |
+|---|---|
+| [`android/FitMeDesignTokens.kt`](../../android/FitMeDesignTokens.kt) | Jetpack Compose — `FitMeColors` (49 `Color(0xAARRGGBB)`), `FitMeSpacing`/`FitMeRadius`/`FitMeSize`/`FitMeLayout`/`FitMeElevation` (`Dp`), `FitMeOpacity` (`Float`), `FitMeMotion` (duration-ms + easing) |
+| [`android/res/values/colors.xml`](../../android/res/values/colors.xml) | 49 `<color>` resources (`#AARRGGBB`) |
+| [`android/res/values/dimens.xml`](../../android/res/values/dimens.xml) | 34 `<dimen>` resources (`Ndp`) — spacing + radius + size + layout + shadow |
+
+**Build:** `make tokens-android` / `npm run tokens:android`. **Config:** [`sd.config.android.mjs`](../../sd.config.android.mjs)
+(Style Dictionary **v5**, ESM; custom hand-rolled formats — mirrors the iOS `sd.config.mjs`).
+**Drift gate:** `npm run tokens:android:check` regenerates and fails on any drift vs the committed
+artifacts (date lines stripped), exactly like the iOS `tokens:check`.
+
+**The old blocker is gone:** `design-tokens/config-android.json` (which referenced the non-existent
+`size/compose/dp` / `size/compose/sp` transforms and was written against Style Dictionary v3) has
+been **removed** — superseded by `sd.config.android.mjs`. Since the repo migrated to Style Dictionary
+v5 (2026-06-08), the new config hand-rolls its own Compose/XML formats and depends on no built-in
+transform group, so it can't drift on a Style-Dictionary version bump.
+
+**Per-token Compose names are now authoritative in the generated `.kt` file** — the per-row tables
+in sections 1–6 below remain the *semantic MD3 intent* reference (which iOS role maps to which MD3
+role); the exact generated symbol names live in `FitMeDesignTokens.kt`.
+
+> **Typography (§2):** the 16 `typography.*` tokens are semantic iOS text-style strings
+> (e.g. `largeTitle/bold/rounded`), **not** numeric point sizes — so there are no `sp` font-size
+> literals to generate. They map to the MD3 type scale semantically (§2) and are emitted as a
+> reference comment block in the generated `.kt`, not as code.
 
 ---
 
@@ -25,12 +58,7 @@ This doc was last fully audited at the `android-design-system` feature ship date
 
 **Drift root cause:** `tokens.json` has had silent additions/restructures across 7+ weeks of iOS-side work with no Android-side review. Per-row mappings below (sections 1-6) still reference the original 2026-04-04 schema. A full per-row refresh is the natural successor pass — estimated 2-3 hr — and is **deferred** until either (a) the `android-app-implementation` feature kicks off, OR (b) the next quarterly token audit catches the next drift cycle. Until then, this top-of-doc note is the canonical "use with caution" marker.
 
-**AND-1 status (per UI/UX Master Plan §4.4):** the original 1-2 hr estimate to "generate Android token output and commit `android/FitMeDesignTokens.kt`" is **revised upward to 3-4 hr** because `design-tokens/config-android.json` references Style Dictionary transforms (`size/compose/dp`, `size/compose/sp`) that don't exist in `style-dictionary@3.9.2`. The actual `compose` transformGroup ships `size/compose/em`, `size/compose/remToSp`, `size/compose/remToDp` — designed for REM-input tokens, not raw-pixel-input tokens like FitMe's. Two paths to ship AND-1 properly:
-
-1. **Custom transforms** — register `size/compose/dp` + `size/compose/sp` in a new `sd.config.android.js` that wraps `config-android.json`'s JSON-only declarative form. Outputs raw `Float.dp` and `Float.sp` literals from the integer pixel values in `tokens.json`. Most faithful to FitMe's spacing scale.
-2. **Switch transformGroup to `android`** (XML-only) — drops the Compose output but keeps the `android-xml` output working. Acceptable if Compose generation can be deferred until the `android-app-implementation` feature actually picks up.
-
-Decision deferred to operator. Pre-condition for either path: settle whether the Android pipeline outputs raw-pixel `Float.dp` / `Float.sp` (consistent with iOS `CGFloat` direct values) or REM-scaled units (consistent with Material 3 defaults). Recommend the former for cross-platform parity, but the choice is design-system-author level.
+**AND-1 status: ✅ SHIPPED 2026-06-17 — see §0a above.** The operator chose the **Compose + XML** path. The non-functional `config-android.json` (v3-era, non-existent transforms) was removed; a Style-Dictionary-v5 ESM config (`sd.config.android.mjs`) now generates raw-pixel `Dp` Compose values + `Ndp` XML resources from `tokens.json`'s integer pixels — the cross-platform-parity option (consistent with iOS `CGFloat` direct values). The pipeline is drift-gated (`npm run tokens:android:check`). This §0 audit note is retained as the historical record of the blocker that AND-1 cleared.
 
 ---
 
