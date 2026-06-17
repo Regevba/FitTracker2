@@ -168,7 +168,7 @@ struct OnboardingAuthView: View {
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Continue with email")
+            .accessibilityLabel("Continue with Email")
             .accessibilityHint("Register with your email address")
             .accessibilityIdentifier("onboarding.auth.email")
 

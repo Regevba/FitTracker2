@@ -58,7 +58,9 @@ struct OnboardingWelcomeView: View {
                 y: AppShadow.ctaYOffset
             )
             .buttonStyle(.plain)
-            .accessibilityLabel("Get started")
+            // Label must match the visible text exactly — SignInUITests /
+            // AuthPolishV2UITests query this button by "Get Started".
+            .accessibilityLabel("Get Started")
             .accessibilityHint("Begins setting up your profile")
             .padding(.horizontal, AppSpacing.medium)
             .padding(.bottom, AppSpacing.large)
