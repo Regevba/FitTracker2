@@ -5,7 +5,7 @@
 
 ## The 8 ready-now items
 
-> **Status 2026-06-17:** 7 of 8 shipped (F12, F11, F10, F13, F5, F4, **F1 ← advisory, this branch**). **1 remains open: F3 (dep-graph cycle check, RICE 14.4).**
+> **Status 2026-06-17:** ✅ **8 of 8 shipped** (F12, F11, F10, F13, F5, F4, F1, **F3 ← advisory, this branch**). **0 ready-now F-items remain.** Next v8.x work is date-gated (T1 2026-08-22, F18 post-F16-Phase-E) or operator-gated (F19–F23).
 
 | # | ID | Item | RICE | Effort | Class | Infra-glob? |
 |---|---|---|---|---|---|---|
@@ -16,7 +16,7 @@
 | 5 | **F4** ✅ SHIPPED | `FRAMEWORK_VERSION_STALE` advisory gate — stale-version detector on phase-advance (PR #740, 2026-06-16; advisory→enforced ~2026-06-30) | 32.0 | ~0.5w | Write-time gate (advisory) | yes (`scripts/`) |
 | 6 | **F5** ✅ SHIPPED | `scope_change` Tier 2.2 vocabulary event (advisory note) | 20.0 | ~0.2w | Vocabulary | yes (`scripts/` + log schema) |
 | 7 | **F1** ✅ SHIPPED | `STATE_TASKS_FILESYSTEM_DRIFT` cycle-time advisory — complete feature + empty `tasks[]` + shipped artifact = ledger drift (advisory-permanent; 5 baseline fires) | 19.2 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
-| 8 | **F3** | Phase 2 dependency-graph cycle check | 14.4 | ~0.5w | Workflow gate | yes (`scripts/`) |
+| 8 | **F3** ✅ SHIPPED | `DEPENDENCY_GRAPH_CYCLE` cycle-time advisory — cycles / self-loops / dangling refs across `scheduled_after` + `parent_feature` (advisory-permanent; 0 baseline findings, healthy guard) | 14.4 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
 
 **Total effort:** ~2.9 engineer-weeks. All 8 touch infra-glob paths.
 
