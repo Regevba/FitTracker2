@@ -450,7 +450,7 @@ struct BodyCompositionDetailView: View {
                 .font(AppText.button)
                 .foregroundStyle(AppColor.Text.inversePrimary)
                 .frame(maxWidth: .infinity)
-                .frame(height: AppSize.ctaHeight)
+                .frame(minHeight: AppSize.ctaHeight)
                 .background(
                     AppColor.Accent.primary,
                     in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)

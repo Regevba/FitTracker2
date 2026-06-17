@@ -383,8 +383,10 @@ enum AppText {
     static let chip              = Font.system(.footnote,     design: .rounded).weight(.semibold)
     static let footnote          = Font.system(.footnote,     design: .rounded)
     static let metric            = Font.system(.title,        design: .rounded).weight(.bold)
-    /// ~25pt rounded bold — Home v2 status card value hero (T1)
-    /// Uses Font.system(design:) so Dynamic Type scales relative to .title.
+    /// ~25pt rounded bold — Home v2 status card value hero (T1).
+    /// NOTE: this is a fixed-point font and does NOT scale with Dynamic Type on its own.
+    /// Render via `.scaledFont(size: 25, weight: .bold, design: .rounded, relativeTo: .title)`
+    /// for accessibility scaling; this token is the base-size reference.
     static let metricM           = Font.system(size: 25, weight: .bold, design: .rounded)
     static let metricCompact     = Font.system(.title2,       design: .rounded).weight(.bold)
     // metricHero and metricDisplay are intentional semantic aliases of hero (largeTitle/bold/rounded).
@@ -412,11 +414,55 @@ enum AppText {
     static let iconHero          = Font.system(size: 64, weight: .regular)
     static let iconDisplay       = Font.system(size: 72, weight: .regular)
 
-    // Display headlines — bold + rounded, fixed size for hero onboarding/marketing surfaces.
+    // Display headlines — bold + rounded base sizes for hero onboarding/marketing surfaces.
+    // NOTE: these are FIXED-point `Font.system(size:)` and therefore do NOT scale with
+    // Dynamic Type. For scaling hero text render via `.scaledFont(size:…, relativeTo: .largeTitle)`
+    // (see ScaledFontModifier below) which preserves the exact base size at the default
+    // content size and scales up at accessibility sizes. Kept here as the base-size source
+    // of truth + Figma-mapping reference.
     /// Onboarding welcome hero headline (32pt bold rounded). Audit UI-008.
     static let displayHeadline   = Font.system(size: 32, weight: .bold, design: .rounded)
     /// Onboarding first-action headline (36pt bold). Audit UI-009.
     static let displayLarge      = Font.system(size: 36, weight: .bold)
+}
+
+// MARK: - Dynamic Type scaling for fixed-point fonts
+//
+// `Font.system(size:)` produces a fixed-point font that ignores the user's preferred
+// content size. Most `AppText.*` tokens avoid this by using semantic text styles
+// (`.body`, `.title2`, …) which scale automatically. For the few surfaces that need a
+// specific point size (hero display headlines, the Home status-card metric value), this
+// modifier wraps `@ScaledMetric` so the point size scales relative to a reference text
+// style while rendering at the exact base size at the default content size — i.e. zero
+// visual change at default Dynamic Type, full compliance at accessibility sizes.
+struct ScaledFontModifier: ViewModifier {
+    @ScaledMetric private var size: CGFloat
+    private let weight: Font.Weight
+    private let design: Font.Design
+
+    init(size: CGFloat, weight: Font.Weight, design: Font.Design, relativeTo textStyle: Font.TextStyle) {
+        self._size = ScaledMetric(wrappedValue: size, relativeTo: textStyle)
+        self.weight = weight
+        self.design = design
+    }
+
+    func body(content: Content) -> some View {
+        content.font(.system(size: size, weight: weight, design: design))
+    }
+}
+
+extension View {
+    /// Apply a fixed point-size font that scales with Dynamic Type relative to `textStyle`.
+    /// Renders at exactly `size` at the default content size. Use for hero/metric display
+    /// text that needs a specific point size; prefer the semantic `AppText.*` tokens otherwise.
+    func scaledFont(
+        size: CGFloat,
+        weight: Font.Weight = .regular,
+        design: Font.Design = .default,
+        relativeTo textStyle: Font.TextStyle = .body
+    ) -> some View {
+        modifier(ScaledFontModifier(size: size, weight: weight, design: design, relativeTo: textStyle))
+    }
 }
 
 // MARK: - Legacy aliases (DEPRECATED — migrate call sites to AppText.*)
