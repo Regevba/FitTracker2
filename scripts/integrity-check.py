@@ -155,9 +155,13 @@ def feature_phase(d: dict) -> str | None:
     return d.get("current_phase") or d.get("phase")
 
 
-def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
+def audit_feature(feat_dir: Path, coverage: "GateCoverage | None" = None) -> tuple[dict, list[dict]]:
     """Audit one feature directory. Returns (summary, findings)."""
     findings: list[dict] = []
+    # v7.10+: emit Mechanism A cycle coverage for PHASE_LIE so the F17 index +
+    # GATE_COVERAGE_ZERO meta-check can observe this per-feature check.
+    if coverage is not None:
+        coverage.candidate("PHASE_LIE")
     state_path = feat_dir / "state.json"
     summary = {
         "name": feat_dir.name,
@@ -173,6 +177,8 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
             "feature": feat_dir.name, "severity": "CRITICAL", "code": "NO_STATE",
             "message": "no state.json",
         })
+        if coverage is not None:
+            coverage.skip("PHASE_LIE", "no_state")
         return summary, findings
 
     raw = state_path.read_text()
@@ -184,6 +190,8 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
             "feature": feat_dir.name, "severity": "CRITICAL", "code": "INVALID_JSON",
             "message": f"invalid JSON: {e}",
         })
+        if coverage is not None:
+            coverage.skip("PHASE_LIE", "invalid_json")
         return summary, findings
 
     feat = d.get("feature", feat_dir.name)
@@ -198,6 +206,8 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
             "feature": feat, "severity": "WARN", "code": "NO_PHASE",
             "message": "no phase field (neither current_phase nor phase)",
         })
+        if coverage is not None:
+            coverage.skip("PHASE_LIE", "no_phase")
         return summary, findings
 
     # Task summary
@@ -223,6 +233,14 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
     #   granularity not meaningful since the work predates the phase model
     cs_type = d.get("case_study_type")
     is_phase_check_exempt = cs_type in ("pre_pm_workflow_backfill", "roundup", "framework_meta_retroactive")
+
+    if coverage is not None:
+        if not is_terminal:
+            coverage.skip("PHASE_LIE", "not_terminal")
+        elif is_phase_check_exempt:
+            coverage.skip("PHASE_LIE", f"exempt_{cs_type}")
+        else:
+            coverage.checked("PHASE_LIE")
 
     # Check #1: phase lie
     if is_terminal and not is_phase_check_exempt:
@@ -529,7 +547,7 @@ _DATE_WRITTEN_PAT = re.compile(
 _TIER_TAG_PAT = re.compile(r"\bT[123]\b[\s—:.\)\(]")
 
 
-def check_cache_hits_auto_instrumentation_inactive() -> list[dict]:
+def check_cache_hits_auto_instrumentation_inactive(coverage: "GateCoverage | None" = None) -> list[dict]:
     """Advisory: features with attributed Read events but empty cache_hits[].
 
     v7.8 Mechanism C wiring (T11 — bridge design §4.3, item 6). The
@@ -545,9 +563,12 @@ def check_cache_hits_auto_instrumentation_inactive() -> list[dict]:
     Silent on a fresh install with no session events yet.
     """
     findings: list[dict] = []
+    GATE = "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE"
     logs_dir = REPO_ROOT / ".claude" / "logs"
     features_dir = REPO_ROOT / ".claude" / "features"
     if not logs_dir.exists() or not features_dir.exists():
+        if coverage is not None:
+            coverage.skip(GATE, "logs_or_features_dir_missing")
         return findings
 
     reads_by_feature: dict[str, int] = {}
@@ -571,13 +592,21 @@ def check_cache_hits_auto_instrumentation_inactive() -> list[dict]:
             reads_by_feature[feature] = reads_by_feature.get(feature, 0) + 1
 
     for feature, count in sorted(reads_by_feature.items()):
+        if coverage is not None:
+            coverage.candidate(GATE)
         state_path = features_dir / feature / "state.json"
         if not state_path.exists():
+            if coverage is not None:
+                coverage.skip(GATE, "no_state")
             continue
         try:
             state = json.loads(state_path.read_text())
         except json.JSONDecodeError:
+            if coverage is not None:
+                coverage.skip(GATE, "invalid_json")
             continue
+        if coverage is not None:
+            coverage.checked(GATE)
         cache_hits = state.get("cache_hits")
         if isinstance(cache_hits, list) and len(cache_hits) > 0:
             continue
@@ -598,7 +627,7 @@ def check_cache_hits_auto_instrumentation_inactive() -> list[dict]:
     return findings
 
 
-def check_branch_isolation_historical() -> list[dict]:
+def check_branch_isolation_historical(coverage: "GateCoverage | None" = None) -> list[dict]:
     """T17 (Block D, framework-v7-8-branch-isolation): forward-only advisory.
 
     Audits .claude/features/<f>/state.json against `git log --all --oneline -- path/`
@@ -612,25 +641,36 @@ def check_branch_isolation_historical() -> list[dict]:
     ship history.
     """
     findings: list[dict] = []
+    GATE = "BRANCH_ISOLATION_HISTORICAL"
     SHIP_DATE = "2026-05-07"
     features_dir = REPO_ROOT / ".claude" / "features"
     if not features_dir.exists():
+        if coverage is not None:
+            coverage.skip(GATE, "features_dir_missing")
         return findings
 
     for state_path in sorted(features_dir.glob("*/state.json")):
         feature = state_path.parent.name
+        if coverage is not None:
+            coverage.candidate(GATE)
         try:
             state = json.loads(state_path.read_text())
         except json.JSONDecodeError:
+            if coverage is not None:
+                coverage.skip(GATE, "invalid_json")
             continue
 
         # Forward-only: skip pre-ship-date features
         created = state.get("created_at") or state.get("created", "")
         if not created or created[:10] < SHIP_DATE:
+            if coverage is not None:
+                coverage.skip(GATE, "pre_ship_date")
             continue
 
         # Honor opt-out
         if state.get("isolation_opt_out") is True:
+            if coverage is not None:
+                coverage.skip(GATE, "isolation_opt_out")
             continue
 
         # F11: exempt reverse-sync-mirrored files. The reverse-sync bot mirrors
@@ -641,6 +681,8 @@ def check_branch_isolation_historical() -> list[dict]:
         # advisory would false-positive on them.
         sync_origin = state.get("state_owner_sync_origin", "")
         if isinstance(sync_origin, str) and sync_origin.endswith("-reverse"):
+            if coverage is not None:
+                coverage.skip(GATE, "reverse_sync_mirror")
             continue
 
         # Skip features that have a recorded merge PR — the PR existed on a
@@ -650,6 +692,8 @@ def check_branch_isolation_historical() -> list[dict]:
         # whose branches were cleanly merged + deleted.
         merge_phase = (state.get("phases") or {}).get("merge") or {}
         if isinstance(merge_phase, dict) and isinstance(merge_phase.get("pr_number"), int):
+            if coverage is not None:
+                coverage.skip(GATE, "has_merge_pr")
             continue
 
         # Also skip features that have been pre-PM-workflow-backfilled or
@@ -658,6 +702,8 @@ def check_branch_isolation_historical() -> list[dict]:
         cs_type = state.get("case_study_type", "")
         if cs_type in ("pre_pm_workflow_backfill", "no_case_study_required",
                        "roundup", "framework_meta_retroactive"):
+            if coverage is not None:
+                coverage.skip(GATE, f"exempt_{cs_type}")
             continue
 
         # Get all branches that touched this feature's directory
@@ -671,7 +717,13 @@ def check_branch_isolation_historical() -> list[dict]:
                 stderr=subprocess.DEVNULL,
             )
         except Exception:
+            if coverage is not None:
+                coverage.skip(GATE, "git_log_failed")
             continue
+
+        # Past all early-skip gates: this feature is actually evaluated.
+        if coverage is not None:
+            coverage.checked(GATE)
 
         # Parse: each line starts with "<sha> <ref>" via --source. We want
         # to know if ANY commit landed on a feature/<name> branch.
@@ -1339,7 +1391,7 @@ def check_gate_coverage_zero() -> list[dict]:
     return findings
 
 
-def check_tier_tags_advisory() -> list[dict]:
+def check_tier_tags_advisory(coverage: "GateCoverage | None" = None) -> list[dict]:
     """Run validate-tier-tags.py; emit findings as ADVISORY (not failure).
 
     Added v7.7 M3 T18. This is the 14th cycle-time check code.
@@ -1347,6 +1399,9 @@ def check_tier_tags_advisory() -> list[dict]:
     and is NOT counted in finding_count (to preserve regression baseline).
     Promotion to gating decided +7 days based on FP-rate baseline (T19).
     """
+    GATE = "TIER_TAG_LIKELY_INCORRECT"
+    if coverage is not None:
+        coverage.candidate(GATE)
     try:
         result = subprocess.run(
             ["python3", str(REPO_ROOT / "scripts" / "validate-tier-tags.py"),
@@ -1354,6 +1409,8 @@ def check_tier_tags_advisory() -> list[dict]:
             capture_output=True, text=True,
             cwd=str(REPO_ROOT),
         )
+        if coverage is not None:
+            coverage.checked(GATE)
         findings = []
         for line in result.stdout.strip().split("\n"):
             if line:
@@ -1365,6 +1422,8 @@ def check_tier_tags_advisory() -> list[dict]:
                 })
         return findings
     except Exception as exc:
+        if coverage is not None:
+            coverage.skip(GATE, "checker_exception")
         return [{
             "feature": "validate-tier-tags",
             "severity": "ADVISORY",
@@ -1552,12 +1611,19 @@ def build_snapshot(snapshot_trigger: str) -> dict:
     _PR_CACHE = load_pr_cache() if not skip_pr_gates else None
     citation_check_ran = _PR_CACHE is not None and not skip_pr_gates
 
+    # v7.10: cycle-time Mechanism A coverage tracker. Created BEFORE the
+    # per-feature loop so audit_feature() can emit PHASE_LIE coverage, and
+    # reused by the standalone cycle checks below. mode="cycle" distinguishes
+    # these full-corpus scans from the write-time gates' staged coverage.
+    # Tests opt out via GATE_COVERAGE_LEDGER_DISABLED=1.
+    cycle_coverage = GateCoverage(mode="cycle")
+
     feature_summaries = []
     findings = []
     for d in sorted(FEATURES_DIR.iterdir()) if FEATURES_DIR.exists() else []:
         if not d.is_dir():
             continue
-        summary, feat_findings = audit_feature(d)
+        summary, feat_findings = audit_feature(d, coverage=cycle_coverage)
         feature_summaries.append(summary)
         findings.extend(feat_findings)
 
@@ -1580,13 +1646,9 @@ def build_snapshot(snapshot_trigger: str) -> dict:
                 f"Investigate `gh auth status` under cron context."
             ),
         })
-    # v7.10: cycle-time Mechanism A coverage tracker. The three cycle-time
-    # checks below previously emitted NO coverage, so the F17 index +
-    # GATE_COVERAGE_ZERO meta-check were blind to them. mode="cycle"
-    # distinguishes these full-corpus scans from the write-time gates'
-    # staged/explicit coverage. Tests opt out via GATE_COVERAGE_LEDGER_DISABLED=1.
-    cycle_coverage = GateCoverage(mode="cycle")
-
+    # cycle_coverage (created before the per-feature loop above) accumulates
+    # Mechanism A coverage for cycle-time checks. mode="cycle" distinguishes
+    # these full-corpus scans from the write-time gates' staged coverage.
     if pr_cache_failed_advisory:
         # Cache known-stale: BROKEN_PR_CITATION was deliberately not run.
         cycle_coverage.skip("BROKEN_PR_CITATION", "pr_cache_refresh_failed")
@@ -1599,13 +1661,14 @@ def build_snapshot(snapshot_trigger: str) -> dict:
     # v7.8 M2 PR-3 T11: advisory cache_hits auto-instrumentation early-warning
     # (15th check code). Both are ADVISORY severity — included in findings[]
     # for observability but NOT counted in finding_count (preserves regression
-    # detection / exit code).
+    # detection / exit code). v7.10+: all four legacy advisories below now emit
+    # cycle coverage so the F17 index + GATE_COVERAGE_ZERO can observe them.
     advisory_findings = (
-        check_branch_isolation_historical()
+        check_branch_isolation_historical(coverage=cycle_coverage)
         + check_branch_isolation_launchd_drift()
         + check_feature_closure_completeness_cycle()
-        + check_tier_tags_advisory()
-        + check_cache_hits_auto_instrumentation_inactive()
+        + check_tier_tags_advisory(coverage=cycle_coverage)
+        + check_cache_hits_auto_instrumentation_inactive(coverage=cycle_coverage)
         + pr_cache_failed_advisory  # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (b)
         + check_pattern_skill_unmapped(coverage=cycle_coverage)  # v7.9.1 overlay
         + check_gate_coverage_zero()  # v7.10 candidate (built 2026-06-08, advisory)

@@ -60,3 +60,48 @@ def test_coverage_optional_no_crash_when_absent():
     ic.audit_case_study_tier_tags()
     ic.check_pattern_skill_unmapped()
     ic.audit_case_study_citations(None)
+
+
+# 2026-06-17: four legacy advisories previously emitted NO cycle coverage, so
+# the F17 index showed them stale and GATE_COVERAGE_ZERO would have false-flagged
+# them. These pin the emission + the candidates == checked + skipped invariant.
+
+def test_tier_tag_advisory_emits_coverage():
+    cov = GateCoverage(mode="cycle")
+    ic.check_tier_tags_advisory(coverage=cov)
+    b = _balance(cov, "TIER_TAG_LIKELY_INCORRECT")
+    assert b["candidates"] == 1 and b["checked"] == 1  # single aggregate run
+
+
+def test_cache_hits_auto_inactive_emits_balanced_coverage():
+    cov = GateCoverage(mode="cycle")
+    ic.check_cache_hits_auto_instrumentation_inactive(coverage=cov)
+    _balance(cov, "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE")  # balance holds even if 0
+
+
+def test_branch_isolation_historical_emits_balanced_coverage():
+    cov = GateCoverage(mode="cycle")
+    ic.check_branch_isolation_historical(coverage=cov)
+    b = _balance(cov, "BRANCH_ISOLATION_HISTORICAL")
+    assert b["candidates"] >= 1  # live corpus has feature state.json files
+
+
+def test_phase_lie_emits_coverage_per_feature():
+    cov = GateCoverage(mode="cycle")
+    n = 0
+    for d in sorted(ic.FEATURES_DIR.iterdir()):
+        if d.is_dir():
+            ic.audit_feature(d, coverage=cov)
+            n += 1
+    b = _balance(cov, "PHASE_LIE")
+    assert b["candidates"] == n  # one candidate per feature dir scanned
+
+
+def test_four_advisories_back_compat_no_coverage():
+    # back-compat: the pre-instrumentation call shape (coverage=None) still works
+    ic.check_tier_tags_advisory()
+    ic.check_cache_hits_auto_instrumentation_inactive()
+    ic.check_branch_isolation_historical()
+    next_dir = next((d for d in ic.FEATURES_DIR.iterdir() if d.is_dir()), None)
+    if next_dir:
+        ic.audit_feature(next_dir)

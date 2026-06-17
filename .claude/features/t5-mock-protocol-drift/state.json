@@ -5,7 +5,8 @@
   "work_type": "Feature",
   "work_subtype": "b_medium",
   "current_phase": "complete",
-  "isolation_opt_out": false,
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Committed directly on main 2026-06-10 as part of a small test-coverage/index chore batch; no feature/* or chore/* branch existed. Accepted historically \u2014 BRANCH_ISOLATION_HISTORICAL advisory silenced 2026-06-17 (data-integrity sweep).",
   "created_at": "2026-06-10T14:56:25Z",
   "primary_metric": "Central protocol-conformance registry: every test-mocked protocol has a compile-time anchor so a protocol-surface drift fails the build at a single labelled point.",
   "success_metrics": {
