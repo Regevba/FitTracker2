@@ -43,7 +43,16 @@
     "trigger_windows_distinct": "C2 fires at the user's learned training time-of-day. C4 fires on a daily morning evaluation (~08:00 local fallback, learnable from app-open patterns later) regardless of training schedule.",
     "conflict_risk": "AIInsightCard + AIIntelligenceSheet edited by C2 are likely targets for C4 too. Phase 0 mitigation: defer C4's in-app surface to a follow-on commit if C2 ships first; otherwise C4 lands the patterns and C2 rebases on top."
   },
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Trend-alerts HRV \u2014 PRD + Tasks + implementation (shipped)",
+      "status": "done",
+      "pr_number": 564,
+      "provenance": "backfill-from-merge-pr-2026-06-17",
+      "completed_at": "2026-06-01T14:13:53Z"
+    }
+  ],
   "phases": {
     "research": {
       "started_at": "2026-06-01T08:30:00Z",
