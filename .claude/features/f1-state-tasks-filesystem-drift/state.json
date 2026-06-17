@@ -1,6 +1,6 @@
 {
   "feature_name": "f1-state-tasks-filesystem-drift",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "platforms_tested": {},
   "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-17T00:00:00Z",
@@ -11,14 +11,14 @@
   "has_ui": false,
   "requires_analytics": false,
   "state_owner": "ft2",
-  "isolation_opt_out": false,
-  "isolation_opt_out_reason": "",
-  "branch": "chore/f1-state-tasks-filesystem-drift",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Post-merge state reconciliation bundled into chore/source-refresh-2026-06-17 (close-feature --no-branch); feature already shipped+merged, this is ledger-drift cleanup not active dev.",
+  "branch": "chore/f1-state-tasks-filesystem-drift-post-merge-closure",
   "scheduled_after": null,
   "primary_metric": "STATE_TASKS_FILESYSTEM_DRIFT advisory emits Mechanism A cycle coverage on every complete feature with an empty tasks[] ledger, across a 14-day calibration window with 0 false positives (every fire is a genuine ledger-vs-shipped-work drift).",
   "success_metrics": [
     "Gate appears in .claude/logs/gate-coverage.jsonl with mode=cycle + candidates>=1 on the first integrity-check run after merge (T1, set-membership)",
-    "0 false positives across the advisory window — every fire maps to a complete feature that shipped artifacts (case study / related_prs / merge PR) yet left tasks[] empty (T1, manual review of fire rows)",
+    "0 false positives across the advisory window \u2014 every fire maps to a complete feature that shipped artifacts (case study / related_prs / merge PR) yet left tasks[] empty (T1, manual review of fire rows)",
     "Skip-reason distribution is legitimate (pre_task_discipline dominates; exempt_framework_meta + no_shipped_artifact explained; not a wiring bug) (T2)",
     "Baseline fire-set at ship is the expected 5 features (case-study-presentation, ios-ui-audit-p1-burndown, trend-alerts-hrv, fitme-story-design-system-p2-cleanup, smart-reminders-behavioral-learning) (T1, snapshot)",
     "docket + ready-now workplan F1 row marked shipped (T1, section presence)"
@@ -30,13 +30,30 @@
   ],
   "kill_criteria_resolution": "Evaluated at the Phase C calibration review (~2026-07-01 -> -08). Advisory at ship; advisory-permanent unless a false positive surfaces (this is a backlog-surfacing advisory, not a promotion candidate by default). Reversibility: single-line removal from the advisory_findings tuple in build_snapshot().",
   "dispatch_pattern": "agent-driven (single cycle-time advisory add in integrity-check.py + unit/dispatch tests)",
-  "spec": ".claude/features/f1-state-tasks-filesystem-drift/calibration-artifacts.md (Phase A); docs/master-plan/v8-0-ready-now-workplan-2026-06-15.md Batch 3 (F1) + v8-x-build-docket-2026-06-15.md §0.B (F1, RICE 19.2, Theme A)",
-  "scope_summary": "Add the STATE_TASKS_FILESYSTEM_DRIFT cycle-time ADVISORY: for every feature with current_phase=complete and an empty/missing tasks[] ledger, fire when (a) created post-task-discipline (>=2026-04-25 v7.6) AND (b) not framework-meta AND (c) the filesystem shows shipped artifacts (a case study, related_prs, or a merge PR number). The fire means the task ledger drifted from the work that actually shipped. Surfaced when 5-of-10 roadmap-stress-test sub-features had empty tasks[] despite shipped work. Pre-v7.6 features are skipped (pre_task_discipline) as bounded backfill-debt, not active drift. Out of scope: auto-backfilling tasks[]; git-log evidence scans (filesystem artifact signal only, à la F2 reality-check but cycle-time + read-only).",
+  "spec": ".claude/features/f1-state-tasks-filesystem-drift/calibration-artifacts.md (Phase A); docs/master-plan/v8-0-ready-now-workplan-2026-06-15.md Batch 3 (F1) + v8-x-build-docket-2026-06-15.md \u00a70.B (F1, RICE 19.2, Theme A)",
+  "scope_summary": "Add the STATE_TASKS_FILESYSTEM_DRIFT cycle-time ADVISORY: for every feature with current_phase=complete and an empty/missing tasks[] ledger, fire when (a) created post-task-discipline (>=2026-04-25 v7.6) AND (b) not framework-meta AND (c) the filesystem shows shipped artifacts (a case study, related_prs, or a merge PR number). The fire means the task ledger drifted from the work that actually shipped. Surfaced when 5-of-10 roadmap-stress-test sub-features had empty tasks[] despite shipped work. Pre-v7.6 features are skipped (pre_task_discipline) as bounded backfill-debt, not active drift. Out of scope: auto-backfilling tasks[]; git-log evidence scans (filesystem artifact signal only, \u00e0 la F2 reality-check but cycle-time + read-only).",
   "related_prs": [],
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-06-17T00:00:00Z"
+        "started_at": "2026-06-17T00:00:00Z",
+        "ended_at": "2026-06-17T05:30:02Z"
+      },
+      "review": {
+        "started_at": "2026-06-17T05:30:02Z",
+        "ended_at": "2026-06-17T05:30:02Z"
+      },
+      "merge": {
+        "started_at": "2026-06-17T05:30:02Z",
+        "ended_at": "2026-06-17T05:30:02Z"
+      },
+      "docs": {
+        "started_at": "2026-06-17T05:30:02Z",
+        "ended_at": "2026-06-17T12:45:16Z"
+      },
+      "complete": {
+        "started_at": "2026-06-17T12:45:16Z",
+        "ended_at": "2026-06-17T12:45:16Z"
       }
     }
   },
@@ -59,5 +76,66 @@
       "status": "done",
       "completed_at": "2026-06-17T00:00:00Z"
     }
-  ]
+  ],
+  "merge_pr_number": 752,
+  "merge_commit_sha": "b386519bf117e54fb3aa97920fad4e5143dd272c",
+  "merged_at": "2026-06-17T05:30:02Z",
+  "feature_branch_merged": "chore/f1-state-tasks-filesystem-drift",
+  "phases": {
+    "review": {
+      "started_at": "2026-06-17T05:30:02Z",
+      "ended_at": "2026-06-17T05:30:02Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-17T05:30:02Z",
+      "ended_at": "2026-06-17T05:30:02Z",
+      "pr_number": 752,
+      "merge_commit_sha": "b386519bf117e54fb3aa97920fad4e5143dd272c",
+      "merged_at": "2026-06-17T05:30:02Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-17T05:30:02Z",
+      "ended_at": "2026-06-17T12:45:16Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch \u2014 case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-17T12:45:16Z",
+      "ended_at": "2026-06-17T12:45:16Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-17T05:30:02Z",
+      "reason": "PR #752 squashed onto main as b386519bf1 (operator-merged 2026-06-17T05:30:02Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-17T05:30:02Z",
+      "reason": "PR #752 squashed onto main as b386519bf1 (operator-merged 2026-06-17T05:30:02Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-17T05:30:02Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-17T12:45:16Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/f1-state-tasks-filesystem-drift-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ],
+  "case_study_type": "no_case_study_required",
+  "case_study_type_reason": "Framework-meta advisory gate; tracked at docket level (v8-x-build-docket-2026-06-15.md Theme A/C), not via standalone case study (matches f11/f12 sibling closure)."
 }

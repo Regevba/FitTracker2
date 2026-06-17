@@ -1500,7 +1500,64 @@
           "post_v6_derived": 0
         }
       }
+    },
+    {
+      "date": "2026-06-17",
+      "generated_at": "2026-06-17T12:41:53Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 113,
+        "features_post_v6": 79,
+        "features_pre_v6": 34,
+        "fully_adopted": 9,
+        "partial_adopted": 65,
+        "zero_adopted": 39,
+        "fully_adopted_post_v6": 9,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 36,
+          "overall_percent": 31.9,
+          "post_v6_present": 36,
+          "post_v6_percent": 45.6,
+          "overall_instrumented": 17,
+          "overall_derived": 19,
+          "post_v6_instrumented": 17,
+          "post_v6_derived": 19
+        },
+        "per_phase_timing": {
+          "overall_present": 74,
+          "overall_percent": 65.5,
+          "post_v6_present": 71,
+          "post_v6_percent": 89.9,
+          "overall_instrumented": 74,
+          "overall_derived": 0,
+          "post_v6_instrumented": 71,
+          "post_v6_derived": 0
+        },
+        "cache_hits": {
+          "overall_present": 31,
+          "overall_percent": 27.4,
+          "post_v6_present": 30,
+          "post_v6_percent": 38.0,
+          "overall_instrumented": 31,
+          "overall_derived": 0,
+          "post_v6_instrumented": 30,
+          "post_v6_derived": 0
+        },
+        "cu_v2": {
+          "overall_present": 26,
+          "overall_percent": 23.0,
+          "post_v6_present": 26,
+          "post_v6_percent": 32.9,
+          "overall_instrumented": 26,
+          "overall_derived": 0,
+          "post_v6_instrumented": 26,
+          "post_v6_derived": 0
+        }
+      }
     }
   ],
-  "updated": "2026-06-16T07:00:30Z"
+  "updated": "2026-06-17T12:41:53Z"
 }
