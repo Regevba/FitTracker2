@@ -167,7 +167,10 @@ struct OnboardingAuthView: View {
                 .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.subtle, lineWidth: 1))
             }
             .buttonStyle(.plain)
-            .accessibilityElement(children: .ignore)
+            // NOTE: no `.accessibilityElement(children: .ignore)` — on a Button it
+            // strips the .button trait, breaking XCUITest `app.buttons[...]` lookup
+            // (SignInUITests). An explicit label on a Button already overrides the
+            // announced text, so the decorative chevron isn't read anyway.
             .accessibilityLabel("Continue with Email")
             .accessibilityHint("Register with your email address")
             .accessibilityIdentifier("onboarding.auth.email")
@@ -202,7 +205,6 @@ struct OnboardingAuthView: View {
                     .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.hairline, lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-                .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Continue with Google")
                 .accessibilityHint("Use your Google account")
                 .accessibilityIdentifier("onboarding.auth.google")
@@ -236,7 +238,6 @@ struct OnboardingAuthView: View {
                 .background(AppColor.Surface.inverse, in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
             .buttonStyle(.plain)
-            .accessibilityElement(children: .ignore)
             .accessibilityLabel("Continue with Apple")
             .accessibilityHint("Use your Apple Account")
             .accessibilityIdentifier("onboarding.auth.apple")
