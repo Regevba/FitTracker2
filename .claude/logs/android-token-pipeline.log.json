@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "feature": "android-token-pipeline",
+  "title": "android token pipeline",
+  "work_type": "Enhancement",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-17T18:49:25Z",
+  "updated_at": "2026-06-17T18:51:29Z",
+  "events": [
+    {
+      "timestamp": "2026-06-17T18:51:29Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Entering complete: AND-1 pipeline shipped (config+scripts+artifacts+docs), verified deterministic + drift-gated",
+      "actor": "claude",
+      "status": "done"
+    }
+  ]
+}
