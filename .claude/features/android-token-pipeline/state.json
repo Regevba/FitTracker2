@@ -4,7 +4,7 @@
     "platforms_tested": {},
     "platforms_tested_provenance": "exempt:build-tooling-no-product-platform",
     "created_at": "2026-06-17T15:00:00Z",
-    "updated_at": "2026-06-17T18:50:00Z",
+    "updated_at": "2026-06-17T19:05:00Z",
     "framework_version": "v7.10",
     "work_type": "Enhancement",
     "work_subtype": "framework_feature",
@@ -72,11 +72,6 @@
             "description": "Refresh android-token-mapping.md (\u00a70a AND-1 SHIPPED) + android-adaptation.md (generated token layer); fix stale Focus.ring reference",
             "status": "done",
             "completed_at": "2026-06-17T18:30:00Z"
-        },
-        {
-            "id": "T7",
-            "description": "Makefile `tokens-android-check` target + verify-local wiring (infra-glob \u2014 isolated worktree, separate PR)",
-            "status": "pending"
         }
     ],
     "timing": {
@@ -103,5 +98,9 @@
             "ended_at": null,
             "notes": "T1-T6 done + verified (deterministic, drift-gated, 0 dup names). T7 Makefile gate ships separately (isolated worktree). fitme-story showcase MDX + related_prs backfilled post-merge via close-feature."
         }
-    }
+    },
+    "deferred_followups": [
+        "make tokens-android-check target + verify-local wiring (infra-glob; post-#762-merge)",
+        "fitme-story showcase MDX (49a) + related_prs backfill (post-merge close-feature)"
+    ]
 }
