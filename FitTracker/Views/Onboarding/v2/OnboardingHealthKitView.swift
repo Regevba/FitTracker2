@@ -103,7 +103,7 @@ struct OnboardingHealthKitView: View {
                             .foregroundStyle(AppColor.Text.inversePrimary)
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(height: AppSize.ctaHeight)
+                    .frame(minHeight: AppSize.ctaHeight)
                     .background(
                         AppGradient.brand,
                         in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)

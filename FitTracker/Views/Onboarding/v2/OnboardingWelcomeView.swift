@@ -19,11 +19,12 @@ struct OnboardingWelcomeView: View {
                     .foregroundStyle(AppGradient.brand)
                     .padding(.bottom, AppSpacing.xSmall)
 
-                // Audit DS-005 / UI-008: hero title uses AppText.displayHeadline
-                // (32pt bold rounded) instead of a hardcoded `.system(size:)`,
-                // so Dynamic Type and the design-system font scale apply.
+                // Audit DS-005 / UI-008: hero title is the 32pt bold rounded display
+                // size, rendered via `.scaledFont` so it scales with Dynamic Type
+                // relative to .largeTitle (the bare AppText.displayHeadline token is a
+                // fixed-point font and would not scale on its own).
                 Text("FitMe")
-                    .font(AppText.displayHeadline)
+                    .scaledFont(size: 32, weight: .bold, design: .rounded, relativeTo: .largeTitle)
                     .foregroundStyle(AppGradient.brand)
 
                 Text("Your fitness command center")
@@ -44,7 +45,7 @@ struct OnboardingWelcomeView: View {
                     .font(AppText.button)
                     .foregroundStyle(AppColor.Text.inversePrimary)
                     .frame(maxWidth: .infinity)
-                    .frame(height: AppSize.ctaHeight)
+                    .frame(minHeight: AppSize.ctaHeight)
             }
             .background(
                 AppGradient.brand,
