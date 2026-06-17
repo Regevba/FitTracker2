@@ -46,7 +46,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | ~~F13~~ ✅ | `source_commit` `workflow_dispatch` input + full-repo-scan fallback (reverse-sync) | GH Actions | 32.0 | **SHIPPED** (fitme-story PR #221 — reverse-sync workflow lives in fitme-story) |
 | ~~F5~~ ✅ | `scope_change` Tier 2.2 vocabulary event (advisory KNOWN_EVENT_TYPES note) | Vocabulary | 20.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | ~~F1~~ ✅ | `STATE_TASKS_FILESYSTEM_DRIFT` cycle-time advisory — complete feature + empty `tasks[]` + shipped artifact = ledger drift | Cycle-time gate | 19.2 | **SHIPPED 2026-06-17** (feature `f1-state-tasks-filesystem-drift`; advisory-permanent, 5 baseline fires) |
-| F3 | Phase 2 dependency-graph cycle check | Workflow gate | 14.4 | none |
+| ~~F3~~ ✅ | `DEPENDENCY_GRAPH_CYCLE` cycle-time advisory — cycles / self-loops / dangling refs across `scheduled_after` + `parent_feature` | Cycle-time gate | 14.4 | **SHIPPED 2026-06-17** (feature `f3-dependency-graph-cycle-check`; advisory-permanent, 0 baseline findings) |
 | T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** |
 | F18 | Mutation testing on dispatcher files | Test infra | 13.7 | F16 Phase E (post 2026-06-18) + F14 |
 | F22 | Funnel Analysis Dashboards | Product observability | M | F19 + GA4 data |
@@ -59,7 +59,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 
 **D. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **15 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + **F1 shipped 2026-06-17, advisory**) + 2 resolved-by-exemption (F7, F8) → **1 F-item remains open** (F3) + F18 + F19–F23. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
+**Roll-up:** of the original 18 F-candidates, **16 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + **F3 shipped 2026-06-17, advisory**) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open** = F18 (date-gated, post-F16-Phase-E) + F19–F23 (operator/launch-gated). Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
 
 ---
 

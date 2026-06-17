@@ -1,0 +1,70 @@
+{
+  "feature_name": "f3-dependency-graph-cycle-check",
+  "current_phase": "implementation",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "created_at": "2026-06-17T00:00:00Z",
+  "updated_at": "2026-06-17T00:00:00Z",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "chore/f3-dependency-graph-cycle-check",
+  "scheduled_after": {
+    "predecessor": "f1-state-tasks-filesystem-drift",
+    "signal": "F1 shipped 2026-06-17 via PR #752 (last-but-one v8.x ready-now item); F3 is the final ready-now docket item",
+    "captured_at": "2026-06-17T00:00:00Z",
+    "resolved_at": "2026-06-17T05:30:02Z",
+    "resolved_by_pr": [752],
+    "note": "Sequenced after F1 per the ready-now workplan Batch 3 order (F1 then F3). Doubles as a live non-dangling, non-cyclic scheduled_after edge for the gate this feature adds."
+  },
+  "primary_metric": "DEPENDENCY_GRAPH_CYCLE advisory emits Mechanism A cycle coverage over the multi-feature dependency graph (scheduled_after + parent_feature edges) every integrity-check run; 0 false positives across the calibration window (every fire is a genuine cycle, self-loop, or dangling feature reference).",
+  "success_metrics": [
+    "Gate appears in .claude/logs/gate-coverage.jsonl with mode=cycle + candidates>=1 on the first integrity-check run after merge (T1, set-membership)",
+    "Baseline at ship is 0 findings (no cycles / self-loops / dangling refs in the current corpus) while candidates>=1 — a healthy guard-gate, not a mis-wire (T1, snapshot + GATE_COVERAGE_ZERO recognises candidates>0)",
+    "depends_on free-text entries are NOT treated as feature-name edges (no false-positive dangling) (T1, unit test)",
+    "A synthetic 2-node cycle and a dangling predecessor each produce exactly one ADVISORY finding (T1, unit test)",
+    "docket + ready-now workplan F3 rows marked shipped → 0 ready-now F-items remain (T1, section presence)"
+  ],
+  "kill_criteria": [
+    "Any false positive that maps to a legitimate edge (e.g. a free-text field mis-parsed as a feature name) -> tighten edge extraction before promoting; do NOT flip to enforced.",
+    "Cycle detection reports the same cycle multiple times from different start nodes (noise) -> add canonical-rotation dedup (built in at ship; kill criterion guards regression).",
+    "Zero candidates across the window (gate never reaches a feature with a dependency edge) -> mis-wire; investigate via GATE_COVERAGE_ZERO."
+  ],
+  "kill_criteria_resolution": "Evaluated at the Phase C calibration review (~2026-07-01 -> -08). Advisory at ship; advisory-permanent (a graph-integrity guard, not a promotion candidate). Reversibility: single-line removal from the advisory_findings tuple in build_snapshot().",
+  "dispatch_pattern": "agent-driven (single cycle-time advisory add in integrity-check.py + unit/dispatch tests)",
+  "spec": ".claude/features/f3-dependency-graph-cycle-check/calibration-artifacts.md (Phase A); docs/master-plan/v8-0-ready-now-workplan-2026-06-15.md Batch 3 (F3) + v8-x-build-docket-2026-06-15.md §0.B (F3, RICE 14.4, Theme A)",
+  "scope_summary": "Add the DEPENDENCY_GRAPH_CYCLE cycle-time ADVISORY: build a directed dependency graph across all features from the structured edges scheduled_after.predecessor + parent_feature (A depends on B => A->B), then flag (a) cycles, (b) self-loops, and (c) dangling references (an edge whose target feature does not exist). Surfaced because 1 dependency cycle was caught manually post-hoc on a multi-feature roadmap. depends_on is excluded from the graph because in practice it holds free-text prerequisites, not feature names (treating it as an edge would false-positive). Out of scope: ordering/temporal validation of scheduled_after.resolved_at; depends_on structuring.",
+  "related_prs": [],
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-17T00:00:00Z"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "check_dependency_graph_cycles(coverage) advisory fn in integrity-check.py — build graph from scheduled_after.predecessor + parent_feature; detect cycles + self-loops + dangling refs; canonical-rotation cycle dedup; cycle-mode Mechanism A emission",
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z"
+    },
+    {
+      "id": "T2",
+      "description": "Wire into build_snapshot() advisory_findings tuple with coverage=cycle_coverage",
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z"
+    },
+    {
+      "id": "T3",
+      "description": "Unit + dispatch tests (scripts/tests/test_dependency_graph_cycle.py): cycle / self-loop / dangling fire; depends_on free-text NOT an edge; clean graph = 0 findings; coverage emission; main() dispatch",
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z"
+    }
+  ]
+}

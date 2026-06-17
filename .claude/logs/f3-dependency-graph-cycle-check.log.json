@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f3-dependency-graph-cycle-check",
+  "title": "f3 dependency graph cycle check",
+  "work_type": "Feature",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-17T05:54:05Z",
+  "updated_at": "2026-06-17T05:54:05Z",
+  "events": [
+    {
+      "timestamp": "2026-06-17T05:54:05Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F3 DEPENDENCY_GRAPH_CYCLE cycle-time advisory implemented (gate + 12 tests + docket)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

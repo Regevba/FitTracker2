@@ -1088,6 +1088,145 @@ def check_state_tasks_filesystem_drift(coverage: "GateCoverage | None" = None) -
     return findings
 
 
+def check_dependency_graph_cycles(coverage: "GateCoverage | None" = None) -> list[dict]:
+    """F3 (v8.x docket, Theme A): DEPENDENCY_GRAPH_CYCLE cycle-time advisory.
+
+    Builds a directed dependency graph across all features from the structured
+    edges scheduled_after.predecessor + parent_feature (edge A->B means "A is
+    scheduled after / depends on B") and flags graph-integrity problems:
+
+      1. dangling — an edge target is not an existing feature directory
+      2. self-loop — A -> A
+      3. cycle — a directed cycle A -> B -> ... -> A (deduped via canonical
+         rotation so the same cycle isn't reported from every member)
+
+    Surfaced because one dependency cycle was caught manually, post-hoc, on a
+    multi-feature roadmap. `depends_on` is intentionally EXCLUDED: in practice
+    it holds free-text prerequisites, not feature names, so treating it as an
+    edge would manufacture dangling-reference false positives.
+
+    Severity: ADVISORY only — never affects finding_count or exit code.
+    Emits Mechanism A coverage (gate DEPENDENCY_GRAPH_CYCLE) when `coverage` is
+    supplied — one candidate per feature that carries >=1 structured edge.
+
+    Full design: .claude/features/f3-dependency-graph-cycle-check/calibration-artifacts.md
+    """
+    GATE = "DEPENDENCY_GRAPH_CYCLE"
+    findings: list[dict] = []
+    if not FEATURES_DIR.exists():
+        if coverage is not None:
+            coverage.skip(GATE, "features_dir_missing")
+        return findings
+
+    nodes: set[str] = set()
+    states: dict[str, dict] = {}
+    for state_path in sorted(FEATURES_DIR.glob("*/state.json")):
+        name = state_path.parent.name
+        nodes.add(name)
+        try:
+            states[name] = json.loads(state_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            states[name] = {}
+
+    def _edges(d: dict) -> list[tuple[str, str]]:
+        """(kind, target) structured dependency edges for one feature."""
+        out: list[tuple[str, str]] = []
+        sa = d.get("scheduled_after")
+        if isinstance(sa, dict) and isinstance(sa.get("predecessor"), str) and sa["predecessor"]:
+            out.append(("scheduled_after", sa["predecessor"]))
+        elif isinstance(sa, str) and sa:
+            out.append(("scheduled_after", sa))
+        pf = d.get("parent_feature")
+        if isinstance(pf, str) and pf:
+            out.append(("parent_feature", pf))
+        return out
+
+    adj: dict[str, list[str]] = {}
+    for name in sorted(nodes):
+        edges = _edges(states.get(name, {}))
+        if not edges:
+            continue
+        # Candidate: a graph participant (has >=1 structured edge).
+        if coverage is not None:
+            coverage.candidate(GATE)
+            coverage.checked(GATE)
+        for kind, tgt in edges:
+            if tgt not in nodes:
+                findings.append({
+                    "feature": name,
+                    "severity": "ADVISORY",
+                    "code": GATE,
+                    "message": (
+                        f"{name}: {kind} references '{tgt}', which is not an "
+                        f"existing feature (dangling dependency reference)."
+                    ),
+                })
+                continue
+            if tgt == name:
+                findings.append({
+                    "feature": name,
+                    "severity": "ADVISORY",
+                    "code": GATE,
+                    "message": f"{name}: {kind} points at itself (self-dependency).",
+                })
+                continue
+            adj.setdefault(name, []).append(tgt)
+
+    # Cycle detection (iterative DFS, WHITE/GREY/BLACK) with canonical dedup.
+    WHITE, GREY, BLACK = 0, 1, 2
+    color = {n: WHITE for n in nodes}
+    seen_cycles: set[tuple[str, ...]] = set()
+
+    def _canonical(cycle: list[str]) -> tuple[str, ...]:
+        # cycle is the node list from the back-edge target to the current node
+        # (no repeated closing node); rotate so the lexicographically smallest
+        # node leads → one canonical key per distinct cycle.
+        if not cycle:
+            return tuple()
+        i = cycle.index(min(cycle))
+        return tuple(cycle[i:] + cycle[:i])
+
+    def _dfs(start: str) -> None:
+        stack = [(start, iter(adj.get(start, [])))]
+        path = [start]
+        color[start] = GREY
+        while stack:
+            u, it = stack[-1]
+            advanced = False
+            for v in it:
+                if color.get(v) == GREY:  # back-edge → cycle
+                    idx = path.index(v)
+                    key = _canonical(path[idx:])
+                    if key not in seen_cycles:
+                        seen_cycles.add(key)
+                        findings.append({
+                            "feature": v,
+                            "severity": "ADVISORY",
+                            "code": GATE,
+                            "message": (
+                                "dependency cycle detected: "
+                                + " -> ".join(list(key) + [key[0]])
+                                + " (scheduled_after / parent_feature). Break the "
+                                "cycle — a feature cannot transitively depend on itself."
+                            ),
+                        })
+                elif color.get(v) == WHITE:
+                    color[v] = GREY
+                    path.append(v)
+                    stack.append((v, iter(adj.get(v, []))))
+                    advanced = True
+                    break
+            if not advanced:
+                color[u] = BLACK
+                stack.pop()
+                path.pop()
+
+    for n in sorted(nodes):
+        if color[n] == WHITE:
+            _dfs(n)
+    return findings
+
+
 def check_gate_coverage_zero() -> list[dict]:
     """GATE_COVERAGE_ZERO (advisory, v7.10 candidate — built 2026-06-08).
 
@@ -1471,6 +1610,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + check_pattern_skill_unmapped(coverage=cycle_coverage)  # v7.9.1 overlay
         + check_gate_coverage_zero()  # v7.10 candidate (built 2026-06-08, advisory)
         + check_state_tasks_filesystem_drift(coverage=cycle_coverage)  # F1 (v8.x Theme A)
+        + check_dependency_graph_cycles(coverage=cycle_coverage)  # F3 (v8.x Theme A)
     )
     all_findings = findings + advisory_findings
 
