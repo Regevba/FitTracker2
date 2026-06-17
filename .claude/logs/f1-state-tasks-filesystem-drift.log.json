@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "f1-state-tasks-filesystem-drift",
+  "title": "f1 state tasks filesystem drift",
+  "work_type": "Feature",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-17T05:26:54Z",
+  "updated_at": "2026-06-17T05:26:54Z",
+  "events": [
+    {
+      "timestamp": "2026-06-17T05:26:54Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "F1 STATE_TASKS_FILESYSTEM_DRIFT cycle-time advisory implemented (gate + tests + docket)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
