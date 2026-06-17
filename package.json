@@ -4,7 +4,9 @@
   "description": "Token pipeline: Figma Variables → tokens.json → DesignTokens.swift",
   "scripts": {
     "tokens": "style-dictionary build --config sd.config.mjs",
-    "tokens:check": "node scripts/check-tokens.js"
+    "tokens:check": "node scripts/check-tokens.js",
+    "tokens:android": "style-dictionary build --config sd.config.android.mjs",
+    "tokens:android:check": "node scripts/check-tokens-android.js"
   },
   "devDependencies": {
     "style-dictionary": "^5.4.4"

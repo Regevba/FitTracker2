@@ -1,0 +1,106 @@
+{
+    "feature_name": "android-token-pipeline",
+    "current_phase": "complete",
+    "platforms_tested": {},
+    "platforms_tested_provenance": "exempt:build-tooling-no-product-platform",
+    "created_at": "2026-06-17T15:00:00Z",
+    "updated_at": "2026-06-17T19:05:00Z",
+    "framework_version": "v7.10",
+    "work_type": "Enhancement",
+    "work_subtype": "framework_feature",
+    "has_ui": false,
+    "requires_analytics": false,
+    "state_owner": "ft2",
+    "isolation_opt_out": false,
+    "isolation_opt_out_reason": "",
+    "branch": "feature/android-token-pipeline",
+    "scheduled_after": null,
+    "parent_feature": "android-design-system",
+    "primary_metric": "design-tokens/tokens.json generates committed, drift-gated Android artifacts (FitMeDesignTokens.kt + colors.xml + dimens.xml); `npm run tokens:android:check` passes and fails on drift (T1)",
+    "success_metrics": [
+        "Pipeline runs: `npm run tokens:android` produces 3 artifacts with 0 errors (T1, measured)",
+        "Determinism: two consecutive builds are byte-identical (T1, verified via diff)",
+        "Drift gate: `npm run tokens:android:check` exits 0 in-sync and non-zero on any tokens.json edit (T1, verified by mutate-then-revert)",
+        "Coverage: 49 colors + 34 dimens + 8 Compose objects generated from the 108-token source; 0 duplicate resource names (T1, measured)"
+    ],
+    "kill_criteria": [
+        "Generated Kotlin does not compile in a real Android module once an app exists \u2014 the hand-rolled format produced invalid symbols/types",
+        "Drift gate produces false positives on a clean tree (e.g. non-determinism from map ordering) \u2014 operators learn to ignore it",
+        "Style Dictionary v6 removes the v5 format API the config depends on \u2014 silent build break"
+    ],
+    "kill_criteria_resolution": "K1 not yet evaluable \u2014 no Android app/toolchain exists in-repo (AND-3 deferred indefinitely); output validated structurally (well-formed Kotlin objects, unique resource names, valid Dp/Color/Float types) but not compiled. K2 resolved: determinism verified byte-identical across builds; drift gate green on clean tree. K3 future-watch: config hand-rolls formats and depends on no built-in transform group, minimizing version-bump surface; reviewed at quarterly audit + on any style-dictionary major bump.",
+    "dispatch_pattern": "single-session implement (config + scripts + generated artifacts + docs), modeled on the iOS sd.config.mjs pipeline",
+    "case_study": "docs/case-studies/android-token-pipeline-case-study.md",
+    "case_study_showcase": "fitme-story/content/04-case-studies/49a-android-token-pipeline.mdx",
+    "spec": "docs/master-plan/ui-ux-master-plan-2026-05-24.md \u00a74.4 AND-1; plan ~/.claude/plans/hashed-hugging-shamir.md",
+    "predecessor_case_study": "docs/case-studies/android-design-system-case-study.md",
+    "scope_summary": "Make the Android design-system token pipeline real (AND-1). Replace the non-functional design-tokens/config-android.json (v3-era, referenced non-existent size/compose/dp+sp transforms) with sd.config.android.mjs (Style Dictionary v5, ESM, hand-rolled Compose + XML formats mirroring the iOS sd.config.mjs). Generate + commit android/FitMeDesignTokens.kt + android/res/values/{colors,dimens}.xml from design-tokens/tokens.json. Add `npm run tokens:android` + `tokens:android:check` drift gate (scripts/check-tokens-android.js). Refresh android-token-mapping.md + android-adaptation.md to reflect the working pipeline (closes the deferred AND-2 refresh framing). Out of scope: native Android app code / Gradle / Compose screens (AND-3, deferred indefinitely, re-eval 2027-05-26); compiling the generated Kotlin (no Android toolchain in-repo). The Makefile `tokens-android-check` + verify-local wiring ships separately (infra-glob, isolated worktree).",
+    "related_prs": [],
+    "tasks": [
+        {
+            "id": "T1",
+            "description": "sd.config.android.mjs \u2014 SD v5 ESM config: custom Compose + XML formats, hex/rgba\u2192ARGB color conversion, px\u2192dp, semantic-typography reference comment",
+            "status": "done",
+            "completed_at": "2026-06-17T18:30:00Z"
+        },
+        {
+            "id": "T2",
+            "description": "package.json \u2014 add tokens:android + tokens:android:check scripts",
+            "status": "done",
+            "completed_at": "2026-06-17T18:30:00Z"
+        },
+        {
+            "id": "T3",
+            "description": "scripts/check-tokens-android.js \u2014 regenerate + date-stripped diff drift gate (execFileSync, no shell), mirrors check-tokens.js",
+            "status": "done",
+            "completed_at": "2026-06-17T18:30:00Z"
+        },
+        {
+            "id": "T4",
+            "description": "Generate + commit android/FitMeDesignTokens.kt + android/res/values/{colors,dimens}.xml; verify determinism + uniqueness + drift gate",
+            "status": "done",
+            "completed_at": "2026-06-17T18:30:00Z"
+        },
+        {
+            "id": "T5",
+            "description": "Remove superseded broken design-tokens/config-android.json",
+            "status": "done",
+            "completed_at": "2026-06-17T18:30:00Z"
+        },
+        {
+            "id": "T6",
+            "description": "Refresh android-token-mapping.md (\u00a70a AND-1 SHIPPED) + android-adaptation.md (generated token layer); fix stale Focus.ring reference",
+            "status": "done",
+            "completed_at": "2026-06-17T18:30:00Z"
+        }
+    ],
+    "timing": {
+        "phases": {
+            "implementation": {
+                "started_at": "2026-06-17T15:00:00Z",
+                "ended_at": "2026-06-17T18:45:00Z"
+            },
+            "complete": {
+                "started_at": "2026-06-17T18:45:00Z"
+            }
+        },
+        "total_wall_time_minutes": 225.0,
+        "total_wall_time_minutes_provenance": "derived-from-phase-durations-2026-06-17"
+    },
+    "phases": {
+        "implementation": {
+            "started_at": "2026-06-17T15:00:00Z",
+            "ended_at": "2026-06-17T18:45:00Z",
+            "notes": "Enhancement of android-design-system. Research (ground-truth Explore pass) + approved plan preceded implementation. Single-session: config + scripts + generated artifacts + docs."
+        },
+        "complete": {
+            "started_at": "2026-06-17T18:45:00Z",
+            "ended_at": null,
+            "notes": "T1-T6 done + verified (deterministic, drift-gated, 0 dup names). T7 Makefile gate ships separately (isolated worktree). fitme-story showcase MDX + related_prs backfilled post-merge via close-feature."
+        }
+    },
+    "deferred_followups": [
+        "make tokens-android-check target + verify-local wiring (infra-glob; post-#762-merge)",
+        "fitme-story showcase MDX (49a) + related_prs backfill (post-merge close-feature)"
+    ]
+}
