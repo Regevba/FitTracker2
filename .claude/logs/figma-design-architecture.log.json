@@ -1,0 +1,143 @@
+{
+  "version": "1.0",
+  "feature": "figma-design-architecture",
+  "title": "figma design architecture",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-17T20:12:37Z",
+  "updated_at": "2026-06-18T11:20:42Z",
+  "events": [
+    {
+      "timestamp": "2026-06-17T20:12:37Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 Research opened \u2014 figma design + per-surface architecture (item 1). Preflight clean, on feature branch.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:21:38Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase PRD opened after operator approved Phase 0 research exit: Approach A (close gaps B+C+D) + Gap D ships the lightweight figma-mirror-staleness advisory.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:24:34Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "PRD approved by operator. Approach A (B+C+D) + Gap D staleness advisory; has_ui=false, requires_analytics=false; primary metric = 2/2 surfaces have current linked arch docs.",
+      "artifacts": [
+        ".claude/features/figma-design-architecture/prd.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:24:34Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks phase opened: breaking B+C+D+advisory into implementable tasks.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:28:00Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Task list approved (9 tasks). Phase 3 UX gateway skipped (has_ui=false).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:28:00Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Implementation opened. Starting T1 (iOS Figma\u2194code fidelity audit) + T3 (web arch doc refresh) \u2014 the two ready tasks.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:51:07Z",
+      "event_type": "finding",
+      "phase": "implementation",
+      "summary": "T1 KILL-CRITERION TRIGGER: iOS Figma mirror (0Ai7s3fCFqR5JXDW8JvgmD) is ~0% faithful \u2014 live MCP read shows ONLY a 'Cover' page with one placeholder 'Library Overview' frame (3 text nodes). Claimed Foundations 10:3, Components 10:5, and 80-var collection 985:2 do NOT exist live (985:2 returns invalid node). Rebuild plan lines 64-67 mark Phase A '\u2705 verified live via screenshots' \u2014 this is FALSE; live file matches the plan's OWN line-21 'before/empty' diagnosis. Fresh FT2-FH-005-class false-provenance claim in the remediation doc itself. PRD kill criterion (<50% fidelity \u2192 STOP + re-scope) fired. Halting before T2-T9; escalating to operator.",
+      "artifacts": [],
+      "metrics": {
+        "ios_mirror_fidelity_pct": 0
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T06:07:25Z",
+      "event_type": "finding",
+      "phase": "implementation",
+      "summary": "RETRACTION of T1 kill-criterion finding. Authoritative use_figma plugin-API read (fileKey 0Ai7s3fCFqR5JXDW8JvgmD) shows the iOS mirror is COMPREHENSIVE: 28 pages, 198 vars across 8 collections incl. 80-var 'code mirror' 985:2 (values match tokens.json exactly), Components 10:5 with 18 component-sets in FULL variant matrices, Foundations 10:3, 22 text styles, 2 effect styles. The earlier '0% / empty Cover only' reading came from get_metadata/get_variable_defs/get_design_context reflecting the Figma DESKTOP APP context (stale Cover-only view), NOT the fileKey-addressed file. Kill criterion did NOT trigger. Rebuild cancelled before any write (no Figma mutation performed). Reverting to original Approach A. Real residual gap: code-mirror vars have empty codeSyntax. New observed-pattern candidate W38 (desktop-context vs fileKey read divergence).",
+      "artifacts": [],
+      "metrics": {
+        "ios_mirror_fidelity_pct": 95
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T11:15:02Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Implementation + testing + closeout done. Audit (retracted false kill-alarm) + iOS codeSyntax fix (80 vars) + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory (7/7 tests) + CLAUDE.md links + case study + W38 pattern + FT2-FH-005 addendum + FRAMEWORK-FACTS. Pending operator PR/merge (both repos).",
+      "artifacts": [
+        "docs/case-studies/figma-design-architecture-case-study.md"
+      ],
+      "metrics": {
+        "tests_passing": 7
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T11:15:16Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Review phase opened. FT2 changes on feature/figma-design-architecture; fitme-story on feature/figma-design-architecture-site. Pre-merge review + operator PR/merge pending.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T11:20:42Z",
+      "event_type": "pr_opened",
+      "phase": "review",
+      "summary": "PRs opened: FitTracker2#767 + fitme-story#235. Awaiting CI + operator merge.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
