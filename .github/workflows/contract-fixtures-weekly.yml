@@ -1,0 +1,120 @@
+name: Contract Fixtures — Weekly Drift Check
+
+# Operator decision D2 (2026-06-18). Drift-only weekly check for the
+# cross-repo contract fixtures (F-CONTRACT-FIXTURE-SAMPLING). The fixtures
+# under tests/fixtures/contracts/ are sampled from the CANONICAL producer so
+# consumer tests can't silently drift; `make check-contract-fixtures`
+# (scripts/sample-contract-fixtures.py --check) verifies each contract still
+# has a fixture whose required keys are present.
+#
+# This is a DRIFT-ONLY cron: it does NOT regenerate fixtures and does NOT open
+# a PR (low-noise by design — re-sampling is an operator/agent action via
+# `make sample-contract-fixtures`). On drift it opens a single tracking issue.
+#
+# The same check already runs warn-only inside verify-local; this surfaces
+# drift on a schedule even when no one runs verify-local for a week.
+#
+# Spaced 2h after framework-status-weekly (05:00) and 1h after
+# dependency-audit-weekly (06:00) to avoid runner-pool contention.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  contract-drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Check contract fixtures for drift
+        id: check
+        run: |
+          set +e
+          python3 scripts/sample-contract-fixtures.py --check > /tmp/contract-check.txt 2>&1
+          rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          {
+            echo "REPORT<<REPORT_EOF"
+            cat /tmp/contract-check.txt
+            echo "REPORT_EOF"
+          } >> "$GITHUB_ENV"
+          # Don't fail the job — the issue is the signal.
+          exit 0
+
+      - name: Open drift issue
+        if: steps.check.outputs.rc != '0'
+        uses: actions/github-script@v9
+        env:
+          REPORT: ${{ env.REPORT }}
+        with:
+          script: |
+            const report = process.env.REPORT || '(no output)';
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `Contract-fixture drift detected ${today}`;
+            const body = [
+              'The weekly contract-fixture drift check found that one or more',
+              'cross-repo contracts no longer match their sampled fixture',
+              '(required keys missing, or a fixture is absent).',
+              '',
+              '**Remediation:** run `make sample-contract-fixtures` to re-sample',
+              'from the canonical producer, then commit the refreshed fixtures',
+              'under `tests/fixtures/contracts/`. If the producer shape changed',
+              'intentionally, also update the consumer tests.',
+              '',
+              '```',
+              report,
+              '```',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            // De-dup: reuse an open drift issue if one already exists.
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'contract-drift',
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Still drifting as of ${today}.\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['contract-drift', 'automated'],
+              });
+            }
+
+      - name: Workflow summary
+        if: always()
+        env:
+          RC: ${{ steps.check.outputs.rc }}
+        run: |
+          {
+            echo "## Weekly contract-fixture drift check"
+            echo ""
+            echo "Exit code: ${RC} (0 = clean, non-zero = drift)"
+            echo ""
+            echo '```'
+            cat /tmp/contract-check.txt 2>/dev/null || echo "(no output)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
