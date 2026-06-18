@@ -19,7 +19,7 @@
 
 **Canonical current state (reconciled 2026-06-15):** **v7.10 · 106 features · 26 instrumented gates (17 write-time + 7 cycle-time + 2 W9 hooks), 19 firing · 0 integrity findings, 0 real regressions.** Live ref: [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md).
 
-**Calibration ladder still pending → v7.10.x / v8.0:** F16 advisory→enforced **2026-06-18** · W9 concurrency **2026-06-20** · PLATFORMS_TESTED (T14) **2026-06-21** · R9 30-day read → `GATE_TEST_MISSING` **2026-07-04** · Data Freshness Audit #1 **2026-08-12** · F14 Phase E → T1 build **2026-08-22**.
+**Calibration ladder still pending → v7.10.x / v8.0:** ~~F16 advisory→enforced 2026-06-18~~ ✅ **ENFORCED 2026-06-17** (1d early; `try-repo-harness` → main required checks; K2 0% FP / 60 runs) · W9 concurrency **2026-06-20** · PLATFORMS_TESTED (T14) **2026-06-21** · F4 `FRAMEWORK_VERSION_STALE` advisory→enforced **~2026-06-30** · R9 30-day read → `GATE_TEST_MISSING` **2026-07-04** · Data Freshness Audit #1 **2026-08-12** · F14 Phase E → T1 build **2026-08-22**.
 
 ---
 
@@ -35,7 +35,7 @@
 **Theme G (test discipline) status:** F14 ✅ + F15 ✅ (shipped 2026-05-22/23) · F16 try-repo harness ✅ (shipped v7.9.1; advisory→enforced flip 2026-06-18) · F17 `last_fired_at` index ✅ (shipped v7.9.1) · F2 Phase 0 reality-check ✅ · **GATE_COVERAGE_ZERO** ✅ (shipped #673 + v7.10 #689 — added cycle-time Mechanism A coverage for 3 previously-blind checks + a 0-candidate mis-wire detector) · **T10 AI golden-set evals** ✅ (shipped 2026-06-10 #691 — deterministic InsightService golden set; pulled forward from v8.1 once Phase 2-bis closed) · **F18 mutation testing** + **T1 `GATE_TEST_MISSING` meta-gate** remain open (F18 v8.0, gated on F14+F16 Phase E; T1 gated on F14 Phase E = 2026-08-22).
 
 **Calibration ladder → next promotion window (~v7.10):** three advisory gates converge:
-- **2026-06-18** — F16 try-repo advisory→enforced flip
+- ~~**2026-06-18** — F16 try-repo advisory→enforced flip~~ ✅ **DONE 2026-06-17** (enforced 1d early; `try-repo-harness` → main required status checks; all §2.2 + K1/K2/K3 met, 0% false-positive rate over 60 CI runs)
 - **~2026-06-20** — W9 Phase 2 concurrency-isolation enforce review (feature `w9-drift-triggered-auto-isolation`)
 - **2026-06-21** — t14 `PLATFORMS_TESTED` advisory→enforced review (cadence B15)
 
