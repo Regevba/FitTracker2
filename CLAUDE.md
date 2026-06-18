@@ -897,6 +897,8 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - UI audit scanner: `scripts/ui-audit.py` (run via `make ui-audit`)
 - UI audit baseline: `docs/design-system/ui-audit-baseline.md`
 - Figma↔code matrix + Verification Contract: `docs/design-system/figma-code-sync-status.md`
+- **Per-surface design-system architecture (source-of-truth + Figma-mirror layering):** iOS [`docs/design-system/ios-design-system-architecture.md`](docs/design-system/ios-design-system-architecture.md) · web [`docs/design-system/fitme-story-design-architecture.md`](docs/design-system/fitme-story-design-architecture.md). Both mirrors verified live 2026-06-18 (iOS file `0Ai7s3fCFqR5JXDW8JvgmD`, web file `fsjHfFLAHELACZHku8Rfcl`) — **code is canonical; Figma is a manually-maintained mirror** (Code Connect publish disabled on Pro plan).
+- **Figma-mirror governance:** maintenance protocol [`docs/design-system/figma-mirror-maintenance-protocol.md`](docs/design-system/figma-mirror-maintenance-protocol.md) + advisory drift check `make figma-mirror-staleness` (`scripts/figma-mirror-staleness.py`, snapshot `.claude/shared/figma-mirror-snapshot.json`). Closes FT2-FH-005 Gap D.
 
 ### Handoff prompts
 - UX/UI build prompts (auto-generated + hand-authored): `docs/prompts/`

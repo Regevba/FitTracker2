@@ -1,6 +1,8 @@
 # fitme-story Design System Architecture
 
-> ⛔ **Code Connect DISABLED 2026-06-15.** Figma Code Connect requires an Org/Enterprise plan; this account is Pro, so the web `.figma.tsx` publish bridge is non-operational (workflow is a disabled stub; the Figma file `fsjHfFLAHELACZHku8Rfcl` is empty/partial). The `globals.css` → component architecture described below is real and operational; only the Code Connect / Figma-Dev-Mode mapping layer is inert. **Code is the source of truth.** See [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md) + honesty ledger FT2-FH-005.
+> ⛔ **Code Connect DISABLED 2026-06-15 — but the Figma mirror itself is REAL.** Figma Code Connect requires an Org/Enterprise plan; this account is Pro, so the web `.figma.tsx` *publish bridge* is non-operational (workflow is a disabled stub). **The Figma file `fsjHfFLAHELACZHku8Rfcl` is NOT empty** — verified live 2026-06-18 it is a manually-maintained mirror with 7 pages, 56 components, and 63 variables (incl. the 12-var `globals.css` code-mirror collection `34:62`). Only the Code-Connect / Figma-Dev-Mode *publish* layer is inert; the mirror is kept in sync by hand per [`figma-mirror-maintenance-protocol.md`](./figma-mirror-maintenance-protocol.md). **Code is the source of truth.** See [`figma-source-of-truth-plan-2026-06-15.md`](./figma-source-of-truth-plan-2026-06-15.md), the iOS counterpart [`ios-design-system-architecture.md`](./ios-design-system-architecture.md), and honesty ledger FT2-FH-005.
+>
+> *(Correction note: an earlier version of this banner said the file was "empty/partial." That was inaccurate — the 2026-06-15 rebuild landed. Retained per the publish-verbatim-then-correct rule rather than silently rewritten.)*
 
 **Created:** 2026-05-08
 **Closes:** [fitme-story-public-enhancements](../../.claude/features/fitme-story-public-enhancements/state.json) T21 (audit ID **FIG-W6**)
@@ -248,6 +250,6 @@ Any change to tokens or layout-level rules MUST be captured in the audit synthes
 ## §9 What this doc is NOT
 
 - **Not a Tailwind v4 tutorial.** Readers are assumed to know `@theme` directive, CSS variables, dark variants. If you don't, [Tailwind v4 docs](https://tailwindcss.com/docs) first.
-- **Not a Figma file.** The Figma file doesn't exist yet (queued as T18 FIG-W1). When it lands, this doc will gain a §10 cross-referencing the Figma library URL + Code Connect mapping spec.
+- **Not the Figma mirror's source of truth.** The Figma file `fsjHfFLAHELACZHku8Rfcl` **does exist** (rebuilt 2026-06-15, verified live 2026-06-18: Components page `2:2` with 56 components, code-mirror collection `34:62`). But it is a **manually-maintained mirror**, not canonical — `globals.css` is canonical. Code Connect publish is disabled (Pro plan). Minor known gaps: the "Foundations (code mirror)" page `34:75` is currently an empty stub, and a `test-page-creation` page should be removed.
 - **Not a token autogen spec.** There is no Style Dictionary / token build pipeline. The CSS file is the source of truth. (If we later add iOS app token generation from this CSS, that's a separate spec.)
-- **Not an immutable architecture decision.** When the corpus grows or the audit produces new findings, this doc gets updated. Last update: 2026-05-08 (T21 ship).
+- **Not an immutable architecture decision.** When the corpus grows or the audit produces new findings, this doc gets updated. Last update: **2026-06-18** (figma-design-architecture: mirror re-verified live, stale "empty file" claims corrected, iOS counterpart added).

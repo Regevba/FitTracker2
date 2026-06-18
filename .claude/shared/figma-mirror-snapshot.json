@@ -1,0 +1,40 @@
+{
+  "audited_at": "2026-06-18",
+  "updated_by": "figma-design-architecture T1e live audit (use_figma plugin-API read)",
+  "ios": {
+    "file": "0Ai7s3fCFqR5JXDW8JvgmD",
+    "code_mirror_collection": "985:2",
+    "foundations_page": "10:3",
+    "components_page": "10:5",
+    "token_keys": [
+      "accent/achievement", "accent/recovery", "accent/sleep",
+      "background/appPrimary", "background/appSecondary", "background/appTint", "background/appWarmTint",
+      "background/authBottom", "background/authMiddle", "background/authTop",
+      "border/hairline", "border/strong", "border/subtle",
+      "brand/cool", "brand/coolSoft", "brand/primary", "brand/secondary", "brand/warm", "brand/warmSoft",
+      "chart/achievement", "chart/activity", "chart/body", "chart/cardio", "chart/heartRate", "chart/hrv",
+      "chart/nutritionFat", "chart/progress", "chart/sleep", "chart/weight",
+      "layout/chartHeight", "layout/chipIdealWidth", "layout/chipMaxWidth", "layout/chipMinWidth",
+      "layout/dotSize", "layout/emptyStateMinHeight",
+      "opacity/disabled", "opacity/hover", "opacity/subtle",
+      "radius/authSheet", "radius/button", "radius/card", "radius/large", "radius/medium", "radius/micro",
+      "radius/sheet", "radius/small", "radius/xLarge", "radius/xSmall",
+      "selection/active", "selection/inactive",
+      "size/ctaHeight", "size/iconBadge", "size/indicatorDot", "size/progressBarHeight",
+      "size/tabBarClearance", "size/touchTargetLarge",
+      "spacing/large", "spacing/medium", "spacing/small", "spacing/xLarge", "spacing/xSmall",
+      "spacing/xxLarge", "spacing/xxSmall", "spacing/xxxSmall",
+      "status/error", "status/success", "status/warning",
+      "surface/elevated", "surface/inverse", "surface/materialLight", "surface/materialStrong",
+      "surface/primary", "surface/secondary", "surface/tertiary",
+      "text/inversePrimary", "text/inverseSecondary", "text/inverseTertiary",
+      "text/primary", "text/secondary", "text/tertiary"
+    ]
+  },
+  "web": {
+    "file": "fsjHfFLAHELACZHku8Rfcl",
+    "code_mirror_collection": "34:62",
+    "components_page": "2:2",
+    "known_gaps": ["Foundations (code mirror) page 34:75 is empty", "test-page-creation cruft page"]
+  }
+}

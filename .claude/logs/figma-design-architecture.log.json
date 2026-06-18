@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-17T20:12:37Z",
-  "updated_at": "2026-06-18T05:24:34Z",
+  "updated_at": "2026-06-18T06:07:25Z",
   "events": [
     {
       "timestamp": "2026-06-17T20:12:37Z",
@@ -50,6 +50,54 @@
       "summary": "Tasks phase opened: breaking B+C+D+advisory into implementable tasks.",
       "artifacts": [],
       "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:28:00Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Task list approved (9 tasks). Phase 3 UX gateway skipped (has_ui=false).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:28:00Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Implementation opened. Starting T1 (iOS Figma\u2194code fidelity audit) + T3 (web arch doc refresh) \u2014 the two ready tasks.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:51:07Z",
+      "event_type": "finding",
+      "phase": "implementation",
+      "summary": "T1 KILL-CRITERION TRIGGER: iOS Figma mirror (0Ai7s3fCFqR5JXDW8JvgmD) is ~0% faithful \u2014 live MCP read shows ONLY a 'Cover' page with one placeholder 'Library Overview' frame (3 text nodes). Claimed Foundations 10:3, Components 10:5, and 80-var collection 985:2 do NOT exist live (985:2 returns invalid node). Rebuild plan lines 64-67 mark Phase A '\u2705 verified live via screenshots' \u2014 this is FALSE; live file matches the plan's OWN line-21 'before/empty' diagnosis. Fresh FT2-FH-005-class false-provenance claim in the remediation doc itself. PRD kill criterion (<50% fidelity \u2192 STOP + re-scope) fired. Halting before T2-T9; escalating to operator.",
+      "artifacts": [],
+      "metrics": {
+        "ios_mirror_fidelity_pct": 0
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T06:07:25Z",
+      "event_type": "finding",
+      "phase": "implementation",
+      "summary": "RETRACTION of T1 kill-criterion finding. Authoritative use_figma plugin-API read (fileKey 0Ai7s3fCFqR5JXDW8JvgmD) shows the iOS mirror is COMPREHENSIVE: 28 pages, 198 vars across 8 collections incl. 80-var 'code mirror' 985:2 (values match tokens.json exactly), Components 10:5 with 18 component-sets in FULL variant matrices, Foundations 10:3, 22 text styles, 2 effect styles. The earlier '0% / empty Cover only' reading came from get_metadata/get_variable_defs/get_design_context reflecting the Figma DESKTOP APP context (stale Cover-only view), NOT the fileKey-addressed file. Kill criterion did NOT trigger. Rebuild cancelled before any write (no Figma mutation performed). Reverting to original Approach A. Real residual gap: code-mirror vars have empty codeSyntax. New observed-pattern candidate W38 (desktop-context vs fileKey read divergence).",
+      "artifacts": [],
+      "metrics": {
+        "ios_mirror_fidelity_pct": 95
+      },
       "actor": "claude_opus_4_8",
       "status": "recorded",
       "recording_mode": "contemporaneous"
