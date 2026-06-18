@@ -4,7 +4,7 @@
   "platforms_tested": {},
   "platforms_tested_provenance": "exempt:framework_meta",
   "created_at": "2026-06-04T05:30:00Z",
-  "updated_at": "2026-06-04T08:50:00Z",
+  "updated_at": "2026-06-17T00:00:00Z",
   "framework_version": "v7.9.1",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -28,7 +28,7 @@
     "False-positive rate >5% during calibration \u2014 fixtures don't survive real-world pre-commit state (e.g., HOME-pollution issues, gitignored-file edge cases)",
     "Maintenance burden too high \u2014 adding a fixture per new gate becomes a barrier to adding gates (signal: >2h per new fixture pair, or operators reject the discipline)"
   ],
-  "kill_criteria_resolution": "pending_t14_eval_2026-06-18 \u2014 T+14d soak window for false-positive evaluation closes 2026-06-18. K1 + K3 are continuous-monitoring criteria with no fire at ship. K2 (false-positive rate) requires 14 days of CI runs.",
+  "kill_criteria_resolution": "RESOLVED 2026-06-17 \u2014 none fired. K1 (wall-clock >5min): empirical ~15s for 59 tests + 1 skip, NOT FIRED. K2 (false-positive rate >5%): 60 pr-integrity-check runs over 13 days (2026-06-04\u2192-17) = 59 success + 1 cancelled, 0 harness failures = 0% false-positive rate, NOT FIRED. K3 (maintenance burden): every gate since F16 ships a fixture pair via the established discipline, no friction observed, NOT FIRED. Promotion to enforced executed 2026-06-17 (operator-requested 1 day early) by adding try-repo-harness to main required status checks.",
   "dispatch_pattern": "agent-driven (harness scaffold + fixture generation per gate + CI workflow)",
   "case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/44-f16-try-repo-harness.mdx",
@@ -156,9 +156,9 @@
     {
       "id": "T11",
       "description": "Advisory \u2192 enforced calibration window (14d Mechanism A telemetry); promotion at v7.10 window earliest 2026-06-18",
-      "status": "deferred",
-      "deferred_at": "2026-06-04T08:50:00Z",
-      "deferred_reason": "Calendar-anchored to T+14d soak window (earliest 2026-06-18). Not actionable until then. Re-evaluation gate: kill_criteria_resolution K2 false-positive rate at 2026-06-18."
+      "status": "done",
+      "completed_at": "2026-06-17T00:00:00Z",
+      "resolution": "Enforced 2026-06-17 (1 day early per operator request). The try-repo-harness CI job was added to main's required status checks (gh api branches/main/protection/required_status_checks: contexts now [integrity, Build and Test, try-repo-harness], strict=true). All 4 \u00a72.2 criteria + K1/K2/K3 met against 13 days of CI telemetry (60 pr-integrity-check runs 2026-06-04\u2192-17: 59 success + 1 cancelled, 0 harness failures = 0% false-positive rate vs <5% K2 target; ~15s wall-clock vs <5min K1; no path-filter so no docs-quirk deadlock risk). Reversible in <5 min by removing the context from required checks."
     }
   ],
   "timing": {
