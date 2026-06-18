@@ -27,7 +27,7 @@
 `w9.auto_isolate` · `w9.concurrency` (PostToolUse drift detection; calibration re-eval ~2026-06-28).
 
 ## Calibration ladder (date-gated)
-- **2026-06-18** — F16 try-repo harness advisory→enforced flip
+- ~~**2026-06-18** — F16 try-repo harness advisory→enforced flip~~ ✅ **ENFORCED 2026-06-17** (1 day early; `try-repo-harness` added to main required status checks. K2 false-positive rate 0% over 13d/60 runs. Reversible via `gh api` required-checks edit)
 - **~2026-06-30** — F4 `FRAMEWORK_VERSION_STALE` advisory→enforced review (14-day window from 2026-06-16 ship)
 - **2026-06-20** — W9 drift-auto-isolation calibration
 - **2026-06-21** — `PLATFORMS_TESTED` (T14) advisory→enforced review (B15)

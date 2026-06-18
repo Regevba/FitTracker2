@@ -52,7 +52,7 @@ kill_criteria:
   - condition: "False-positive rate >5% during the 14-day advisory calibration window"
   - condition: "Maintenance burden >2h per new gate's fixture pair → discipline becomes a barrier; relax to '≥1 of (try-repo, dispatch) test required' instead of mandatory try-repo"
 kill_criterion_fired: false
-kill_criteria_resolution: pending_t14_eval_2026-06-18 — T+14d soak window for false-positive evaluation closes 2026-06-18. K1 (wall-clock) and K3 (maintenance) are continuous-monitoring criteria with no fire to date at ship time. K2 (false-positive rate) requires 14 days of CI runs to evaluate.
+kill_criteria_resolution: RESOLVED 2026-06-17 — none fired. K1 (wall-clock >5min) NOT FIRED (~15s for 59 tests + 1 skip). K2 (false-positive rate >5%) NOT FIRED — 60 pr-integrity-check runs over 13 days (2026-06-04 → -17) = 59 success + 1 cancelled, 0 harness failures = 0% false-positive rate. K3 (maintenance burden) NOT FIRED — fixture-pair-per-gate discipline held with no friction. Promoted to enforced 2026-06-17 (1 day early per operator request) by adding try-repo-harness to main required status checks.
 pr_citation_exempt:
   - "PR #606 (F6 docs + T14 stub — predecessor that shipped on same day; cited for chain-of-custody, not as the F16 implementation PR)"
   - "PR #317 (F14 monkey-patch pattern reference — predecessor case study chain; not part of F16 implementation)"
@@ -129,6 +129,25 @@ Every quantitative metric in this case study is tagged at its claim site. The 59
 ## Phase E discipline note
 
 F16 was the first substantive work after Phase E exit (2026-06-04). The v7.9 promotion HELD across the 14-day soak; v7.9.1 build window opened. F16 ships in this window, consuming Phase E infrastructure (`make integrity-check`, gate-coverage telemetry, FEATURE_CLOSURE_COMPLETENESS enforcement, BRANCH_ISOLATION enforcement). The harness extension for Mode B testing (`make_throwaway_repo(initial_branch="main")`) exercises the very gates F16 itself triggers when run on a feature branch.
+
+## Enforcement flip (T11, 2026-06-17)
+
+F16 shipped advisory on 2026-06-04 with a 14-day calibration window (T11). The `try-repo-harness` CI job ran on every PR but was **not** in main's required status checks — so a harness failure went red without blocking merge. The flip = adding `try-repo-harness` to branch-protection required checks.
+
+Evaluated against the v7.9 §2.2 promotion criteria (identical bar to the BRANCH_ISOLATION promotion) on 2026-06-17, **1 day before the nominal 2026-06-18 window close**, at operator request:
+
+| Criterion | Result [T1] |
+| --- | --- |
+| 1. Coverage emitted ≥7 days | ✓ 13 days (2026-06-04 → -17), 60 `pr-integrity-check` runs |
+| 2. No false positives (K2 <5%) | ✓ **0%** — 59 success + 1 cancelled, 0 harness failures across 60 runs |
+| 3. No silent skips | ✓ 1 documented intentional skip (`STATE_OWNER_LOCATION_MISMATCH` path-neutral throwaway repo); all others run |
+| 4. Reversibility | ✓ remove the context from required checks via `gh api`, <5 min |
+| K1 wall-clock <5min | ✓ ~15s for 59 tests + 1 skip |
+| K3 maintenance | ✓ fixture-pair-per-gate discipline held, no friction |
+
+**No docs-quirk risk:** `pr-integrity-check.yml` triggers on `pull_request` with no `paths:` filter, so the job fires on every PR (including docs-only). Making it required does not reintroduce the path-filtered-required-check deadlock (the already-required `integrity` job is in the same filter-less workflow). The only open PR at flip time (#763 dependabot astro) already had `try-repo-harness` passing.
+
+**Flip executed:** `gh api -X PATCH .../branches/main/protection/required_status_checks` — `contexts` went `[integrity, Build and Test]` → `[integrity, Build and Test, try-repo-harness]`, `strict: true` preserved. F16 is now Layer 3 of gate testing **enforced**: a gate's integration surface can no longer regress silently into main.
 
 ## Cross-references
 

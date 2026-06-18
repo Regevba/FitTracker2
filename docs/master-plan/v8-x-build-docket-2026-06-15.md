@@ -23,7 +23,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | F9 | `make close-feature` closure automation | shipped | #591 + #711 (sub-phase normalize) |
 | F14 | Per-gate dispatch tests | 2026-05-22/23 | #451 / #452 / #455 |
 | F15 | Zero-coverage gate unit tests | 2026-05-22/23 | (same feature) |
-| F16 | try-repo harness | v7.9.1 | #607–#612 · **advisory→enforced 2026-06-18** |
+| F16 | try-repo harness | v7.9.1 | #607–#612 · **✅ enforced 2026-06-17** (try-repo-harness → main required checks; 1d early) |
 | F17 | `last_fired_at` index (+ T13 `last_failed_at`) | v7.9.1 / v7.10 | #617 / #694 |
 | — | GATE_COVERAGE_ZERO meta-check | v7.10 | #673 + #689 |
 | T3 | SignInService passkey/WebAuthn tests | v7.10 | #695 |
@@ -59,7 +59,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 
 **D. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **16 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + **F3 shipped 2026-06-17, advisory**) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open** = F18 (date-gated, post-F16-Phase-E) + F19–F23 (operator/launch-gated). Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
+**Roll-up:** of the original 18 F-candidates, **16 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + **F3 shipped 2026-06-17, advisory**) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open** = F18 (date-gated, post-F16-Phase-E) + F19–F23 (operator/launch-gated). Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **F16 enforce flip DONE 2026-06-17** (try-repo-harness now a main required check) → **v8.0 build kickoff gate cleared**; ship target 2026-07-31.
 
 ---
 
