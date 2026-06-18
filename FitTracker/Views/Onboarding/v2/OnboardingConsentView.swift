@@ -83,12 +83,14 @@ struct OnboardingConsentView: View {
                 .background(AppColor.Brand.primary, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
                 .shadow(color: AppShadow.ctaColor, radius: AppShadow.ctaRadius, y: AppShadow.ctaYOffset)
                 .buttonStyle(.plain)
+                .accessibilityHint("Enables anonymous analytics and continues setup")
 
                 Button(action: onDecline) {
                     Text("Continue Without")
                         .font(AppText.body)
                         .foregroundStyle(AppColor.Text.tertiary)
                 }
+                .accessibilityHint("Continues without sharing anonymous analytics")
 
                 Text("You can change this anytime in Settings.")
                     .font(AppText.caption)
@@ -116,5 +118,10 @@ struct OnboardingConsentView: View {
                 .font(AppText.body)
                 .foregroundStyle(AppColor.Text.primary)
         }
+        // VoiceOver: collected/not-collected is conveyed only by the icon color
+        // above, which a screen reader cannot perceive. Fold the row into one
+        // element and state the consent status explicitly in the label.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(allowed ? "Collected: \(text)" : "Not collected: \(text)")
     }
 }
