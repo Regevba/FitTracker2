@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "updated": "2026-06-17T12:47:02Z",
+  "updated": "2026-06-18T11:11:52Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 110,
-    "features_scanned": 113,
+    "case_studies_scanned": 111,
+    "features_scanned": 114,
     "integrity_snapshot_files": 16,
     "integrity_cycle_snapshots": 14,
     "trend_ready": true,
@@ -12,39 +12,39 @@
   },
   "coverage": {
     "date_written": {
-      "present": 110,
+      "present": 111,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 110,
+      "present": 111,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 110,
+      "present": 111,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 110,
+      "present": 111,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 110,
+      "present": 111,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 51,
-      "missing": 59,
-      "percent": 46.4,
+      "present": 57,
+      "missing": 54,
+      "percent": 51.4,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -55,18 +55,18 @@
     },
     "pr_citation_exempt": {
       "present": 25,
-      "missing": 85,
-      "percent": 22.7,
+      "missing": 86,
+      "percent": 22.5,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/ai-golden-set-evals-case-study.md",
         "docs/case-studies/analytics-observability-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md"
+        "docs/case-studies/android-token-pipeline-case-study.md"
       ]
     },
     "state_case_study_linkage": {
-      "present": 112,
+      "present": 113,
       "missing": 1,
       "percent": 99.1,
       "examples": [
@@ -97,7 +97,7 @@
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
       "severity": "low",
-      "count": 59,
+      "count": 54,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
