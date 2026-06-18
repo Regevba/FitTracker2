@@ -1,458 +1,517 @@
 {
-    "feature": "figma-design-architecture",
-    "feature_name": "figma-design-architecture",
-    "created": "2026-06-17T20:12:00Z",
-    "created_at": "2026-06-17T20:12:00Z",
-    "updated": "2026-06-18T01:30:00Z",
-    "updated_at": "2026-06-18T01:30:00Z",
-    "branch": "feature/figma-design-architecture",
-    "current_phase": "review",
-    "work_type": "feature",
-    "work_subtype": "abbreviated_feature_docs_governance",
-    "state_owner": "ft2",
-    "framework_version": "v7.10",
-    "isolation_opt_out": false,
-    "isolation_opt_out_reason": "",
-    "has_ui": false,
-    "requires_analytics": false,
+  "feature": "figma-design-architecture",
+  "feature_name": "figma-design-architecture",
+  "created": "2026-06-17T20:12:00Z",
+  "created_at": "2026-06-17T20:12:00Z",
+  "updated": "2026-06-18T01:30:00Z",
+  "updated_at": "2026-06-18T01:30:00Z",
+  "branch": "chore/figma-design-architecture-post-merge-closure",
+  "current_phase": "complete",
+  "work_type": "feature",
+  "work_subtype": "abbreviated_feature_docs_governance",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "has_ui": false,
+  "requires_analytics": false,
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-06-18T00:00:00Z",
+      "sources": [
+        "docs/design-system/figma-source-of-truth-plan-2026-06-15.md",
+        "docs/case-studies/framework-honesty-ledger.md#ft2-fh-005",
+        "docs/design-system/fitme-story-design-architecture.md"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-06-18T00:10:00Z",
+      "analytics_spec_complete": false,
+      "analytics_spec_skipped_reason": "requires_analytics:false"
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-06-18T00:20:00Z",
+      "count": 15,
+      "rescoped_at": "2026-06-18T00:40:00Z",
+      "rescope_note": "T1b-T1e (iOS rebuild block) + T1w (web re-verify) inserted after T1 kill-criterion → operator chose rebuild + full variant matrices. T10 (update fitme-site DS page) added per operator 2026-06-18."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "type": null,
+      "preflight_passed": null,
+      "skip_reason": "has_ui:false — docs/audit/governance feature, no new product UI"
+    },
+    "implementation": {
+      "status": "approved",
+      "commits": [],
+      "approved_at": "2026-06-18T01:30:00Z"
+    },
+    "testing": {
+      "status": "approved",
+      "ci_passed": true,
+      "tests_added": 7,
+      "instrumentation_verified": true,
+      "approved_at": "2026-06-18T01:30:00Z"
+    },
+    "review": {
+      "started_at": "2026-06-18T12:06:27Z",
+      "ended_at": "2026-06-18T12:06:27Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-18T12:06:27Z",
+      "ended_at": "2026-06-18T12:06:27Z",
+      "pr_number": 767,
+      "merge_commit_sha": "3af31b30d0604c9fd23620f4811e292023c27c8e",
+      "merged_at": "2026-06-18T12:06:27Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "documentation": {
+      "status": "complete",
+      "approval_signal": "(normalized to complete at closure — PR #767)"
+    },
+    "metrics": {
+      "primary": {
+        "name": "",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    },
+    "docs": {
+      "started_at": "2026-06-18T12:06:27Z",
+      "ended_at": "2026-06-18T12:14:38Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-18T12:14:38Z",
+      "ended_at": "2026-06-18T12:14:38Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "iOS Figma↔code fidelity audit → findings table",
+      "type": "audit",
+      "skill": "design",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.75,
+      "depends_on": [],
+      "completed_at": "2026-06-18T00:35:00Z",
+      "finding": "CORRECTED: mirror is comprehensive (~95% faithful). Initial '0%' reading was a desktop-context read-tool false-negative; retracted. 80-var code-mirror collection 985:2 matches tokens.json; Components 10:5 has 18 variant-matrix component sets. Real gap: empty codeSyntax on code-mirror vars."
+    },
+    {
+      "id": "T1b",
+      "title": "[CANCELLED — mirror already built] Rebuild iOS token variable collection",
+      "type": "design_build",
+      "skill": "design",
+      "status": "not_needed",
+      "priority": "low",
+      "effort_days": 0,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-18T00:55:00Z",
+      "note": "Cancelled: 80-var collection 985:2 already exists and matches tokens.json. No write performed."
+    },
+    {
+      "id": "T1c",
+      "title": "[CANCELLED — already built] Build Foundations page",
+      "type": "design_build",
+      "skill": "design",
+      "status": "not_needed",
+      "priority": "low",
+      "effort_days": 0,
+      "depends_on": [
+        "T1b"
+      ],
+      "completed_at": "2026-06-18T00:55:00Z",
+      "note": "Cancelled: Foundations page 10:3 already exists."
+    },
+    {
+      "id": "T1d",
+      "title": "[CANCELLED — already built] Build Components catalog (full variant matrices)",
+      "type": "design_build",
+      "skill": "design",
+      "status": "not_needed",
+      "priority": "low",
+      "effort_days": 0,
+      "depends_on": [
+        "T1b"
+      ],
+      "completed_at": "2026-06-18T00:55:00Z",
+      "note": "Cancelled: Components page 10:5 already has 18 variant-matrix component sets."
+    },
+    {
+      "id": "T1e",
+      "title": "Real fidelity audit of EXISTING iOS mirror vs code → findings table + capture node IDs",
+      "type": "audit",
+      "skill": "design",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-18T01:05:00Z",
+      "finding": "iOS ~95% faithful: 80-var code-mirror 985:2 values == tokens.json; 22 component sets (full variant matrices); 22 text styles; 2 effect styles. Gap (codeSyntax empty) FIXED this session — all 80 vars now carry iOS AppColor.*/AppSpacing.*/etc."
+    },
+    {
+      "id": "T1w",
+      "title": "Independently re-verify WEB mirror live (fsjHfFLAHELACZHku8Rfcl) via plugin API",
+      "type": "audit",
+      "skill": "design",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-06-18T01:05:00Z",
+      "finding": "Web mirror genuine too: 7 pages, 56 components (Button/Tag/Callout/Card/Layout/Persona sets), 63 vars incl. 12-var code-mirror 34:62. '✅ Phase B' claim holds. Minor gaps: 'Foundations (code mirror)' page 34:75 is EMPTY (0 children); 'test-page-creation' cruft page."
+    },
+    {
+      "id": "T2",
+      "title": "Author ios-design-system-architecture.md (documents the REAL rebuilt mirror)",
+      "type": "docs",
+      "skill": "design",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1e"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "Update fitme-story-design-architecture.md (real mirror state + strip inert Code Connect)",
+      "type": "docs",
+      "skill": "design",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1w"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T4",
+      "title": "Link both arch docs from CLAUDE.md + verify no false Synced claims",
+      "type": "docs",
+      "skill": "docs",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T2",
+        "T3"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "Author figma-mirror-maintenance-protocol.md + reference from contribution guides",
+      "type": "docs",
+      "skill": "docs",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T6",
+      "title": "Implement figma-mirror-staleness advisory (Mechanism A coverage, advisory-only)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T7",
+      "title": "Unit test for figma-mirror-staleness advisory",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T8",
+      "title": "(Conditional) corrective Figma-mirror edits via MCP if minor drift found",
+      "type": "audit",
+      "skill": "design",
+      "status": "done",
+      "priority": "low",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-18T01:00:00Z",
+      "note": "Resolved as the codeSyntax corrective edit (the one real 'minor drift' the audit found); mirror otherwise healthy."
+    },
+    {
+      "id": "T9",
+      "title": "Closeout: case study + FT2-FH-005 amendment (false iOS Phase A + real rebuild) + FRAMEWORK-FACTS advisory bump",
+      "type": "docs",
+      "skill": "docs",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1e",
+        "T1w",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z"
+    },
+    {
+      "id": "T10",
+      "title": "Update fitme-story site design-system page to reflect rebuilt iOS mirror + verified node IDs (operator-requested 2026-06-18)",
+      "type": "docs",
+      "skill": "design",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1e",
+        "T1w"
+      ],
+      "completed_at": "2026-06-18T01:30:00Z",
+      "pr_number": "fitme-story#235"
+    }
+  ],
+  "component_depth_decision": {
+    "date": "2026-06-18",
+    "choice": "full_variant_matrices",
+    "note": "Operator chose full variant matrices (Size/Style/State axes + component properties) over catalog frames. Larger build, true Figma components."
+  },
+  "figma_node_ids": {
+    "ios_file": "0Ai7s3fCFqR5JXDW8JvgmD",
+    "ios_foundations_page": "10:3",
+    "ios_components_page": "10:5",
+    "ios_code_mirror_collection": "VariableCollectionId:985:2",
+    "ios_component_sets": {
+      "AppButton": "12:21",
+      "AppCard": "15:21",
+      "AppMenuRow": "16:36",
+      "StatusBadge": "17:17",
+      "EmptyStateView": "19:21",
+      "AppSelectionTile": "20:18",
+      "AppInputShell": "21:26",
+      "AppFieldLabel": "22:10",
+      "AppQuietButton": "22:23",
+      "AppPickerChip": "356:8",
+      "AppFilterBar": "357:11",
+      "AppStatRow": "357:19",
+      "AppSegmentedControl": "357:36",
+      "AppProgressRing": "357:49",
+      "AppSheetShell": "357:57",
+      "SectionHeader": "359:7",
+      "TrendIndicator": "359:14",
+      "MetricCard": "359:23",
+      "ChartCard": "359:30",
+      "ReadinessCard": "359:40",
+      "MacroTargetBar": "359:50",
+      "MealSectionView": "359:57"
+    },
+    "web_file": "fsjHfFLAHELACZHku8Rfcl",
+    "web_components_page": "2:2",
+    "web_code_mirror_collection": "VariableCollectionId:34:62",
+    "web_foundations_page_EMPTY": "34:75"
+  },
+  "figma_build_status": "verified_existing_plus_codesyntax_fix",
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-06-18T00:00:00Z",
+      "approved_by": "user",
+      "note": "Operator approved Approach A (close gaps B+C+D); Gap D ships doc protocol + lightweight figma-mirror-staleness advisory. has_ui=false, requires_analytics=false."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-06-18T00:10:00Z",
+      "approved_by": "user",
+      "note": "PRD approved. 9 tasks defined (T1 audit gates the rest; T6 advisory + T7 test; T8 conditional)."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-06-18T01:25:00Z",
+      "approved_by": "user",
+      "note": "Impl done (audit+codeSyntax fix+docs+advisory); 7/7 advisory unit tests pass."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-06-18T01:30:00Z",
+      "approved_by": "claude",
+      "note": "Advanced to review; pending operator PR/merge for FT2 (feature/figma-design-architecture) + fitme-story (feature/figma-design-architecture-site)."
+    },
+    {
+      "from": "review",
+      "to": "review",
+      "at": "2026-06-18T12:06:27Z",
+      "reason": "PR #767 squashed onto main as 3af31b30d0 (operator-merged 2026-06-18T12:06:27Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-18T12:06:27Z",
+      "reason": "PR #767 squashed onto main as 3af31b30d0 (operator-merged 2026-06-18T12:06:27Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-18T12:06:27Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-18T12:14:38Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/figma-design-architecture-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ],
+  "paused": false,
+  "pause_reason": "",
+  "kill_criteria_evaluation": {
+    "evaluated_at": "2026-06-18T00:35:00Z",
+    "triggered": false,
+    "criterion": "iOS Figma mirror < 50% faithful → STOP + re-scope as 're-rebuild the mirror'",
+    "measured_fidelity_pct": 95,
+    "initial_false_reading": {
+      "claimed_fidelity_pct": 0,
+      "retracted": true,
+      "cause": "TOOL-CONTEXT ERROR: get_metadata/get_variable_defs/get_design_context read the Figma DESKTOP APP's currently-open context (a stale 'Cover-only' view), NOT the file addressed by fileKey 0Ai7s3fCFqR5JXDW8JvgmD. use_figma (plugin API, fileKey-addressed) is authoritative and shows the mirror is comprehensive.",
+      "lesson": "For a specific fileKey, trust use_figma plugin-API reads over get_metadata/get_screenshot/get_design_context, which reflect desktop-app context and can be stale/different. New observed-pattern candidate (W38)."
+    },
+    "evidence_corrected": "use_figma(fileKey=0Ai7s3fCFqR5JXDW8JvgmD): 28 pages incl. Foundations(10:3), Components(10:5, 18 component-sets with FULL variant matrices), Typography Repository; 8 collections / 198 vars incl. 'FitTracker Tokens (code mirror)' 985:2 (80 vars, values match tokens.json exactly: brand/primary=#FA8F40 etc.); 22 text styles; 2 effect styles.",
+    "real_gaps_found": [
+      "code-mirror collection (985:2) variables have EMPTY codeSyntax {} — Dev Mode shows no AppColor.* references (minor, cheap fix)",
+      "to confirm during real audit: whether component sets bind to variables vs hardcoded values"
+    ],
+    "resolution": "FALSE ALARM RETRACTED. Mirror is ~comprehensive. Revert to original Approach A: audit (real fidelity vs code) + docs (C) + governance (D + staleness advisory). NO rebuild. Operator's 'full variant matrices' request is already satisfied by the existing library."
+  },
+  "scope_change_log": [
+    {
+      "date": "2026-06-18",
+      "change": "T1 audit ERRONEOUSLY reported iOS mirror 0% (desktop-context read tool false-negative); operator approved REBUILD on that false data.",
+      "decided_by": "operator"
+    },
+    {
+      "date": "2026-06-18",
+      "change": "RETRACTED: authoritative use_figma plugin-API read shows mirror is comprehensive (80-var 985:2 + 18 variant-matrix component sets + Foundations + 22 text styles). Rebuild cancelled before any write. Reverting to original Approach A (audit existing mirror + docs + governance). T1b/T1c/T1d marked not_needed; T1e becomes the real fidelity audit.",
+      "decided_by": "claude+pending-operator-confirm"
+    }
+  ],
+  "resume_notes": [
+    "Phase=review. Substantive work DONE (audit retraction + codeSyntax fix + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory w/ 7 passing tests + CLAUDE.md links + closeout docs).",
+    "PRs OPEN: FT2 #767 + fitme-story #235. Awaiting CI + operator merge. After both merge: docs phase + mark complete (set merge.status=approved, current_phase=complete).",
+    "Kill criterion was a FALSE alarm (W38 desktop-context read); retracted, no rebuild performed."
+  ],
+  "decision_log": [
+    {
+      "date": "2026-06-17",
+      "decision": "Scope = Approach A (close gaps B iOS Figma↔code audit + C per-surface arch docs + D mirror-maintenance protocol).",
+      "decided_by": "operator"
+    },
+    {
+      "date": "2026-06-17",
+      "decision": "Gap D depth = doc protocol PLUS lightweight figma-mirror-staleness advisory (advisory-only, no enforcement flip planned at ship).",
+      "decided_by": "operator"
+    }
+  ],
+  "timing": {
     "phases": {
-        "research": {
-            "status": "approved",
-            "approved_at": "2026-06-18T00:00:00Z",
-            "sources": [
-                "docs/design-system/figma-source-of-truth-plan-2026-06-15.md",
-                "docs/case-studies/framework-honesty-ledger.md#ft2-fh-005",
-                "docs/design-system/fitme-story-design-architecture.md"
-            ]
-        },
-        "prd": {
-            "status": "approved",
-            "approved_at": "2026-06-18T00:10:00Z",
-            "analytics_spec_complete": false,
-            "analytics_spec_skipped_reason": "requires_analytics:false"
-        },
-        "tasks": {
-            "status": "approved",
-            "approved_at": "2026-06-18T00:20:00Z",
-            "count": 15,
-            "rescoped_at": "2026-06-18T00:40:00Z",
-            "rescope_note": "T1b-T1e (iOS rebuild block) + T1w (web re-verify) inserted after T1 kill-criterion \u2192 operator chose rebuild + full variant matrices. T10 (update fitme-site DS page) added per operator 2026-06-18."
-        },
-        "ux_or_integration": {
-            "status": "skipped",
-            "type": null,
-            "preflight_passed": null,
-            "skip_reason": "has_ui:false \u2014 docs/audit/governance feature, no new product UI"
-        },
-        "implementation": {
-            "status": "approved",
-            "commits": [],
-            "approved_at": "2026-06-18T01:30:00Z"
-        },
-        "testing": {
-            "status": "approved",
-            "ci_passed": true,
-            "tests_added": 7,
-            "instrumentation_verified": true,
-            "approved_at": "2026-06-18T01:30:00Z"
-        },
-        "review": {
-            "status": "in_progress",
-            "risks": [],
-            "ci_main": false,
-            "ci_feature": false
-        },
-        "merge": {
-            "status": "pending",
-            "pr_number": 767
-        },
-        "documentation": {
-            "status": "pending"
-        },
-        "metrics": {
-            "primary": {
-                "name": "",
-                "baseline": null,
-                "target": null,
-                "current": null
-            },
-            "secondary": [],
-            "guardrails": [],
-            "instrumentation_ready": false,
-            "first_review_date": null,
-            "kill_criteria": ""
-        }
+      "research": {
+        "started_at": "2026-06-17T20:12:00Z",
+        "ended_at": "2026-06-18T00:00:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-18T00:00:00Z",
+        "ended_at": "2026-06-18T00:10:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-18T00:10:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-18T00:25:00Z",
+        "ended_at": "2026-06-18T01:25:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-18T01:25:00Z",
+        "ended_at": "2026-06-18T01:30:00Z"
+      },
+      "review": {
+        "started_at": "2026-06-18T12:06:27Z",
+        "ended_at": "2026-06-18T12:06:27Z"
+      },
+      "merge": {
+        "started_at": "2026-06-18T12:06:27Z",
+        "ended_at": "2026-06-18T12:06:27Z"
+      },
+      "docs": {
+        "started_at": "2026-06-18T12:06:27Z",
+        "ended_at": "2026-06-18T12:14:38Z"
+      },
+      "complete": {
+        "started_at": "2026-06-18T12:14:38Z",
+        "ended_at": "2026-06-18T12:14:38Z"
+      }
     },
-    "tasks": [
-        {
-            "id": "T1",
-            "title": "iOS Figma\u2194code fidelity audit \u2192 findings table",
-            "type": "audit",
-            "skill": "design",
-            "status": "done",
-            "priority": "high",
-            "effort_days": 0.75,
-            "depends_on": [],
-            "completed_at": "2026-06-18T00:35:00Z",
-            "finding": "CORRECTED: mirror is comprehensive (~95% faithful). Initial '0%' reading was a desktop-context read-tool false-negative; retracted. 80-var code-mirror collection 985:2 matches tokens.json; Components 10:5 has 18 variant-matrix component sets. Real gap: empty codeSyntax on code-mirror vars."
-        },
-        {
-            "id": "T1b",
-            "title": "[CANCELLED \u2014 mirror already built] Rebuild iOS token variable collection",
-            "type": "design_build",
-            "skill": "design",
-            "status": "not_needed",
-            "priority": "low",
-            "effort_days": 0,
-            "depends_on": [
-                "T1"
-            ],
-            "completed_at": "2026-06-18T00:55:00Z",
-            "note": "Cancelled: 80-var collection 985:2 already exists and matches tokens.json. No write performed."
-        },
-        {
-            "id": "T1c",
-            "title": "[CANCELLED \u2014 already built] Build Foundations page",
-            "type": "design_build",
-            "skill": "design",
-            "status": "not_needed",
-            "priority": "low",
-            "effort_days": 0,
-            "depends_on": [
-                "T1b"
-            ],
-            "completed_at": "2026-06-18T00:55:00Z",
-            "note": "Cancelled: Foundations page 10:3 already exists."
-        },
-        {
-            "id": "T1d",
-            "title": "[CANCELLED \u2014 already built] Build Components catalog (full variant matrices)",
-            "type": "design_build",
-            "skill": "design",
-            "status": "not_needed",
-            "priority": "low",
-            "effort_days": 0,
-            "depends_on": [
-                "T1b"
-            ],
-            "completed_at": "2026-06-18T00:55:00Z",
-            "note": "Cancelled: Components page 10:5 already has 18 variant-matrix component sets."
-        },
-        {
-            "id": "T1e",
-            "title": "Real fidelity audit of EXISTING iOS mirror vs code \u2192 findings table + capture node IDs",
-            "type": "audit",
-            "skill": "design",
-            "status": "done",
-            "priority": "high",
-            "effort_days": 0.5,
-            "depends_on": [
-                "T1"
-            ],
-            "completed_at": "2026-06-18T01:05:00Z",
-            "finding": "iOS ~95% faithful: 80-var code-mirror 985:2 values == tokens.json; 22 component sets (full variant matrices); 22 text styles; 2 effect styles. Gap (codeSyntax empty) FIXED this session \u2014 all 80 vars now carry iOS AppColor.*/AppSpacing.*/etc."
-        },
-        {
-            "id": "T1w",
-            "title": "Independently re-verify WEB mirror live (fsjHfFLAHELACZHku8Rfcl) via plugin API",
-            "type": "audit",
-            "skill": "design",
-            "status": "done",
-            "priority": "high",
-            "effort_days": 0.5,
-            "depends_on": [],
-            "completed_at": "2026-06-18T01:05:00Z",
-            "finding": "Web mirror genuine too: 7 pages, 56 components (Button/Tag/Callout/Card/Layout/Persona sets), 63 vars incl. 12-var code-mirror 34:62. '\u2705 Phase B' claim holds. Minor gaps: 'Foundations (code mirror)' page 34:75 is EMPTY (0 children); 'test-page-creation' cruft page."
-        },
-        {
-            "id": "T2",
-            "title": "Author ios-design-system-architecture.md (documents the REAL rebuilt mirror)",
-            "type": "docs",
-            "skill": "design",
-            "status": "done",
-            "priority": "high",
-            "effort_days": 0.5,
-            "depends_on": [
-                "T1e"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T3",
-            "title": "Update fitme-story-design-architecture.md (real mirror state + strip inert Code Connect)",
-            "type": "docs",
-            "skill": "design",
-            "status": "done",
-            "priority": "medium",
-            "effort_days": 0.25,
-            "depends_on": [
-                "T1w"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T4",
-            "title": "Link both arch docs from CLAUDE.md + verify no false Synced claims",
-            "type": "docs",
-            "skill": "docs",
-            "status": "done",
-            "priority": "medium",
-            "effort_days": 0.25,
-            "depends_on": [
-                "T2",
-                "T3"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T5",
-            "title": "Author figma-mirror-maintenance-protocol.md + reference from contribution guides",
-            "type": "docs",
-            "skill": "docs",
-            "status": "done",
-            "priority": "high",
-            "effort_days": 0.5,
-            "depends_on": [
-                "T1"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T6",
-            "title": "Implement figma-mirror-staleness advisory (Mechanism A coverage, advisory-only)",
-            "type": "infra",
-            "skill": "dev",
-            "status": "done",
-            "priority": "high",
-            "effort_days": 0.5,
-            "depends_on": [
-                "T1"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T7",
-            "title": "Unit test for figma-mirror-staleness advisory",
-            "type": "test",
-            "skill": "qa",
-            "status": "done",
-            "priority": "medium",
-            "effort_days": 0.25,
-            "depends_on": [
-                "T6"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T8",
-            "title": "(Conditional) corrective Figma-mirror edits via MCP if minor drift found",
-            "type": "audit",
-            "skill": "design",
-            "status": "done",
-            "priority": "low",
-            "effort_days": 0.25,
-            "depends_on": [
-                "T1"
-            ],
-            "completed_at": "2026-06-18T01:00:00Z",
-            "note": "Resolved as the codeSyntax corrective edit (the one real 'minor drift' the audit found); mirror otherwise healthy."
-        },
-        {
-            "id": "T9",
-            "title": "Closeout: case study + FT2-FH-005 amendment (false iOS Phase A + real rebuild) + FRAMEWORK-FACTS advisory bump",
-            "type": "docs",
-            "skill": "docs",
-            "status": "done",
-            "priority": "medium",
-            "effort_days": 0.25,
-            "depends_on": [
-                "T1e",
-                "T1w",
-                "T2",
-                "T3",
-                "T4",
-                "T5",
-                "T6"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z"
-        },
-        {
-            "id": "T10",
-            "title": "Update fitme-story site design-system page to reflect rebuilt iOS mirror + verified node IDs (operator-requested 2026-06-18)",
-            "type": "docs",
-            "skill": "design",
-            "status": "done",
-            "priority": "medium",
-            "effort_days": 0.5,
-            "depends_on": [
-                "T1e",
-                "T1w"
-            ],
-            "completed_at": "2026-06-18T01:30:00Z",
-            "pr_number": "fitme-story#235"
-        }
-    ],
-    "component_depth_decision": {
-        "date": "2026-06-18",
-        "choice": "full_variant_matrices",
-        "note": "Operator chose full variant matrices (Size/Style/State axes + component properties) over catalog frames. Larger build, true Figma components."
-    },
-    "figma_node_ids": {
-        "ios_file": "0Ai7s3fCFqR5JXDW8JvgmD",
-        "ios_foundations_page": "10:3",
-        "ios_components_page": "10:5",
-        "ios_code_mirror_collection": "VariableCollectionId:985:2",
-        "ios_component_sets": {
-            "AppButton": "12:21",
-            "AppCard": "15:21",
-            "AppMenuRow": "16:36",
-            "StatusBadge": "17:17",
-            "EmptyStateView": "19:21",
-            "AppSelectionTile": "20:18",
-            "AppInputShell": "21:26",
-            "AppFieldLabel": "22:10",
-            "AppQuietButton": "22:23",
-            "AppPickerChip": "356:8",
-            "AppFilterBar": "357:11",
-            "AppStatRow": "357:19",
-            "AppSegmentedControl": "357:36",
-            "AppProgressRing": "357:49",
-            "AppSheetShell": "357:57",
-            "SectionHeader": "359:7",
-            "TrendIndicator": "359:14",
-            "MetricCard": "359:23",
-            "ChartCard": "359:30",
-            "ReadinessCard": "359:40",
-            "MacroTargetBar": "359:50",
-            "MealSectionView": "359:57"
-        },
-        "web_file": "fsjHfFLAHELACZHku8Rfcl",
-        "web_components_page": "2:2",
-        "web_code_mirror_collection": "VariableCollectionId:34:62",
-        "web_foundations_page_EMPTY": "34:75"
-    },
-    "figma_build_status": "verified_existing_plus_codesyntax_fix",
-    "pre_merge_review": {
-        "ux": null,
-        "design": null
-    },
-    "transitions": [
-        {
-            "from": "research",
-            "to": "prd",
-            "timestamp": "2026-06-18T00:00:00Z",
-            "approved_by": "user",
-            "note": "Operator approved Approach A (close gaps B+C+D); Gap D ships doc protocol + lightweight figma-mirror-staleness advisory. has_ui=false, requires_analytics=false."
-        },
-        {
-            "from": "prd",
-            "to": "tasks",
-            "timestamp": "2026-06-18T00:10:00Z",
-            "approved_by": "user",
-            "note": "PRD approved. 9 tasks defined (T1 audit gates the rest; T6 advisory + T7 test; T8 conditional)."
-        },
-        {
-            "from": "implementation",
-            "to": "testing",
-            "timestamp": "2026-06-18T01:25:00Z",
-            "approved_by": "user",
-            "note": "Impl done (audit+codeSyntax fix+docs+advisory); 7/7 advisory unit tests pass."
-        },
-        {
-            "from": "testing",
-            "to": "review",
-            "timestamp": "2026-06-18T01:30:00Z",
-            "approved_by": "claude",
-            "note": "Advanced to review; pending operator PR/merge for FT2 (feature/figma-design-architecture) + fitme-story (feature/figma-design-architecture-site)."
-        }
-    ],
-    "paused": false,
-    "pause_reason": "",
-    "kill_criteria_evaluation": {
-        "evaluated_at": "2026-06-18T00:35:00Z",
-        "triggered": false,
-        "criterion": "iOS Figma mirror < 50% faithful \u2192 STOP + re-scope as 're-rebuild the mirror'",
-        "measured_fidelity_pct": 95,
-        "initial_false_reading": {
-            "claimed_fidelity_pct": 0,
-            "retracted": true,
-            "cause": "TOOL-CONTEXT ERROR: get_metadata/get_variable_defs/get_design_context read the Figma DESKTOP APP's currently-open context (a stale 'Cover-only' view), NOT the file addressed by fileKey 0Ai7s3fCFqR5JXDW8JvgmD. use_figma (plugin API, fileKey-addressed) is authoritative and shows the mirror is comprehensive.",
-            "lesson": "For a specific fileKey, trust use_figma plugin-API reads over get_metadata/get_screenshot/get_design_context, which reflect desktop-app context and can be stale/different. New observed-pattern candidate (W38)."
-        },
-        "evidence_corrected": "use_figma(fileKey=0Ai7s3fCFqR5JXDW8JvgmD): 28 pages incl. Foundations(10:3), Components(10:5, 18 component-sets with FULL variant matrices), Typography Repository; 8 collections / 198 vars incl. 'FitTracker Tokens (code mirror)' 985:2 (80 vars, values match tokens.json exactly: brand/primary=#FA8F40 etc.); 22 text styles; 2 effect styles.",
-        "real_gaps_found": [
-            "code-mirror collection (985:2) variables have EMPTY codeSyntax {} \u2014 Dev Mode shows no AppColor.* references (minor, cheap fix)",
-            "to confirm during real audit: whether component sets bind to variables vs hardcoded values"
-        ],
-        "resolution": "FALSE ALARM RETRACTED. Mirror is ~comprehensive. Revert to original Approach A: audit (real fidelity vs code) + docs (C) + governance (D + staleness advisory). NO rebuild. Operator's 'full variant matrices' request is already satisfied by the existing library."
-    },
-    "scope_change_log": [
-        {
-            "date": "2026-06-18",
-            "change": "T1 audit ERRONEOUSLY reported iOS mirror 0% (desktop-context read tool false-negative); operator approved REBUILD on that false data.",
-            "decided_by": "operator"
-        },
-        {
-            "date": "2026-06-18",
-            "change": "RETRACTED: authoritative use_figma plugin-API read shows mirror is comprehensive (80-var 985:2 + 18 variant-matrix component sets + Foundations + 22 text styles). Rebuild cancelled before any write. Reverting to original Approach A (audit existing mirror + docs + governance). T1b/T1c/T1d marked not_needed; T1e becomes the real fidelity audit.",
-            "decided_by": "claude+pending-operator-confirm"
-        }
-    ],
-    "resume_notes": [
-        "Phase=review. Substantive work DONE (audit retraction + codeSyntax fix + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory w/ 7 passing tests + CLAUDE.md links + closeout docs).",
-        "PRs OPEN: FT2 #767 + fitme-story #235. Awaiting CI + operator merge. After both merge: docs phase + mark complete (set merge.status=approved, current_phase=complete).",
-        "Kill criterion was a FALSE alarm (W38 desktop-context read); retracted, no rebuild performed."
-    ],
-    "decision_log": [
-        {
-            "date": "2026-06-17",
-            "decision": "Scope = Approach A (close gaps B iOS Figma\u2194code audit + C per-surface arch docs + D mirror-maintenance protocol).",
-            "decided_by": "operator"
-        },
-        {
-            "date": "2026-06-17",
-            "decision": "Gap D depth = doc protocol PLUS lightweight figma-mirror-staleness advisory (advisory-only, no enforcement flip planned at ship).",
-            "decided_by": "operator"
-        }
-    ],
-    "timing": {
-        "phases": {
-            "research": {
-                "started_at": "2026-06-17T20:12:00Z",
-                "ended_at": "2026-06-18T00:00:00Z"
-            },
-            "prd": {
-                "started_at": "2026-06-18T00:00:00Z",
-                "ended_at": "2026-06-18T00:10:00Z"
-            },
-            "tasks": {
-                "started_at": "2026-06-18T00:10:00Z"
-            },
-            "implementation": {
-                "started_at": "2026-06-18T00:25:00Z",
-                "ended_at": "2026-06-18T01:25:00Z"
-            },
-            "testing": {
-                "started_at": "2026-06-18T01:25:00Z",
-                "ended_at": "2026-06-18T01:30:00Z"
-            },
-            "review": {
-                "started_at": "2026-06-18T01:30:00Z"
-            }
-        },
-        "time_source": "measured"
-    },
-    "case_study": "docs/case-studies/figma-design-architecture-case-study.md",
-    "case_study_showcase": null,
-    "platforms_tested": {
-        "ios": false,
-        "web": false,
-        "backend": false,
-        "ai": false
-    },
-    "platforms_tested_provenance": "exempt:docs_governance_feature_no_product_platform_code",
-    "related_prs": [
-        767,
-        "fitme-story#235"
-    ]
+    "time_source": "measured"
+  },
+  "case_study": "docs/case-studies/figma-design-architecture-case-study.md",
+  "case_study_showcase": null,
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "exempt:docs_governance_feature_no_product_platform_code",
+  "related_prs": [
+    767,
+    "fitme-story#235"
+  ],
+  "merge_pr_number": 767,
+  "merge_commit_sha": "3af31b30d0604c9fd23620f4811e292023c27c8e",
+  "merged_at": "2026-06-18T12:06:27Z",
+  "feature_branch_merged": "feature/figma-design-architecture"
 }
