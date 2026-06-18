@@ -375,5 +375,46 @@
   "updated_at": "2026-06-07T00:00:00Z",
   "state_owner_sync_origin": "fitme-story-reverse",
   "isolation_opt_out": true,
-  "isolation_opt_out_reason": "Feature is state_owner=fitme-story (reverse-synced into FT2). Its FT2-side planning artifacts (prd/tasks/state) are updated across multiple framework PRs rather than a single feature/* branch, so BRANCH_ISOLATION_HISTORICAL fires by construction. Silenced per the documented path; the authoritative fitme-story copy should carry the same flag to survive reverse-sync (2026-06-10 self-test)."
+  "isolation_opt_out_reason": "Feature is state_owner=fitme-story (reverse-synced into FT2). Its FT2-side planning artifacts (prd/tasks/state) are updated across multiple framework PRs rather than a single feature/* branch, so BRANCH_ISOLATION_HISTORICAL fires by construction. Silenced per the documented path; the authoritative fitme-story copy should carry the same flag to survive reverse-sync (2026-06-10 self-test).",
+  "phase_4_decisions": {
+    "decided_at": "2026-06-18",
+    "decided_by": "operator",
+    "decisions": [
+      {
+        "id": "D1-hero-assets",
+        "decision": "defer_procedural_only",
+        "detail": "Ship procedural-only scene; 6 hero glTF pieces deferred to post-launch polish (not on critical path)."
+      },
+      {
+        "id": "D2-scrub-control",
+        "decision": "custom_lightweight",
+        "detail": "Build custom Controls.tsx (pause + arrow-key scrub + 4x slow + replay + keyboard a11y). Theatre.js v9 NOT adopted."
+      },
+      {
+        "id": "D3-hadf-path",
+        "decision": "path_1_act_iii_chambers",
+        "detail": "Render HADF Phase 3a sensing as new chambers inside Act III Architecture (aggregator half already shipped #203)."
+      },
+      {
+        "id": "D6-relaunch",
+        "decision": "keep_404_until_rive_and_polish",
+        "detail": "Stay 404 until the Rive reduced-motion fallback (T-rive-tier-2) is authored AND a full polish pass lands. T-rive-tier-2 is now the single re-launch blocker."
+      },
+      {
+        "id": "D4-playwright",
+        "decision": "recommended_approve_pending_confirm",
+        "detail": "Operator default rec: approve ~200MB Playwright install for AC-10/AC-11/mobile e2e. Awaiting explicit confirm."
+      },
+      {
+        "id": "D5-lighthouse",
+        "decision": "keep_warn_until_post_relaunch",
+        "detail": "Keep lighthouse warn @0.8; flip to enforce >=0.95 after re-launch + 1-2wk calibration."
+      }
+    ],
+    "now_buildable_no_assets": [
+      "T-scrub-pause-timedilation",
+      "T-hadf-sensing-layer-hooks (scene consumer, path 1)"
+    ],
+    "relaunch_blocker": "T-rive-tier-2 (.riv asset) + full polish pass"
+  }
 }
