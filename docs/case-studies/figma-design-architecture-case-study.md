@@ -19,7 +19,7 @@ platforms_tested:
   web: false
   backend: false
   ai: false
-related_prs: []
+related_prs: [767]
 case_study_type: standard
 ---
 
