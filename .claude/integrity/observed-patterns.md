@@ -1727,3 +1727,27 @@ Applied 2026-06-16 to clear #741 (already up-to-date → direct `--admin`) and #
 **Silence path:** none needed — this is a read-discipline pattern, not a gate. The lesson is encoded in [`ios-design-system-architecture.md`](../../docs/design-system/ios-design-system-architecture.md) §6 (verification via `use_figma`) and the fidelity-audit report's Tooling Note.
 
 **First observed:** 2026-06-18 (`figma-design-architecture` T1). **Sibling patterns:** none direct; conceptually adjacent to W36 (a capability's *claimed* state diverging from its *real* state) — here the divergence was in the audit tool, not the artifact.
+
+### W39 — A breaking-change major-version Dependabot bump cannot auto-merge; it churns as repeated closed-unmerged PRs until a human ships a golden-verified manual migration (2026-06-18)
+
+**Surfaced by:** the 2026-06-18 closed-vs-merged PR-corpus scan (Group B = 43 closed-unmerged PRs). The `style-dictionary` 3.9.2 → 5.x upgrade produced a four-PR sequence, three of them closed-unmerged:
+
+| PR | What | Outcome |
+|---|---|---|
+| #440 | Dependabot auto-bump → 5.4.1 | closed unmerged (66h) |
+| #668 | Dependabot auto-bump → 5.4.3 | closed unmerged (4.7h) |
+| #596 | manual `style-dictionary-v3-to-v5-migration` | **CI Failed / "No logs captured"**, closed |
+| **#677** | `build(tokens): migrate v3 → v5 (golden-verified, closes #668)` | **MERGED 2026-06-08** |
+
+**The pattern:** a major-version bump of a build-time dependency whose new major *removed the API the config depended on* (here: Style Dictionary v5 dropped the v3-era format/transform API that `sd.config` used) is **not a version-string change** — it is a code migration. Dependabot can only edit the version, so its PR builds against the old config and either fails CI or (worse) passes a thin CI that doesn't exercise the broken path. Each auto-bump PR is closed, Dependabot re-proposes the next patch of the same major, and the cycle repeats until a human writes the migration. The *successful* PR is hand-authored, **golden-file-verified** (output diffed against a pinned expected artifact), and explicitly closes the Dependabot PR. This was flagged as a "W29 candidate" on 2026-06-02 but never catalogued — catalog W29 became the MDX-import pattern instead, leaving this gap open until the corpus scan re-surfaced it.
+
+**Detection / remediation:**
+
+- Treat a major-version Dependabot PR on a *build-time* dep (bundler, token compiler, codegen, lint engine) as a **migration ticket, not a merge** — close the auto-bump, open a hand-authored migration branch.
+- Gate the migration on a **golden-file diff** (regenerate the committed artifact, assert byte-identical to a pinned expected) so "CI green" actually means "output unchanged," not "version string parses." See the `tokens:android:check` / `tokens-check` drift-gate pattern.
+- Watch for the repeat-bump tell: ≥2 closed Dependabot PRs for the *same package's same major* is the signal that a manual migration is overdue.
+- Distinct from W29 (Dependabot major-bump that passes CI but breaks `main` post-merge) — W39 is the case where the PRs **never merge at all** and churn as closed-unmerged exhaust.
+
+**Silence path:** none — this is a triage-discipline pattern, not a gate. Optionally add the package to `.github/dependabot.yml` `ignore: [{ update-types: ["version-update:semver-major"] }]` once a manual-migration policy is adopted for it, so the auto-bump churn stops.
+
+**First observed:** 2026-06-18 (closed-PR-corpus scan; root incident 2026-05-29 → 2026-06-08, style-dictionary v3→v5). **Sibling patterns:** W29 (post-merge break vs this never-merges), W16/`tokens-check` (golden/canonical-sample verification as the real gate).
