@@ -3,31 +3,37 @@
     "feature_name": "figma-design-architecture",
     "created": "2026-06-17T20:12:00Z",
     "created_at": "2026-06-17T20:12:00Z",
-    "updated": "2026-06-17T20:20:00Z",
-    "updated_at": "2026-06-17T20:20:00Z",
+    "updated": "2026-06-18T00:00:00Z",
+    "updated_at": "2026-06-18T00:00:00Z",
     "branch": "feature/figma-design-architecture",
-    "current_phase": "research",
+    "current_phase": "prd",
     "work_type": "feature",
+    "work_subtype": "abbreviated_feature_docs_governance",
     "state_owner": "ft2",
     "framework_version": "v7.10",
     "isolation_opt_out": false,
     "isolation_opt_out_reason": "",
-    "has_ui": null,
-    "requires_analytics": null,
+    "has_ui": false,
+    "requires_analytics": false,
     "phases": {
         "research": {
-            "status": "in_progress",
-            "approved_at": null,
-            "sources": []
+            "status": "approved",
+            "approved_at": "2026-06-18T00:00:00Z",
+            "sources": [
+                "docs/design-system/figma-source-of-truth-plan-2026-06-15.md",
+                "docs/case-studies/framework-honesty-ledger.md#ft2-fh-005",
+                "docs/design-system/fitme-story-design-architecture.md"
+            ]
         },
         "prd": {
-            "status": "pending",
-            "approved_at": null,
-            "analytics_spec_complete": false
+            "status": "approved",
+            "approved_at": "2026-06-18T00:10:00Z",
+            "analytics_spec_complete": false,
+            "analytics_spec_skipped_reason": "requires_analytics:false"
         },
         "tasks": {
-            "status": "pending",
-            "count": 0
+            "status": "in_progress",
+            "count": 9
         },
         "ux_or_integration": {
             "status": "pending",
@@ -71,26 +77,70 @@
             "kill_criteria": ""
         }
     },
-    "tasks": [],
+    "tasks": [
+        {"id": "T1", "title": "iOS Figma↔code fidelity audit → findings table", "type": "audit", "skill": "design", "status": "ready", "priority": "high", "effort_days": 0.75, "depends_on": [], "completed_at": null},
+        {"id": "T2", "title": "Author ios-design-system-architecture.md", "type": "docs", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": null},
+        {"id": "T3", "title": "Update fitme-story-design-architecture.md (rebuilt mirror + strip inert Code Connect)", "type": "docs", "skill": "design", "status": "ready", "priority": "medium", "effort_days": 0.25, "depends_on": [], "completed_at": null},
+        {"id": "T4", "title": "Link both arch docs from CLAUDE.md + verify no false Synced claims", "type": "docs", "skill": "docs", "status": "pending", "priority": "medium", "effort_days": 0.25, "depends_on": ["T2", "T3"], "completed_at": null},
+        {"id": "T5", "title": "Author figma-mirror-maintenance-protocol.md + reference from contribution guides", "type": "docs", "skill": "docs", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": null},
+        {"id": "T6", "title": "Implement figma-mirror-staleness advisory (Mechanism A coverage, advisory-only)", "type": "infra", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": null},
+        {"id": "T7", "title": "Unit test for figma-mirror-staleness advisory", "type": "test", "skill": "qa", "status": "pending", "priority": "medium", "effort_days": 0.25, "depends_on": ["T6"], "completed_at": null},
+        {"id": "T8", "title": "(Conditional) corrective Figma-mirror edits via MCP if minor drift found", "type": "audit", "skill": "design", "status": "pending", "priority": "low", "effort_days": 0.25, "depends_on": ["T1"], "completed_at": null},
+        {"id": "T9", "title": "Closeout: case study + FT2-FH-005 closure note + FRAMEWORK-FACTS advisory bump", "type": "docs", "skill": "docs", "status": "pending", "priority": "medium", "effort_days": 0.25, "depends_on": ["T2", "T3", "T4", "T5", "T6"], "completed_at": null}
+    ],
     "figma_node_ids": {},
     "figma_build_status": null,
     "pre_merge_review": {
         "ux": null,
         "design": null
     },
-    "transitions": [],
-    "paused": true,
-    "pause_reason": "Session ended after Phase 0 research approval-gate. Awaiting operator decision on 2 questions before Phase 1 PRD.",
+    "transitions": [
+        {
+            "from": "research",
+            "to": "prd",
+            "timestamp": "2026-06-18T00:00:00Z",
+            "approved_by": "user",
+            "note": "Operator approved Approach A (close gaps B+C+D); Gap D ships doc protocol + lightweight figma-mirror-staleness advisory. has_ui=false, requires_analytics=false."
+        },
+        {
+            "from": "prd",
+            "to": "tasks",
+            "timestamp": "2026-06-18T00:10:00Z",
+            "approved_by": "user",
+            "note": "PRD approved. 9 tasks defined (T1 audit gates the rest; T6 advisory + T7 test; T8 conditional)."
+        }
+    ],
+    "paused": false,
+    "pause_reason": "",
     "resume_notes": [
-        "Phase 0 research complete (research.md). Recommended: Approach A \u2014 close gaps B (iOS Figma\u2194code audit) + C (per-surface arch docs) + D (mirror-maintenance protocol) as a ~2-3 day Feature, has_ui=false.",
-        "DECISION 1 (Phase 0\u2192PRD): approve Approach A as-is / narrow to docs-only (C) / re-scope.",
-        "DECISION 2 (Gap D depth): doc-only protocol / + lightweight staleness advisory.",
+        "Phase 2 Tasks defined (tasks.md, 9 tasks). current_phase=tasks. Next: operator approves task list \u2192 advance tasks\u2192implementation. has_ui=false so Phase 3 UX gateway is skipped.",
+        "T1 (iOS Figma\u2194code fidelity audit) is the gate: its fidelity % drives kill-criteria (<50% \u2192 STOP+re-scope) and seeds T6's mirror-snapshot baseline. T1 + T3 are 'ready' (no deps).",
         "Key reframe: the expensive Figma-mirror rebuild already shipped 2026-06-15 (both surfaces, verified node IDs). This feature is the B+C+D closure of FT2-FH-005, NOT a 2-3 week design build."
+    ],
+    "decision_log": [
+        {
+            "date": "2026-06-17",
+            "decision": "Scope = Approach A (close gaps B iOS Figma\u2194code audit + C per-surface arch docs + D mirror-maintenance protocol).",
+            "decided_by": "operator"
+        },
+        {
+            "date": "2026-06-17",
+            "decision": "Gap D depth = doc protocol PLUS lightweight figma-mirror-staleness advisory (advisory-only, no enforcement flip planned at ship).",
+            "decided_by": "operator"
+        }
     ],
     "timing": {
         "phases": {
             "research": {
-                "started_at": "2026-06-17T20:12:00Z"
+                "started_at": "2026-06-17T20:12:00Z",
+                "ended_at": "2026-06-18T00:00:00Z"
+            },
+            "prd": {
+                "started_at": "2026-06-18T00:00:00Z",
+                "ended_at": "2026-06-18T00:10:00Z"
+            },
+            "tasks": {
+                "started_at": "2026-06-18T00:10:00Z"
             }
         },
         "time_source": "measured"

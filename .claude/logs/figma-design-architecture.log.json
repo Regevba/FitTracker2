@@ -6,13 +6,48 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-17T20:12:37Z",
-  "updated_at": "2026-06-17T20:12:37Z",
+  "updated_at": "2026-06-18T05:24:34Z",
   "events": [
     {
       "timestamp": "2026-06-17T20:12:37Z",
       "event_type": "phase_started",
       "phase": "research",
       "summary": "Phase 0 Research opened \u2014 figma design + per-surface architecture (item 1). Preflight clean, on feature branch.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:21:38Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase PRD opened after operator approved Phase 0 research exit: Approach A (close gaps B+C+D) + Gap D ships the lightweight figma-mirror-staleness advisory.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:24:34Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "PRD approved by operator. Approach A (B+C+D) + Gap D staleness advisory; has_ui=false, requires_analytics=false; primary metric = 2/2 surfaces have current linked arch docs.",
+      "artifacts": [
+        ".claude/features/figma-design-architecture/prd.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T05:24:34Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks phase opened: breaking B+C+D+advisory into implementable tasks.",
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_8",
