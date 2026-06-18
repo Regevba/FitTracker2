@@ -278,6 +278,13 @@ This compared **raw percentages** against the canonical anchor with no rule for 
 - Observed pattern: W36 ([`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md))
 - Honestly-recorded predecessor: `.claude/features/code-connect-automation/state.json` (T5 deferred, `final_status: partial_success_external_blocker`)
 
+**Addendum — 2026-06-18 (feature `figma-design-architecture`; appended, not a silent edit).** Two clarifications to the snapshot above, neither of which changes the core disclosure (Code Connect *publishing* is unavailable on Pro — still true):
+
+1. **The "iOS library = single Cover placeholder, 0 components/variables" reading was a point-in-time PRE-rebuild snapshot.** The same-day rebuild ([`figma-source-of-truth-plan-2026-06-15.md`](../design-system/figma-source-of-truth-plan-2026-06-15.md) Phases A/B) then **populated both mirrors**. Verified live 2026-06-18 via authoritative `use_figma` plugin-API reads: iOS `0Ai7s3fCFqR5JXDW8JvgmD` has Foundations `10:3`, Components `10:5` (18 variant-matrix component sets), and the 80-var code-mirror collection `985:2` whose values match `tokens.json`; web `fsjHfFLAHELACZHku8Rfcl` has 56 components + the 12-var code-mirror collection `34:62`. The mirrors are real and ~95% faithful — now a manually-maintained mirror governed by [`figma-mirror-maintenance-protocol.md`](../design-system/figma-mirror-maintenance-protocol.md) + the `figma-mirror-staleness` advisory.
+2. **A re-audit on 2026-06-18 initially re-reported "0% / empty Cover" using `get_metadata`/`get_variable_defs`/`get_design_context` — that was a FALSE negative** (those tools read the Figma *desktop-app* context, not the `fileKey`). Recorded as **observed-pattern W38**. The lesson: verify "empty/missing" Figma reads with `use_figma` before acting. (This re-audit briefly tripped this feature's kill criterion and led to an approved rebuild that was cancelled before any write once the authoritative read corrected it.)
+
+Fidelity audit of record: [`.claude/features/figma-design-architecture/mirror-fidelity-audit-2026-06-18.md`](../../.claude/features/figma-design-architecture/mirror-fidelity-audit-2026-06-18.md).
+
 ---
 
 > _Next entry will be appended below this line when needed. Format

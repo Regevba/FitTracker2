@@ -21,6 +21,8 @@
 ### Cycle-time checks (9 instrumented, fire every 72h via `scripts/integrity-check.py`)
 `BROKEN_PR_CITATION` · `CASE_STUDY_MISSING_TIER_TAGS` · `PATTERN_SKILL_UNMAPPED` · `TIER_TAG_LIKELY_INCORRECT` (advisory) · `PHASE_LIE` · `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (advisory) · `BRANCH_ISOLATION_HISTORICAL` (advisory) · `STATE_TASKS_FILESYSTEM_DRIFT` (f1, advisory-permanent, shipped 2026-06-17 #752) · `DEPENDENCY_GRAPH_CYCLE` (f3, advisory-permanent, shipped 2026-06-17 #753). Additional cycle-time codes exist in code but have not yet emitted Mechanism A coverage (e.g. `GATE_COVERAGE_ZERO`, `TASK_LIE`, `PR_CACHE_REFRESH_FAILED`).
 
+**Standalone advisory (not via `integrity-check.py`):** `FIGMA_MIRROR_STALENESS` — `make figma-mirror-staleness` (`scripts/figma-mirror-staleness.py`), shipped 2026-06-18 (`figma-design-architecture`, Gap D). Advisory-permanent; emits `mode=cycle` Mechanism A coverage; checks code-token (`tokens.json`) ↔ Figma-mirror-snapshot drift. Counted separately from the 9 integrity-check cycle-time codes because it runs on its own target.
+
 ### W9 real-time hooks (2)
 `w9.auto_isolate` · `w9.concurrency` (PostToolUse drift detection; calibration re-eval ~2026-06-28).
 
