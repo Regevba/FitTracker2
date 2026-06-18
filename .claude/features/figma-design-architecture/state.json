@@ -64,7 +64,7 @@
         },
         "merge": {
             "status": "pending",
-            "pr_number": null
+            "pr_number": 767
         },
         "documentation": {
             "status": "pending"
@@ -288,7 +288,8 @@
                 "T1e",
                 "T1w"
             ],
-            "completed_at": "2026-06-18T01:30:00Z"
+            "completed_at": "2026-06-18T01:30:00Z",
+            "pr_number": "fitme-story#235"
         }
     ],
     "component_depth_decision": {
@@ -399,7 +400,7 @@
     ],
     "resume_notes": [
         "Phase=review. Substantive work DONE (audit retraction + codeSyntax fix + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory w/ 7 passing tests + CLAUDE.md links + closeout docs).",
-        "PENDING OPERATOR: open+merge 2 PRs \u2014 FT2 branch feature/figma-design-architecture (commits 59922cc,12e3b22,+closeout) and fitme-story branch feature/figma-design-architecture-site (cd94c20). Neither pushed (per no-auto-PR rule). After merge: mark complete.",
+        "PRs OPEN: FT2 #767 + fitme-story #235. Awaiting CI + operator merge. After both merge: docs phase + mark complete (set merge.status=approved, current_phase=complete).",
         "Kill criterion was a FALSE alarm (W38 desktop-context read); retracted, no rebuild performed."
     ],
     "decision_log": [
@@ -449,5 +450,9 @@
         "backend": false,
         "ai": false
     },
-    "platforms_tested_provenance": "exempt:docs_governance_feature_no_product_platform_code"
+    "platforms_tested_provenance": "exempt:docs_governance_feature_no_product_platform_code",
+    "related_prs": [
+        767,
+        "fitme-story#235"
+    ]
 }

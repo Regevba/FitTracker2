@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-17T20:12:37Z",
-  "updated_at": "2026-06-18T11:15:16Z",
+  "updated_at": "2026-06-18T11:20:42Z",
   "events": [
     {
       "timestamp": "2026-06-17T20:12:37Z",
@@ -122,6 +122,17 @@
       "event_type": "phase_started",
       "phase": "review",
       "summary": "Review phase opened. FT2 changes on feature/figma-design-architecture; fitme-story on feature/figma-design-architecture-site. Pre-merge review + operator PR/merge pending.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T11:20:42Z",
+      "event_type": "pr_opened",
+      "phase": "review",
+      "summary": "PRs opened: FitTracker2#767 + fitme-story#235. Awaiting CI + operator merge.",
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_8",
