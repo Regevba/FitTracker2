@@ -29,13 +29,17 @@
 | T-comprehension-panel | ✅ shipped | fitme-story #200 |
 | T-hadf-sensing-layer-hooks (aggregator half) | ✅ shipped (path-agnostic) | fitme-story #203 |
 | T-lighthouse-perf URL list | ✅ shipped | fitme-story #204 |
-| T-hero-gate-machinery, T-hero-telemetry-instruments, T-hero-signature-props (×4) | 🔒 gated | visual-direction lock + Blender authoring decision |
-| T-scrub-pause-timedilation | 🔒 gated | Theatre.js v9 compatibility OR alternative path |
-| T-rive-tier-2 | 🔒 gated | operator Rive asset |
+| T-hero-gate-machinery, T-hero-telemetry-instruments, T-hero-signature-props (×4) | ⏸️ deferred (D1) | post-launch polish — procedural scene ships without them |
+| T-scrub-pause-timedilation | 🟡 unblocked (D2) | custom lightweight Controls.tsx (Theatre.js NOT adopted); in progress |
+| T-rive-tier-2 | 🔴 re-launch blocker (D6) | operator Rive `.riv` asset — single gate to un-404 `/framework/universe` |
 | T-poster-tier-3 | 🔒 gated | operator hero PNG/WebP capture |
-| T-hadf-sensing-layer-hooks (scene consumer half) | 🔒 gated | operator path 1 (Act III chambers) vs path 2 (new sub-Act) decision |
-| T-playwright-ac10, T-playwright-ac11, T-mobile-60fps | 🔒 gated | Playwright browser binary install approval (~200 MB) |
-| T-lighthouse-perf assertion promotion | 🔒 gated | calibration window (currently `warn` @ minScore 0.8; AC-16 target ≥0.95) |
+| T-hadf-sensing-layer-hooks (scene consumer half) | 🟡 unblocked (D3) | **path 1 — Act III chambers** (aggregator half shipped #203); in progress |
+| T-playwright-ac10, T-playwright-ac11, T-mobile-60fps | 🔒 gated | Playwright browser binary install approval (~200 MB) — D4 rec: approve |
+| T-lighthouse-perf assertion promotion | 🔒 gated (D5) | keep `warn` @0.8 until re-launch + 1–2wk calibration, then flip ≥0.95 |
+
+### Phase 4 operator decisions (2026-06-18)
+
+Recorded in `state.json::phase_4_decisions`. **D1** hero assets → defer (procedural-only). **D2** scrub → custom lightweight. **D3** HADF → path 1 (Act III chambers). **D6** re-launch → keep 404 until Rive + full polish (⇒ `T-rive-tier-2` is the single re-launch blocker). **D4** Playwright → rec approve (pending confirm). **D5** lighthouse → keep warn until post-relaunch calibration. Now-buildable with no assets: `T-scrub-pause-timedilation` + `T-hadf-sensing-layer-hooks` (scene consumer, path 1).
 
 ### Production status (2026-06-06)
 
