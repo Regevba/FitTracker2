@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-17T20:12:37Z",
-  "updated_at": "2026-06-18T06:07:25Z",
+  "updated_at": "2026-06-18T11:15:16Z",
   "events": [
     {
       "timestamp": "2026-06-17T20:12:37Z",
@@ -98,6 +98,32 @@
       "metrics": {
         "ios_mirror_fidelity_pct": 95
       },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T11:15:02Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Implementation + testing + closeout done. Audit (retracted false kill-alarm) + iOS codeSyntax fix (80 vars) + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory (7/7 tests) + CLAUDE.md links + case study + W38 pattern + FT2-FH-005 addendum + FRAMEWORK-FACTS. Pending operator PR/merge (both repos).",
+      "artifacts": [
+        "docs/case-studies/figma-design-architecture-case-study.md"
+      ],
+      "metrics": {
+        "tests_passing": 7
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-18T11:15:16Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Review phase opened. FT2 changes on feature/figma-design-architecture; fitme-story on feature/figma-design-architecture-site. Pre-merge review + operator PR/merge pending.",
+      "artifacts": [],
+      "metrics": {},
       "actor": "claude_opus_4_8",
       "status": "recorded",
       "recording_mode": "contemporaneous"

@@ -1712,3 +1712,18 @@ gh api repos/<repo>/commits/<sha>/check-runs --jq '[.check_runs[]|select(.name==
 Applied 2026-06-16 to clear #741 (already up-to-date → direct `--admin`) and #716 (`BEHIND` → operator `update-branch` → CI re-ran green → `--admin`). Both merged via the API (`mergedBy=Regevba`), no web UI needed. This is the fast manual path until the option-B operator bypass is configured; option B remains the durable fix that removes the bot PR entirely.
 
 **First observed:** recurring since 2026-06-04 (#614). Root-caused 2026-06-14; fixed 2026-06-15. **Sibling patterns:** W35 (W9 session-id), [#12 PR_CACHE_STALE], W11/W34 (cache window). **Note:** numbered W37 because W36 was concurrently claimed by the Figma plan-gating pattern (2026-06-15).
+
+### W38 — Figma read tools (`get_metadata`/`get_screenshot`/`get_design_context`) reflect the DESKTOP-APP context, not the `fileKey` you pass → false "empty file" reads (2026-06-18)
+
+**Surfaced by:** the `figma-design-architecture` T1 audit. Auditing the iOS design-system library (`0Ai7s3fCFqR5JXDW8JvgmD`), `get_metadata` (no nodeId) returned **only a single "Cover" page**, `get_variable_defs(985:2)` returned **"invalid node"**, and `get_design_context` showed a placeholder frame — together reading as **0% fidelity**, which tripped the PRD kill criterion and led the operator to approve a full mirror **rebuild**. Before any write, an authoritative `use_figma` plugin-API read of the **same fileKey** showed the file is actually **comprehensive**: 28 pages (Foundations `10:3`, Components `10:5` with 18 variant-matrix component sets), 198 variables across 8 collections incl. the 80-var code-mirror collection `985:2` whose values match `tokens.json` exactly. The rebuild was cancelled (no Figma mutation performed) and the finding retracted.
+
+**The pattern:** the MCP read tools `get_metadata`, `get_screenshot`, and `get_design_context` operate against the **Figma desktop app's currently-open file / selection context**, NOT necessarily the file addressed by the `fileKey` argument. When the desktop app is showing a different, stale, or near-empty view (here: a "Cover-only" state), these tools return data for *that* view and silently disagree with the file you think you're inspecting. `use_figma` runs the Plugin API against the `fileKey` directly and is authoritative. A `VariableCollectionId` (e.g. `985:2`) is also **not** a scene-node ID, so `get_variable_defs`/`get_metadata` correctly reject it as "invalid node" even when the collection exists — a second false-negative trap.
+
+**Detection / remediation:**
+- For a **specific `fileKey`**, trust `use_figma` plugin-API reads (`getLocalVariableCollectionsAsync`, `figma.root.children`, `findAll`). Treat `get_metadata`/`get_screenshot`/`get_design_context` as desktop-context-dependent — confirm with `use_figma` before acting on an "empty / missing / invalid" result.
+- Never trip a kill criterion or approve a destructive rebuild on a single read-tool result that says "empty." Cross-check with the authoritative tool first (cost: one `use_figma` call).
+- Variable collections aren't scene nodes — don't pass a `VariableCollectionId` to node-addressed read tools.
+
+**Silence path:** none needed — this is a read-discipline pattern, not a gate. The lesson is encoded in [`ios-design-system-architecture.md`](../../docs/design-system/ios-design-system-architecture.md) §6 (verification via `use_figma`) and the fidelity-audit report's Tooling Note.
+
+**First observed:** 2026-06-18 (`figma-design-architecture` T1). **Sibling patterns:** none direct; conceptually adjacent to W36 (a capability's *claimed* state diverging from its *real* state) — here the divergence was in the audit tool, not the artifact.
