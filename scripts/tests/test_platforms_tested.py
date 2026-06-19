@@ -110,13 +110,17 @@ def test_exempt_helper():
     assert _platforms_tested_exempt({"work_type": "Feature"}) is None
 
 
-# ── Advisory tagging + Mechanism A coverage ───────────────────────────────
+# ── Advisory/enforced tagging + Mechanism A coverage ──────────────────────
 
-def test_all_findings_are_advisory():
+def test_findings_advisory_flag_tracks_mode():
+    """Findings must tag `advisory` with the live PLATFORMS_TESTED_ADVISORY_MODE
+    flag, NOT a hardcoded value — so the advisory→enforced flip (2026-06-21,
+    cadence B15) flows through without the test silently rotting. Read the flag
+    from the module rather than asserting a constant."""
     state = {"current_phase": "complete", "work_type": "Feature",
              "platforms_tested": {"ios": False}}
     f = check_platforms_tested(state, FAKE, enforce_transition=True)
-    assert f and all(x["advisory"] is True for x in f)
+    assert f and all(x["advisory"] is _mod.PLATFORMS_TESTED_ADVISORY_MODE for x in f)
 
 
 def test_coverage_checked_on_real_evaluation():

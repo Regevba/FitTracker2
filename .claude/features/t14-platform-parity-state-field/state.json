@@ -55,7 +55,7 @@
     "Operator burden \u2014 operators routinely struggle to identify platforms_tested values OR consistently leave field empty post-backfill (signal: >20% of new complete transitions have empty array)",
     "Field semantics unclear in practice \u2014 operators ask >3 times what 'backend' or 'ai' means in a 30-day window"
   ],
-  "kill_criteria_resolution": "",
+  "kill_criteria_resolution": "B15 calibration 2026-06-21 (advisory window 2026-06-07 PR #662 -> 2026-06-21): all 3 kill criteria not_fired. K1 (false-positive >5%): not_fired [T1 - 0 failure rows across 16 real complete-transition checks in PLATFORMS_TESTED coverage key; all 1470 skips legitimate]. K2 (operator burden >20% empty arrays): not_fired [T1 - 0 platforms_tested_empty findings on real transitions; backfill populated all pre-T14 complete features]. K3 (semantics unclear >3 asks/30d): not_fired [T2 - no operator clarification requests logged]. Verdict: PROMOTE -> PLATFORMS_TESTED_ADVISORY_MODE flipped True->False (enforced). Reversible via single-flag revert.",
   "dispatch_pattern": "agent-driven (schema + gate code + backfill + dev-guide update)",
   "case_study": "docs/case-studies/t14-platform-parity-state-field-case-study.md",
   "case_study_showcase": "",

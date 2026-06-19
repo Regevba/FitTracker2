@@ -149,11 +149,19 @@ _INFRA_PATH_GLOBS = (
 BRANCH_ISOLATION_ADVISORY_MODE = False
 
 # T14 (t14-platform-parity-state-field): platforms_tested parity sub-check.
-# Records which platforms a feature's tests exercised. Ships ADVISORY for a
-# 14-day Mechanism A calibration window (Q3); flip to enforced at ~v7.10 once
-# the §2.2 promotion criteria hold. Distinct flag from BRANCH_ISOLATION_*
-# so the calibration telemetry is isolated and the flip is independent.
-PLATFORMS_TESTED_ADVISORY_MODE = True
+# Records which platforms a feature's tests exercised. Shipped ADVISORY for a
+# 14-day Mechanism A calibration window (Q3; advisory ship 2026-06-07 PR #662).
+# PROMOTED to enforced 2026-06-21 (cadence B15) — all four §2.2 promotion
+# criteria held against the isolated PLATFORMS_TESTED coverage key:
+#   1. coverage emitted   — 9 emission days / 12-day span (06-07→06-18), ≥7d ✓
+#   2. no false positives — 0 failure rows across 16 real complete-transition checks ✓
+#   3. no silent skips    — all 1470 skips legit (no_phase_change / not_complete_transition /
+#                           not_staged_mode + 22 Q2-exempt rows) ✓
+#   4. reversible         — single-flag revert to True restores advisory in <5 min ✓
+# Distinct flag from BRANCH_ISOLATION_* so the telemetry is isolated and the
+# flip is independent. Reversibility runbook: set back to True on
+# chore/t14-rollback if a regression surfaces during the post-flip soak.
+PLATFORMS_TESTED_ADVISORY_MODE = False
 PLATFORMS_TESTED_KEYS = ("ios", "web", "backend", "ai")
 
 # Canonical `framework_version` form. Accepts `v<major>.<minor>` and
@@ -904,9 +912,9 @@ def validate_file(
 
     # Check 10 (T14, t14-platform-parity-state-field): platforms_tested parity
     # sub-check. Shape validation any phase + non-empty requirement at
-    # current_phase=complete (Q2-exempt features skipped). ADVISORY during the
-    # 14-day calibration window (PLATFORMS_TESTED_ADVISORY_MODE); prints to
-    # stderr, does not block. Flip to enforced at ~v7.10 adds findings to errors.
+    # current_phase=complete (Q2-exempt features skipped). ENFORCED since
+    # 2026-06-21 (PLATFORMS_TESTED_ADVISORY_MODE = False); findings route to
+    # errors[] and block. Revert the flag to True to restore advisory mode.
     for finding in check_platforms_tested(
         d, path, coverage=coverage, enforce_transition=enforce_transition
     ):
@@ -1556,7 +1564,8 @@ def check_platforms_tested(
 ) -> list[dict]:
     """T14 (t14-platform-parity-state-field): platforms_tested parity sub-check.
 
-    Two responsibilities, both ADVISORY during the calibration window:
+    ENFORCED since 2026-06-21 (cadence B15) — findings route to errors[] and
+    block the commit (PLATFORMS_TESTED_ADVISORY_MODE = False). Two responsibilities:
       1. Shape validation (whenever the field is present, any phase):
          platforms_tested must be an object with keys ⊆ {ios,web,backend,ai}
          and boolean values; platforms_tested_provenance must be a string.
