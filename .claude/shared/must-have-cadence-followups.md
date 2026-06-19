@@ -292,4 +292,4 @@ When an item closes, strike through the row + add `**Closed YYYY-MM-DD** via <ac
 - **Closing an item:** strike through the row + add `**Closed YYYY-MM-DD** via <PR or commit ref>`. Do NOT delete — historical visibility matters.
 - **Cron link:** daily-checkpoint surfaces upcoming dates from this file (≤14 days). Update [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py) if you add new date fields not following the table schema.
 
-- **W9 Phase 2 concurrency calibration (T+14d)** — review the 4 advisory→enforced criteria for `CLAUDE_W9_CONCURRENCY_ENFORCE` default-on. See `.claude/features/w9-drift-triggered-auto-isolation/calibration.md`. Target window: ~2026-06-20.
+- **W9 Phase 2 concurrency calibration (T+14d)** — review the 4 advisory→enforced criteria for `CLAUDE_W9_CONCURRENCY_ENFORCE` default-on. See `.claude/features/w9-drift-triggered-auto-isolation/calibration.md`. Target window: **~2026-06-28** (was ~06-20; the 2026-06-14 `fix/w9-session-id-keying` reset the 14-day clock onto the new `w9.concurrency` coverage key — fix-merge 06-14 + 14d). HOLD at advisory until then.
