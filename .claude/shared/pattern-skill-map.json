@@ -781,5 +781,18 @@
       "design"
     ],
     "remediation": "get_metadata/get_screenshot/get_design_context operate against the Figma desktop app's currently-open file/selection, NOT necessarily the fileKey argument. Before tripping a kill criterion or approving a destructive rebuild on an 'empty/missing/invalid' result, confirm with an authoritative use_figma plugin-API read of the same fileKey (getLocalVariableCollectionsAsync, figma.root.children, findAll). Note a VariableCollectionId (e.g. 985:2) is not a scene-node id, so get_variable_defs/get_metadata correctly reject it. See observed-patterns.md W38."
+  },
+  {
+    "id": "W39",
+    "title": "Breaking-change major-version Dependabot bump cannot auto-merge; churns as repeated closed-unmerged PRs until a human ships a golden-verified manual migration",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "manual",
+    "autoheal": false,
+    "skills": [
+      "dev",
+      "ops"
+    ],
+    "remediation": "A major bump of a build-time dep (bundler/token-compiler/codegen/lint) whose new major removed the API the config used is a code migration, not a version-string change. Dependabot can only edit the version, so its PR fails CI (or passes a thin CI) and is closed; it re-proposes the next patch and the cycle repeats. Treat such a PR as a migration ticket: close the auto-bump, open a hand-authored migration branch, gate it on a golden-file diff (regenerate committed artifact, assert byte-identical). Repeat-bump tell: >=2 closed Dependabot PRs for the same package's same major. Distinct from W29 (passes CI, breaks main post-merge). See observed-patterns.md W39."
   }
 ]
