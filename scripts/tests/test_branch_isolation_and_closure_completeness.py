@@ -190,12 +190,19 @@ def test_main_runs_mode_b_when_only_infra_files_staged(monkeypatch, tmp_path):
         "collect_all_staged_files",
         lambda: ["scripts/foo.py", ".claude/shared/bar.json"],
     )
+    # Pin the branch so this test is independent of the checkout it runs on.
+    # Its intent is that main() REACHES the Mode B block (and writes coverage)
+    # with no state.json staged — branch policy is incidental here. Without
+    # this stub the test passes on feature/chore branches but fails on main,
+    # because v7.9 flipped BRANCH_ISOLATION_VIOLATION advisory→enforced and
+    # an infra commit on `main` now correctly returns rc=1.
+    monkeypatch.setattr(_mod, "_get_current_branch", lambda: "chore/test-fixture")
     ledger_path = tmp_path / "gate-coverage.jsonl"
     monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", ledger_path)
     monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
 
     rc = _mod.main()
-    assert rc == 0, f"Advisory gate must not block; got rc={rc}"
+    assert rc == 0, f"Infra commit on a proper branch must not block; got rc={rc}"
     assert ledger_path.exists(), (
         "Coverage ledger must be written even when no state.json is staged "
         "(Mechanism A requirement)"
