@@ -1,45 +1,4 @@
 {
-  "findings": [
-    {
-      "file": "docs/product/backlog.md",
-      "line": 181,
-      "severity": "ADVISORY",
-      "code": "TRACKING_DRIFT_OPEN_BUT_SHIPPED",
-      "signal": "state_complete_cross_ref",
-      "feature": "readiness-aware-training-alert",
-      "message": "docs/product/backlog.md:181 un-struck row names `readiness-aware-training-alert` whose state.json is complete \u2014 reconcile the row.",
-      "excerpt": "| 13.0 | **C2 \u2014 Readiness-Aware Training Alert** (Enhancement; parent: smart-reminders) | iOS Enhancement | 3-5d | All deps shipped today after L207 close: Noti"
-    },
-    {
-      "file": "docs/product/backlog.md",
-      "line": 251,
-      "severity": "ADVISORY",
-      "code": "TRACKING_DRIFT_OPEN_BUT_SHIPPED",
-      "signal": "state_complete_cross_ref",
-      "feature": "ucc-passkey-auth",
-      "message": "docs/product/backlog.md:251 un-struck row names `ucc-passkey-auth` whose state.json is complete \u2014 reconcile the row.",
-      "excerpt": "- [ ] **Passkey auth for UCC (replace basic-auth on `/control-room/*`)** \u2014 Today the Unified Control Center at `fitme-story.vercel.app/control-room/*` is gated "
-    },
-    {
-      "file": "docs/product/backlog.md",
-      "line": 364,
-      "severity": "ADVISORY",
-      "code": "TRACKING_DRIFT_OPEN_BUT_SHIPPED",
-      "signal": "state_complete_cross_ref",
-      "feature": "f16-try-repo-harness",
-      "message": "docs/product/backlog.md:364 un-struck row names `f16-try-repo-harness` whose state.json is complete \u2014 reconcile the row.",
-      "excerpt": "- [ ] **F16 \u2014 pre-commit `try-repo`-style end-to-end harness (added 2026-05-12; queued for v7.9.1; ~0.5w; HIGHEST-LEVERAGE)** \u2014 Add `tests/integration/test_prec"
-    },
-    {
-      "file": "docs/product/backlog.md",
-      "line": 366,
-      "severity": "ADVISORY",
-      "code": "TRACKING_DRIFT_OPEN_BUT_SHIPPED",
-      "signal": "state_complete_cross_ref",
-      "feature": "f17-last-fired-at-index",
-      "message": "docs/product/backlog.md:366 un-struck row names `f17-last-fired-at-index` whose state.json is complete \u2014 reconcile the row.",
-      "excerpt": "- [ ] **F17 \u2014 Per-gate `last_fired_at` materialized index (added 2026-05-12; queued for v7.9.1; ~0.3w)** \u2014 `gate-coverage.jsonl` is append-only (286 KB at v7.8."
-    }
-  ],
-  "count": 4
+  "findings": [],
+  "count": 0
 }
