@@ -29,7 +29,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | T3 | SignInService passkey/WebAuthn tests | v7.10 | #695 |
 | T5 | mock-protocol drift registry | v7.10 | #698 |
 | T10 | AI golden-set evals | v7.10 | #691 |
-| T14 | `platforms_tested` field + advisory gate | 2026-06-07 | #662 · calibration B15 2026-06-21 |
+| T14 | `platforms_tested` field + gate (**enforced 2026-06-21**) | 2026-06-07 | #662 · advisory→enforced flip B15 2026-06-21 (PR #781, `6ac372b`) |
 | V8-I | Style-Dictionary v3→v5 migration | 2026-06-10 | #677 (was icebox L417/L435) |
 | F-DEPLOYED-URL-PROBE | FT2 substrate (`scripts/probe-deployed-url.sh`) | v7.9.1 | fitme-story integration still open |
 | F-CONTRACT-FIXTURE-SAMPLING | FT2 substrate + producer sampling | 2026-06-07 | #664 · consumer adoption still open |

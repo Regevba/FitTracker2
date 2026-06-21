@@ -134,6 +134,8 @@ Cross-cutting terms used throughout this guide and in commit messages, PR descri
 - **2026-06-11** — T+7d verification of F-LAUNCHD-DRIFT-EXTENSION + F-DEPLOYED-URL-PROBE (fault-injection)
 - **2026-06-12** — External Audit #2 (operator-driven; audit pack includes today's gitleaks + pip-audit JSON artifacts + future SBOM)
 - ~~**2026-06-18** — F16 T11 advisory→enforced flip~~ ✅ **DONE 2026-06-17** (1d early; `try-repo-harness` added to main's required status checks via `gh api` branch protection — the lever is branch protection, not a code flag, since the harness job was already non-`continue-on-error`. K2 false-positive rate 0% over 60 CI runs / 13 days. Reversible by removing the context)
+- ~~**2026-06-21** — T14 `PLATFORMS_TESTED` advisory→enforced flip (cadence B15)~~ ✅ **DONE 2026-06-21** (PR #781, `6ac372b`; `PLATFORMS_TESTED_ADVISORY_MODE` flipped `True → False`; all four §2.2 criteria GREEN — 0 false positives across 16 real complete-transition checks, ≥7d coverage, 1470 legit skips. Reversible single-flag revert)
+- **2026-06-28** — W9 `w9.concurrency` drift-auto-isolation enforce review (reset from 06-20 by the 2026-06-14 session-id-keying fix)
 - **2026-07-04** — R9 Track B 30-day coverage data read → v8.0 `GATE_TEST_MISSING` calibration
 
 **Cross-references:**
@@ -375,7 +377,7 @@ Every feature has a `.claude/features/<name>/state.json` file. This file is the 
 | `complexity` | object | v6.0 protocol: `cu_version`, `factors_applied[]`, `view_count`, etc. (see § 9.1) |
 | `timing` | object | v6.0 protocol: `session_start`, `total_wall_time_minutes`, per-phase `started_at`/`ended_at` |
 | `cache_hits` | array | v6.0 protocol: each entry is `{timestamp, level, key, type, skill, event_type, phase}` |
-| `platforms_tested` | object | **T14 (2026-06-07).** `{ios, web, backend, ai}` booleans recording which platforms a feature's tests exercised. "Non-empty" = ≥1 key `true`. Validated by the advisory `PLATFORMS_TESTED` sub-check at `current_phase=complete`. Framework-meta features (`work_type=chore` / `work_subtype=framework_feature`) are exempt. See §5.4. |
+| `platforms_tested` | object | **T14 (2026-06-07; gate enforced 2026-06-21).** `{ios, web, backend, ai}` booleans recording which platforms a feature's tests exercised. "Non-empty" = ≥1 key `true`. Validated by the **enforced** `PLATFORMS_TESTED` sub-check at `current_phase=complete`. Framework-meta features (`work_type=chore` / `work_subtype=framework_feature`) are exempt. See §5.4. |
 | `platforms_tested_provenance` | string | T14 provenance marker: `authored` \| `backfill-heuristic-<date>` \| `backfill-heuristic-low-confidence` \| `exempt:framework_meta`. |
 
 ### 5.2 Phase-specific sub-fields
@@ -396,11 +398,11 @@ Each entered phase typically also has:
 
 The `--staged` flag scopes the check to staged files (used by the pre-commit hook). The `FORCE_TRANSITION_CHECKS=1` env var unscopes for testing.
 
-### 5.4 `platforms_tested` parity (T14, 2026-06-07)
+### 5.4 `platforms_tested` parity (T14, 2026-06-07; gate enforced 2026-06-21)
 
 `platforms_tested` records which platforms a feature's tests exercised, so platform-test parity is a queryable property of every completed feature (not just "tests passed somewhere"). Shape: `{"ios": bool, "web": bool, "backend": bool, "ai": bool}` (semantics: `ios`=SwiftUI app, `web`=fitme-story/website/dashboard, `backend`=sync/Supabase/Railway, `ai`=ai-engine cohort).
 
-- **Gate:** the advisory `PLATFORMS_TESTED` sub-check (in `check-state-schema.py`) fires on `current_phase=complete` transitions and reports when no platform key is `true`. It has its own `PLATFORMS_TESTED_ADVISORY_MODE` flag + isolated Mechanism A coverage key, so its advisory→enforced flip (~v7.10, after a 14-day calibration window) is independent of the enforced `FEATURE_CLOSURE_COMPLETENESS` gate it fires alongside.
+- **Gate (enforced 2026-06-21):** the `PLATFORMS_TESTED` sub-check (in `check-state-schema.py`) fires on `current_phase=complete` transitions and blocks when no platform key is `true`. It has its own `PLATFORMS_TESTED_ADVISORY_MODE` flag (flipped `True → False` on 2026-06-21 via PR #781) + isolated Mechanism A coverage key, so the promotion was a single independent line that does not affect the `FEATURE_CLOSURE_COMPLETENESS` gate it fires alongside. Promoted under cadence B15 after the 14-day window (advisory ship 2026-06-07 PR #662 → enforced 2026-06-21): ≥7d coverage, 0 false positives across 16 real complete-transition checks, reversible single-flag.
 - **Q2 exemption:** framework-meta features (`work_type=chore` or `work_subtype=framework_feature`, or `platforms_tested_provenance` starting `exempt:`) are skipped — they ship no product-platform code, so an all-`false` record would be meaningless.
 - **Backfill:** `scripts/backfill-platforms-tested.py` populated all pre-T14 complete features from offline text signals, tagging each with a `platforms_tested_provenance` marker; low-confidence inferences are flagged for optional operator spot-check (0 mandatory review).
 - **Out of scope:** per-platform coverage *percentages* (T15+, depends on R9 Track B coverage data).
