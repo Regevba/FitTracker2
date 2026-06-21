@@ -77,7 +77,7 @@
   "kill_criteria_resolution": "B15 calibration 2026-06-21 (advisory window 2026-06-07 PR #662 -> 2026-06-21): all 3 kill criteria not_fired. K1 (false-positive >5%): not_fired [T1 - 0 failure rows across 16 real complete-transition checks in PLATFORMS_TESTED coverage key; all 1470 skips legitimate]. K2 (operator burden >20% empty arrays): not_fired [T1 - 0 platforms_tested_empty findings on real transitions; backfill populated all pre-T14 complete features]. K3 (semantics unclear >3 asks/30d): not_fired [T2 - no operator clarification requests logged]. Verdict: PROMOTE -> PLATFORMS_TESTED_ADVISORY_MODE flipped True->False (enforced). Reversible via single-flag revert.",
   "dispatch_pattern": "agent-driven (schema + gate code + backfill + dev-guide update)",
   "case_study": "docs/case-studies/t14-platform-parity-state-field-case-study.md",
-  "case_study_showcase": "content/04-case-studies/48-t14-platform-parity.mdx",
+  "case_study_showcase": "fitme-story/content/04-case-studies/48-t14-platform-parity.mdx",
   "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md §4 T14",
   "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "scope_summary": "Adds `platforms_tested: {ios: bool, web: bool, backend: bool, ai: bool}` field to state.json schema. Extends FEATURE_CLOSURE_COMPLETENESS gate (currently advisory at v7.9.1, was enforced at v7.9) to require non-empty platforms_tested at current_phase=complete transition. Backfill on 85 existing complete features in single mechanical commit. Ships advisory mode in v7.9.1; advisory → enforced flip at next promotion window (~v7.10) following 14-day Mechanism A calibration. Scope explicitly OUT: per-platform test-coverage metrics (separate T15+ work item).",

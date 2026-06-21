@@ -408,6 +408,7 @@
     725
   ],
   "case_study": "docs/case-studies/foundation-models-tier3-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/51-foundation-models-tier3.mdx",
   "primary_metric": "Tier-3 adoption rate = % of AI insight refreshes whose terminal source_tier in {on_device, pcc}; baseline 0% real → target >=60% on capable devices @30d (first review 2026-06-29)",
   "success_metrics": [
     "Primary (T1 via logAiInferenceCompleted): real on-device personalization replaces confidence=0.5 stub; 0% real baseline → >=60% target",
