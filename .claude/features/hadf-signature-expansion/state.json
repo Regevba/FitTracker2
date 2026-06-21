@@ -375,6 +375,7 @@
     "single_shot_attestation_limit": "tight on-device clusters (apple_m4 ttft var 0.0002) suffer the Mahalanobis tight-cluster pathology \u2014 single-shot attestation unreliable (RQ5, expected). Distribution-level centroids ARE distinct (the recognition claim holds)."
   },
   "case_study": "docs/case-studies/hadf-signature-expansion-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47a-hadf-signature-expansion.mdx",
   "primary_metric_result": {
     "instrumented_signatures": 9,
     "target": 12,

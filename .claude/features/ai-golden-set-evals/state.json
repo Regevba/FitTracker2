@@ -106,6 +106,7 @@
     }
   },
   "case_study": "docs/case-studies/ai-golden-set-evals-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/52-ai-golden-set-evals.mdx",
   "timing": {
     "phases": {
       "research": {

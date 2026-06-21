@@ -135,6 +135,7 @@
   "tasks_path": ".claude/features/exercise-search-filter/tasks.md",
   "prd_path": "docs/product/prd/exercise-search-filter.md",
   "case_study": "docs/case-studies/exercise-search-filter-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/43a-exercise-search-filter.mdx",
   "primary_metric": "Exercise library opens per WAU >= 0.30 at T+30d (T1, baseline 0 \u2014 feature didn't exist)",
   "success_metrics": [
     "Exercise library opens per WAU (T1, baseline 0 \u2192 target >=0.30 at T+30d)",

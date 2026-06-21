@@ -498,7 +498,7 @@
     "time_source": "measured"
   },
   "case_study": "docs/case-studies/figma-design-architecture-case-study.md",
-  "case_study_showcase": null,
+  "case_study_showcase": "fitme-story/content/04-case-studies/57-figma-design-architecture.mdx",
   "platforms_tested": {
     "ios": false,
     "web": false,

@@ -30,6 +30,7 @@
   },
   "platforms_tested_provenance": "authored",
   "case_study": "docs/case-studies/t3-signinservice-passkey-tests-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/53-t3-signinservice-passkey-tests.mdx",
   "spec": "docs/master-plan/test-coverage-master-plan-2026-05-13.md",
   "tasks": [
     {

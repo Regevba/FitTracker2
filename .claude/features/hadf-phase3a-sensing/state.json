@@ -45,6 +45,7 @@
   "kill_criteria_resolution": "Neither kill criterion fired. T1\u2013T3 ship advisory/detection-only by construction: every hadf-attest.py output carries advisory:true + an explicit 'do NOT route' caveat, and same-model endpoints (anthropic vs aws-bedrock claude-haiku-4-5) attest 'weak' by design (the conservative RQ5 posture). No T1\u2013T3 producer reads or writes a dispatch decision; the AIOrchestrator T5a hook emits an honest ai_inference_completed observation only (duration_ms + source_tier) and routes nothing. The acting layer (RQ4 / Phase 3B) remains unbuilt and explicitly gated. T5b (server-side real streaming ttft_s/tps) deferred as a follow-on (AIEngineClient streaming rewrite + Railway change), not a closure blocker.",
   "dispatch_pattern": "operator-driven (post-Phase-2-bis activation build)",
   "case_study": "docs/case-studies/hadf-phase3a-sensing-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47b-hadf-phase3a-sensing.mdx",
   "spec": "docs/superpowers/specs/2026-06-02-hadf-phase3a-sensing-layer-design.md",
   "predecessor_case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
   "related_prs": [

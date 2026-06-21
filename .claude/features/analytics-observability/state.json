@@ -621,6 +621,7 @@
     }
   ],
   "case_study": "docs/case-studies/analytics-observability-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/33a-analytics-observability.mdx",
   "primary_metric": "Analytics taxonomy drift (CSV-missing-rows count): baseline 56 -> target 0 -> achieved 0",
   "dispatch_pattern": "incremental-phased (single FT2 feature; fitme-story dashboard + web-mirror via fitme-story #107/#108)",
   "kill_criteria": [
