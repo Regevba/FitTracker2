@@ -1,50 +1,50 @@
 {
   "version": "1.0",
-  "updated": "2026-06-18T11:11:52Z",
+  "updated": "2026-06-20T21:39:04Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 111,
-    "features_scanned": 114,
+    "case_studies_scanned": 113,
+    "features_scanned": 115,
     "integrity_snapshot_files": 16,
     "integrity_cycle_snapshots": 14,
     "trend_ready": true,
-    "open_debt_items": 2
+    "open_debt_items": 1
   },
   "coverage": {
     "date_written": {
-      "present": 111,
+      "present": 113,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 111,
+      "present": 113,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 111,
+      "present": 113,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 111,
+      "present": 113,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 111,
+      "present": 113,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 57,
+      "present": 59,
       "missing": 54,
-      "percent": 51.4,
+      "percent": 52.2,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -54,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 25,
-      "missing": 86,
-      "percent": 22.5,
+      "present": 26,
+      "missing": 87,
+      "percent": 23.0,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/ai-golden-set-evals-case-study.md",
@@ -66,12 +66,10 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 113,
-      "missing": 1,
-      "percent": 99.1,
-      "examples": [
-        "foundation-models-tier3"
-      ]
+      "present": 115,
+      "missing": 0,
+      "percent": 100.0,
+      "examples": []
     }
   },
   "integrity_cycle": {
@@ -83,16 +81,6 @@
     "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple scheduled 72h cycle snapshots; ad hoc local snapshots do not unlock trend mode."
   },
   "debt_items": [
-    {
-      "id": "state_case_study_linkage",
-      "title": "Features missing case-study linkage in state.json",
-      "severity": "low",
-      "count": 1,
-      "examples": [
-        "foundation-models-tier3"
-      ],
-      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
-    },
     {
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
