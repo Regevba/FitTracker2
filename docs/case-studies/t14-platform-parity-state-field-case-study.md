@@ -5,13 +5,14 @@ date_written: 2026-06-07
 framework_version: v7.9.1
 work_type: Feature
 work_subtype: framework_feature
-case_study_type: in_progress
+case_study_type: shipped
 tier_tags_present: true
-status: implementation
+status: complete
 case_study: docs/case-studies/t14-platform-parity-state-field-case-study.md
-case_study_showcase: ""
+case_study_showcase: content/04-case-studies/48-t14-platform-parity.mdx
 related_prs:
   - 662
+  - 781
 dispatch_pattern: serial
 success_metrics:
   - name: complete_transitions_with_nonempty_platforms_tested
@@ -40,12 +41,15 @@ kill_criteria:
   - condition: "Operator burden — >20% of new complete transitions have an empty array post-backfill, or operators can't determine values"
   - condition: "Field semantics unclear — operators ask >3× in a 30-day window what backend/ai means"
 kill_criterion_fired: false
-kill_criteria_resolution: "Evaluated at the 14-day advisory-window close (before any advisory→enforced flip); kill_criteria_resolution populated then. K1 mitigated up front by the Q2 framework-meta exemption; K2 by automatic backfill (0 mandatory review); K3 by the locked 4-key semantics table + glossary."
+pr_citation_exempt:
+  - pr_number: 631
+    reason: "Cross-reference to the W34 PR-truncation fix in another reader (PR #631), cited as prior art — not a t14 deliverable PR."
+kill_criteria_resolution: "B15 calibration evaluated 2026-06-21 (advisory window 2026-06-07 PR #662 → 2026-06-21). VERDICT: PROMOTE — all 3 kill criteria not_fired. K1 (FP >5%): not_fired [T1 — 0 failure rows across 16 real complete-transition checks on the isolated PLATFORMS_TESTED coverage key; all 1470 skips legitimate]. K2 (operator burden >20% empty): not_fired [T1 — 0 platforms_tested_empty findings on real transitions; backfill populated all pre-T14 complete features]. K3 (semantics unclear >3 asks/30d): not_fired [T2 — no operator clarification requests logged]. `PLATFORMS_TESTED_ADVISORY_MODE` flipped True→False (enforced) via PR #781 (6ac372b). Reversible single-flag revert."
 ---
 
-# T14 `platforms_tested` — Case Study (live; implementation phase)
+# T14 `platforms_tested` — Case Study (complete)
 
-> **T1** = instrumented · **T2** = declared · **T3** = narrative. Status: implementation (advisory gate shipped; 14-day calibration pending before the advisory→enforced flip ~v7.10).
+> **T1** = instrumented · **T2** = declared · **T3** = narrative. Status: **complete** — advisory gate shipped 2026-06-07 (PR #662); promoted advisory→enforced 2026-06-21 (PR #781, `6ac372b`) after the 14-day B15 calibration window with all four §2.2 criteria GREEN.
 
 ## Problem
 
@@ -74,12 +78,21 @@ Rather than entangling a new advisory rule inside the now-*enforced* `FEATURE_CL
 
 The backfill's required-key assertion surfaced a real schema fact: the state.json **identity field is not invariant** — older features use `feature`, newer use `feature_name`, fitme-story-native reverse-mirrors use `name`. (This same heterogeneity was independently caught by the F-CONTRACT-FIXTURE-SAMPLING aggregator the same day.) Backfill provenance tagging means the 8 low-confidence inferences are honestly recorded, not silently guessed. **[T1]**
 
-## Remaining (the loop, honestly)
+## Task ledger (all done)
 
-- **T5** dev-guide §5.4 + gate catalog — ✅ done (this PR).
-- **T6** CLAUDE.md "Platform-test parity" section — ✅ done (this PR).
-- **T7** fitme-story dev-guide mirror + glossary entry — cross-repo (fitme-story session).
-- **T8** showcase MDX — cross-repo (fitme-story session); this source case study is the FT2 half.
-- **T9** advisory→enforced calibration — calendar-anchored (~v7.10, after the 14-day window). Cannot be compressed.
+- **T5** dev-guide §5.4 + gate catalog — ✅ done.
+- **T6** CLAUDE.md "Platform-test parity" section — ✅ done (refreshed to enforced 2026-06-21).
+- **T7** fitme-story dev-guide mirror + glossary entry — ✅ done (cross-repo).
+- **T8** showcase MDX — ✅ done ([`content/04-case-studies/48-t14-platform-parity.mdx`](https://github.com/Regevba/fitme-story/blob/main/content/04-case-studies/48-t14-platform-parity.mdx)); this source case study is the FT2 half.
+- **T9** advisory→enforced calibration — ✅ **DONE 2026-06-21** (PR #781). Verdict PROMOTE; `PLATFORMS_TESTED_ADVISORY_MODE = False`.
 
-The feature stays at `implementation` until the calibration window closes — that is the honest state; it cannot reach `complete` before T9.
+## Promotion (cadence B15, 2026-06-21)
+
+The 14-day advisory window (2026-06-07 → 2026-06-21) closed clean. All four §2.2 promotion criteria held against the isolated `PLATFORMS_TESTED` Mechanism A coverage key:
+
+1. **Coverage emitted** — 9 emission days across a 12-day span (≥7d required). **[T1]**
+2. **No false positives** — 0 failure rows across 16 real `complete`-transition checks; the Q2 framework-meta exemption removed the FP class up front. **[T1]**
+3. **No silent skips** — all 1470 skips legitimate (`no_phase_change` / `not_complete_transition` / `not_staged_mode` + 22 Q2-exempt). **[T1]**
+4. **Reversible** — single-flag revert (`PLATFORMS_TESTED_ADVISORY_MODE = True` on `chore/t14-rollback`) restores advisory in <5 min. **[T2]**
+
+`PLATFORMS_TESTED` findings now route to `errors[]` and block the commit on a `complete` transition with no platform key `true`. Existing complete features do not re-transition, so none fail retroactively — `make integrity-check` reports 0 findings post-flip. The feature reaches `complete` honestly: the gate it ships is now load-bearing.
