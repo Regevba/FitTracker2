@@ -622,6 +622,7 @@
     }
   ],
   "case_study": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/33b-ucc-passkey-auth-security-hardening.mdx",
   "predecessor_chain": [
     "ucc-passkey-auth",
     "ucc-passkey-auth-audit-log-redis-fix"

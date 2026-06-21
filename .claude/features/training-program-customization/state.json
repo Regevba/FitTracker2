@@ -182,6 +182,7 @@
   ],
   "prd_path": "docs/product/prd/training-program-customization.md",
   "case_study": "docs/case-studies/training-program-customization-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/43b-training-program-customization.mdx",
   "tasks_actual_loc": 2152,
   "primary_metric": "Users with >=1 saved custom program per WAU >=0.15 at T+60d (T1, baseline 0)",
   "success_metrics": [
