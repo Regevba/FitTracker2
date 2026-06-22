@@ -2,14 +2,14 @@
 
 > **Single source of truth for "what is the framework right now."** Machine-derived; cite this from any *living* doc instead of hand-copying counts (which drift). Historical docs (case studies, dated specs/plans, audit runs, per-feature PRDs) are **point-in-time records** and intentionally keep the numbers/version of the era they were written — do **not** bump them to match this file.
 
-**Last reconciled:** 2026-06-21 (derived from `.claude/shared/gate-last-fired.json` F17 index + `.claude/features/*/state.json` + `scripts/check-state-schema.py` + `scripts/integrity-check.py`).
+**Last reconciled:** 2026-06-22 (derived from `.claude/shared/gate-last-fired.json` F17 index + `.claude/features/*/state.json` + `scripts/check-state-schema.py` + `scripts/integrity-check.py`). 2026-06-22: +1 feature (`contract-fixture-consumer-adoption`, E-15 — no new gates; the consumer `contract:check` is a warn-only CI lint, not a state.json gate).
 
 ## Current state
 
 | Fact | Value | Source of truth |
 |---|---|---|
 | **Framework version** | **v7.10** (shipped 2026-06-10) | CLAUDE.md "v7.10" section |
-| **Features tracked** | **115** | `.claude/features/*/state.json` |
+| **Features tracked** | **116** | `.claude/features/*/state.json` |
 | **Instrumented gates (F17 index)** | **28** total — **17 write-time emitting + 9 cycle-time + 2 W9 hooks** (f1 `STATE_TASKS_FILESYSTEM_DRIFT` + f3 `DEPENDENCY_GRAPH_CYCLE` advisories added 2026-06-17 #752/#753; F4 `FRAMEWORK_VERSION_STALE` is an 18th write-time gate, shipped advisory 2026-06-16 #740, not yet emitting coverage) | `.claude/shared/gate-last-fired.json` |
 | **Gates actively firing** | **25 of 28** (rest are healthy-zero or in calibration; 2026-06-17 #759 wired cycle-coverage emission for `PHASE_LIE` + `TIER_TAG_LIKELY_INCORRECT` + `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` + `BRANCH_ISOLATION_HISTORICAL`, which were instrumented but previously silent to the F17 index) | F17 index `total_firings > 0` |
 | **Integrity status** | **0 findings, 0 real regressions** | `make integrity-check` / `make integrity-multi-anchor` |
