@@ -9,6 +9,6 @@
     "tokens:android:check": "node scripts/check-tokens-android.js"
   },
   "devDependencies": {
-    "style-dictionary": "^5.4.4"
+    "style-dictionary": "^5.5.0"
   }
 }
