@@ -1,0 +1,186 @@
+{
+  "feature_name": "contract-fixture-consumer-adoption",
+  "current_phase": "complete",
+  "platforms_tested": {},
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "created_at": "2026-06-22T06:00:00Z",
+  "updated_at": "2026-06-22T06:40:00Z",
+  "framework_version": "v7.10",
+  "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "state_owner": "ft2",
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "branch": "chore/contract-fixture-consumer-adoption-post-merge-closure",
+  "scheduled_after": null,
+  "parent_feature": null,
+  "primary_metric": "Cross-repo contract shape drift fails the consumer at CI time instead of in production (closes the W16 silent-pass class)",
+  "success_metrics": [
+    "scripts/check-contract-fixtures.ts validates required_keys on every vendored fixture record + the live src/data/features/*.json consumer (113 files) — HARD fail on shape drift (T1, measured via 7 unit tests + npm run contract:check)",
+    "audit-log canonical sampler reads Upstash Redis, sanitizes each record (sanitizeForPublicExport), asserts required_keys, no-ops without creds (T1, measured via 9 Redis-free unit tests)",
+    "Weekly re-sample cron (Mon 07:00 UTC) re-samples audit-log + re-vendors FT2 fixtures and opens a PR on change — closes the 15-day staleness both repos exhibited at 2026-06-22 (T2, verified by first scheduled cron fire)",
+    "warn-only CI step on every fitme-story PR runs contract:check; FT2 fixtures re-sampled fresh (T1, PRs merged green)"
+  ],
+  "kill_criteria": [
+    "Freshness check is too strict and breaks fitme-story CI when an FT2-produced fixture goes stale between syncs — the consumer cannot self-re-sample those",
+    "audit-log sampler leaks PII into the committed, publicly-reachable fixture",
+    "Consumer tests hand-author the producer shape (the exact anti-pattern that caused the 2026-05-24 W16 incident), so drift still passes silently"
+  ],
+  "kill_criteria_resolution": "All 3 mitigated by design. (1) Freshness is ASYMMETRIC: WARN (not hard) for FT2-produced fixtures fitme-story vendors but cannot re-sample; HARD only for fitme-story-owned contracts (audit-log) where it controls re-sampling. Test `stale FT2-produced fixture → WARN (not hard)` enforces. (2) The sampler runs `sanitizeForPublicExport` on every record before write (strips operator_label → hash); test `sanitize-strips-PII` asserts no raw PII survives. (3) The checker validates against the REAL producer-sampled fixture + live src/data/features data, never inline literals; the sampler's own sample-time required_keys assertion catches producer drift before a bad fixture ships. Tests use temp dirs, never hand-authoring the producer shape.",
+  "dispatch_pattern": "serial (agent-driven, cross-repo: fitme-story consumer + FT2 fixture re-sample)",
+  "case_study": "docs/case-studies/contract-fixture-consumer-adoption-case-study.md",
+  "case_study_showcase": "",
+  "case_study_type": "shipped",
+  "spec": ".claude/shared/v7-9-1-candidates.md F-CONTRACT-FIXTURE-SAMPLING + docs/master-plan v8.x docket E-15",
+  "predecessor_case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",
+  "scope_summary": "fitme-story-side consumer adoption + weekly re-sample cadence for F-CONTRACT-FIXTURE-SAMPLING (E-15). The FT2 substrate (scripts/sample-contract-fixtures.py + make check-contract-fixtures, warn-only) shipped 2026-06-07; this closes the cross-repo half. Ships: a unified consumer checker (shape HARD, freshness asymmetric) validating vendored fixtures + the live src/data/features consumer; the audit-log canonical sampler (fitme-story is that contract's canonical producer via Upstash Redis); a weekly re-sample cron; a warn-only CI gate; and a re-sample of the 15-day-stale FT2 fixtures. Promotion of both repos' contract gates warn-only → blocking is DEFERRED to an operator decision (conflicts with FT2 operator decision D2 keeping the FT2 gate drift-only/warn-only, and the day-0 consumer gate needs a §3.5 soak).",
+  "related_prs": [
+    790
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "scripts/check-contract-fixtures.ts — unified consumer checker; SHAPE (required_keys) HARD, FRESHNESS asymmetric (WARN FT2-vendored / HARD fitme-story-owned); validates vendored fixtures + live src/data/features",
+      "status": "complete"
+    },
+    {
+      "id": "T2",
+      "description": "scripts/check-contract-fixtures.test.ts — 7 tests, temp-dir based (never hand-authors producer shape)",
+      "status": "complete"
+    },
+    {
+      "id": "T3",
+      "description": "scripts/sample-audit-log-contract.ts — audit-log canonical sampler (Redis read + sanitize + required_keys assert; no-ops without creds)",
+      "status": "complete"
+    },
+    {
+      "id": "T4",
+      "description": "scripts/sample-audit-log-contract.test.ts — 9 Redis-free tests (sanitize-strips-PII, drift detection, creds detection)",
+      "status": "complete"
+    },
+    {
+      "id": "T5",
+      "description": ".github/workflows/contract-resample-weekly.yml — Mon 07:00 UTC; re-sample audit-log + re-vendor FT2 fixtures, PR on change",
+      "status": "complete"
+    },
+    {
+      "id": "T6",
+      "description": "package.json contract:check script + integrity.yml warn-only CI step",
+      "status": "complete"
+    },
+    {
+      "id": "T7",
+      "description": "Re-sample 15-day-stale FT2 fixtures (FT2 PR #790) + candidates-doc E-15 status note",
+      "status": "complete",
+      "pr_number": 790
+    },
+    {
+      "id": "T8",
+      "description": "Promote both repos' contract gates warn-only → blocking",
+      "status": "deferred",
+      "deferred_reason": "Operator decision — conflicts with FT2 operator decision D2 (FT2 gate intentionally drift-only/warn-only); day-0 consumer gate needs §3.5 soak. Prerequisites: crons fire ≥1× cleanly + ~7-14d soak + D2 reconsideration."
+    }
+  ],
+  "phases": {
+    "implementation": {
+      "started_at": "2026-06-22T06:00:00Z",
+      "ended_at": "2026-06-22T06:30:00Z",
+      "notes": "Cross-repo: fitme-story #252 (consumer checker + audit-log sampler + weekly cron + warn-only CI + fresh vendored fixture) + FT2 #790 (re-sample stale fixtures). Verified before building that the gate-coverage shape check already existed (PR #209) — avoided duplication."
+    },
+    "testing": {
+      "started_at": "2026-06-22T06:30:00Z",
+      "ended_at": null,
+      "notes": "16/16 new tests pass (7 checker + 9 sampler); gate-coverage-aggregator 9/9; npm run contract:check → PASS; workflow YAML valid. FT2 post-merge: integrity-check 0 findings, check-contract-fixtures all fresh.",
+      "approved_by": "operator",
+      "approval_signal": "(operator merged #252 + #790)"
+    },
+    "review": {
+      "started_at": "2026-06-22T06:31:43Z",
+      "ended_at": "2026-06-22T06:31:43Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-22T06:31:43Z",
+      "ended_at": "2026-06-22T06:31:43Z",
+      "pr_number": 790,
+      "merge_commit_sha": "2cb09a9d582aaeef91ed6db0b467a472bc7f84b2",
+      "merged_at": "2026-06-22T06:31:43Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-22T06:31:43Z",
+      "ended_at": "2026-06-22T06:36:38Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-06-22T06:36:38Z",
+      "ended_at": "2026-06-22T06:36:38Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-06-22T06:00:00Z",
+        "ended_at": "2026-06-22T06:30:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-22T06:30:00Z",
+        "ended_at": "2026-06-22T06:31:43Z"
+      },
+      "review": {
+        "started_at": "2026-06-22T06:31:43Z",
+        "ended_at": "2026-06-22T06:31:43Z"
+      },
+      "merge": {
+        "started_at": "2026-06-22T06:31:43Z",
+        "ended_at": "2026-06-22T06:31:43Z"
+      },
+      "docs": {
+        "started_at": "2026-06-22T06:31:43Z",
+        "ended_at": "2026-06-22T06:36:38Z"
+      },
+      "complete": {
+        "started_at": "2026-06-22T06:36:38Z",
+        "ended_at": "2026-06-22T06:36:38Z"
+      }
+    },
+    "time_source": "measured"
+  },
+  "merge_pr_number": 790,
+  "merge_commit_sha": "2cb09a9d582aaeef91ed6db0b467a472bc7f84b2",
+  "merged_at": "2026-06-22T06:31:43Z",
+  "feature_branch_merged": "chore/contract-fixtures-resample-2026-06-22",
+  "transitions": [
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-06-22T06:31:43Z",
+      "reason": "PR #790 squashed onto main as 2cb09a9d58 (operator-merged 2026-06-22T06:31:43Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-22T06:31:43Z",
+      "reason": "PR #790 squashed onto main as 2cb09a9d58 (operator-merged 2026-06-22T06:31:43Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-22T06:31:43Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-06-22T06:36:38Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/contract-fixture-consumer-adoption-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
+  ]
+}
