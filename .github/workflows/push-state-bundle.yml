@@ -33,7 +33,7 @@ jobs:
   push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
@@ -42,7 +42,7 @@ jobs:
       - name: Assemble bundle
         run: python3 scripts/push-state-bundle.py --out .build/ft2-state-bundle.json --summary
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
 
