@@ -61,11 +61,20 @@ To be filled when shipped.
 
 ---
 
-## F-CONTRACT-FIXTURE-SAMPLING — **FT2 SUBSTRATE SHIPPED 2026-06-07**
+## F-CONTRACT-FIXTURE-SAMPLING — **FT2 SUBSTRATE SHIPPED 2026-06-07 · CONSUMER ADOPTION SHIPPED 2026-06-22**
 
 **Discovered:** 2026-05-24 (production incident — `/control-room/framework` TypeError, 13-day silent regression).
-**Status:** **FT2-side substrate SHIPPED 2026-06-07** via branch `feature/f-contract-fixture-sampling`. `scripts/sample-contract-fixtures.py` samples each contract from its CANONICAL producer, asserts required keys at sample time, and writes `tests/fixtures/contracts/<name>.jsonl` + `.meta.json`. `make sample-contract-fixtures` regenerates; `make check-contract-fixtures` is the CI gate (fresh < `max_age_days` + required keys present), wired warn-only into `pr-integrity-check.yml`. Manifest: `.claude/shared/contract-manifest.json` (3 contracts: gate-coverage, state-json-schema, audit-log). 11 unit tests. **First run surfaced real producer heterogeneity** — state.json identity field is non-invariant (`feature`/`feature_name`/`name`), so required_keys was narrowed to the universal subset. **fitme-story-side consumer adoption + shared weekly re-sample cadence remains open** (cross-repo follow-up; the warn-only CI gate promotes to blocking when it lands). Filed as **E-15** in master plan v8.x docket.
-**Owner:** N/A for FT2 substrate (closed); fitme-story consumer adoption TBD.
+**Status:** **FT2-side substrate SHIPPED 2026-06-07** via branch `feature/f-contract-fixture-sampling`. `scripts/sample-contract-fixtures.py` samples each contract from its CANONICAL producer, asserts required keys at sample time, and writes `tests/fixtures/contracts/<name>.jsonl` + `.meta.json`. `make sample-contract-fixtures` regenerates; `make check-contract-fixtures` is the CI gate (fresh < `max_age_days` + required keys present), wired warn-only into `pr-integrity-check.yml`. Manifest: `.claude/shared/contract-manifest.json` (3 contracts: gate-coverage, state-json-schema, audit-log). 11 unit tests. **First run surfaced real producer heterogeneity** — state.json identity field is non-invariant (`feature`/`feature_name`/`name`), so required_keys was narrowed to the universal subset. Filed as **E-15** in master plan v8.x docket.
+
+**Consumer adoption SHIPPED 2026-06-22** (fitme-story PR #252 + FT2 PR #790):
+
+- **fitme-story consumer checker** `scripts/check-contract-fixtures.ts` — SHAPE (required_keys) = HARD; FRESHNESS asymmetric (WARN for FT2-vendored fixtures fitme-story can't self-re-sample, HARD for fitme-story-owned). Validates vendored fixtures + the live `src/data/features/*.json` consumer (113 files). `contract:check` npm script + warn-only step in `integrity.yml`. 7 tests.
+- **audit-log canonical sampler** `scripts/sample-audit-log-contract.ts` — fitme-story is this contract's canonical producer (Upstash Redis); samples + sanitizes (`sanitizeForPublicExport`) + asserts required_keys, no-ops without creds. 9 tests.
+- **Weekly re-sample cadence** `.github/workflows/contract-resample-weekly.yml` (Mon 07:00 UTC) — re-samples audit-log + re-vendors FT2 fixtures via clone, opens a PR on change. Closes the missing cadence (both repos' fixtures were 15d stale at 2026-06-22).
+- **FT2 fixtures re-sampled fresh** (PR #790).
+
+**DEFERRED — promote warn-only → blocking (operator decision):** NOT flipped in the 2026-06-22 session. Two blockers: (1) FT2's `contract-fixtures-weekly.yml` is **intentionally drift-only + warn-only per operator decision D2 (2026-06-18)** — making the FT2 gate blocking would override D2; (2) the fitme-story consumer gate is day-0 and per §3.5 calibration must soak warn-only first. **Promotion prerequisites:** crons fire ≥1× cleanly + ~7–14d soak with no false positives + explicit D2 reconsideration. Operator decides the flip date.
+**Owner:** consumer adoption shipped (agent, 2026-06-22); blocking-promotion = operator decision.
 **Effort:** ~1-1.5 days estimate; FT2 substrate ~2h actual.
 **Source PRs containing the lesson:** fitme-story PR #146 (hotfix), FT2 PR #476 (W16 catalog).
 
