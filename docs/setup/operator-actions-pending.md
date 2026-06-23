@@ -48,6 +48,16 @@
 | 2026-06-21 | t14 `PLATFORMS_TESTED` advisory→enforced flip (B15) | approve |
 | 2026-07-04 | R9 Track B 30-day coverage read → v8.0 `GATE_TEST_MISSING` calibration | review |
 
+## E. From 2026-06-23 — funnel-analysis-dashboards enhancement (GA4 console / TestFlight)
+
+> Surfaced by the live funnel readout [`docs/setup/ga4-funnel-analysis-2026-06-23.md`](ga4-funnel-analysis-2026-06-23.md). Agent shipped the analysis + machine-readable defs; these 3 are operator-only.
+
+| # | Action | Where | Unblocks |
+|---|---|---|---|
+| O1 | Register `step_index` (+ `step_name`) as **custom dimensions** | GA4 Admin → Custom definitions | Per-step F1/F2 onboarding drop-off → real onboarding kill-criterion (highest leverage) |
+| O2 | Ship the next **TestFlight build** to testers | TestFlight | iOS core-logging + C2/C4 alert events reach GA4 (F1 conversion, F3 entirely) |
+| O3 | Add taxonomy CSV rows for `home_readiness_alert_shown/_tap` + `home_trend_alert_shown/_tap` | `docs/product/analytics-taxonomy.csv` | Closes the taxonomy drift these alert events introduced |
+
 ## Done this session (no action — for the record)
 
 - **style-dictionary v3→v5 migration** — shipped & golden-verified (PR #677); Dependabot #668 auto-closed.
