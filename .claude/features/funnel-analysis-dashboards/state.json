@@ -1,13 +1,23 @@
 {
   "feature": "funnel-analysis-dashboards",
   "created_at": "2026-06-23T12:10:00Z",
-  "updated": "2026-06-23T12:23:27Z",
-  "branch": "chore/funnel-analysis-dashboards-post-merge-closure",
+  "updated": "2026-06-24T06:45:00Z",
+  "branch": "chore/funnel-analysis-dashboards-cu-v2-backfill",
   "current_phase": "complete",
   "work_type": "enhancement",
   "parent_feature": "analytics-observability",
   "state_owner": "ft2",
   "framework_version": "v7.10",
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.3,
+      "blast_radius": 0.2,
+      "novelty": 0.3,
+      "verification_difficulty": 0.3
+    },
+    "total": 1.1,
+    "tier_class": "B_medium"
+  },
   "has_ui": false,
   "requires_analytics": false,
   "scope_note": "Funnel definitions already shipped 2026-06-01 (docs/setup/ga4-funnels-and-conversions-runbook.md). This enhancement runs them against LIVE GA4 data (real drop-off %), extracts the prose defs into a machine-readable funnel-definitions.json, and maps each funnel to the kill-criteria it unblocks. Operator-only GA4-console/Looker wiring is explicitly out of scope (already documented in the runbook).",
@@ -38,7 +48,9 @@
     "implementation": {
       "status": "approved",
       "approved_at": "2026-06-23T12:38:00Z",
-      "commits": []
+      "commits": [
+        "34e43a4"
+      ]
     },
     "testing": {
       "status": "complete",
