@@ -1,0 +1,216 @@
+{
+  "feature": "funnel-analysis-dashboards",
+  "created_at": "2026-06-23T12:10:00Z",
+  "updated": "2026-06-23T12:23:27Z",
+  "branch": "feature/funnel-analysis-dashboards",
+  "current_phase": "testing",
+  "work_type": "enhancement",
+  "parent_feature": "analytics-observability",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "has_ui": false,
+  "requires_analytics": false,
+  "scope_note": "Funnel definitions already shipped 2026-06-01 (docs/setup/ga4-funnels-and-conversions-runbook.md). This enhancement runs them against LIVE GA4 data (real drop-off %), extracts the prose defs into a machine-readable funnel-definitions.json, and maps each funnel to the kill-criteria it unblocks. Operator-only GA4-console/Looker wiring is explicitly out of scope (already documented in the runbook).",
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement",
+      "approved_at": null,
+      "sources": []
+    },
+    "prd": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement",
+      "approved_at": null,
+      "analytics_spec_complete": false
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-06-23T12:30:00Z",
+      "count": 5
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement (has_ui=false, no new UI surface)",
+      "type": null,
+      "preflight_passed": null
+    },
+    "implementation": {
+      "status": "approved",
+      "approved_at": "2026-06-23T12:38:00Z",
+      "commits": []
+    },
+    "testing": {
+      "status": "in_progress",
+      "ci_passed": null,
+      "tests_added": 1,
+      "instrumentation_verified": true
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "Funnels with computed live drop-off (of 5 canonical funnels)",
+        "baseline": 0,
+        "target": 3,
+        "current": null
+      },
+      "secondary": [
+        {
+          "name": "Kill-criteria evaluations unblocked by funnel data",
+          "baseline": 0,
+          "target": 2,
+          "current": null
+        },
+        {
+          "name": "Funnel steps validated against live GA4 events",
+          "baseline": 0,
+          "target": null,
+          "current": null
+        }
+      ],
+      "guardrails": [
+        "No new analytics events introduced (analysis-only; taxonomy unchanged)"
+      ],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": "If <3 of 5 funnels have any computable live drop-off (i.e. the GA4 property has insufficient event coverage even for onboarding), defer the analysis report until after the TestFlight ship and reduce scope to the machine-readable defs only."
+    }
+  },
+  "timing": {
+    "session_start": "2026-06-23T12:10:00Z",
+    "time_source": "measured",
+    "phases": {
+      "tasks": {
+        "started_at": "2026-06-23T12:10:00Z",
+        "ended_at": "2026-06-23T12:30:00Z",
+        "duration_minutes": 20
+      },
+      "implementation": {
+        "started_at": "2026-06-23T12:30:00Z",
+        "ended_at": "2026-06-23T12:38:00Z",
+        "duration_minutes": 8
+      },
+      "testing": {
+        "started_at": "2026-06-23T12:38:00Z",
+        "ended_at": null,
+        "duration_minutes": null
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Pull live GA4 event volumes (28d) + per-step counts for all 5 funnels",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": "2026-06-23T12:38:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "Author docs/product/funnel-definitions.json (machine-readable, kill-criteria linkage)",
+      "type": "data",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-06-23T12:38:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "Author docs/setup/ga4-funnel-analysis-2026-06-23.md \u2014 live drop-off %, evaluable-now verdicts",
+      "type": "docs",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
+      "completed_at": "2026-06-23T12:38:00Z"
+    },
+    {
+      "id": "T4",
+      "title": "Add scripts/tests/test_funnel_definitions.py \u2014 schema + taxonomy cross-ref validation",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": "2026-06-23T12:38:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "Reconcile runbook (link new defs+analysis) + backlog row -> Done",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T3"
+      ],
+      "completed_at": "2026-06-23T12:38:00Z"
+    }
+  ],
+  "transitions": [
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-06-23T12:30:00Z",
+      "approved_by": "user",
+      "note": "Enhancement; all 5 tasks executed in-session"
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-06-23T12:38:00Z",
+      "approved_by": "user",
+      "note": "10/10 funnel-definitions tests pass"
+    }
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "cache_hits": [
+    {
+      "ts": "2026-06-23T12:23:27Z",
+      "key": "ga4-funnels-runbook:funnel-defs",
+      "layer": "L3",
+      "type": "adapted",
+      "skill": "analytics"
+    },
+    {
+      "ts": "2026-06-23T12:23:27Z",
+      "key": "analytics-taxonomy:event-crossref",
+      "layer": "L3",
+      "type": "exact",
+      "skill": "analytics"
+    }
+  ]
+}

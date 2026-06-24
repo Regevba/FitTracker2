@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-23",
+  "feature": "funnel-analysis-dashboards",
+  "parent_feature": "analytics-observability",
+  "source_runbook": "docs/setup/ga4-funnels-and-conversions-runbook.md",
+  "ga4_property": "G-XE4E1JGWRZ",
+  "description": "Machine-readable extraction of the 5 canonical funnels defined prose-only in the runbook. Each funnel lists ordered steps (event + optional GA4 param filter), the kill-criteria it unblocks, and an evaluable-now verdict against the live 28d window. Operator-only GA4-console/Looker wiring stays in the runbook; this file is the data contract for any future automation (Looker template feed, control-room funnel viz, GA4 Data API report).",
+  "live_window": { "start": "2026-05-26", "end": "2026-06-22", "days": 28, "pulled_via": "ga4 MCP getEvents (event-level totals; param-filtered steps not resolvable until custom dimensions are registered — see limitations)" },
+  "ga4_automatic_events": ["first_open", "page_view", "session_start", "user_engagement", "first_visit", "scroll"],
+  "limitations": [
+    "Step-level breakdown by event parameter (e.g. onboarding_step_completed step_index=N) is NOT computable via the GA4 Data API until the operator registers those custom event parameters as custom dimensions in GA4 Admin. Counts below are event-level totals summed across all parameter values.",
+    "iOS core-logging + home-alert events (workout_complete, home_action_tap, home_action_completed, home_readiness_alert_*, home_trend_alert_*) show 0 hits because the TestFlight build carrying them has not shipped to testers.",
+    "home_readiness_alert_shown / home_trend_alert_shown / home_action_completed exist in FitTracker/Services/Analytics/AnalyticsProvider.swift but are MISSING from docs/product/analytics-taxonomy.csv (taxonomy drift — flagged for analytics-observability follow-up; out of scope for this enhancement)."
+  ],
+  "funnels": [
+    {
+      "id": "F1",
+      "name": "Onboarding to first workout (Activation)",
+      "owner_feature": "onboarding-v2",
+      "time_window_days": 7,
+      "cohort": "new_users",
+      "steps": [
+        { "order": 1, "event": "first_open", "param_filter": null, "taxonomy_status": "ga4_automatic", "live_28d_event_count": 414 },
+        { "order": 2, "event": "onboarding_step_viewed", "param_filter": "step_index=0", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 379 },
+        { "order": 3, "event": "onboarding_step_completed", "param_filter": "step_index=4", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 193 },
+        { "order": 4, "event": "tutorial_complete", "param_filter": null, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 1 },
+        { "order": 5, "event": "home_action_tap", "param_filter": null, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 },
+        { "order": 6, "event": "workout_complete", "param_filter": null, "conversion_target": true, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 }
+      ],
+      "kill_criteria_links": [
+        { "feature": "onboarding-v2", "prd": "docs/product/prd/onboarding.md", "criterion": "onboarding completion rate >= 60% at step 4" }
+      ],
+      "evaluable_now": "partial",
+      "evaluable_reason": "Top-of-funnel (first_open -> onboarding) has live data; conversion target workout_complete=0 until TestFlight ships core-logging events to testers."
+    },
+    {
+      "id": "F2",
+      "name": "Onboarding drop-off detection",
+      "owner_feature": "onboarding-v2",
+      "time_window_days": null,
+      "cohort": "new_users",
+      "steps": [
+        { "order": 1, "event": "onboarding_step_viewed", "param_filter": "step_index=0", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 379 },
+        { "order": 2, "event": "onboarding_step_completed", "param_filter": "step_index=1", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 193 },
+        { "order": 3, "event": "onboarding_step_completed", "param_filter": "step_index=2", "taxonomy_status": "in_taxonomy", "live_28d_event_count": null },
+        { "order": 4, "event": "onboarding_step_completed", "param_filter": "step_index=3", "taxonomy_status": "in_taxonomy", "live_28d_event_count": null },
+        { "order": 5, "event": "onboarding_step_completed", "param_filter": "step_index=4", "taxonomy_status": "in_taxonomy", "live_28d_event_count": null },
+        { "order": 6, "event": "tutorial_complete", "param_filter": null, "conversion_target": true, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 1 }
+      ],
+      "kill_criteria_links": [
+        { "feature": "onboarding-v2", "prd": "docs/product/prd/onboarding.md", "criterion": "any step-N -> step-N+1 conversion < 80% triggers kill review" }
+      ],
+      "evaluable_now": "event_level",
+      "evaluable_reason": "Event-level totals are live (viewed 379 -> completed 193 = 50.9%). Per-step (step_index) breakdown is blocked until step_index is registered as a GA4 custom dimension."
+    },
+    {
+      "id": "F3",
+      "name": "Smart Reminders engagement (C1+C2+C4 surface validation)",
+      "owner_feature": "smart-reminders",
+      "time_window_days": 1,
+      "cohort": "all_users",
+      "steps": [
+        { "order": 1, "event": "home_readiness_alert_shown", "param_filter": null, "alt_event": "home_trend_alert_shown", "taxonomy_status": "in_code_not_taxonomy", "live_28d_event_count": 0 },
+        { "order": 2, "event": "home_readiness_alert_tap", "param_filter": null, "alt_event": "home_trend_alert_tap", "taxonomy_status": "in_code_not_taxonomy", "live_28d_event_count": 0 },
+        { "order": 3, "event": "home_action_tap", "param_filter": null, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 },
+        { "order": 4, "event": "home_action_completed", "param_filter": null, "conversion_target": true, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 }
+      ],
+      "kill_criteria_links": [
+        { "feature": "readiness-aware-training-alert", "criterion": "action-taken rate >= 30%" },
+        { "feature": "trend-alerts-hrv", "criterion": "push-fatigue (dismiss rate) <= 60%" }
+      ],
+      "evaluable_now": "blocked",
+      "evaluable_reason": "All step events show 0 hits — TestFlight build carrying C2/C4 instrumentation has not shipped to testers. Re-run ~14 days after the next TestFlight build."
+    },
+    {
+      "id": "F4",
+      "name": "Web -> app conversion (fitme-story -> iOS install)",
+      "owner_feature": "marketing-website",
+      "time_window_days": null,
+      "cohort": "web_visitors",
+      "steps": [
+        { "order": 1, "event": "page_view", "param_filter": "page_location contains /case-studies/", "taxonomy_status": "ga4_automatic", "live_28d_event_count": 127 },
+        { "order": 2, "event": "page_view", "param_filter": "page_location contains /case-studies/ (2nd)", "taxonomy_status": "ga4_automatic", "live_28d_event_count": 127 },
+        { "order": 3, "event": "select_content", "param_filter": "content_type=app_store_link", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 1 },
+        { "order": 4, "event": "first_open", "param_filter": "attribution-linked", "conversion_target": true, "taxonomy_status": "ga4_automatic", "live_28d_event_count": 414 }
+      ],
+      "kill_criteria_links": [],
+      "evaluable_now": "deferred",
+      "evaluable_reason": "DEFERRED until App Store launch. Step 3 needs an install CTA on the showcase site (content_type=app_store_link not yet wired); step 4 needs a real install-attribution ecosystem. Matches runbook Funnel 4 status."
+    },
+    {
+      "id": "F5",
+      "name": "Operator UCC observability (internal)",
+      "owner_feature": "unified-control-center",
+      "time_window_days": 0.0417,
+      "cohort": "operator",
+      "steps": [
+        { "order": 1, "event": "dashboard_sync_warning_shown", "param_filter": null, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 5 },
+        { "order": 2, "event": "dashboard_load", "param_filter": "entry_point=alerts_banner", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 9 },
+        { "order": 3, "event": "dashboard_blocker_acknowledged", "param_filter": null, "conversion_target": true, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 }
+      ],
+      "kill_criteria_links": [
+        { "feature": "unified-control-center", "prd": "ucc PRD §10.1", "criterion": "operator acknowledges blocker < 1h sustained over 7d (TTC SLO)" }
+      ],
+      "evaluable_now": "partial",
+      "evaluable_reason": "Steps 1-2 have live data (warning 5 -> load 9); conversion target dashboard_blocker_acknowledged shows 0 hits in the window (event never fired — acknowledge UI may not be wired or no blocker required acknowledgement in-window)."
+    }
+  ],
+  "summary": {
+    "funnels_total": 5,
+    "evaluable_now_event_level_or_partial": ["F1", "F2", "F5"],
+    "blocked_or_deferred": ["F3", "F4"],
+    "kill_criteria_unblocked_now": ["onboarding-v2 onboarding-completion (F2 event-level)", "onboarding-v2 activation top-of-funnel (F1 partial)"]
+  }
+}

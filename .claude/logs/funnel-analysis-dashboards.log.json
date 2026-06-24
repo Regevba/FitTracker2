@@ -1,0 +1,99 @@
+{
+  "version": "1.0",
+  "feature": "funnel-analysis-dashboards",
+  "title": "funnel analysis dashboards",
+  "work_type": "enhancement",
+  "current_phase": "tasks",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-23T12:10:55Z",
+  "updated_at": "2026-06-23T16:35:45Z",
+  "events": [
+    {
+      "timestamp": "2026-06-23T12:10:55Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Enhancement of analytics-observability. Phase 0.1 reality-check found the 5 funnel defs already shipped (2026-06-01 runbook); scope reframed to live GA4 analysis + machine-readable defs + kill-criteria linkage. 5 tasks defined.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-23T12:21:27Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "5 tasks defined + all executed in-session (analysis-only enhancement).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-23T12:21:27Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Shipped funnel-definitions.json + ga4-funnel-analysis-2026-06-23.md + test_funnel_definitions.py + runbook/backlog/operator-register reconciliation.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-23T12:22:58Z",
+      "event_type": "phase_started",
+      "phase": "testing",
+      "summary": "test_funnel_definitions.py 10/10 pass; instrumentation = GA4 MCP live query (no new events; guardrail held).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-23T12:23:27Z",
+      "event_type": "cache_hit_logged",
+      "phase": "testing",
+      "summary": "ga4-funnels-runbook:funnel-defs (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "ga4-funnels-runbook:funnel-defs",
+        "hit_type": "adapted",
+        "skill": "analytics"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-23T12:23:28Z",
+      "event_type": "cache_hit_logged",
+      "phase": "testing",
+      "summary": "analytics-taxonomy:event-crossref (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "analytics-taxonomy:event-crossref",
+        "hit_type": "exact",
+        "skill": "analytics"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-23T16:35:45Z",
+      "event_type": "phase_started",
+      "phase": "testing",
+      "summary": "Testing: test_funnel_definitions.py 10/10 pass; integrity 0 findings/0 advisory; no new analytics events (guardrail held).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

@@ -11,6 +11,16 @@ This runbook closes **B3 + B4** from the 2026-06-01 session's analytics tier. Bo
 
 Each section gives the canonical definition the operator can paste/wire into GA4 console + the corresponding MCP query for ongoing monitoring.
 
+> **Update 2026-06-23 (`funnel-analysis-dashboards` enhancement):** these 5 prose definitions
+> now have a machine-readable companion at [`docs/product/funnel-definitions.json`](../product/funnel-definitions.json)
+> (the data contract for any future Looker/control-room/Data-API consumer, guarded by
+> `scripts/tests/test_funnel_definitions.py`), and have been run against **live GA4 data** for
+> the first time — see the readout at [`ga4-funnel-analysis-2026-06-23.md`](ga4-funnel-analysis-2026-06-23.md).
+> Headline: 3 of 5 funnels have computable live data (F1 partial, F2 event-level, F5 partial);
+> only the onboarding-completion kill-criterion (F2) has live signal today. Three new operator
+> actions surfaced there (O1 register `step_index` custom dimension · O2 TestFlight ship ·
+> O3 close `home_*_alert_*` taxonomy drift).
+
 ---
 
 ## Phase A — B4: Mark conversion events (5 min per event)
