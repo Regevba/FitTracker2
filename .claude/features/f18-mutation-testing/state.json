@@ -1,7 +1,7 @@
 {
   "feature": "f18-mutation-testing",
   "created_at": "2026-06-26T08:00:00Z",
-  "updated": "2026-06-26T08:45:00Z",
+  "updated": "2026-06-26T09:28:46Z",
   "branch": "feature/f18-mutation-testing",
   "state_owner": "ft2",
   "framework_version": "v7.10",
@@ -138,5 +138,13 @@
       }
     }
   },
-  "case_study": "docs/case-studies/f18-mutation-testing-case-study.md"
+  "case_study": "docs/case-studies/f18-mutation-testing-case-study.md",
+  "cache_hits": [
+    {
+      "ts": "2026-06-26T09:28:46Z",
+      "key": "f18:research:dispatcher-files+docket",
+      "layer": "L3",
+      "type": "adapted"
+    }
+  ]
 }

@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.10",
   "started_at": "2026-06-26T07:27:19Z",
-  "updated_at": "2026-06-26T09:26:11Z",
+  "updated_at": "2026-06-26T09:28:46Z",
   "events": [
     {
       "timestamp": "2026-06-26T07:27:19Z",
@@ -60,6 +60,21 @@
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-26T09:28:46Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "f18:research:dispatcher-files+docket (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "f18:research:dispatcher-files+docket",
+        "hit_type": "adapted"
+      },
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
