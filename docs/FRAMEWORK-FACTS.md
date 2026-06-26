@@ -2,14 +2,14 @@
 
 > **Single source of truth for "what is the framework right now."** Machine-derived; cite this from any *living* doc instead of hand-copying counts (which drift). Historical docs (case studies, dated specs/plans, audit runs, per-feature PRDs) are **point-in-time records** and intentionally keep the numbers/version of the era they were written — do **not** bump them to match this file.
 
-**Last reconciled:** 2026-06-26 (derived from `.claude/shared/gate-last-fired.json` F17 index + `.claude/features/*/state.json` + `scripts/check-state-schema.py` + `scripts/integrity-check.py`). 2026-06-26: +1 feature (`funnel-analysis-dashboards`, F22 — live GA4 funnel analysis, PR #799; no new state.json gate); F4 `FRAMEWORK_VERSION_STALE` now emitting Mechanism A coverage (31 fires). Prior reconcile 2026-06-22: +1 feature (`contract-fixture-consumer-adoption`, E-15 — no new gates; the consumer `contract:check` is a warn-only CI lint, not a state.json gate).
+**Last reconciled:** 2026-06-26 (derived from `.claude/shared/gate-last-fired.json` F17 index + `.claude/features/*/state.json` + `scripts/check-state-schema.py` + `scripts/integrity-check.py`). 2026-06-26 (later): +1 feature (`f18-mutation-testing`, F18 — warn-only mutation testing on the gate dispatchers, PR #809; no new state.json gate — a weekly CI lint + `make mutation-test`). Earlier 2026-06-26: +1 feature (`funnel-analysis-dashboards`, F22 — live GA4 funnel analysis, PR #799; no new state.json gate); F4 `FRAMEWORK_VERSION_STALE` now emitting Mechanism A coverage (31 fires). Prior reconcile 2026-06-22: +1 feature (`contract-fixture-consumer-adoption`, E-15 — no new gates; the consumer `contract:check` is a warn-only CI lint, not a state.json gate).
 
 ## Current state
 
 | Fact | Value | Source of truth |
 |---|---|---|
 | **Framework version** | **v7.10** (shipped 2026-06-10) | CLAUDE.md "v7.10" section |
-| **Features tracked** | **117** (114 complete · 3 in-flight: `3d-interactive-framework-flow-diagram`, `app-store-assets`, `orchid-v1-5`) | `.claude/features/*/state.json` |
+| **Features tracked** | **118** (115 complete · 3 in-flight: `3d-interactive-framework-flow-diagram`, `app-store-assets`, `orchid-v1-5`) | `.claude/features/*/state.json` |
 | **Instrumented gates (F17 index)** | **30** total — **18 write-time emitting + 9 cycle-time + 2 W9 hooks + 1 standalone (`FIGMA_MIRROR_STALENESS`, runs via `make figma-mirror-staleness`)** (f1 `STATE_TASKS_FILESYSTEM_DRIFT` + f3 `DEPENDENCY_GRAPH_CYCLE` advisories added 2026-06-17 #752/#753; F4 `FRAMEWORK_VERSION_STALE` now emitting since ~2026-06-21, 31 fires) | `.claude/shared/gate-last-fired.json` |
 | **Gates actively firing** | **27 of 30** (the 3 non-firing are healthy-zero — have candidates, 0 violations: `STATE_OWNER_MISSING`, `w9.auto_isolate`, `w9.concurrency`) | F17 index `total_firings > 0` |
 | **Integrity status** | **0 findings, 0 real regressions** | `make integrity-check` / `make integrity-multi-anchor` |
