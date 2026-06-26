@@ -1,17 +1,16 @@
 {
   "feature": "f18-mutation-testing",
   "created_at": "2026-06-26T08:00:00Z",
-  "updated": "2026-06-26T08:15:00Z",
+  "updated": "2026-06-26T08:45:00Z",
   "branch": "feature/f18-mutation-testing",
   "state_owner": "ft2",
   "framework_version": "v7.10",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "work_type": "chore",
   "work_subtype": "framework_feature",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": false,
-  "case_study_type": "framework_meta_retroactive",
   "phases": {
     "research": {
       "status": "approved",
@@ -27,27 +26,73 @@
       }
     },
     "implementation": {
-      "status": "in_progress",
-      "commits": []
+      "status": "approved",
+      "commits": [],
+      "approved_at": "2026-06-26T08:45:00Z"
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
-      "tests_added": 0
+      "status": "approved",
+      "ci_passed": true,
+      "tests_added": 5,
+      "approved_at": "2026-06-26T08:45:00Z"
     },
     "review": {
-      "status": "pending",
-      "risks": []
+      "status": "approved",
+      "risks": [],
+      "approved_at": "2026-06-26T08:45:00Z"
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null
+      "status": "approved",
+      "pr_number": 809,
+      "approved_at": "2026-06-26T08:45:00Z"
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-06-26T08:45:00Z"
     }
   },
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "mutmut config + scope C (setup.cfg)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "completed_at": "2026-06-26T08:45:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "make mutation-test + mutation-summary targets",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "completed_at": "2026-06-26T08:45:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "warn-only weekly CI workflow",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "completed_at": "2026-06-26T08:45:00Z"
+    },
+    {
+      "id": "T4",
+      "title": "version-proof sqlite summary reader + 5 unit tests",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "completed_at": "2026-06-26T08:45:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "process doc + case study",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "completed_at": "2026-06-26T08:45:00Z"
+    }
+  ],
   "transitions": [
     {
       "from": "research",
@@ -55,6 +100,13 @@
       "timestamp": "2026-06-26T08:15:00Z",
       "approved_by": "user",
       "note": "Phase 0 approved: mutmut + scope C + warn-only CI"
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-06-26T08:45:00Z",
+      "approved_by": "user",
+      "note": "F18 shipped: mutmut harness + summary reader + warn-only weekly CI; PR #809"
     }
   ],
   "platforms_tested": {},
@@ -65,8 +117,26 @@
         "ended_at": "2026-06-26T08:15:00Z"
       },
       "implementation": {
-        "started_at": "2026-06-26T08:15:00Z"
+        "started_at": "2026-06-26T08:45:00Z",
+        "ended_at": "2026-06-26T08:45:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-26T08:45:00Z",
+        "ended_at": "2026-06-26T08:45:00Z"
+      },
+      "review": {
+        "started_at": "2026-06-26T08:45:00Z",
+        "ended_at": "2026-06-26T08:45:00Z"
+      },
+      "merge": {
+        "started_at": "2026-06-26T08:45:00Z",
+        "ended_at": "2026-06-26T08:45:00Z"
+      },
+      "documentation": {
+        "started_at": "2026-06-26T08:45:00Z",
+        "ended_at": "2026-06-26T08:45:00Z"
       }
     }
-  }
+  },
+  "case_study": "docs/case-studies/f18-mutation-testing-case-study.md"
 }
