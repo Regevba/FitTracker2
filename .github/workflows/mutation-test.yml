@@ -1,0 +1,77 @@
+name: mutation-test
+
+# F18 (v8.0 docket, RICE 13.7): mutation testing on the gate-dispatcher files.
+# Posture: WARN-ONLY baseline (continue-on-error: true). Mutation testing
+# injects faults into scripts/check-state-schema.py + scripts/integrity-check.py
+# and checks the F14/F15/F16 pytest suite KILLS them. A surviving mutant = gate
+# logic no test exercises.
+#
+# Why scheduled (weekly) + workflow_dispatch, NOT per-PR: scope C mutates both
+# 80 KB dispatchers whole — thousands of mutants, each re-running the suite.
+# That is minutes-to-hours, too slow to gate every PR on. A weekly cron + manual
+# dispatch is the standard pattern for an expensive mutation suite, and the
+# --use-coverage filter keeps it tractable by only testing mutants on covered
+# lines. The result is informational (artifact + job summary), never blocking.
+#
+# All inputs are static / first-party (github.ref in concurrency, GITHUB_STEP_SUMMARY
+# env). No untrusted github.event.* values are interpolated into run: blocks.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"   # Mondays 07:00 UTC (after framework-status-weekly 05:00 + dependency-audit 06:00)
+  workflow_dispatch:
+
+concurrency:
+  group: mutation-test-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  mutation-test:
+    name: mutation-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install mutmut + pytest + coverage
+        run: pip install mutmut==2.5.1 pytest pytest-cov
+
+      - name: Baseline test suite must be green before mutation
+        run: python -m pytest -q scripts/tests/
+
+      - name: Generate coverage (scopes mutants to covered lines)
+        continue-on-error: true
+        run: python -m pytest -q --cov=scripts --cov-report= scripts/tests/
+
+      - name: Run mutation testing (warn-only)
+        continue-on-error: true
+        run: mutmut run --use-coverage || true
+
+      - name: Summarize (version-proof reader; mutmut's own readers crash on recent peewee)
+        if: always()
+        run: |
+          echo "## Mutation testing results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/mutation-summary.py --json mutation-baseline.json | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload mutation cache + summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-results
+          path: |
+            .mutmut-cache
+            mutation-baseline.json
+          if-no-files-found: ignore

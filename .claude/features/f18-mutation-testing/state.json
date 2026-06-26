@@ -1,0 +1,72 @@
+{
+  "feature": "f18-mutation-testing",
+  "created_at": "2026-06-26T08:00:00Z",
+  "updated": "2026-06-26T08:15:00Z",
+  "branch": "feature/f18-mutation-testing",
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "current_phase": "implementation",
+  "work_type": "chore",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "case_study_type": "framework_meta_retroactive",
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-06-26T08:15:00Z",
+      "sources": [
+        "research.md",
+        "infra-master-plan \u00a73.0 F18"
+      ],
+      "decisions": {
+        "tool": "mutmut==2.5.1",
+        "scope": "C_both_files_whole",
+        "ci": "warn_only_weekly_schedule+workflow_dispatch"
+      }
+    },
+    "implementation": {
+      "status": "in_progress",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0
+    },
+    "review": {
+      "status": "pending",
+      "risks": []
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "pending"
+    }
+  },
+  "tasks": [],
+  "transitions": [
+    {
+      "from": "research",
+      "to": "implementation",
+      "timestamp": "2026-06-26T08:15:00Z",
+      "approved_by": "user",
+      "note": "Phase 0 approved: mutmut + scope C + warn-only CI"
+    }
+  ],
+  "platforms_tested": {},
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-26T08:00:00Z",
+        "ended_at": "2026-06-26T08:15:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-26T08:15:00Z"
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "feature": "f18-mutation-testing",
+  "title": "f18 mutation testing",
+  "work_type": "chore",
+  "current_phase": "research",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-26T07:27:19Z",
+  "updated_at": "2026-06-26T08:22:25Z",
+  "events": [
+    {
+      "timestamp": "2026-06-26T07:27:19Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "F18 mutation testing kicked off (chore/framework_feature). Target: dispatcher files check-state-schema.py + integrity-check.py; validates F14/F15/F16 test quality.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-26T08:22:25Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 approved. Decisions: mutmut 2.5.1, scope C (both dispatcher files whole), warn-only CI (weekly schedule + workflow_dispatch).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-26T08:22:25Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Implementation: mutmut config + make mutation-test target + warn-only weekly CI workflow + baseline report.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
