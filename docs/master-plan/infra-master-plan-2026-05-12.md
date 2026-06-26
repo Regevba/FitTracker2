@@ -204,15 +204,15 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 | F13 | `source_commit` `workflow_dispatch` input (reverse-sync workflow) | 2026-06-15 | fitme-story #221 (`reverse-sync-fitme-story-to-ft2.yml`) |
 | F-CONTRACT (consumer) | fitme-story consumer adoption + sampling | 2026-06-22 | #790 |
 | F22 | Funnel Analysis Dashboards (live GA4, 3/5 funnels wired) | 2026-06-24 | #799 |
+| F18 | Mutation testing on dispatcher files (warn-only weekly CI; mutmut, 1,857-mutant baseline) | 2026-06-26 | #809 (`f18-mutation-testing`) |
 
 **B. Open — carried into the v8.0 build (kickoff target ~2026-06-18, after F16 enforce flip ✅ 2026-06-17):**
 
-> Reconciled 2026-06-26: 10 of the 16 prior rows (F1/F3/F4/F5/F10/F11/F12/F13/F22/F-CONTRACT-consumer) **shipped** and moved to table A. The rows below are the genuinely-remaining items.
+> Reconciled 2026-06-26: 11 of the 16 prior rows (F1/F3/F4/F5/F10/F11/F12/F13/F18/F22/F-CONTRACT-consumer) **shipped** and moved to table A. The rows below are the genuinely-remaining items.
 
 | ID | Item | Class | RICE-est | Gating |
 |---|---|---|---|---|
-| T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** |
-| F18 | Mutation testing on dispatcher files | Test infra | 13.7 | F16 Phase E ✓ + F14 ✓ — **now unblocked (top open infra item)** |
+| T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** (F18 mutation survivor data feeds calibration) |
 | F19/F20 | Analytics Phase 1.B GA4 conversions + gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | D-2 operator (GA4 Key-event toggle, register A1) + post-launch signal |
 | F23 | `/ops digest` skill | Skill extension | M | F22 ✓ + Sentry resume (launch-gated, §C) |
 | T4 | Swift snapshot testing | iOS test infra | — | Phase A scaffold shipped (#700); build pending (in flight) |
@@ -223,7 +223,7 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 
 **E. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up (reconciled 2026-06-26):** of the original 18 F-candidates, **16 shipped** (F1, F2, F3, F4, F5, F6, F9, F10, F11, F12, F13, F14, F15, F16, F17, F22 + the GATE_COVERAGE_ZERO meta-check) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open: F18** (now unblocked — F16 enforced 2026-06-17 + F14 shipped — top open infra item), **F19/F20** (operator-gated on GA4 Key-event toggle, register item A1), **F23** (gated on Sentry resume, §C). **F21** Sentry is paused/launch-gated (§C). Theme H (test-coverage T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18 met** (F16 enforce flip ✅ 2026-06-17); ship target 2026-07-31.
+**Roll-up (reconciled 2026-06-26, post-F18):** of the original 18 F-candidates, **17 shipped** (F1, F2, F3, F4, F5, F6, F9, F10, F11, F12, F13, F14, F15, F16, F17, F18, F22 + the GATE_COVERAGE_ZERO meta-check) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open: F19/F20** (operator-gated on GA4 Key-event toggle, register item A1), **F23** (gated on Sentry resume, §C). **F21** Sentry is paused/launch-gated (§C). Theme H (test-coverage T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22 (now fed by F18 mutation-survivor data). **v8.0 build kickoff target ~2026-06-18 met** (F16 enforce flip ✅ 2026-06-17); ship target 2026-07-31.
 
 ---
 
