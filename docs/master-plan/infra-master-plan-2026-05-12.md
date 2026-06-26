@@ -170,7 +170,7 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 
 ## 3. Build Docket (v8.x — 18 F-candidates + 7 V8-I icebox = 25 items)
 
-### 3.0 v8.x Docket — Reconciled Status (2026-06-15)
+### 3.0 v8.x Docket — Reconciled Status (2026-06-26)
 
 > **This is the live docket.** The dated Source A–E tables in §3.1 + the icebox in §3.2 retain their original framing for the audit trail; read statuses through this table. No separate `2026-05-21-v8-0-docket.md` spec was ever produced (the §3.3 T29 plan) — **this section IS the docket**, cross-referenced to merged PRs + memory.
 
@@ -194,26 +194,28 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 | F-DEPLOYED-URL-PROBE | FT2 substrate (`scripts/probe-deployed-url.sh`) | v7.9.1 | fitme-story integration still open |
 | F-CONTRACT-FIXTURE-SAMPLING | FT2 substrate + producer sampling | 2026-06-07 | #664 · consumer adoption still open |
 | F-LAUNCHD-DRIFT-EXTENSION | all 3 sub-fixes | v7.9.1 | #621–#624 |
+| F12 | `actionlint` lint gate (warn-only; strict mode is a future calibration step) | 2026-06-15 | #719 |
+| F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | 2026-06-15 | #722 |
+| F10 | `experiment_outcome` enum on `tasks[]` | 2026-06-15 | #720 (`v8-f10-f5-schema-vocab`) |
+| F5 | `scope_change` Tier 2.2 vocabulary event | 2026-06-15 | #720 (`v8-f10-f5-schema-vocab`) |
+| F4 | Auto-update `framework_version` (`FRAMEWORK_VERSION_STALE`) | 2026-06-16 | #740 · **advisory→enforced review ~2026-06-30** |
+| F1 | `STATE_TASKS_FILESYSTEM_DRIFT` advisory (permanent) | 2026-06-17 | #752 |
+| F3 | Phase 2 dependency-graph cycle check (advisory-permanent) | 2026-06-17 | #753 |
+| F13 | `source_commit` `workflow_dispatch` input (reverse-sync workflow) | 2026-06-15 | fitme-story #221 (`reverse-sync-fitme-story-to-ft2.yml`) |
+| F-CONTRACT (consumer) | fitme-story consumer adoption + sampling | 2026-06-22 | #790 |
+| F22 | Funnel Analysis Dashboards (live GA4, 3/5 funnels wired) | 2026-06-24 | #799 |
 
-**B. Open — carried into the v8.0 build (kickoff ~2026-06-18, after F16 enforce flip):**
+**B. Open — carried into the v8.0 build (kickoff target ~2026-06-18, after F16 enforce flip ✅ 2026-06-17):**
+
+> Reconciled 2026-06-26: 10 of the 16 prior rows (F1/F3/F4/F5/F10/F11/F12/F13/F22/F-CONTRACT-consumer) **shipped** and moved to table A. The rows below are the genuinely-remaining items.
 
 | ID | Item | Class | RICE-est | Gating |
 |---|---|---|---|---|
-| F12 | `actionlint` in pre-commit stack | Write-time gate | **100.0 (highest)** | none — ready |
-| F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | Cycle-time gate | 40.0 | none |
-| F4 | Auto-update `framework_version` on protocol writes | Write-time/migration | 32.0 | partial — `FRAMEWORK_VERSION_FORMAT` + `tracking-drift-check` (#659) cover part |
-| F10 | `experiment_outcome` enum on `tasks[]` | Schema | 32.0 | none |
-| F13 | `source_commit` `workflow_dispatch` input | GH Actions | 32.0 | none |
-| F5 | `scope_change` Tier 2.2 vocabulary event | Vocabulary | 20.0 | none |
-| F1 | `STATE_TASKS_FILESYSTEM_DRIFT` advisory | Cycle-time gate | 19.2 | none |
-| F3 | Phase 2 dependency-graph cycle check | Workflow gate | 14.4 | none |
 | T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** |
-| F18 | Mutation testing on dispatcher files | Test infra | 13.7 | F16 Phase E (post 2026-06-18) + F14 |
-| F22 | Funnel Analysis Dashboards | Product observability | M | F19 + GA4 data |
-| F23 | `/ops digest` skill | Skill extension | M | F22 + Sentry resume |
-| F19/F20 | Analytics Phase 1.B GA4 conversions + gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | D-2 operator (GA4) + post-launch signal |
-| T4 | Swift snapshot testing | iOS test infra | — | Phase A scaffold shipped (#700); build pending |
-| F-CONTRACT (consumer) | fitme-story consumer adoption + weekly re-sample → promote CI gate to blocking | Cross-repo | — | cross-repo session |
+| F18 | Mutation testing on dispatcher files | Test infra | 13.7 | F16 Phase E ✓ + F14 ✓ — **now unblocked (top open infra item)** |
+| F19/F20 | Analytics Phase 1.B GA4 conversions + gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | D-2 operator (GA4 Key-event toggle, register A1) + post-launch signal |
+| F23 | `/ops digest` skill | Skill extension | M | F22 ✓ + Sentry resume (launch-gated, §C) |
+| T4 | Swift snapshot testing | iOS test infra | — | Phase A scaffold shipped (#700); build pending (in flight) |
 
 **C. Paused / launch-gated:** F21 Sentry (pre-launch trigger; PR #418) · F-AUTH-LATENCY-SERVER-METRIC shipped FT2-side (fitme-story #208).
 
@@ -221,7 +223,7 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 
 **E. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **8 shipped** (F2, F6, F9, F14, F15, F16, F17 + GATE_COVERAGE_ZERO) + 2 resolved-by-exemption (F7, F8) → **8 F-items remain open** (F1, F3, F4, F5, F10, F11, F12, F13) + F18 + F19–F23. Theme H (test-coverage T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target unchanged: ~2026-06-18** (gated on F16 enforce flip); ship target 2026-07-31.
+**Roll-up (reconciled 2026-06-26):** of the original 18 F-candidates, **16 shipped** (F1, F2, F3, F4, F5, F6, F9, F10, F11, F12, F13, F14, F15, F16, F17, F22 + the GATE_COVERAGE_ZERO meta-check) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open: F18** (now unblocked — F16 enforced 2026-06-17 + F14 shipped — top open infra item), **F19/F20** (operator-gated on GA4 Key-event toggle, register item A1), **F23** (gated on Sentry resume, §C). **F21** Sentry is paused/launch-gated (§C). Theme H (test-coverage T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **v8.0 build kickoff target ~2026-06-18 met** (F16 enforce flip ✅ 2026-06-17); ship target 2026-07-31.
 
 ---
 

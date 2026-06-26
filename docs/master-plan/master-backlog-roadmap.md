@@ -281,8 +281,8 @@ Output: `docs/product/prd/` directory with one PRD per feature
 | Phase | Status | Blocker |
 |-------|--------|---------|
 | Phase 0 | **COMPLETE** | Tasks 6, 12, 13, 18 all shipped |
-| Phase 1 | **ACTIVE** | Task 17 (README) in progress, Task 1 (Figma) next |
-| Phase 2 | Partially shipped | Task 4 (GA4) shipped; Tasks 14, 15 remaining |
+| Phase 1 | **COMPLETE** (reconciled 2026-06-26) | Task 17 (README) + Task 1 (Figma) both shipped well before v7.9 |
+| Phase 2 | Partially shipped | Task 4 (GA4) shipped — GA4 *conversions* still operator-gated (register A1); Tasks 14, 15 remaining |
 | Phase 3 | Partially shipped | Task 2 (Android DS) shipped; Tasks 3, 10, 11 remaining |
 | Phase 4 | Locked | Waiting for Phase 3 |
 | Phase 5 | Partially shipped | Task 16 (Marketing Website) shipped; Task 19 remaining |
@@ -333,7 +333,7 @@ The 3 tables above (Core iOS Features / Features Built via PM Workflow / Individ
 
 **Canonical sources for the full SHIPPED list:**
 - `docs/product/backlog.md` (item numbering through 100+) — current
-- `.claude/features/*/state.json` `current_phase: complete` (45+ features as of 2026-05-23)
+- `.claude/features/*/state.json` `current_phase: complete` (**114 complete of 117 tracked as of 2026-06-26**; was "45+ as of 2026-05-23")
 - `docs/case-studies/*.md` — narrative records of shipped features
 - `fitme-story/content/04-case-studies/*.mdx` — public showcase MDX (51+ slots)
 
