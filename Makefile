@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status figma-mirror-staleness v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status figma-mirror-staleness v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures mutation-test mutation-summary
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -131,6 +131,27 @@ actionlint:
 	else \
 		echo "⚠ actionlint not installed — SKIPPING locally. CI enforces this gate. Install: https://github.com/rhysd/actionlint/blob/main/docs/install.md"; \
 	fi
+
+# F18 (v8.0 docket, RICE 13.7): mutation testing on the gate-dispatcher files
+# (scripts/check-state-schema.py + scripts/integrity-check.py). Validates that
+# the F14/F15/F16 test suite actually KILLS injected faults — a surviving mutant
+# is gate logic no test exercises. Config in setup.cfg [mutmut]. Warn-only:
+# surviving mutants do NOT fail the target (CI runs it on a weekly schedule).
+# Skip cleanly if `mutmut` not installed (same convention as actionlint).
+# Full-file (scope C) is slow — prefer `make mutation-test ARGS=--use-coverage`
+# after generating a .coverage file via `python -m pytest --cov=scripts scripts/tests/`.
+mutation-test:
+	@if command -v mutmut >/dev/null 2>&1; then \
+		mutmut run $(ARGS) || echo "⚠ mutmut: surviving mutants present (warn-only baseline; CI runs this weekly)"; \
+		python3 scripts/mutation-summary.py --json .claude/shared/mutation-baseline.json || true; \
+	else \
+		echo "⚠ mutmut not installed — SKIPPING locally. CI runs this gate weekly. Install: pip install mutmut==2.5.1"; \
+	fi
+
+# Read the mutmut sqlite cache and print a version-proof summary (mutmut's own
+# `results`/`junitxml` readers crash on recent peewee — see scripts/mutation-summary.py).
+mutation-summary:
+	@python3 scripts/mutation-summary.py --json .claude/shared/mutation-baseline.json
 
 # Meta-target: run all lint surfaces.
 # Used inside verify-local + the lint.yml CI workflow.

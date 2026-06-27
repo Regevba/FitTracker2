@@ -9,7 +9,7 @@
 
 ---
 
-## 0. Reconciled Status (2026-06-15)
+## 0. Reconciled Status (2026-06-26)
 
 Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (shipped 2026-06-10).
 
@@ -47,19 +47,19 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | ~~F5~~ ✅ | `scope_change` Tier 2.2 vocabulary event (advisory KNOWN_EVENT_TYPES note) | Vocabulary | 20.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | ~~F1~~ ✅ | `STATE_TASKS_FILESYSTEM_DRIFT` cycle-time advisory — complete feature + empty `tasks[]` + shipped artifact = ledger drift | Cycle-time gate | 19.2 | **SHIPPED 2026-06-17** (feature `f1-state-tasks-filesystem-drift`; advisory-permanent, 5 baseline fires) |
 | ~~F3~~ ✅ | `DEPENDENCY_GRAPH_CYCLE` cycle-time advisory — cycles / self-loops / dangling refs across `scheduled_after` + `parent_feature` | Cycle-time gate | 14.4 | **SHIPPED 2026-06-17** (feature `f3-dependency-graph-cycle-check`; advisory-permanent, 0 baseline findings) |
-| T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** |
-| F18 | Mutation testing on dispatcher files | Test infra | 13.7 | F16 Phase E (post 2026-06-18) + F14 |
-| F22 | Funnel Analysis Dashboards | Product observability | M | F19 + GA4 data |
-| F23 | `/ops digest` skill | Skill extension | M | F22 + Sentry resume |
+| ~~F22~~ ✅ | Funnel Analysis Dashboards (live GA4, 3/5 funnels wired) | Product observability | M | **SHIPPED 2026-06-24** (feature `funnel-analysis-dashboards`, PR #799) |
+| ~~F-CONTRACT (consumer)~~ ✅ | fitme-story consumer adoption + sampling | Cross-repo | — | **SHIPPED 2026-06-22** (feature `contract-fixture-consumer-adoption`, PR #790) |
+| ~~F18~~ ✅ | Mutation testing on dispatcher files (mutmut, warn-only weekly CI, 1,857-mutant baseline) | Test infra | 13.7 | **SHIPPED 2026-06-26** (feature `f18-mutation-testing`, PR #809) |
+| T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** (fed by F18 mutation-survivor data) |
+| F23 | `/ops digest` skill | Skill extension | M | F22 ✓ + Sentry resume (launch-gated, §C) |
 | F19/F20 | Analytics Phase 1.B GA4 conversions + gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | D-2 operator (GA4) + post-launch signal |
 | T4 | Swift snapshot testing | iOS test infra | — | Phase A scaffold shipped (#700); build pending |
-| F-CONTRACT (consumer) | fitme-story consumer adoption + weekly re-sample → promote CI gate to blocking | Cross-repo | — | cross-repo session |
 
 **C. Paused / launch-gated:** F21 Sentry (pre-launch trigger; PR #418) · F-AUTH-LATENCY-SERVER-METRIC shipped FT2-side (fitme-story #208).
 
 **D. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **16 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + **F3 shipped 2026-06-17, advisory**) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open** = F18 (date-gated, post-F16-Phase-E) + F19–F23 (operator/launch-gated). Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **F16 enforce flip DONE 2026-06-17** (try-repo-harness now a main required check) → **v8.0 build kickoff gate cleared**; ship target 2026-07-31.
+**Roll-up:** of the original 18 F-candidates, **17 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + F3 shipped 2026-06-17 + **F18 shipped 2026-06-26 via PR #809**) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open** = F19/F20 (operator-gated, GA4 register A1) + F23 (Sentry-resume-gated, §C). **F22 shipped 2026-06-24 (#799); F-CONTRACT-consumer shipped 2026-06-22 (#790); F18 shipped 2026-06-26 (#809)** — reconciled 2026-06-26. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **F16 enforce flip DONE 2026-06-17** (try-repo-harness now a main required check) → **v8.0 build kickoff gate cleared**; ship target 2026-07-31.
 
 ---
 
