@@ -1,12 +1,12 @@
 # Analytics Observability — Master Plan (Sub-doc of Infra Master Plan)
 
-**Status:** Phase 1 PRD draft · awaiting operator approval
+**Status (reconciled 2026-06-26):** Feature `analytics-observability` is **COMPLETE** — Phase 1.A (hygiene), Phase 2 (live debugger), Phase 3 (dashboards) + most D-tasks all shipped (state.json `current_phase=complete`). **Phase 1.B gates NOT shipped** — `CSV_TAXONOMY_DRIFT` + `GA4_MCP_DISCONNECTED` (= infra docket F19/F20) are not yet implemented and remain **blocked on the operator GA4 action** (register item A1: mark `workout_complete` + `nutrition_meal_logged` as GA4 Key events; task D-2 `deferred`) + post-launch signal. Downstream **F22 Funnel Analysis Dashboards shipped separately** 2026-06-24 (PR #799, feature `funnel-analysis-dashboards`, live GA4 3/5 funnels).
 **Created:** 2026-05-13
 **Parent:** [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.6.X
 **Decisions log:** [`analytics-observability-decisions-log-2026-05-13.md`](analytics-observability-decisions-log-2026-05-13.md) (read first if resuming)
 **State.json:** [`/.claude/features/analytics-observability/state.json`](../../.claude/features/analytics-observability/state.json)
 **Log:** [`/.claude/logs/analytics-observability.log.json`](../../.claude/logs/analytics-observability.log.json)
-**State_owner:** `ft2` · **Framework version:** `v7.8.5` · **Work type:** Feature
+**State_owner:** `ft2` · **Framework version:** `v7.8.5` (feature's ship era; current framework is v7.10 — see [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md)) · **Work type:** Feature
 
 ---
 
@@ -18,10 +18,10 @@ A 3-phase, 4-window analytics framework upgrade that closes 56-row CSV drift + 4
 |---|---|---|---|---|
 | 1.A Hygiene | 2026-05-15 → 22 | 6h | No | Backfill + wire + test |
 | 2 Live debugger | 2026-05-15 → 22 (parallel 1.A) | 8h | No | Local mirror + `/analytics watch` + GA4 Realtime poll |
-| 3 Dashboards | 2026-05-21 → 06-04 (parallel v7.9 Phase E) | 10h | No | `/control-room/analytics` + Looker template |
-| 1.B Gates | 2026-06-04 → 06-26 | 6h | **Yes** (2 new) | `CSV_TAXONOMY_DRIFT` + `GA4_MCP_DISCONNECTED` |
+| 3 Dashboards | 2026-05-21 → 06-04 (parallel v7.9 Phase E) | 10h | No | `/control-room/analytics` + Looker template — ✅ SHIPPED |
+| 1.B Gates | ~~2026-06-04 → 06-26~~ **DEFERRED** | 6h | **Yes** (2 new) | `CSV_TAXONOMY_DRIFT` + `GA4_MCP_DISCONNECTED` — **NOT shipped; blocked on operator GA4 action (A1)** |
 
-**Total effort:** ~30 hours over 6 weeks. **Total ship:** 2026-06-26.
+**Total effort:** ~30 hours over 6 weeks. **Phases 1.A/2/3 shipped; Phase 1.B deferred (operator-gated).** Reconciled 2026-06-26.
 
 ---
 

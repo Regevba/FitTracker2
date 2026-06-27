@@ -129,3 +129,10 @@ docs/audits/runs/*/*.tmp
 ai-engine/.coverage
 ai-engine/coverage.xml
 ai-engine/htmlcov/
+
+# F18 mutation testing (v8.0) — mutmut sqlite cache + root coverage + local
+# partial summary. The authoritative mutation-score baseline is produced by the
+# weekly mutation-test.yml CI run (uploaded as an artifact), not committed locally.
+.mutmut-cache
+/.coverage
+.claude/shared/mutation-baseline.json
