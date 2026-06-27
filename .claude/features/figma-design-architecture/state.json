@@ -441,8 +441,8 @@
         }
     ],
     "resume_notes": [
-        "Phase=review. Substantive work DONE (audit retraction + codeSyntax fix + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory w/ 7 passing tests + CLAUDE.md links + closeout docs).",
-        "PRs OPEN: FT2 #767 + fitme-story #235. Awaiting CI + operator merge. After both merge: docs phase + mark complete (set merge.status=approved, current_phase=complete).",
+        "CLOSED 2026-06-24. Both PRs MERGED 2026-06-18 (FT2 #767 squash 3af31b3 + fitme-story #235). current_phase=complete; all phases normalized at closure.",
+        "Delivered: audit retraction + codeSyntax fix + 2 arch docs + maintenance protocol + figma-mirror-staleness advisory (7 passing tests) + CLAUDE.md links + closeout docs.",
         "Kill criterion was a FALSE alarm (W38 desktop-context read); retracted, no rebuild performed."
     ],
     "decision_log": [
