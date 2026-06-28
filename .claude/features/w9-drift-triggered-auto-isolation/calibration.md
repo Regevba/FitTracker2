@@ -63,3 +63,35 @@ bug in `check-branch-drift.py`).
 `w9.concurrency` rows (NOT `w9.auto_isolate`) at fix-merge + 14d. Criterion 1 now
 requires ≥7d of genuine `w9.concurrency` rows with `outcome` ∈ {`no_concurrency`,
 `concurrency_offer`, `already_isolated`}. Until then: **HOLD at advisory.**
+
+## 2026-06-28 — T+14d review: DECISION = HOLD AT ADVISORY (option b)
+
+Re-evaluated the four criteria against the **`w9.concurrency`** coverage key
+(window: fix-merge 2026-06-14 → +14d).
+
+**Telemetry:** 21 `w9.concurrency` rows across **9 distinct emission days**
+(2026-06-14 → 2026-06-26); candidates=21, checked=0, **all 21 skipped with
+`no_concurrency`**; **0 `concurrency_offer` events fired**; 0 would-be firings.
+
+| # | Criterion | Verdict |
+|---|---|---|
+| 1 | ≥7d `w9.concurrency` coverage | ✅ 9 emission days |
+| 2 | No false positives | ⚠️ **vacuously true** — 0 offers fired; true-positive path never exercised |
+| 3 | No silent skips | ✅ 21/21 genuine `no_concurrency` post-fix |
+| 4 | Reversibility | ✅ single env flag |
+
+KC2 false-trigger rate = 0%; KC3 work-loss = none.
+
+**Decision:** all four criteria technically pass, but criterion 2 is satisfied
+*vacuously* (the 14-day window contained zero real concurrent-session
+collisions, so the auto-isolate trigger was never exercised in the field).
+Flipping `CLAUDE_W9_CONCURRENCY_ENFORCE=1` default-on would make the hook's
+first-ever unprompted action a production action with no field-validated true
+positive, against the KC3 hard-stop on uncommitted-work loss. The advisory
+posture already surfaces the warning + pre-filled isolation command at zero
+operational cost. **`CLAUDE_W9_CONCURRENCY_ENFORCE` stays default-off (advisory).**
+
+**Re-eval trigger:** not date-gated anymore. Re-open this decision once ≥1 real
+`concurrency_offer` row is observed in `gate-coverage.jsonl` (i.e. the trigger
+has actually fired on a live sibling session), so criterion 2 can be assessed
+on real data rather than vacuously.
