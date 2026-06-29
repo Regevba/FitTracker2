@@ -1,5 +1,14 @@
 # FitMe Master Plan — 2026-04-15
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses all schemes (cross-cutting).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > **Status:** CURRENT · Last updated 2026-06-26. **Framework is at v7.10** (shipped 2026-06-10). v7.9 promotion (2026-05-21) Phase E soak exited cleanly 2026-06-04; v7.9.1 build window (8 ships) closed 2026-06-04; v7.10 (gate-coverage observability + field-rename closure) shipped 2026-06-10. **For canonical current-state counts (version, features, gates) always defer to [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md)** — the per-version mechanism counts in the banner below are accurate records of each era, not current state.
 
 > **v7.10 + v7.9.1 (SHIPPED 2026-06-04 → 2026-06-10):** v7.9.1 single-day build window (no new enforcement gates — respected Phase E discipline): F16 try-repo harness, F17 `last_fired_at` index, F2 Phase-0 reality-check, F-LAUNCHD-DRIFT-EXTENSION, F-DEPLOYED-URL-PROBE substrate, dev-env lint batch, observed-patterns W29–W32. v7.10 (2026-06-10): `GATE_COVERAGE_ZERO` meta-check extension + cycle-time coverage emission + field-rename silent-pass closure (pattern #24). **Post-v7.10 calibration ladder:** F16 enforced 2026-06-17 (1d early), `PLATFORMS_TESTED`/T14 enforced 2026-06-21, F4 `FRAMEWORK_VERSION_STALE` advisory→enforced review ~2026-06-30, W9 re-eval 2026-06-28, R9 Track-B coverage read 2026-07-04. **v8.0 build:** 16 of 18 F-candidates shipped; remaining open F18 (mutation testing, unblocked) + F19/F20 (GA4, operator-gated) + F23 (`/ops digest`, Sentry-gated); ship target 2026-07-31. See [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.0 + [`v8-x-build-docket-2026-06-15.md`](v8-x-build-docket-2026-06-15.md) for the reconciled docket.

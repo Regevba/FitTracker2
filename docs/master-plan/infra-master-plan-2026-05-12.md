@@ -1,5 +1,14 @@
 # FitMe Infra Master Plan & Roadmap — 2026-05-12
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `FW-` (framework infrastructure & gates).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > **Status:** CURRENT · Opened 2026-05-12 (one day after v7.8.3 cross-repo state-sync shipped)
 > **Scope:** Framework infrastructure only — write-time gates, cycle-time checks, branch-isolation tooling, cross-repo sync, measurement infrastructure, and the HADF/ORCHID research substrate that depends on it. Product features tracked separately in [`master-plan-2026-04-15.md`](master-plan-2026-04-15.md) + [`master-backlog-roadmap.md`](master-backlog-roadmap.md).
 > **Purpose:** Single forward-looking source of truth for framework v7.9 promotion, v8.x candidate ranking, HADF Phase 2-bis pre-launch dependencies, and the measurement / promotion calendar through Q3 2026.

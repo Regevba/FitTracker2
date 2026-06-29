@@ -1,5 +1,14 @@
 # FitMe UI/UX Master Plan — 2026-05-24
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `PROD-` (product UI/UX).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > **Status:** CURRENT · Opened 2026-05-24 as the 5th sub-doc of [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md). Platform-comprehensive revision 2026-05-24 expanded scope from "iOS + website" to "iOS + website + Android" (token + adaptation layer; Android app code not yet implemented) and reconciled 3 drift items + added missing `user-profile-settings` row.
 > **Scope:** All UI/UX work across all platforms — iOS (FitTracker2), website (fitme-story), and Android (tokens + adaptation docs, no native app surface yet). Features, enhancements, and chores. Includes both shipped state and in-flight queue. Cross-references parent features (e.g., v2 alignment series under `design-system-v2`; UCC sub-features under `unified-control-center`; Android token pipeline under `android-design-system`).
 > **Purpose:** Codify the surface-level UI/UX work that was previously distributed across `.claude/features/*/state.json`, `docs/product/backlog.md` rows, and memory entries. Single source of truth for "what UI/UX is shipped, in-flight, queued, or implicit." Mirrors backlog rows; lets operators answer "what should I work on next on the UI surface" without reading 60+ state.json files.
