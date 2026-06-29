@@ -54,17 +54,25 @@ First real-repo run found **27 drift items** — `AnalyticsEvent` constants emit
 in code with no taxonomy CSV row (home-readiness/trend-alert, home-ai-feedback,
 training-exercise-library/search, training-custom-program, … families). This is
 the **calibration baseline drift count** per §333. The gate ships **advisory** so
-this baseline is measured, not blocking; the burndown (add the 27 CSV rows with
-full parameter contracts) is the calibration-window work (task T6). The gate only
-fires on commits that stage AnalyticsProvider.swift, so it never blocks unrelated
-work during the window.
+this baseline is measured, not blocking; the burndown (add the 27 CSV rows) is the
+calibration-window work (task T6). The gate only fires on commits that stage
+AnalyticsProvider.swift, so it never blocks unrelated work during the window.
+
+**Burndown EXECUTED 2026-06-29 (B16):** all 27 events were added as rows to
+`docs/product/analytics-taxonomy.csv` (Category/Scope from the screen prefix,
+Screen/Notes from the enum doc comments; param contracts left blank with a
+"see emit site" note for later enrichment). **Drift is now 0** — verified via
+`_parse_analytics_event_values ∖ _parse_csv_event_names`. **Criterion 2 is met.**
+The advisory→enforced flip (B16, `scripts/check-state-schema.py`
+`CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True → False`) now awaits **only criterion 1**
+(≥7 days of `CSV_TAXONOMY_DRIFT` coverage, ~2026-07-13) + the criterion-3 review.
 
 ## Promotion criteria (advisory → enforced; all four required)
 
 | # | Criterion | How measured |
 |---|---|---|
 | 1 | **Coverage emitted** — ≥7 days of `{candidates, checked, skipped}` rows | `gate-coverage.jsonl` grep `CSV_TAXONOMY_DRIFT` |
-| 2 | **Baseline burned down** — drift count = 0 (27 CSV rows added or exempted) | `_parse_analytics_event_values` ∖ `_parse_csv_event_names` ∖ exemptions |
+| 2 | ✅ **Baseline burned down** — drift = 0 (27 CSV rows added 2026-06-29, B16) | `_parse_analytics_event_values` ∖ `_parse_csv_event_names` ∖ exemptions |
 | 3 | **No false positives** — every fired row maps to a genuinely-undocumented event | manual review at flip |
 | 4 | **Reversibility** — advisory restorable in <2 min (set `CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True`) | single-flag flip |
 

@@ -25,6 +25,6 @@
     { "id": "T3", "status": "complete", "title": "commit-level dispatch in main() + advisory stderr routing" },
     { "id": "T4", "status": "complete", "title": "scripts/tests/test_csv_taxonomy_drift.py (7 tests)" },
     { "id": "T5", "status": "complete", "title": ".githooks/pre-commit header bump" },
-    { "id": "T6", "status": "pending", "title": "Calibration window: burn down baseline drift (27) + advisory→enforced flip" }
+    { "id": "T6", "status": "in_progress", "title": "Calibration: burndown DONE 2026-06-29 (drift 27→0, B16); advisory→enforced flip pending ≥7d coverage ~2026-07-13" }
   ]
 }
