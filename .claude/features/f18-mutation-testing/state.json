@@ -146,5 +146,6 @@
       "layer": "L3",
       "type": "adapted"
     }
-  ]
+  ],
+  "schema_version": 1
 }

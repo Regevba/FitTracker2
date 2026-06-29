@@ -323,5 +323,6 @@
     }
   },
   "work_subtype": "measurement_study_synthesis",
-  "phase_status_note": "measurement_study_synthesis: prd=preregistrations (4 locked prereg JSONs serve as the hypothesis/spec); implement=Blocks A/B/C data collection (60 fires across 4 sub-exps); test=verdict-script runs; docs=this synthesis case study; learn=synthesis verdict (HADF dispatch CONFIRMED)."
+  "phase_status_note": "measurement_study_synthesis: prd=preregistrations (4 locked prereg JSONs serve as the hypothesis/spec); implement=Blocks A/B/C data collection (60 fires across 4 sub-exps); test=verdict-script runs; docs=this synthesis case study; learn=synthesis verdict (HADF dispatch CONFIRMED).",
+  "schema_version": 1
 }

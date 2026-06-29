@@ -298,5 +298,6 @@
     "ai": false
   },
   "platforms_tested_provenance": "authored",
-  "platforms_tested_note": "No app-platform product code. scripts/tests/test_funnel_definitions.py exercises the analytics data contract (funnel-definitions.json cross-referenced against the analytics-taxonomy.csv / GA4 event layer) \u2014 classified as backend (telemetry/data layer)."
+  "platforms_tested_note": "No app-platform product code. scripts/tests/test_funnel_definitions.py exercises the analytics data contract (funnel-definitions.json cross-referenced against the analytics-taxonomy.csv / GA4 event layer) \u2014 classified as backend (telemetry/data layer).",
+  "schema_version": 1
 }

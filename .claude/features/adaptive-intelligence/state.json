@@ -6,7 +6,12 @@
   "updated": "2026-04-11T01:00:00Z",
   "branch": "fix/design-system-token-compliance",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": true},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": true
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "framework_version": "v5.0",
   "agent_manifest": {
@@ -146,5 +151,6 @@
     "deprecation_warnings": []
   },
   "prd_path": "docs/product/prd/adaptive-intelligence.md",
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

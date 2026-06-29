@@ -5,7 +5,12 @@
   "created_at": "2026-04-16T05:40:00Z",
   "updated": "2026-04-20T00:00:00Z",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "work_subtype": "framework_infrastructure",
@@ -136,5 +141,6 @@
   "_meta": {
     "deprecation_warnings": []
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

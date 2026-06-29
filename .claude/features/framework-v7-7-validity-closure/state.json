@@ -12,7 +12,12 @@
     "shared_writes": []
   },
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "status": "complete",
   "created_at": "2026-04-27T14:00:00Z",
@@ -208,5 +213,6 @@
       "repo": "Regevba/FitTracker2",
       "role": "section_99_banner_flip_shipped"
     }
-  ]
+  ],
+  "schema_version": 1
 }

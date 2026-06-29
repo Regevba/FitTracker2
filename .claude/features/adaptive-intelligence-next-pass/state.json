@@ -298,5 +298,6 @@
       "at": "2026-06-02T18:35:00Z",
       "reason": "Feature CLOSED. D1 (D1.a on-device decay+trend + D1.d transparency UX) shipped via PR #576 squash ce50022 (operator-merged 2026-06-02 18:33Z). Closure on chore/d1-post-merge-closure (feature branch merged + retained on remote; local merged-feature-branch deletion deferred per per-action approval rule). 21/21 D1 tests pass. T+14d eval 2026-06-16. T+30d eval 2026-07-02. D1.b/c/e deferred to v8.0+."
     }
-  ]
+  ],
+  "schema_version": 1
 }

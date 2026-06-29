@@ -895,6 +895,14 @@ sessions-compact:
 		$(if $(MIN_AGE_DAYS),--min-age-days=$(MIN_AGE_DAYS),) \
 		$(if $(EXECUTE),--execute,)
 
+# DE-R18 (FIT-184): state.json schema_version + migration runner.
+# Stamps every .claude/features/*/state.json with schema_version and applies
+# any pending ordered migrations. Spec: scripts/migrate-state-schema.py header.
+#   make migrate-state-schema            # dry-run report
+#   make migrate-state-schema EXECUTE=1  # apply + write
+migrate-state-schema:
+	@python3 scripts/migrate-state-schema.py $(if $(EXECUTE),--execute,)
+
 # Auto-install on first run
 node_modules:
 	npm install --silent

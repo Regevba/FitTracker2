@@ -399,5 +399,6 @@
   "merge_pr_number": 644,
   "merge_commit_sha": "81b4d8d120b45824358a2beb150c72e54d471adf",
   "merged_at": "2026-06-06T04:10:18Z",
-  "feature_branch_merged": "feature/hadf-signature-expansion"
+  "feature_branch_merged": "feature/hadf-signature-expansion",
+  "schema_version": 1
 }

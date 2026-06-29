@@ -286,5 +286,6 @@
     "audit_close": "D-AUDIT-9 from docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md",
     "stale_citation_in_case_study": "Case study frontmatter related_prs lists PR #181 which never existed (number was skipped/aborted). Actual ORCHID v1.5 PRs are #179, #180, #182, #183, #184. Companion edit in this commit removes the stale #181 citation from the case study frontmatter."
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

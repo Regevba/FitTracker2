@@ -4,7 +4,12 @@
   "updated": "2026-05-20T06:34:21Z",
   "branch": "feature/ucc-passkey-auth",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": true, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": true,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "work_subtype": "cross_repo",
@@ -823,5 +828,6 @@
       "repo": "Regevba/FitTracker2",
       "role": "T7_part_9_wire"
     }
-  ]
+  ],
+  "schema_version": 1
 }

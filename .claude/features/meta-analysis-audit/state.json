@@ -108,5 +108,6 @@
   "_meta": {
     "deprecation_warnings": []
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

@@ -191,5 +191,6 @@
       "at": "2026-06-05T05:30:46Z",
       "reason": "Feature CLOSED via close-feature.py on chore/framework-v7-9-1-promotion-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
-  ]
+  ],
+  "schema_version": 1
 }

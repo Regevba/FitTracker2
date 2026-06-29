@@ -832,5 +832,6 @@
     }
   ],
   "state_owner": "ft2",
-  "updated_at": "2026-05-12T07:30:00Z"
+  "updated_at": "2026-05-12T07:30:00Z",
+  "schema_version": 1
 }

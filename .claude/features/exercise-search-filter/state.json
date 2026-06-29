@@ -322,5 +322,6 @@
   "merge_pr_number": 573,
   "merge_commit_sha": "95d8ab31983f06791fffcb79b98a71b45f2d9aee",
   "merged_at": "2026-06-02T16:39:26Z",
-  "feature_branch_merged": "feature/exercise-search-filter"
+  "feature_branch_merged": "feature/exercise-search-filter",
+  "schema_version": 1
 }

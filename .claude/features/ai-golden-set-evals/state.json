@@ -144,5 +144,6 @@
     },
     "wall_time_seconds": 1,
     "wall_time_backfill": "excluded-dirty-timestamps"
-  }
+  },
+  "schema_version": 1
 }
