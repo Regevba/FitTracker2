@@ -72,5 +72,6 @@
   },
   "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-audit-1-corrections",
   "updated": "2026-05-22T08:09:00Z",
-  "isolation_opt_out_reason": "Post-merge closure during hygiene session 2026-05-23. All code work happened on the original chore/audit-1-corrections branch (now merged + deleted via PR #448). This commit only flips current_phase to complete + adds closure timing \u2014 no risk of crossing in-flight code work."
+  "isolation_opt_out_reason": "Post-merge closure during hygiene session 2026-05-23. All code work happened on the original chore/audit-1-corrections branch (now merged + deleted via PR #448). This commit only flips current_phase to complete + adds closure timing \u2014 no risk of crossing in-flight code work.",
+  "schema_version": 1
 }

@@ -159,5 +159,6 @@
       "at": "2026-06-05T05:04:15Z",
       "reason": "Feature CLOSED via close-feature.py on chore/r9-track-b-coverage-aggregator-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
-  ]
+  ],
+  "schema_version": 1
 }

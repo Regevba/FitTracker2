@@ -20,7 +20,7 @@
     "Anchors duplicate private mocks in a way that creates maintenance burden without catching new drift.",
     "A protocol gains an optional/defaulted method that the anchor masks (false negative)."
   ],
-  "kill_criteria_resolution": "Neither fired. The anchors are minimal (one per protocol) and centralized — they ADD a single labelled failure point that Swift's per-mock conformance doesn't provide (the real mocks are private to their test files). No protocol in scope uses optional/defaulted requirements, so an added requirement always breaks the anchor (no masking).",
+  "kill_criteria_resolution": "Neither fired. The anchors are minimal (one per protocol) and centralized \u2014 they ADD a single labelled failure point that Swift's per-mock conformance doesn't provide (the real mocks are private to their test files). No protocol in scope uses optional/defaulted requirements, so an added requirement always breaks the anchor (no masking).",
   "dispatch_pattern": "operator-driven (T5 from test-coverage master plan)",
   "platforms_tested": {
     "ios": true,
@@ -133,5 +133,6 @@
       "started_at": "2026-06-10T14:56:25Z",
       "ended_at": "2026-06-10T14:56:25Z"
     }
-  }
+  },
+  "schema_version": 1
 }

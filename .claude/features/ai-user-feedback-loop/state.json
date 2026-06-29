@@ -352,5 +352,6 @@
       "note": "378 Read events attributed to this feature via Mechanism C session ledgers; auto-instrumentation captured them but did not dual-write to state.json::cache_hits[] (v7.8 advisory; v7.9 promotes dual-write). Honest provenance-tagged summary entry (mirrors the v7.8.4 backfill pattern), NOT per-Read fabrication.",
       "backfilled_from": "Mechanism C session-ledger attributions"
     }
-  ]
+  ],
+  "schema_version": 1
 }

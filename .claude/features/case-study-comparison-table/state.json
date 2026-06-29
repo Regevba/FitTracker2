@@ -4,7 +4,12 @@
   "updated": "2026-05-07T19:05:00Z",
   "branch": "feature/case-study-comparison-table",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": false, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "work_type": "feature",
   "work_subtype": "web_ui",
@@ -235,5 +240,6 @@
     "total": 1.3,
     "tier_class": "B_medium"
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

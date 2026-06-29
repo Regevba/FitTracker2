@@ -172,5 +172,6 @@
       "at": "2026-06-04T15:40:04Z",
       "reason": "Feature CLOSED via close-feature.py on chore/f-launchd-drift-extension-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
-  ]
+  ],
+  "schema_version": 1
 }

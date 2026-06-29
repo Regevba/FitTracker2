@@ -362,5 +362,6 @@
     }
   ],
   "reconcile_note": "State reconciled 2026-05-20 \u2014 original state.json reported T2-T11 pending; live inspection confirmed 8/11 actually shipped (T1+T2+T3+T5+T6+T7+T9+T11 done; T8 skipped non-applicable; T4 partial-blocked on stub variants; T10 blocked on T4).",
-  "isolation_opt_out_reason": "Post-merge closure during 2026-05-26 reconcile session. All shippable work landed via fitme-story PRs #123 (squash f3dc8f3) + #125 (squash 75bf6b7) on 2026-05-19. Three remaining tasks (T4 Figma component variants, T8 manifest Internal\u2192Stable flip, T10 CI publish workflow) are blocked on operator obtaining Figma seat with code_connect:write scope \u2014 tracked in docs/product/backlog.md \"Re-activate Code Connect publish when Figma seat/plan unblocks\". Closure from chore worktree is reconciliation-only; no in-flight code work risk."
+  "isolation_opt_out_reason": "Post-merge closure during 2026-05-26 reconcile session. All shippable work landed via fitme-story PRs #123 (squash f3dc8f3) + #125 (squash 75bf6b7) on 2026-05-19. Three remaining tasks (T4 Figma component variants, T8 manifest Internal\u2192Stable flip, T10 CI publish workflow) are blocked on operator obtaining Figma seat with code_connect:write scope \u2014 tracked in docs/product/backlog.md \"Re-activate Code Connect publish when Figma seat/plan unblocks\". Closure from chore worktree is reconciliation-only; no in-flight code work risk.",
+  "schema_version": 1
 }

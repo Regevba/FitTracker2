@@ -139,5 +139,6 @@
       "approved_by": "user",
       "note": "Operator decision 2026-05-20: ios-code-connect closed as partial-ship. T4 (figma connect publish) permanently blocked \u2014 requires Figma organization-tier plan not available to this Hobby-tier project. 4/5 tasks done (scaffold + docs + node IDs). The shipped artifacts are useful as a reference if org-tier access is acquired in the future. case_study_type=no_case_study_required exempt remains valid (workflow docs at docs/design-system/ios-code-connect-workflow.md cover the practitioner-facing content)."
     }
-  ]
+  ],
+  "schema_version": 1
 }

@@ -373,5 +373,6 @@
   "merge_pr_number": 574,
   "merge_commit_sha": "fd3b216828dff4f325562c4fba825888baafa1d9",
   "merged_at": "2026-06-02T17:39:02Z",
-  "feature_branch_merged": "feature/training-program-customization"
+  "feature_branch_merged": "feature/training-program-customization",
+  "schema_version": 1
 }

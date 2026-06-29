@@ -6,7 +6,12 @@
   "updated": "2026-05-06T17:57:02Z",
   "branch": "feature/import-training-plan-resume",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "framework_version": "v5.0",
   "agent_manifest": {
@@ -754,5 +759,6 @@
       "backfilled_from": "Mechanism C session-ledger attributions"
     }
   ],
-  "updated_at": "2026-05-12T07:30:00Z"
+  "updated_at": "2026-05-12T07:30:00Z",
+  "schema_version": 1
 }

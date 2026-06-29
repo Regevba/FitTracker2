@@ -104,5 +104,6 @@
     },
     "total_wall_time_minutes": 25.0,
     "total_wall_time_minutes_provenance": "backfill-derived-from-phase-durations-2026-06-10"
-  }
+  },
+  "schema_version": 1
 }

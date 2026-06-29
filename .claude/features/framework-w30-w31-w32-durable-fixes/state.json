@@ -166,5 +166,6 @@
       "at": "2026-06-05T06:38:25Z",
       "reason": "Feature CLOSED via close-feature.py on chore/framework-w30-w31-w32-durable-fixes-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
-  ]
+  ],
+  "schema_version": 1
 }

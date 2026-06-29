@@ -750,5 +750,6 @@
       "approved_by": "user",
       "note": "B12 T+7d kill-criteria evaluation: PROMOTE verdict. K1 (lockout false-positive rate) NOT FIRED \u2014 0 lockout events of any kind in 7d window. K2 (latency overhead) instrumentation invalid \u2014 audit-log duration_ms measures end-to-end WebAuthn ceremony, not server-side function time the +5ms threshold was sized for; v7.9.1 candidate F-AUTH-LATENCY-SERVER-METRIC queued. K3 (allowlist_unset) NOT FIRED \u2014 0 events. K4 (operator lockout > 5min) NOT FIRED \u2014 4 successful sign-ins across window. Primary metric unauthorized_operator_registration_attempts_succeeded = 0. Operator unaffected throughout window. Full evidence in case study \u00a74 + \u00a799."
     }
-  ]
+  ],
+  "schema_version": 1
 }

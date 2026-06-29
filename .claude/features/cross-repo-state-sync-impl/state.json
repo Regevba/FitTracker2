@@ -218,5 +218,6 @@
     "HADF Phase 2-bis Sub-exp 1 launch (per spec section 3.5 calibration targets all met)",
     "Track 6 (HADF gate activation post-Sub-exp-3 verdict) is now eligible to proceed once Phase 2-bis completes",
     "Future fitme-story-native features can use the established v7.8.3 round-trip without ceremony"
-  ]
+  ],
+  "schema_version": 1
 }

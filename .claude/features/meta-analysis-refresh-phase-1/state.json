@@ -132,5 +132,6 @@
     ]
   },
   "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-refresh-phase-1",
-  "updated": "2026-05-29T04:32:27Z"
+  "updated": "2026-05-29T04:32:27Z",
+  "schema_version": 1
 }

@@ -163,5 +163,6 @@
     }
   ],
   "case_study_type": "no_case_study_required",
-  "case_study_type_reason": "Framework-meta advisory gate; tracked at docket level (v8-x-build-docket-2026-06-15.md Theme A/C), not via standalone case study (matches f11/f12 sibling closure)."
+  "case_study_type_reason": "Framework-meta advisory gate; tracked at docket level (v8-x-build-docket-2026-06-15.md Theme A/C), not via standalone case study (matches f11/f12 sibling closure).",
+  "schema_version": 1
 }

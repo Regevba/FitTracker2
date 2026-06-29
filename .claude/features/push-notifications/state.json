@@ -562,5 +562,6 @@
       "v1_failure_mode": "Partial ship \u2014 substrate built + tested + merged, never wired into runtime. Audit UI-016 caught it post-ship via the v7.5 integrity cycle."
     }
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

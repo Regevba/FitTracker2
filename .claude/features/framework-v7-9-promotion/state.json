@@ -247,5 +247,6 @@
     "scaffold_session": "system-sweep-gap-closures-2026-05-16",
     "scaffold_origin": "System sweep audit 2026-05-16 surfaced gap: v7.9 promotion-decision (2026-05-21) is the highest-stakes upcoming framework event but had no state.json tracking container. Precedent: framework-v7-8-branch-isolation. This scaffold creates the container so the promotion decision has a discoverable home.",
     "freeze_day_session": "2026-05-21 (B1 freeze; PROMOTE decision recorded; phases research \u2192 implement)"
-  }
+  },
+  "schema_version": 1
 }

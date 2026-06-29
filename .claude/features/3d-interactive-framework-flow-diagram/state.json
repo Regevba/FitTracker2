@@ -416,5 +416,6 @@
       "T-hadf-sensing-layer-hooks (scene consumer, path 1)"
     ],
     "relaunch_blocker": "T-rive-tier-2 (.riv asset) + full polish pass"
-  }
+  },
+  "schema_version": 1
 }

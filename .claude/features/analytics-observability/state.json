@@ -635,5 +635,6 @@
     "ai": false
   },
   "platforms_tested_provenance": "authored",
-  "updated_at": "2026-06-09T17:55:00Z"
+  "updated_at": "2026-06-09T17:55:00Z",
+  "schema_version": 1
 }

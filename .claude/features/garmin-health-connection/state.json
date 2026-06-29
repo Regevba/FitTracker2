@@ -347,5 +347,6 @@
   "case_study": "docs/case-studies/garmin-health-connection-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/49-garmin-health-connection.mdx",
   "feature_branch_merged": "feature/garmin-health-connection",
-  "linear_issue": "FIT-199"
+  "linear_issue": "FIT-199",
+  "schema_version": 1
 }

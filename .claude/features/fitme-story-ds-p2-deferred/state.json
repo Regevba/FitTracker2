@@ -1,7 +1,12 @@
 {
   "feature_name": "fitme-story-ds-p2-deferred",
   "current_phase": "complete",
-  "platforms_tested": {"ios": true, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": true,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "created_at": "2026-05-12T02:47:13Z",
   "updated_at": "2026-05-12T03:42:43Z",
@@ -237,5 +242,6 @@
   "related_prs": [
     "[fitme-story#93]"
   ],
-  "updated": "2026-05-12T03:46:00Z"
+  "updated": "2026-05-12T03:46:00Z",
+  "schema_version": 1
 }

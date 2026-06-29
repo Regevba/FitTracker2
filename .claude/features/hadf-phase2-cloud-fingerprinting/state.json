@@ -266,5 +266,6 @@
     "audit_close": "D-AUDIT-8 from docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md",
     "preservation_backup_reference": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/"
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "schema_version": 1
 }

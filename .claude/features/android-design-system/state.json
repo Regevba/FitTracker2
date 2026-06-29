@@ -8,7 +8,12 @@
   "updated": "2026-05-26T14:58:32.527847Z",
   "branch": "feature/android-design-system",
   "current_phase": "complete",
-  "platforms_tested": {"ios": false, "web": true, "backend": false, "ai": false},
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
   "platforms_tested_provenance": "backfill-heuristic-2026-06-07",
   "framework_version": "pre-v5.0",
   "agent_manifest": {
@@ -131,5 +136,6 @@
       ".claude/shared/must-have-cadence-followups.md (annual review row to be added at 2027-05-26)"
     ],
     "closed_by": "2026-05-26 operator decision recorded via Tier A bundle PR"
-  }
+  },
+  "schema_version": 1
 }

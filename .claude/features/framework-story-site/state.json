@@ -185,5 +185,6 @@
       }
     },
     "wall_time_backfill": "excluded-multiday"
-  }
+  },
+  "schema_version": 1
 }
