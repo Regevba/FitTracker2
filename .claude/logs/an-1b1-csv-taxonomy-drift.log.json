@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "feature": "an-1b1-csv-taxonomy-drift",
+  "title": "an 1b1 csv taxonomy drift",
+  "work_type": "Feature",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-29T16:32:28Z",
+  "updated_at": "2026-06-29T16:32:47Z",
+  "events": [
+    {
+      "timestamp": "2026-06-29T16:32:28Z",
+      "event_type": "implementation",
+      "phase": "implementation",
+      "summary": "CSV_TAXONOMY_DRIFT gate (advisory) + Phase A artifacts + 7 tests; baseline drift=27 measured",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "complete",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-29T16:32:47Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "AN-1B.1 CSV_TAXONOMY_DRIFT gate (advisory) + Phase A artifacts + 7 tests; baseline drift=27",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "complete",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

@@ -70,6 +70,12 @@
 #         kill_criteria_resolution when kill_criteria set (T13, Q7) +
 #         bidirectional PR-list parity (T14, Q6, override via case-study
 #         pr_citation_exempt frontmatter).
+#       - CSV_TAXONOMY_DRIFT (AN-1B.1, write-time, ADVISORY during calibration):
+#         commit-level — fires when AnalyticsProvider.swift is staged and an
+#         AnalyticsEvent constant's raw value has no row in
+#         docs/product/analytics-taxonomy.csv. Exempt via state.json
+#         csv_taxonomy_exempt: [{constant, reason}]. Flip
+#         CSV_TAXONOMY_DRIFT_ADVISORY_MODE to enforce.
 #     Cycle-time advisories (non-pre-commit) live in scripts/integrity-check.py:
 #     T17 BranchIsolationHistorical, T18 BranchIsolationLaunchdDrift, T19
 #     FeatureClosureCompleteness mirror. See .claude/integrity/README.md.
