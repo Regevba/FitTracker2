@@ -18,6 +18,7 @@ Operational playbooks and groundwork tied to the 2026-04-21 Google Gemini 2.5 Pr
 ## Related canonical artifacts
 
 - **Developer guide (v1.0 → v7.10 technical reference):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md)
+- **Cross-layer item naming convention (FIT-200, 2026-06-29):** [`cross-layer-item-naming-convention.md`](./cross-layer-item-naming-convention.md) — unified naming/tracking spine across state.json, Linear, Notion, backlog, and plans (slug + `linear_id` + scheme-prefixed codes; `make crosswalk` → `.claude/shared/item-registry.json`). Closes observed-pattern W40.
 - **v7.5 case study (8 cooperating defenses, audit policy response):** [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](../case-studies/data-integrity-framework-v7.5-case-study.md)
 - **v7.6 case study (mechanical enforcement layer):** [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md)
 - **Class B unclosable-gaps inventory:** [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
