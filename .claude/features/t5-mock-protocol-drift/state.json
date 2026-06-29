@@ -134,5 +134,9 @@
       "ended_at": "2026-06-10T14:56:25Z"
     }
   },
-  "schema_version": 1
+  "schema_version": 1,
+  "linear_id": "FIT-153",
+  "thematic_codes": [
+    "TC-T5"
+  ]
 }

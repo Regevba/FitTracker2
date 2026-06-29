@@ -1167,5 +1167,6 @@
   },
   "case_study_showcase": "fitme-story/content/04-case-studies/23a-unified-control-center.mdx",
   "state_owner": "ft2",
-  "schema_version": 1
+  "schema_version": 1,
+  "linear_id": "FIT-58"
 }
