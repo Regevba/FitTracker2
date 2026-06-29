@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "an-1b2-ga4-mcp-disconnected",
+  "title": "an 1b2 ga4 mcp disconnected",
+  "work_type": "Feature",
+  "current_phase": "implementation",
+  "framework_version": "v7.10",
+  "started_at": "2026-06-29T16:51:44Z",
+  "updated_at": "2026-06-29T16:51:44Z",
+  "events": [
+    {
+      "timestamp": "2026-06-29T16:51:44Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "AN-1B.2 GA4_MCP_DISCONNECTED advisory-only connectivity gate + 6 tests",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "complete",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

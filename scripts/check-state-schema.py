@@ -190,6 +190,19 @@ CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True
 ANALYTICS_PROVIDER_PATH = "FitTracker/Services/Analytics/AnalyticsProvider.swift"
 ANALYTICS_TAXONOMY_CSV = "docs/product/analytics-taxonomy.csv"
 
+# AN-1B.2 (analytics-master-plan §8.3, Theme C / F20): GA4_MCP_DISCONNECTED.
+# Commit-level connectivity advisory — fires when analytics-affecting code is
+# staged and GA4 MCP is not reachable via env (GA4_PROPERTY_ID set +
+# GOOGLE_APPLICATION_CREDENTIALS file exists). ADVISORY-ONLY BY DESIGN: never
+# blocks a commit, even "promoted" — it surfaces drift, it does not gate
+# analytics work behind operator GA4 setup. Pre-launch the GA4 env is typically
+# unset, so this advisory is expected until the operator wires GA4 (register A1).
+ANALYTICS_AFFECTING_GLOBS = (
+    "FitTracker/Services/Analytics/*",
+    "fitme-story/src/lib/control-room/analytics.ts",
+    ANALYTICS_TAXONOMY_CSV,
+)
+
 # Canonical-version override (tests + operator escape hatch). When unset, the
 # resolver parses docs/FRAMEWORK-FACTS.md — the declared machine-derived SoT.
 _FRAMEWORK_VERSION_CANONICAL_OVERRIDE = os.environ.get(
@@ -1955,6 +1968,61 @@ def check_csv_taxonomy_drift(
     return findings
 
 
+def check_ga4_mcp_connectivity(
+    staged_files: list[str], *, coverage: GateCoverage | None = None,
+    repo_root: Path | None = None,
+) -> list[dict]:
+    """AN-1B.2 (analytics-master-plan §8.3): GA4_MCP_DISCONNECTED.
+
+    Commit-level. Fires when analytics-affecting code is staged and GA4 MCP
+    is not reachable via env (GA4_PROPERTY_ID set + GOOGLE_APPLICATION_CREDENTIALS
+    points at an existing file). ADVISORY-ONLY by design — surfaces drift, never
+    blocks (even when "promoted"). Pre-launch the env is typically unset, so the
+    advisory is expected until the operator wires GA4.
+    """
+    repo_root = repo_root or REPO_ROOT
+    findings: list[dict] = []
+    GATE = "GA4_MCP_DISCONNECTED"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    affecting = [f for f in staged_files
+                 if _matches_any_glob(f, ANALYTICS_AFFECTING_GLOBS)]
+    if not affecting:
+        if coverage is not None:
+            coverage.skip(GATE, "no_analytics_files_staged")
+        return findings
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    prop = os.environ.get("GA4_PROPERTY_ID")
+    creds = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+    creds_ok = bool(creds) and Path(creds).is_file()
+    if prop and creds_ok:
+        return findings  # connected — healthy, no finding
+
+    reasons: list[str] = []
+    if not prop:
+        reasons.append("GA4_PROPERTY_ID unset")
+    if not creds:
+        reasons.append("GOOGLE_APPLICATION_CREDENTIALS unset")
+    elif not creds_ok:
+        reasons.append(f"GOOGLE_APPLICATION_CREDENTIALS file missing ({creds})")
+    findings.append({
+        "code": GATE,
+        "advisory": True,  # advisory-only by design — never blocks
+        "reasons": reasons,
+        "staged_sample": affecting[:5],
+        "remediation": (
+            "GA4 MCP not reachable: " + "; ".join(reasons) + ". Expected "
+            "pre-launch until the operator wires GA4 (set GA4_PROPERTY_ID + "
+            "GOOGLE_APPLICATION_CREDENTIALS). Advisory only — does not block."
+        ),
+    })
+    return findings
+
+
 def main() -> int:
     args = sys.argv[1:]
     if args == ["--staged"]:
@@ -2034,6 +2102,15 @@ def main() -> int:
                 all_errors.append(
                     f"COMMIT-LEVEL: [{finding['code']}] {finding['remediation']}"
                 )
+
+        # AN-1B.2 (analytics-master-plan §8.3): GA4_MCP_DISCONNECTED — commit-level.
+        # Advisory-only by design: prints to stderr, NEVER added to errors[].
+        for finding in check_ga4_mcp_connectivity(all_staged, coverage=coverage):
+            print(
+                f"[ADVISORY] {finding['code']}\n"
+                f"  {finding['remediation']}",
+                file=sys.stderr,
+            )
 
     # Persist the coverage ledger. Failure to write must not affect the
     # exit code — Mechanism A is advisory in v7.8; the gate verdict is
