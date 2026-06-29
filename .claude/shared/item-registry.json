@@ -1,0 +1,1394 @@
+{
+  "schema_version": 1,
+  "generated_note": "derived from .claude/features/*/state.json \u2014 do not hand-edit; run `make crosswalk`",
+  "items": [
+    {
+      "slug": "3d-interactive-framework-flow-diagram",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "In Progress",
+      "current_phase": "tasks_phase",
+      "work_type": "Feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "adaptive-intelligence",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "prs": [
+        78
+      ]
+    },
+    {
+      "slug": "adaptive-intelligence-next-pass",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
+      "prs": [
+        576
+      ]
+    },
+    {
+      "slug": "ai-cohort-intelligence",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "ai-engine-architecture-adaptation",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "ai-engine-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": null,
+      "prs": [
+        78
+      ]
+    },
+    {
+      "slug": "ai-golden-set-evals",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/ai-golden-set-evals-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "ai-recommendation-ui",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "prs": [
+        78
+      ]
+    },
+    {
+      "slug": "ai-user-feedback-loop",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/ai-user-feedback-loop-case-study.md",
+      "prs": [
+        572
+      ]
+    },
+    {
+      "slug": "analytics-observability",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/analytics-observability-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "android-design-system",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/android-design-system-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "android-token-pipeline",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Enhancement",
+      "case_study": "docs/case-studies/android-token-pipeline-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "app-store-assets",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Blocked",
+      "current_phase": "implementation",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "audit-1-corrections",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "auth-polish-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+      "prs": [
+        163
+      ]
+    },
+    {
+      "slug": "authentication",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "case-study-comparison-table",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "case-study-presentation",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+      "prs": [
+        146
+      ]
+    },
+    {
+      "slug": "code-connect-automation",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "contract-fixture-consumer-adoption",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/contract-fixture-consumer-adoption-case-study.md",
+      "prs": [
+        790
+      ]
+    },
+    {
+      "slug": "cross-repo-state-sync-impl",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
+      "prs": [
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304
+      ]
+    },
+    {
+      "slug": "data-integrity-framework-v7-6",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "framework",
+      "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "data-sync",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "design-system-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "dev-env-r11-r13-r14-r17-r18-batch",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Chore",
+      "case_study": "docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
+      "prs": [
+        627
+      ]
+    },
+    {
+      "slug": "development-dashboard",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "dispatch-intelligence-v5.2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "exercise-search-filter",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/exercise-search-filter-case-study.md",
+      "prs": [
+        573
+      ]
+    },
+    {
+      "slug": "f-deployed-url-probe-ft2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f-deployed-url-probe-ft2-case-study.md",
+      "prs": [
+        628
+      ]
+    },
+    {
+      "slug": "f-launchd-drift-extension",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",
+      "prs": [
+        621
+      ]
+    },
+    {
+      "slug": "f-launchd-drift-extension-sub-a",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md",
+      "prs": [
+        623
+      ]
+    },
+    {
+      "slug": "f-phase-e-adoption-freeze-discipline",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md",
+      "prs": [
+        625
+      ]
+    },
+    {
+      "slug": "f1-state-tasks-filesystem-drift",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": null,
+      "prs": [
+        752
+      ]
+    },
+    {
+      "slug": "f11-reverse-sync-historical-exempt",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Chore",
+      "case_study": null,
+      "prs": [
+        722
+      ]
+    },
+    {
+      "slug": "f12-actionlint-gate",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Chore",
+      "case_study": null,
+      "prs": [
+        719
+      ]
+    },
+    {
+      "slug": "f16-try-repo-harness",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
+      "prs": [
+        606,
+        607,
+        608,
+        610,
+        611,
+        612
+      ]
+    },
+    {
+      "slug": "f17-last-fired-at-index",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f17-last-fired-at-index-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "f18-mutation-testing",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/f18-mutation-testing-case-study.md",
+      "prs": [
+        809
+      ]
+    },
+    {
+      "slug": "f2-phase-0-reality-check",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/f2-phase-0-reality-check-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "f3-dependency-graph-cycle-check",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": null,
+      "prs": [
+        753
+      ]
+    },
+    {
+      "slug": "f4-framework-version-stale",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": null,
+      "prs": [
+        740
+      ]
+    },
+    {
+      "slug": "figma-design-architecture",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/figma-design-architecture-case-study.md",
+      "prs": [
+        767
+      ]
+    },
+    {
+      "slug": "fitme-story-design-system-p2-cleanup",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+      "prs": [
+        84
+      ]
+    },
+    {
+      "slug": "fitme-story-ds-p2-deferred",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+      "prs": [
+        93
+      ]
+    },
+    {
+      "slug": "fitme-story-ds-p2-final-sweep",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md",
+      "prs": [
+        95
+      ]
+    },
+    {
+      "slug": "fitme-story-dual-audience-redesign",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/fitme-story-dual-audience-redesign-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "fitme-story-public-enhancements",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/fitme-story-public-enhancements-case-study.md",
+      "prs": [
+        59,
+        61,
+        62,
+        63,
+        65,
+        66,
+        67,
+        70,
+        71,
+        75,
+        134,
+        258,
+        260,
+        261
+      ]
+    },
+    {
+      "slug": "fitme-story-website-design-system",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/fitme-story-website-design-system-case-study.md",
+      "prs": [
+        287
+      ]
+    },
+    {
+      "slug": "foundation-models-tier3",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/foundation-models-tier3-case-study.md",
+      "prs": [
+        724,
+        725
+      ]
+    },
+    {
+      "slug": "framework-f14-f15-dispatch-test-coverage",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
+      "prs": [
+        451
+      ]
+    },
+    {
+      "slug": "framework-honesty-fixes-2026-05-01",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "framework-measurement-v6",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "prs": [
+        81
+      ]
+    },
+    {
+      "slug": "framework-story-site",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/framework-story-site-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "framework-v5-0-soc",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/soc-v5-framework-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "framework-v7-1-integrity-cycle",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "framework-v7-5-data-integrity",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "framework-v7-7-validity-closure",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "framework",
+      "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+      "prs": [
+        144
+      ]
+    },
+    {
+      "slug": "framework-v7-8-branch-isolation",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
+      "prs": [
+        244
+      ]
+    },
+    {
+      "slug": "framework-v7-8-bridge",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/framework-v7-8-bridge-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "framework-v7-9-1-promotion",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/framework-v7-9-1-promotion-case-study.md",
+      "prs": [
+        629,
+        630
+      ]
+    },
+    {
+      "slug": "framework-v7-9-promotion",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+      "prs": [
+        413,
+        415,
+        416,
+        417
+      ]
+    },
+    {
+      "slug": "framework-w30-w31-w32-durable-fixes",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Chore",
+      "case_study": "docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md",
+      "prs": [
+        637
+      ]
+    },
+    {
+      "slug": "funnel-analysis-dashboards",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/funnel-analysis-dashboards-case-study.md",
+      "prs": [
+        799
+      ]
+    },
+    {
+      "slug": "garmin-health-connection",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/garmin-health-connection-case-study.md",
+      "prs": [
+        705
+      ]
+    },
+    {
+      "slug": "gdpr-compliance",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/gdpr-compliance-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "google-analytics",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/google-analytics-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "hadf-infrastructure",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "hadf-phase2-cloud-fingerprinting",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+      "prs": [
+        170,
+        264
+      ]
+    },
+    {
+      "slug": "hadf-phase2bis-replication",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+      "prs": [
+        306,
+        313,
+        316,
+        490,
+        506,
+        507,
+        520,
+        530,
+        533,
+        534,
+        536,
+        539,
+        542,
+        543,
+        583
+      ]
+    },
+    {
+      "slug": "hadf-phase3a-sensing",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/hadf-phase3a-sensing-case-study.md",
+      "prs": [
+        635,
+        644
+      ]
+    },
+    {
+      "slug": "hadf-signature-expansion",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/hadf-signature-expansion-case-study.md",
+      "prs": [
+        644
+      ]
+    },
+    {
+      "slug": "home-status-goal-card",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": [
+        65
+      ]
+    },
+    {
+      "slug": "home-today-screen",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "prs": [
+        61
+      ]
+    },
+    {
+      "slug": "import-training-plan",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/import-training-plan-case-study.md",
+      "prs": [
+        234
+      ]
+    },
+    {
+      "slug": "ios-code-connect",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "ios-ui-audit-p1-burndown",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ios-ui-audit-p1-burndown-case-study.md",
+      "prs": [
+        294
+      ]
+    },
+    {
+      "slug": "ios-ui-audit-p1-drift-cleanup",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ios-ui-audit-p1-drift-cleanup-case-study.md",
+      "prs": [
+        307
+      ]
+    },
+    {
+      "slug": "marketing-website",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "meta-analysis-audit",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "meta-analysis-refresh-phase-1",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": [
+        445
+      ]
+    },
+    {
+      "slug": "metric-tile-deep-linking",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": null,
+      "prs": [
+        67
+      ]
+    },
+    {
+      "slug": "nutrition-logging",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "nutrition-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "onboarding",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+      "prs": [
+        59
+      ]
+    },
+    {
+      "slug": "onboarding-v2-auth-flow",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "onboarding-v2-retroactive",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
+      "prs": [
+        63
+      ]
+    },
+    {
+      "slug": "orchid-v1-5",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Blocked",
+      "current_phase": "implementation",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/orchid-v1-5-additive-units-case-study.md",
+      "prs": [
+        179,
+        180,
+        182,
+        183,
+        184
+      ]
+    },
+    {
+      "slug": "parallel-write-safety-v5.2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "push-notifications",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/push-notifications-v2-case-study.md",
+      "prs": [
+        239
+      ]
+    },
+    {
+      "slug": "r9-track-b-coverage-aggregator",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Chore",
+      "case_study": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
+      "prs": [
+        626
+      ]
+    },
+    {
+      "slug": "readiness-aware-training-alert",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/readiness-aware-training-alert-case-study.md",
+      "prs": [
+        560
+      ]
+    },
+    {
+      "slug": "readiness-score-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": null,
+      "prs": [
+        78
+      ]
+    },
+    {
+      "slug": "recovery-biometrics",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "roadmap-stress-test-2026-05-07",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "settings",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "settings-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "smart-reminders",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/smart-reminders-case-study.md",
+      "prs": [
+        98
+      ]
+    },
+    {
+      "slug": "smart-reminders-behavioral-learning",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+      "prs": [
+        190
+      ]
+    },
+    {
+      "slug": "stats-progress-hub",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "stats-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/stats-v2-case-study.md",
+      "prs": [
+        164
+      ]
+    },
+    {
+      "slug": "t13-last-failed-at-index",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/t13-last-failed-at-index-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "t14-platform-parity-state-field",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/t14-platform-parity-state-field-case-study.md",
+      "prs": [
+        662,
+        781
+      ]
+    },
+    {
+      "slug": "t3-signinservice-passkey-tests",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/t3-signinservice-passkey-tests-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "t5-mock-protocol-drift",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": "docs/case-studies/t5-mock-protocol-drift-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "training-plan-v2",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/training-plan-v2-case-study.md",
+      "prs": [
+        74
+      ]
+    },
+    {
+      "slug": "training-program-customization",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/training-program-customization-case-study.md",
+      "prs": [
+        574
+      ]
+    },
+    {
+      "slug": "training-tracking",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "trend-alerts-hrv",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/trend-alerts-hrv-case-study.md",
+      "prs": [
+        564
+      ]
+    },
+    {
+      "slug": "ucc-passkey-auth",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "prs": [
+        248
+      ]
+    },
+    {
+      "slug": "ucc-passkey-auth-audit-log-redis-fix",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "ucc-passkey-auth-security-hardening",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
+      "prs": [
+        127,
+        410,
+        411,
+        412
+      ]
+    },
+    {
+      "slug": "ucc-sign-in-figma-mapping",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "ui-audit-baseline-burndown",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": "docs/case-studies/ui-audit-baseline-burndown.md",
+      "prs": [
+        139
+      ]
+    },
+    {
+      "slug": "ui-ux-final-sweep-2026-05-12",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "enhancement",
+      "case_study": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+      "prs": [
+        311
+      ]
+    },
+    {
+      "slug": "unified-control-center",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": {
+        "started_at": "2026-04-26T05:30:00Z",
+        "log_path": ".claude/logs/unified-control-center.log.json",
+        "case_study_path": "docs/case-studies/unified-control-center-case-study.md",
+        "monitored_from_day_one": true
+      },
+      "prs": [
+        21,
+        22,
+        230
+      ]
+    },
+    {
+      "slug": "user-profile-settings",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/user-profile-v4.4-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "v8-f10-f5-schema-vocab",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Chore",
+      "case_study": null,
+      "prs": [
+        720
+      ]
+    },
+    {
+      "slug": "w9-drift-triggered-auto-isolation",
+      "linear_id": null,
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": "docs/case-studies/w9-drift-triggered-auto-isolation-case-study.md",
+      "prs": [
+        646,
+        648,
+        649
+      ]
+    }
+  ],
+  "coverage": {
+    "total": 118,
+    "with_linear_id": 0,
+    "missing_linear_id": 118,
+    "with_thematic_codes": 0
+  }
+}

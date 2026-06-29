@@ -911,6 +911,14 @@ node_modules:
 refresh-pr-cache:
 	python3 scripts/refresh-pr-cache.py
 
+# FIT-200: cross-layer item crosswalk registry (slug <-> linear_id <-> thematic codes).
+# Builds .claude/shared/item-registry.json + prints an advisory for features
+# missing their linear_id join. Spec: docs/process/cross-layer-item-naming-convention.md
+#   make crosswalk          # build + report
+#   make crosswalk CHECK=1  # report only, no write
+crosswalk:
+	@python3 scripts/build-item-registry.py $(if $(CHECK),--check,)
+
 validate-existing-cites: refresh-pr-cache
 	@echo "Validating PR cites in all docs/case-studies/*.md against unified cache…"
 	@python3 scripts/check-case-study-preflight.py docs/case-studies/*.md
