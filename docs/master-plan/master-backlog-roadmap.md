@@ -1,5 +1,14 @@
 # FitTracker2 — Master Backlog & Roadmap (RICE Prioritized)
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `PROD-` (product roadmap).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 ## Context
 Complete project roadmap with 18 tasks across 6 phases. Prioritized using the RICE framework (Reach × Impact × Confidence / Effort). Each phase completion is a **gateway** — no coding for the next phase begins until the current phase is approved.
 

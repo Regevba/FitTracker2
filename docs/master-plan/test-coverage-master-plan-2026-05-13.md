@@ -1,5 +1,14 @@
 # FitMe Cross-Layer Test Coverage Master Plan — 2026-05-13
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `TC-` (test coverage / Theme H).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > **Status:** CURRENT · Opened 2026-05-13 as a sub-doc of [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md)
 > **Scope:** Test discipline across every system layer — iOS, web (fitme-story), framework (Python gates), backend (Supabase/CloudKit/auth), AI, analytics. Forward-looking calibration of where tests exist, where they've drifted, and where they're missing.
 > **Purpose:** Answer the question the infra master plan does NOT answer: "are all current tests in spec across all layers?" The infra plan covers Theme G — Test discipline for the framework layer only (F14–F18 + F19/F20 from analytics-observability). This sub-doc widens the scope to iOS + web + backend + AI + analytics and proposes a per-layer T-series candidate docket.
