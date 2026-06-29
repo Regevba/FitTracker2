@@ -76,6 +76,11 @@
 #         docs/product/analytics-taxonomy.csv. Exempt via state.json
 #         csv_taxonomy_exempt: [{constant, reason}]. Flip
 #         CSV_TAXONOMY_DRIFT_ADVISORY_MODE to enforce.
+#       - GA4_MCP_DISCONNECTED (AN-1B.2, write-time, ADVISORY-ONLY by design —
+#         never blocks): commit-level — fires when analytics-affecting code is
+#         staged and GA4 MCP is unreachable via env (GA4_PROPERTY_ID set +
+#         GOOGLE_APPLICATION_CREDENTIALS file exists). Surfaces drift; expected
+#         pre-launch until the operator wires GA4.
 #     Cycle-time advisories (non-pre-commit) live in scripts/integrity-check.py:
 #     T17 BranchIsolationHistorical, T18 BranchIsolationLaunchdDrift, T19
 #     FeatureClosureCompleteness mirror. See .claude/integrity/README.md.
