@@ -131,7 +131,18 @@ def git_head() -> str:
         return "unknown"
 
 
-def first_commit_date(path: Path) -> str | None:
+# DE-R14 (FIT-180): integrity-check parallelization. The dominant cost is the
+# per-file `git log --follow` first-commit-date lookup (one subprocess per case
+# study, and discover_case_studies runs twice per snapshot). A memoization cache
+# makes the second pass free; prefetch_first_commit_dates() warms the cache with
+# a ThreadPoolExecutor — the git calls are independent, I/O-bound subprocesses,
+# so the GIL is released during the wait and threads give near-linear speedup.
+# _FCD_JOBS is set from --jobs in main() (default = min(8, cpu); 1 = serial).
+_FCD_CACHE: dict[str, str | None] = {}
+_FCD_JOBS = 1
+
+
+def _compute_first_commit_date(path: Path) -> str | None:
     try:
         rel = path.relative_to(REPO_ROOT)
     except ValueError:
@@ -149,6 +160,32 @@ def first_commit_date(path: Path) -> str | None:
         return None
     lines = [l for l in out.splitlines() if l]
     return lines[-1] if lines else None
+
+
+def first_commit_date(path: Path) -> str | None:
+    key = str(path)
+    if key in _FCD_CACHE:
+        return _FCD_CACHE[key]
+    val = _compute_first_commit_date(path)
+    _FCD_CACHE[key] = val
+    return val
+
+
+def prefetch_first_commit_dates(paths, jobs: int | None = None) -> None:
+    """Warm the first_commit_date cache for `paths`, in parallel when jobs > 1."""
+    jobs = _FCD_JOBS if jobs is None else jobs
+    todo = [p for p in paths if str(p) not in _FCD_CACHE]
+    if not todo:
+        return
+    if jobs <= 1:
+        for p in todo:
+            first_commit_date(p)
+        return
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as ex:
+        results = list(ex.map(_compute_first_commit_date, todo))
+    for p, val in zip(todo, results):
+        _FCD_CACHE[str(p)] = val
 
 
 def feature_phase(d: dict) -> str | None:
@@ -1584,9 +1621,11 @@ def discover_case_studies() -> list[dict]:
     results = []
     if not CASE_STUDIES_DIR.exists():
         return results
-    for f in sorted(CASE_STUDIES_DIR.glob("*.md")):
-        if f.name in SKIP_CASE_STUDY_FILES:
-            continue
+    files = [f for f in sorted(CASE_STUDIES_DIR.glob("*.md"))
+             if f.name not in SKIP_CASE_STUDY_FILES]
+    # DE-R14: warm the first-commit-date cache in parallel before the loop.
+    prefetch_first_commit_dates(files)
+    for f in files:
         stat = f.stat()
         results.append({
             "path": str(f.relative_to(REPO_ROOT)),
@@ -1801,7 +1840,14 @@ def main():
         default="manual",
         help="Annotate the snapshot source so downstream tools can distinguish cycle data from ad hoc runs.",
     )
+    p.add_argument(
+        "--jobs", type=int, default=min(8, (os.cpu_count() or 4)),
+        help="DE-R14: parallel git-lookup workers (default min(8,cpu); 1 = serial).",
+    )
     args = p.parse_args()
+
+    global _FCD_JOBS
+    _FCD_JOBS = max(1, args.jobs)
 
     snapshot = build_snapshot(args.snapshot_trigger)
     print(f"Features scanned: {snapshot['feature_count']}")
