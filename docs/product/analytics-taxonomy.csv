@@ -211,3 +211,30 @@ training_session_completed,Training,Full training session completion,,,,,,,,
 auth_password_reset_completed,Auth Recovery,Password reset completion rate (auth-polish-v2 A5),,,,,,,,
 auth_biometric_activated,Auth Activation,Biometric adoption (post-sign-in offer; auth-polish-v2 B4),,,,,,,,
 dashboard_blocker_acknowledged,Dashboard TTC,Time-To-Comprehension primary metric (UCC T36 — operator engages with first alert),,,,,,,,
+Home,home_ai_feedback_history_cleared,Custom,Settings → AI Feedback,,,,,,No,home,"User taps ""Clear feedback history"" in Settings → AI Feedback [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]"
+Home,home_ai_feedback_segment_boosted,Custom,Settings → AI Feedback,,,,,,No,home,AIOrchestrator's reinforcement-loop block boosted a segment's confidence because acceptanceRate > 0.70 with >=5 outcomes [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_ai_feedback_signal_blacklisted_permanently,Custom,Settings → AI Feedback,,,,,,No,home,"User confirms ""Blacklist permanently"" on the detail screen [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]"
+Home,home_ai_feedback_signal_manually_unsuppressed,Custom,Settings → AI Feedback,,,,,,No,home,"User confirms ""Un-suppress this signal"" on the detail screen [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]"
+Home,home_ai_feedback_signal_suppressed,Custom,Settings → AI Feedback,,,,,,No,home,AIOrchestrator's reinforcement-loop block suppressed a signal because user dismissed it >=3 times within 30 days [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_ai_feedback_signal_unsuppressed_by_trend,Custom,Settings → AI Feedback,,,,,,No,home,AIOrchestrator un-suppresses a previously-suppressed signal due to last-7d acceptance trend [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_ai_feedback_suppressed_detail_opened,Custom,Settings → AI Feedback,,,,,,No,home,User taps a suppressed-signal row in Settings → AI Feedback → SuppressedSignalDetailScreen [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_readiness_alert_action_taken,Custom,Home insight card / readiness sheet,,,,,,No,home,User picks a CTA in the readiness-aware sheet banner [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_readiness_alert_dismissed,Custom,Home insight card / readiness sheet,,,,,,No,home,Readiness-aware advisory dismissed without CTA pick (sheet closed) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_readiness_alert_shown,Custom,Home insight card / readiness sheet,,,,,,No,home,Readiness-aware advisory shown on home insight card [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_readiness_alert_tap,Custom,Home insight card / readiness sheet,,,,,,No,home,User taps the readiness-aware insight card [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_trend_alert_action_taken,Custom,Home insight card / HRV trend sheet,,,,,,No,home,User picks thumbs-up/thumbs-down feedback in the Your HRV Trend sheet section [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_trend_alert_dismissed,Custom,Home insight card / HRV trend sheet,,,,,,No,home,Sustained-trend advisory dismissed without feedback pick (sheet closed) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_trend_alert_shown,Custom,Home insight card / HRV trend sheet,,,,,,No,home,Sustained-trend advisory shown on home insight card [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Home,home_trend_alert_tap,Custom,Home insight card / HRV trend sheet,,,,,,No,home,User taps the sustained-trend insight card [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_custom_program_activated,Custom,Settings → Customize Program,,,,,,No,training,User activates a saved program (sets activeProgramID) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_custom_program_deleted,Custom,Settings → Customize Program,,,,,,No,training,User confirms swipe-to-delete on a program [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_custom_program_list_opened,Custom,Settings → Customize Program,,,,,,No,training,User opens Settings → Customize Program (the program list sheet) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_custom_program_saved,Custom,Settings → Customize Program,,,,,,No,training,User saves a program in the editor (or NewProgramSheet on first save) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_custom_program_template_selected,Custom,Settings → Customize Program,,,,,,No,training,User picks a template tile in NewProgramSheet [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_day_edited,Custom,Day editor (DayEditSheet),,,,,,No,training,User edits a day's name / DayType / weekday in DayEditSheet [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_exercise_detail_opened,Custom,Exercise Library,,,,,,No,training,User taps a result row → detail view pushes (read-only mode) OR picker fires (picker mode) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_exercise_filter_tapped,Custom,Exercise Library,,,,,,No,training,User taps a filter chip in any of the 3 dimensions [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_exercise_library_opened,Custom,Exercise Library,,,,,,No,training,User opens the Exercise Library sheet [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_exercise_search_query,Custom,Exercise Library,,,,,,No,training,User commits a search query (>= 2 chars; not per-keypress) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_exercise_slot_added,Custom,Exercise Library,,,,,,No,training,User adds an exercise slot to a day (via C3 picker callback) [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
+Training,training_exercise_slot_removed,Custom,Exercise Library,,,,,,No,training,User removes an exercise slot from a day [backfilled AN-1B.1 B16 2026-06-29; params: see emit site]
