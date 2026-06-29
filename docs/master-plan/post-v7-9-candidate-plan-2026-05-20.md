@@ -1,5 +1,14 @@
 # Post-v7.9 Candidate Plan — Drafted 2026-05-20 (Eve of Promotion)
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `FW-` (framework candidates).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > **Status:** ✅ LARGELY EXECUTED (refreshed 2026-06-07) · v7.9 promoted 2026-05-21, Phase E exited cleanly 2026-06-04, v7.9.1 build window shipped 2026-06-04. Most E-series candidates here have shipped — notably **E-14 F-LAUNCHD-DRIFT-EXTENSION** (all 3 sub-fixes, v7.9.1 #621–#624). Current forward reality lives in the [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) 2026-06-07 status banner; remaining infra tails + the calibration ladder (F16 06-18 / W9 ~06-28 [reset from 06-20 by the 06-14 session-id-keying fix] / t14 06-21 → v7.10) are tracked there + in [`.claude/shared/v7-9-1-candidates.md`](../../.claude/shared/v7-9-1-candidates.md).
 > **Drafted:** 2026-05-20 (operator + Claude session)
 > **Resume from:** historical — read the infra-master-plan banner first for current reality, then this doc for the original candidate detail.

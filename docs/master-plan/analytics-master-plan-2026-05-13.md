@@ -1,5 +1,14 @@
 # Analytics Observability — Master Plan (Sub-doc of Infra Master Plan)
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `AN-` (analytics-observability).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 **Status (reconciled 2026-06-26):** Feature `analytics-observability` is **COMPLETE** — Phase 1.A (hygiene), Phase 2 (live debugger), Phase 3 (dashboards) + most D-tasks all shipped (state.json `current_phase=complete`). **Phase 1.B gates NOT shipped** — `CSV_TAXONOMY_DRIFT` + `GA4_MCP_DISCONNECTED` (= infra docket F19/F20) are not yet implemented and remain **blocked on the operator GA4 action** (register item A1: mark `workout_complete` + `nutrition_meal_logged` as GA4 Key events; task D-2 `deferred`) + post-launch signal. Downstream **F22 Funnel Analysis Dashboards shipped separately** 2026-06-24 (PR #799, feature `funnel-analysis-dashboards`, live GA4 3/5 funnels).
 **Created:** 2026-05-13
 **Parent:** [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.6.X

@@ -1,9 +1,20 @@
 # FitMe — Complete Backlog
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses all schemes (cross-cutting).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > Compiled from: README, CHANGELOG, feature-memory, gap-review, resume-handoff, master plan, PRD gaps, session work.  
 > Last updated: 2026-05-24 (Phase E day 4, second pass — sub-plan codification batch: dev-env + UI/UX sub-plans codified under infra master plan (4th + 5th sub-docs); UI/UX Track + Dev-Env Stability & Scale Track subsections added below; 5 drift / reconciliation items closed (UX-R1 state.json closure + UX-R2 case-study link verification + UX-R3 design-rules.md new + UX-R4 orbital pm-flow case study new + UX-R5 Failure Recognition filed Aspirational); R6 reconciled `[~]` → `[x]` after fs ground-truth re-check; UX-UU1/UU2/C5 verified already shipped (cadence ledger drift). Earlier this session: D-PLAN-1 backlog backfill (rows #101-#115 covering ~30 PRs since 2026-05-21) + dev-guide v7.9 readability pass DEFERRED to follow-up via isolated worktree. Phase E telemetry healthy 0+0; baseline preserved across all edits. **v7.9 PROMOTION SHIPPED** 2026-05-21 via PR #417 `ea53ff4` — 3 advisory gates → enforced via single-flag flip; Phase E validation 2026-05-21 → 2026-06-04; framework reaches **37 mechanical gates + 5 advisories**; v7.8.6 Cadence Batch shipped 2026-05-15; v7.8.5 Observability Layer shipped 2026-05-13; Sentry integration paused → pre-launch trigger)
 >
 > **Reconciled 2026-06-26:** Framework is now at **v7.10** (shipped 2026-06-10; v7.9.1 build window closed 2026-06-04). Live state: **117 tracked features, 114 complete** (3 in-flight: `3d-interactive-framework-flow-diagram`, `app-store-assets`, `orchid-v1-5`). The "37 mechanical gates" count above is the v7.9-era record — for canonical current counts defer to [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). v8.0 docket: 16 of 18 F-candidates shipped; remaining open F18/F19/F20/F23 (see [infra §3.0](../master-plan/infra-master-plan-2026-05-12.md)). Section rows below remain accurate (no shipped-but-open false positives found in the 2026-06-26 sync).
+>
+> **Reconciled 2026-06-29:** **118 features** (115 complete; same 3 in-flight). Cross-layer **naming convention established** (FIT-200 — slug + `FIT-NNN` + scheme-prefixed code `FW-/TC-/DE-/HADF-/AN-/PROD-`; see banner above + [`docs/process/cross-layer-item-naming-convention.md`](../process/cross-layer-item-naming-convention.md)). **Linear stale-open reconcile:** 11 verified-shipped items marked Done (FIT-94/95/161/153/151/195/196/129/73/191/133), FIT-66 → In Progress (UCC cutover, operator-gated), FIT-132 (Code Connect, Pro-plan) + FIT-128 (dup) → Canceled; FIT-198 (foundation-models-tier3) closed. F18 (#809) + F22 (#799) shipped — v8.0 docket open is now **F19/F20/F23** + open T-series/DE-/AN- items. **External audits OVERDUE, NOT done** (FIT-125/126/87) → redefinition tracked under **FIT-201 `AUDIT-PROGRAM`** (separate task).
 
 ---
 

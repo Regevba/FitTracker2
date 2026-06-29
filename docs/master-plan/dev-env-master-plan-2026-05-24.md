@@ -1,5 +1,14 @@
 # FitMe Dev-Env Stability & Scale Master Plan — 2026-05-24
 
+> **Item-tracking convention (FIT-200, est. 2026-06-29):** items here are tracked under the
+> [cross-layer naming convention](../process/cross-layer-item-naming-convention.md) — **slug** (canonical) + **`FIT-NNN`**
+> (`state.json.linear_id`) + **scheme-prefixed code**: this plan uses `DE-` (dev-env upgrade plan).
+> Status vocabulary (all layers): **Backlog → Planned → In Progress → Blocked → Done → Won't-Do**.
+> Live per-item status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json)
+> (`make crosswalk`) + the Linear "Fitme project" board. Repo (`state.json.current_phase`) is
+> the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
+> retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
+
 > **Status:** CURRENT · Opened 2026-05-24 as a sub-doc of [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md)
 > **Source audit:** [`docs/research/2026-05-19-dev-env-audit-stability-and-scale.md`](../research/2026-05-19-dev-env-audit-stability-and-scale.md) (655 lines, 24 ranked recommendations, 4 tiers)
 > **Scope:** The development environment for both repos (FT2 iOS + ai-engine + dashboard + website; fitme-story Next.js + control room), plus the v7.8.6 framework substrate, multi-agent harness, and supporting CI/observability infra. Drives lint/test/coverage/security/backup hardening across 24 R-items grouped in 4 tiers.
