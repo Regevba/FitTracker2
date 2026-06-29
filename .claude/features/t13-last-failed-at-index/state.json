@@ -140,5 +140,9 @@
       "ended_at": "2026-06-10T07:17:22Z"
     }
   },
-  "schema_version": 1
+  "schema_version": 1,
+  "linear_id": "FIT-161",
+  "thematic_codes": [
+    "TC-T13"
+  ]
 }

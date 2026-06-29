@@ -133,5 +133,9 @@
   "case_study_exempt_reason": "Mechanical framework_feature chore (gate/enum/exemption); thin change per the six-features-roundup principle \u2014 no dedicated narrative warranted.",
   "isolation_opt_out": true,
   "isolation_opt_out_reason": "Bundled post-merge closure of 3 co-shipped framework_feature chores (PRs #719/#720/#722) in one reconciliation PR 2026-06-15.",
-  "schema_version": 1
+  "schema_version": 1,
+  "linear_id": "FIT-99",
+  "thematic_codes": [
+    "FW-F10"
+  ]
 }

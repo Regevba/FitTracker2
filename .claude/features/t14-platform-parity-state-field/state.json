@@ -223,5 +223,9 @@
       "reason": "Feature CLOSED via close-feature.py on chore/t14-platform-parity-state-field-post-merge-closure. Closes the testing\u2192complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
     }
   ],
-  "schema_version": 1
+  "schema_version": 1,
+  "linear_id": "FIT-162",
+  "thematic_codes": [
+    "TC-T14"
+  ]
 }

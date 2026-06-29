@@ -427,5 +427,6 @@
   "merge_commit_sha": "ee5d5bfe0b1f362fc238fe4031c4ca5c251c99d1",
   "merged_at": "2026-06-15T19:45:44Z",
   "feature_branch_merged": "feature/foundation-models-tier3",
-  "schema_version": 1
+  "schema_version": 1,
+  "linear_id": "FIT-198"
 }

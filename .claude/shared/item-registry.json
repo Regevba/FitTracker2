@@ -4,7 +4,7 @@
   "items": [
     {
       "slug": "3d-interactive-framework-flow-diagram",
-      "linear_id": null,
+      "linear_id": "FIT-138",
       "thematic_codes": [],
       "status": "In Progress",
       "current_phase": "tasks_phase",
@@ -104,7 +104,7 @@
     },
     {
       "slug": "analytics-observability",
-      "linear_id": null,
+      "linear_id": "FIT-139",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -134,7 +134,7 @@
     },
     {
       "slug": "app-store-assets",
-      "linear_id": null,
+      "linear_id": "FIT-134",
       "thematic_codes": [],
       "status": "Blocked",
       "current_phase": "implementation",
@@ -360,8 +360,10 @@
     },
     {
       "slug": "f1-state-tasks-filesystem-drift",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-95",
+      "thematic_codes": [
+        "FW-F1"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -372,8 +374,10 @@
     },
     {
       "slug": "f11-reverse-sync-historical-exempt",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-98",
+      "thematic_codes": [
+        "FW-F11"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Chore",
@@ -384,8 +388,10 @@
     },
     {
       "slug": "f12-actionlint-gate",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-103",
+      "thematic_codes": [
+        "FW-F12"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Chore",
@@ -396,8 +402,10 @@
     },
     {
       "slug": "f16-try-repo-harness",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-88",
+      "thematic_codes": [
+        "FW-F16"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -413,8 +421,10 @@
     },
     {
       "slug": "f17-last-fired-at-index",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-89",
+      "thematic_codes": [
+        "FW-F17"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -423,8 +433,10 @@
     },
     {
       "slug": "f18-mutation-testing",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-102",
+      "thematic_codes": [
+        "FW-F18"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "chore",
@@ -435,8 +447,10 @@
     },
     {
       "slug": "f2-phase-0-reality-check",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-90",
+      "thematic_codes": [
+        "FW-F2"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -445,8 +459,10 @@
     },
     {
       "slug": "f3-dependency-graph-cycle-check",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-105",
+      "thematic_codes": [
+        "FW-F3"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -457,8 +473,10 @@
     },
     {
       "slug": "f4-framework-version-stale",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-96",
+      "thematic_codes": [
+        "FW-F4"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -564,7 +582,7 @@
     },
     {
       "slug": "foundation-models-tier3",
-      "linear_id": null,
+      "linear_id": "FIT-198",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -675,7 +693,7 @@
     },
     {
       "slug": "framework-v7-8-bridge",
-      "linear_id": null,
+      "linear_id": "FIT-60",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -867,7 +885,7 @@
     },
     {
       "slug": "import-training-plan",
-      "linear_id": null,
+      "linear_id": "FIT-24",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1037,7 +1055,7 @@
     },
     {
       "slug": "push-notifications",
-      "linear_id": null,
+      "linear_id": "FIT-23",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1171,8 +1189,10 @@
     },
     {
       "slug": "t13-last-failed-at-index",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-161",
+      "thematic_codes": [
+        "TC-T13"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -1181,8 +1201,10 @@
     },
     {
       "slug": "t14-platform-parity-state-field",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-162",
+      "thematic_codes": [
+        "TC-T14"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -1194,8 +1216,10 @@
     },
     {
       "slug": "t3-signinservice-passkey-tests",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-151",
+      "thematic_codes": [
+        "TC-T3"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -1204,8 +1228,10 @@
     },
     {
       "slug": "t5-mock-protocol-drift",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-153",
+      "thematic_codes": [
+        "TC-T5"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Feature",
@@ -1282,7 +1308,7 @@
     },
     {
       "slug": "ucc-passkey-auth-security-hardening",
-      "linear_id": null,
+      "linear_id": "FIT-192",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1331,7 +1357,7 @@
     },
     {
       "slug": "unified-control-center",
-      "linear_id": null,
+      "linear_id": "FIT-58",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1360,8 +1386,10 @@
     },
     {
       "slug": "v8-f10-f5-schema-vocab",
-      "linear_id": null,
-      "thematic_codes": [],
+      "linear_id": "FIT-99",
+      "thematic_codes": [
+        "FW-F10"
+      ],
       "status": "Done",
       "current_phase": "complete",
       "work_type": "Chore",
@@ -1387,8 +1415,8 @@
   ],
   "coverage": {
     "total": 118,
-    "with_linear_id": 0,
-    "missing_linear_id": 118,
-    "with_thematic_codes": 0
+    "with_linear_id": 23,
+    "missing_linear_id": 95,
+    "with_thematic_codes": 14
   }
 }
