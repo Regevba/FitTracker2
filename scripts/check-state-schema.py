@@ -180,6 +180,16 @@ _FRAMEWORK_VERSION_RE = re.compile(r"^(pre-)?v\d+\.\d+(\.\d+)?$")
 # .claude/features/f4-framework-version-stale/calibration-artifacts.md
 FRAMEWORK_VERSION_STALE_ADVISORY_MODE = True
 
+# AN-1B.1 (analytics-master-plan §8.2, Theme C / F19): CSV_TAXONOMY_DRIFT.
+# Commit-level gate — fires when AnalyticsProvider.swift is staged and an
+# AnalyticsEvent constant's raw value has no row in analytics-taxonomy.csv.
+# Ships ADVISORY for a 14-day calibration window; own flag keeps the
+# advisory→enforced flip independent (mirrors the sibling gates). Phase A
+# artifacts: .claude/features/an-1b1-csv-taxonomy-drift/calibration-artifacts.md
+CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True
+ANALYTICS_PROVIDER_PATH = "FitTracker/Services/Analytics/AnalyticsProvider.swift"
+ANALYTICS_TAXONOMY_CSV = "docs/product/analytics-taxonomy.csv"
+
 # Canonical-version override (tests + operator escape hatch). When unset, the
 # resolver parses docs/FRAMEWORK-FACTS.md — the declared machine-derived SoT.
 _FRAMEWORK_VERSION_CANONICAL_OVERRIDE = os.environ.get(
@@ -1821,6 +1831,130 @@ def check_branch_isolation_violation_per_file(
     return findings
 
 
+_ANALYTICS_EVENT_RE = re.compile(r'static\s+let\s+(\w+)\s*=\s*"([^"]+)"')
+
+
+def _parse_analytics_event_values(repo_root: Path) -> dict[str, str]:
+    """Return {constant_name: raw_event_value} from the AnalyticsEvent enum.
+
+    Scopes to the `enum AnalyticsEvent { ... }` block (brace-balanced) so
+    unrelated `static let` declarations elsewhere in the file are ignored.
+    """
+    f = repo_root / ANALYTICS_PROVIDER_PATH
+    try:
+        text = f.read_text()
+    except OSError:
+        return {}
+    start = text.find("enum AnalyticsEvent")
+    if start == -1:
+        return {}
+    brace = text.find("{", start)
+    if brace == -1:
+        return {}
+    depth = 0
+    end = len(text)
+    for i in range(brace, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    block = text[brace:end]
+    return {m.group(1): m.group(2) for m in _ANALYTICS_EVENT_RE.finditer(block)}
+
+
+def _parse_csv_event_names(repo_root: Path) -> set[str]:
+    """Return the set of values in the CSV 'Event Name' column (skips # comments)."""
+    f = repo_root / ANALYTICS_TAXONOMY_CSV
+    try:
+        rows = [r for r in f.read_text().splitlines()
+                if r.strip() and not r.lstrip().startswith("#")]
+    except OSError:
+        return set()
+    import csv as _csv
+    names: set[str] = set()
+    reader = _csv.reader(rows)
+    header = next(reader, None)
+    # locate the "Event Name" column (fallback to index 1).
+    idx = 1
+    if header:
+        for i, h in enumerate(header):
+            if h.strip().lower() == "event name":
+                idx = i
+                break
+    for row in reader:
+        if len(row) > idx and row[idx].strip():
+            names.add(row[idx].strip())
+    return names
+
+
+def _collect_csv_taxonomy_exemptions(repo_root: Path) -> set[str]:
+    """Union of csv_taxonomy_exempt[].constant across all feature state.json."""
+    exempt: set[str] = set()
+    for sj in (repo_root / ".claude" / "features").glob("*/state.json"):
+        try:
+            d = json.loads(sj.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        for e in d.get("csv_taxonomy_exempt") or []:
+            if isinstance(e, dict) and e.get("constant"):
+                exempt.add(e["constant"])
+    return exempt
+
+
+def check_csv_taxonomy_drift(
+    staged_files: list[str], *, coverage: GateCoverage | None = None,
+    repo_root: Path | None = None,
+) -> list[dict]:
+    """AN-1B.1 (analytics-master-plan §8.2): CSV_TAXONOMY_DRIFT.
+
+    Commit-level. Fires when AnalyticsProvider.swift is staged and an
+    AnalyticsEvent constant's raw event value has no row in
+    analytics-taxonomy.csv (and the constant is not in any state.json
+    `csv_taxonomy_exempt` array). Advisory until the calibration window
+    closes (CSV_TAXONOMY_DRIFT_ADVISORY_MODE).
+    """
+    repo_root = repo_root or REPO_ROOT
+    findings: list[dict] = []
+    GATE = "CSV_TAXONOMY_DRIFT"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    if ANALYTICS_PROVIDER_PATH not in staged_files:
+        if coverage is not None:
+            coverage.skip(GATE, "analytics_provider_not_staged")
+        return findings
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    events = _parse_analytics_event_values(repo_root)
+    csv_names = _parse_csv_event_names(repo_root)
+    exempt = _collect_csv_taxonomy_exemptions(repo_root)
+
+    drift = sorted(
+        (const, value) for const, value in events.items()
+        if value not in csv_names and const not in exempt
+    )
+    if drift:
+        findings.append({
+            "code": GATE,
+            "advisory": CSV_TAXONOMY_DRIFT_ADVISORY_MODE,
+            "drift": drift,
+            "remediation": (
+                f"{len(drift)} AnalyticsEvent constant(s) have no row in "
+                f"{ANALYTICS_TAXONOMY_CSV}: "
+                + ", ".join(f"{c}=\"{v}\"" for c, v in drift[:8])
+                + (" …" if len(drift) > 8 else "")
+                + ". Add a CSV row (Event Name column) in the same commit, or "
+                "record state.json csv_taxonomy_exempt: [{constant, reason}]."
+            ),
+        })
+    return findings
+
+
 def main() -> int:
     args = sys.argv[1:]
     if args == ["--staged"]:
@@ -1882,6 +2016,23 @@ def main() -> int:
                 all_errors.append(
                     f"COMMIT-LEVEL: [{finding['code']}] expected branch={finding['expected']}, "
                     f"got branch={finding['got']}. {finding['remediation']}"
+                )
+
+        # AN-1B.1 (analytics-master-plan §8.2): CSV_TAXONOMY_DRIFT — commit-level.
+        # Fires when AnalyticsProvider.swift is staged with an AnalyticsEvent
+        # constant missing a taxonomy CSV row. Advisory during calibration:
+        # prints to stderr, does NOT block. Flip CSV_TAXONOMY_DRIFT_ADVISORY_MODE
+        # to add findings to errors[].
+        for finding in check_csv_taxonomy_drift(all_staged, coverage=coverage):
+            if finding.get("advisory"):
+                print(
+                    f"[ADVISORY] {finding['code']}\n"
+                    f"  {finding['remediation']}",
+                    file=sys.stderr,
+                )
+            else:
+                all_errors.append(
+                    f"COMMIT-LEVEL: [{finding['code']}] {finding['remediation']}"
                 )
 
     # Persist the coverage ledger. Failure to write must not affect the
