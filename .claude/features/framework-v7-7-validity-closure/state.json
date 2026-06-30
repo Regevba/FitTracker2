@@ -1,5 +1,6 @@
 {
   "feature": "framework-v7-7-validity-closure",
+  "linear_id": "FIT-49",
   "feature_name": "framework-v7-7-validity-closure",
   "display_name": "Framework v7.7 \u2014 Validity Closure",
   "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",

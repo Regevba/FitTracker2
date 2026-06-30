@@ -1,5 +1,6 @@
 {
   "feature": "ai-recommendation-ui",
+  "linear_id": "FIT-35",
   "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study_showcase": "fitme-story/content/04-case-studies/07-ai-engine-architecture.mdx",

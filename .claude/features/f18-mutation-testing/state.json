@@ -109,7 +109,12 @@
       "note": "F18 shipped: mutmut harness + summary reader + warn-only weekly CI; PR #809"
     }
   ],
-  "platforms_tested": {},
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
   "timing": {
     "phases": {
       "research": {
@@ -151,5 +156,6 @@
   "linear_id": "FIT-102",
   "thematic_codes": [
     "FW-F18"
-  ]
+  ],
+  "platforms_tested_provenance": "exempt:framework_meta"
 }

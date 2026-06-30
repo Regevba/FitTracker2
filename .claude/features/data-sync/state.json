@@ -10,10 +10,10 @@
   "platforms_tested": {
     "ios": false,
     "web": false,
-    "backend": false,
+    "backend": true,
     "ai": false
   },
-  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
+  "platforms_tested_provenance": "backfill-manual-2026-06-30",
   "framework_version": "pre-v5.0",
   "agent_manifest": {
     "reads": [],

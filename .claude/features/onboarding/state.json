@@ -1,5 +1,6 @@
 {
   "feature": "onboarding",
+  "linear_id": "FIT-5",
   "case_study": "docs/case-studies/pm-workflow-showcase-onboarding.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/01-onboarding-pilot.mdx",
   "work_type": "feature",

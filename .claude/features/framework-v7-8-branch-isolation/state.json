@@ -1,5 +1,6 @@
 {
   "feature_name": "framework-v7-8-branch-isolation",
+  "linear_id": "FIT-62",
   "current_phase": "complete",
   "platforms_tested": {},
   "platforms_tested_provenance": "exempt:framework_meta",

@@ -1,5 +1,6 @@
 {
   "feature": "smart-reminders",
+  "linear_id": "FIT-42",
   "case_study": "docs/case-studies/smart-reminders-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/08a-smart-reminders.mdx",
   "created_at": "2026-04-15T17:33:00Z",

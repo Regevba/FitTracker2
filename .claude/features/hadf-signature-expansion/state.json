@@ -14,7 +14,7 @@
     "backend": false,
     "ai": false
   },
-  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
+  "platforms_tested_provenance": "exempt:framework_meta",
   "isolation_opt_out": false,
   "has_ui": false,
   "requires_analytics": false,

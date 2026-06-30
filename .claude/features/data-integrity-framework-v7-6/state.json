@@ -1,5 +1,6 @@
 {
   "feature": "data-integrity-framework-v7-6",
+  "linear_id": "FIT-45",
   "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/21-mechanical-enforcement-v7-6.mdx",
   "display_name": "Data Integrity Framework v7.6 \u2014 Mechanical Enforcement",

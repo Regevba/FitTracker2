@@ -1,5 +1,6 @@
 {
   "feature": "settings",
+  "linear_id": "FIT-13",
   "work_type": "feature",
   "case_study_type": "pre_pm_workflow_backfill",
   "backfill_note": "Shipped before 2026-04-06 PM workflow enforcement. Sub-phase statuses use pre-pm-workflow / backfilled / shipped as terminal states \u2014 not lies, just legacy vocabulary. No dedicated case study is expected; feature is captured in the collective pre-PM-workflow baseline that the post-2026-04-06 program builds on.",
