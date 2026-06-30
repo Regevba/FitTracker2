@@ -1,5 +1,6 @@
 {
   "feature": "stats-v2",
+  "linear_id": "FIT-33",
   "case_study": "docs/case-studies/stats-v2-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/22c-stats-v2.mdx",
   "case_study_type": "shipped",

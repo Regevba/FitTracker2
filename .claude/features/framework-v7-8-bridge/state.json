@@ -8,7 +8,7 @@
     "backend": false,
     "ai": false
   },
-  "platforms_tested_provenance": "backfill-heuristic-low-confidence",
+  "platforms_tested_provenance": "exempt:framework_meta",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "case_study_type": "framework_meta_retroactive",

@@ -227,5 +227,12 @@
   "linear_id": "FIT-162",
   "thematic_codes": [
     "TC-T14"
-  ]
+  ],
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "exempt:framework_meta"
 }

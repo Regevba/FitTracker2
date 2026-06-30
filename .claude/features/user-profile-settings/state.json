@@ -1,5 +1,6 @@
 {
   "feature": "user-profile-settings",
+  "linear_id": "FIT-41",
   "case_study": "docs/case-studies/user-profile-v4.4-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/04-user-profile.mdx",
   "created_at": "2026-04-13T19:00:00Z",

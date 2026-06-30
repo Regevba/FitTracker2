@@ -1,5 +1,6 @@
 {
   "feature": "google-analytics",
+  "linear_id": "FIT-7",
   "work_type": "chore",
   "case_study": "docs/case-studies/google-analytics-case-study.md",
   "parent_case_study": "docs/case-studies/six-features-roundup-case-study.md",

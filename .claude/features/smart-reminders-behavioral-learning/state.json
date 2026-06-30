@@ -1,5 +1,6 @@
 {
   "feature": "smart-reminders-behavioral-learning",
+  "linear_id": "FIT-61",
   "feature_name": "smart-reminders-behavioral-learning",
   "display_name": "Smart Reminders \u2014 Behavioral Learning Layer",
   "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",

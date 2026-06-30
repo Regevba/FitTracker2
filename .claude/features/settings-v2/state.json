@@ -1,5 +1,6 @@
 {
   "feature": "settings-v2",
+  "linear_id": "FIT-30",
   "case_study": "docs/case-studies/m-1-settings-decomposition-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/16a-settings-v2.mdx",
   "created_at": "2026-04-10T16:00:00Z",

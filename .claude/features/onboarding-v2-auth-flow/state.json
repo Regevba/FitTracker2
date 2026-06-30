@@ -1,5 +1,6 @@
 {
   "feature": "onboarding-v2-auth-flow",
+  "linear_id": "FIT-36",
   "case_study": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/06-auth-flow-velocity.mdx",
   "created_at": "2026-04-15T14:00:00Z",
