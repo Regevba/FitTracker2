@@ -770,7 +770,18 @@ def main():
                     help="Skip silently if today's snapshot exists (for SessionStart hook use)")
     ap.add_argument("--quiet", action="store_true",
                     help="Suppress progress output (errors still print)")
+    ap.add_argument("--ci", action="store_true",
+                    help="CI mode (R10): run the integrity + regression checks read-only — "
+                         "no local/SSD snapshot, no ledger write. Compares vs the last committed "
+                         "ledger row and exits non-zero on any finding/blocking/regression so a "
+                         "GitHub Actions daily job can alert without depending on the operator's Mac.")
     args = ap.parse_args()
+
+    # R10 CI mode: cloud-independent daily integrity alert. Runs read-only
+    # (the launchd job still owns the ledger + on-disk snapshots), so it skips
+    # the launchd-specific cron precheck and the flock entirely.
+    if args.ci:
+        sys.exit(_run_ci_check(args))
 
     # v7.9.1 F-LAUNCHD-DRIFT-EXTENSION sub-fix (c).
     cron_precheck_exit = precheck_cron_context()
@@ -795,6 +806,55 @@ def main():
     LEDGER_JSONL.parent.mkdir(parents=True, exist_ok=True)
     with flocked(LEDGER_JSONL):
         _run_pipeline(today, local_dir, ssd_dir, args, log)
+
+
+def _run_ci_check(args) -> int:
+    """R10 cloud daily job: read-only integrity + regression check.
+
+    Runs the same make-target sweep + metric collection + regression
+    comparison as the full launchd pipeline, but writes nothing (no ledger
+    row, no snapshot, no regression-flag file). Compares the freshly computed
+    metrics against the last committed ledger row and returns a non-zero exit
+    code if there are integrity findings, blocking completeness findings, or a
+    metric regression — which the GitHub Actions workflow turns into an alert
+    issue. The launchd job remains the sole writer of the ledger + snapshots.
+    """
+    log = (lambda *a, **kw: None) if args.quiet else print
+    today = dt.date.today().isoformat()
+    log(f"=== Daily integrity checkpoint — CI mode (read-only) — {today} ===")
+
+    make_outputs = capture_make_outputs()
+    metrics = collect_metrics(make_outputs)
+    prev_row = load_last_ledger_row()
+    regression, deltas = detect_regression(
+        prev_row.get("metrics") if prev_row else None, metrics
+    )
+
+    findings = int(metrics.get("integrity_findings", 0) or 0)
+    blocking = int(metrics.get("completeness_blocking", 0) or 0)
+
+    print(json.dumps({
+        "date": today,
+        "regression": regression,
+        "deltas_vs_prev": deltas,
+        "prev_date": prev_row.get("date") if prev_row else None,
+        "metrics": metrics,
+    }, indent=2))
+
+    problems = []
+    if findings > 0:
+        problems.append(f"{findings} integrity finding(s)")
+    if blocking > 0:
+        problems.append(f"{blocking} completeness blocking finding(s)")
+    if regression:
+        prev_date = prev_row.get("date") if prev_row else "baseline"
+        problems.append(f"regression vs {prev_date}: {deltas}")
+
+    if problems:
+        print("\n⚠ CI CHECK FAILED: " + "; ".join(problems))
+        return 1
+    print("\n✓ CI check clean — 0 findings, 0 blocking, no regression.")
+    return 0
 
 
 def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None:

@@ -1,0 +1,108 @@
+name: Daily Checkpoint — Integrity Alert
+
+# R10 (dev-env-master-plan-2026-05-24 §A.4). Cloud-independent daily integrity
+# alert — migrates the ALERTING half of the launchd daily-checkpoint cron to
+# GitHub Actions so a regression is surfaced even when the operator's Mac is
+# off. Complements:
+#   - integrity-cycle.yml       (every 72h, gates state.json health)
+#   - framework-status-weekly.yml (Mondays, adoption-trend regressions)
+#   - the launchd daily-checkpoint (still the SOLE writer of the on-disk
+#     ledger + local/SSD snapshots — those are inherently local and stay on
+#     the Mac).
+#
+# This job is READ-ONLY: `daily-checkpoint-ci` writes no ledger row, no
+# snapshot, no regression-flag file. It recomputes the integrity metrics,
+# compares them against the last committed ledger row, and opens/updates a
+# single `daily-checkpoint` alert issue on any finding / blocking / regression.
+# It never blocks a merge. Per the R10 risk plan, it runs IN PARALLEL with the
+# launchd job (keep both for ~30d; alert if neither fires on a given day).
+#
+# Security (per github.blog injection guide): every dynamic value used inside a
+# `run:` block is routed through the `env:` block and consumed as a $-prefixed
+# shell var — never interpolated as `${{ }}` directly into shell. The only
+# `${{ }}` outside env: blocks is in an `if:` condition (GitHub expression
+# engine, not a shell). The issue body is built from this job's own trusted
+# script output (a temp file), not from any attacker-controllable event field.
+
+on:
+  schedule:
+    # Daily at 04:00 UTC — 1h before framework-status-weekly (05:00 Mon) so the
+    # cron workflows don't queue against each other on the shared runner pool.
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+    inputs:
+      open_issue_when_clean:
+        description: "Open the alert issue even when the check is clean (debug)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: daily-checkpoint
+  cancel-in-progress: false
+
+jobs:
+  checkpoint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Run read-only integrity check (R10 CI mode)
+        id: check
+        run: |
+          set +e
+          out="$(python3 scripts/daily-integrity-checkpoint.py --ci 2>&1)"
+          rc=$?
+          echo "$out"
+          # Persist the full output for the issue body (bounded to last 200 lines).
+          echo "$out" | tail -n 200 > /tmp/checkpoint-output.txt
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Open or update alert issue on failure
+        if: steps.check.outputs.rc != '0' || github.event.inputs.open_issue_when_clean == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RC: ${{ steps.check.outputs.rc }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          TODAY="$(date -u +%Y-%m-%d)"
+          LABEL="daily-checkpoint"
+          # Ensure the label exists (idempotent).
+          gh label create "$LABEL" --color B60205 --description "Automated daily integrity-checkpoint alert" 2>/dev/null || true
+
+          if [ "$RC" = "0" ]; then
+            STATUS="clean (debug run — open_issue_when_clean)"
+          else
+            STATUS="FAILED — integrity finding, blocking completeness finding, or regression"
+          fi
+
+          BODY="$(printf '**Daily checkpoint (R10 cloud job) — %s**\n\nStatus: %s\nExit code: %s\nRun: %s\n\nThe launchd daily-checkpoint remains the writer of the on-disk ledger + snapshots; this cloud job is read-only alerting. See the first step for the full JSON metrics.\n\n<details><summary>Check output (last 200 lines)</summary>\n\n```\n%s\n```\n\n</details>\n' \
+            "$TODAY" "$STATUS" "$RC" "$RUN_URL" "$(cat /tmp/checkpoint-output.txt)")"
+
+          # Dedup: comment on the existing open alert issue if one exists; else create.
+          EXISTING="$(gh issue list --state open --label "$LABEL" --json number --jq '.[0].number' 2>/dev/null || true)"
+          if [ -n "${EXISTING:-}" ] && [ "$EXISTING" != "null" ]; then
+            printf '%s' "$BODY" | gh issue comment "$EXISTING" --body-file -
+            echo "::notice::commented on existing daily-checkpoint issue #$EXISTING"
+          else
+            printf '%s' "$BODY" | gh issue create \
+              --title "chore(daily-checkpoint): integrity alert ${TODAY}" \
+              --label "$LABEL" \
+              --label automated \
+              --body-file -
+            echo "::notice::opened new daily-checkpoint alert issue"
+          fi
