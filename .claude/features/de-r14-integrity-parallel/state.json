@@ -1,6 +1,6 @@
 {
   "feature": "de-r14-integrity-parallel",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "work_type": "chore",
   "work_subtype": "framework_feature",
   "state_owner": "ft2",
@@ -15,7 +15,11 @@
   "case_study_type_reason": "Dev-env perf chore (integrity-check parallelization); no product surface, no new gate, no calibration window. Tracked at docket level (dev-env audit R14) + PR; sibling pattern f4/f11/f12.",
   "timing": {
     "phases": {
-      "implementation": { "started_at": "2026-06-29T17:00:00Z" }
+      "implementation": { "started_at": "2026-06-29T17:00:00Z", "ended_at": "2026-06-29T17:00:00Z" },
+      "review": { "started_at": "2026-06-29T17:00:00Z", "ended_at": "2026-06-29T17:00:00Z" },
+      "merge": { "started_at": "2026-06-29T17:00:00Z", "ended_at": "2026-06-29T17:00:00Z" },
+      "docs": { "started_at": "2026-06-29T17:00:00Z", "ended_at": "2026-07-01T16:45:00Z" },
+      "complete": { "started_at": "2026-07-01T16:45:00Z", "ended_at": "2026-07-01T16:45:00Z" }
     }
   },
   "tasks": [
@@ -24,5 +28,65 @@
     { "id": "T3", "status": "complete", "title": "--jobs flag (default min(8,cpu); 1=serial reversibility)" },
     { "id": "T4", "status": "complete", "title": "5 tests (memoize/none-cache/serial/parallel-matches-serial/skip-cached)" },
     { "id": "T5", "status": "complete", "title": "Measured 9.4s → 1.84s (5.1x), output identical" }
+  ],
+  "merge_pr_number": 824,
+  "merge_commit_sha": "771e241a05a2ae1989f60f5a7ca31e4d19afd144",
+  "merged_at": "2026-06-29T16:47:23Z",
+  "branch": "chore/an-1b-analytics-gates-closure",
+  "feature_branch_merged": "feature/de-r14-integrity-parallel",
+  "phases": {
+    "review": {
+      "started_at": "2026-06-29T17:00:00Z",
+      "ended_at": "2026-06-29T17:00:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-29T17:00:00Z",
+      "ended_at": "2026-06-29T17:00:00Z",
+      "pr_number": 824,
+      "merge_commit_sha": "771e241a05a2ae1989f60f5a7ca31e4d19afd144",
+      "merged_at": "2026-06-29T16:47:23Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-29T17:00:00Z",
+      "ended_at": "2026-07-01T16:45:00Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — no case study required; tracked at docket level)"
+    },
+    "complete": {
+      "started_at": "2026-07-01T16:45:00Z",
+      "ended_at": "2026-07-01T16:45:00Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-29T17:00:00Z",
+      "reason": "PR #824 squashed onto main as 771e241a05 (operator-merged 2026-06-29T16:47:23Z). Hand-closed (close-feature.py unavailable — api.github.com transiently unreachable); merge metadata sourced from local git. CI green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-29T17:00:00Z",
+      "reason": "PR #824 squashed onto main as 771e241a05. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-29T17:00:00Z",
+      "reason": "case_study_type=no_case_study_required (dev-env perf chore). No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-07-01T16:45:00Z",
+      "reason": "Feature CLOSED as part of the 2026-07-01 integrity-sweep drift reconcile (3rd of 3 implementation-phase features whose code had shipped: an-1b1 #822, an-1b2 #825, de-r14 #824). Closes the testing→complete drift-pattern (F2)."
+    }
   ]
 }
