@@ -1,13 +1,15 @@
 {
   "feature": "an-1b2-ga4-mcp-disconnected",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
   "state_owner": "ft2",
   "framework_version": "v7.10",
   "schema_version": 1,
   "linear_id": "FIT-146",
-  "thematic_codes": ["AN-1B.2"],
+  "thematic_codes": [
+    "AN-1B.2"
+  ],
   "created_at": "2026-06-29T17:20:00Z",
   "platforms_tested": {},
   "platforms_tested_provenance": "exempt:framework_meta",
@@ -15,14 +17,113 @@
   "case_study_type_reason": "Framework-meta connectivity advisory (advisory-only, never blocks; no enforced flip / no calibration window). Tracked at docket level (analytics-master-plan §8.3, AN-1B.2 / F20) + design-notes.md; sibling pattern f4/an-1b1.",
   "timing": {
     "phases": {
-      "implementation": { "started_at": "2026-06-29T17:20:00Z" }
+      "implementation": {
+        "started_at": "2026-06-29T17:20:00Z",
+        "ended_at": "2026-06-29T16:53:11Z"
+      },
+      "review": {
+        "started_at": "2026-06-29T16:53:11Z",
+        "ended_at": "2026-06-29T16:53:11Z"
+      },
+      "merge": {
+        "started_at": "2026-06-29T16:53:11Z",
+        "ended_at": "2026-06-29T16:53:11Z"
+      },
+      "docs": {
+        "started_at": "2026-06-29T16:53:11Z",
+        "ended_at": "2026-07-01T16:23:04Z"
+      },
+      "complete": {
+        "started_at": "2026-07-01T16:23:04Z",
+        "ended_at": "2026-07-01T16:23:04Z"
+      }
     }
   },
   "tasks": [
-    { "id": "T1", "status": "complete", "title": "check_ga4_mcp_connectivity() in check-state-schema.py (advisory-only) + coverage" },
-    { "id": "T2", "status": "complete", "title": "commit-level dispatch in main() (always stderr, never errors[])" },
-    { "id": "T3", "status": "complete", "title": "scripts/tests/test_ga4_mcp_disconnected.py (6 tests)" },
-    { "id": "T4", "status": "complete", "title": ".githooks/pre-commit header bump" },
-    { "id": "T5", "status": "complete", "title": "design-notes.md" }
+    {
+      "id": "T1",
+      "status": "complete",
+      "title": "check_ga4_mcp_connectivity() in check-state-schema.py (advisory-only) + coverage"
+    },
+    {
+      "id": "T2",
+      "status": "complete",
+      "title": "commit-level dispatch in main() (always stderr, never errors[])"
+    },
+    {
+      "id": "T3",
+      "status": "complete",
+      "title": "scripts/tests/test_ga4_mcp_disconnected.py (6 tests)"
+    },
+    {
+      "id": "T4",
+      "status": "complete",
+      "title": ".githooks/pre-commit header bump"
+    },
+    {
+      "id": "T5",
+      "status": "complete",
+      "title": "design-notes.md"
+    }
+  ],
+  "merge_pr_number": 825,
+  "merge_commit_sha": "4c9156dfec04fda112bd5d9361414be5de1e2c9b",
+  "merged_at": "2026-06-29T16:53:11Z",
+  "branch": "chore/an-1b-analytics-gates-closure",
+  "feature_branch_merged": "feature/an-1b2-ga4-mcp-disconnected",
+  "phases": {
+    "review": {
+      "started_at": "2026-06-29T16:53:11Z",
+      "ended_at": "2026-06-29T16:53:11Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-29T16:53:11Z",
+      "ended_at": "2026-06-29T16:53:11Z",
+      "pr_number": 825,
+      "merge_commit_sha": "4c9156dfec04fda112bd5d9361414be5de1e2c9b",
+      "merged_at": "2026-06-29T16:53:11Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-29T16:53:11Z",
+      "ended_at": "2026-07-01T16:23:04Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-07-01T16:23:04Z",
+      "ended_at": "2026-07-01T16:23:04Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-29T16:53:11Z",
+      "reason": "PR #825 squashed onto main as 4c9156dfec (operator-merged 2026-06-29T16:53:11Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-29T16:53:11Z",
+      "reason": "PR #825 squashed onto main as 4c9156dfec (operator-merged 2026-06-29T16:53:11Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-29T16:53:11Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-07-01T16:23:04Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/an-1b2-ga4-mcp-disconnected-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
   ]
 }
