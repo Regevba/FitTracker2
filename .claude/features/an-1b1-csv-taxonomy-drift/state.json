@@ -1,13 +1,15 @@
 {
   "feature": "an-1b1-csv-taxonomy-drift",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
   "state_owner": "ft2",
   "framework_version": "v7.10",
   "schema_version": 1,
   "linear_id": "FIT-145",
-  "thematic_codes": ["AN-1B.1"],
+  "thematic_codes": [
+    "AN-1B.1"
+  ],
   "created_at": "2026-06-29T16:30:00Z",
   "platforms_tested": {},
   "platforms_tested_provenance": "exempt:framework_meta",
@@ -16,15 +18,118 @@
   "csv_taxonomy_exempt": [],
   "timing": {
     "phases": {
-      "implementation": { "started_at": "2026-06-29T16:30:00Z" }
+      "implementation": {
+        "started_at": "2026-06-29T16:30:00Z",
+        "ended_at": "2026-06-29T16:34:59Z"
+      },
+      "review": {
+        "started_at": "2026-06-29T16:34:59Z",
+        "ended_at": "2026-06-29T16:34:59Z"
+      },
+      "merge": {
+        "started_at": "2026-06-29T16:34:59Z",
+        "ended_at": "2026-06-29T16:34:59Z"
+      },
+      "docs": {
+        "started_at": "2026-06-29T16:34:59Z",
+        "ended_at": "2026-07-01T16:23:09Z"
+      },
+      "complete": {
+        "started_at": "2026-07-01T16:23:09Z",
+        "ended_at": "2026-07-01T16:23:09Z"
+      }
     }
   },
   "tasks": [
-    { "id": "T1", "status": "complete", "title": "Phase A calibration artifacts (calibration-artifacts.md)" },
-    { "id": "T2", "status": "complete", "title": "check_csv_taxonomy_drift() in check-state-schema.py (advisory) + coverage" },
-    { "id": "T3", "status": "complete", "title": "commit-level dispatch in main() + advisory stderr routing" },
-    { "id": "T4", "status": "complete", "title": "scripts/tests/test_csv_taxonomy_drift.py (7 tests)" },
-    { "id": "T5", "status": "complete", "title": ".githooks/pre-commit header bump" },
-    { "id": "T6", "status": "in_progress", "title": "Calibration: burndown DONE 2026-06-29 (drift 27→0, B16); advisory→enforced flip pending ≥7d coverage ~2026-07-13" }
+    {
+      "id": "T1",
+      "status": "complete",
+      "title": "Phase A calibration artifacts (calibration-artifacts.md)"
+    },
+    {
+      "id": "T2",
+      "status": "complete",
+      "title": "check_csv_taxonomy_drift() in check-state-schema.py (advisory) + coverage"
+    },
+    {
+      "id": "T3",
+      "status": "complete",
+      "title": "commit-level dispatch in main() + advisory stderr routing"
+    },
+    {
+      "id": "T4",
+      "status": "complete",
+      "title": "scripts/tests/test_csv_taxonomy_drift.py (7 tests)"
+    },
+    {
+      "id": "T5",
+      "status": "complete",
+      "title": ".githooks/pre-commit header bump"
+    },
+    {
+      "id": "T6",
+      "status": "done",
+      "title": "Calibration: burndown DONE 2026-06-29 (drift 27→0, B16); advisory→enforced flip is a calibration-ladder event (cadence B16, ~2026-07-13) — tracked separately, not a closure blocker (matches f4/f12 advisory-gate closure)"
+    }
+  ],
+  "merge_pr_number": 822,
+  "merge_commit_sha": "ea86776a97ea8fb88a704f2ce28e3e1af88dd89e",
+  "merged_at": "2026-06-29T16:34:59Z",
+  "branch": "chore/an-1b-analytics-gates-closure",
+  "feature_branch_merged": "feature/an-1b1-csv-taxonomy-drift",
+  "phases": {
+    "review": {
+      "started_at": "2026-06-29T16:34:59Z",
+      "ended_at": "2026-06-29T16:34:59Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "merge": {
+      "started_at": "2026-06-29T16:34:59Z",
+      "ended_at": "2026-06-29T16:34:59Z",
+      "pr_number": 822,
+      "merge_commit_sha": "ea86776a97ea8fb88a704f2ce28e3e1af88dd89e",
+      "merged_at": "2026-06-29T16:34:59Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    },
+    "docs": {
+      "started_at": "2026-06-29T16:34:59Z",
+      "ended_at": "2026-07-01T16:23:09Z",
+      "approved_by": "operator",
+      "approval_signal": "(post-merge closure batch — case study + backlog strike shipped in feature PR)"
+    },
+    "complete": {
+      "started_at": "2026-07-01T16:23:09Z",
+      "ended_at": "2026-07-01T16:23:09Z",
+      "approved_by": "operator",
+      "approval_signal": "merged"
+    }
+  },
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "review",
+      "at": "2026-06-29T16:34:59Z",
+      "reason": "PR #822 squashed onto main as ea86776a97 (operator-merged 2026-06-29T16:34:59Z). Closure landed via close-feature.py. CI checks green; operator review preceded merge."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-06-29T16:34:59Z",
+      "reason": "PR #822 squashed onto main as ea86776a97 (operator-merged 2026-06-29T16:34:59Z). Closure landed via close-feature.py. Squash-merged."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "at": "2026-06-29T16:34:59Z",
+      "reason": "Case study + backlog strike shipped in same feature PR. No additional docs."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "at": "2026-07-01T16:23:09Z",
+      "reason": "Feature CLOSED via close-feature.py on chore/an-1b1-csv-taxonomy-drift-post-merge-closure. Closes the testing→complete drift-pattern documented across 5+ instances by automating the post-merge audit trail."
+    }
   ]
 }
