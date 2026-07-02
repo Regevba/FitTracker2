@@ -235,6 +235,18 @@ integrity-check:
 gate-last-fired:
 	@python3 scripts/refresh-gate-last-fired.py
 
+# T16 (TC-T16): build the machine-derived gate catalog at
+# .claude/shared/gate-catalog.json — every framework gate annotated with an
+# authored stage (write-time|cycle-time|hook|standalone) + a DERIVED test tier
+# (try-repo>dispatch>unit>none). `make gate-catalog-check` validates the
+# committed catalog vs a fresh derivation (CI) + flags orphan try-repo fixtures.
+# Feeds the future T1 GATE_TEST_MISSING meta-gate (tier=="none" = untested).
+gate-catalog:
+	@python3 scripts/gate-catalog.py --print
+
+gate-catalog-check:
+	@python3 scripts/gate-catalog.py --check
+
 # v7.9.1 F2: per-feature reality-check sub-step in Phase 0.
 # Cross-checks each pending task in <feature>'s state.json against the last
 # 30d of git log subjects + merged PR titles (both repos) + Tier 2.2 log
