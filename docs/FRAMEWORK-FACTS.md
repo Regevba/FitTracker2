@@ -26,6 +26,14 @@
 ### W9 real-time hooks (2)
 `w9.auto_isolate` · `w9.concurrency` (PostToolUse drift detection). **Calibration RESOLVED 2026-06-28: HOLD at advisory** — `CLAUDE_W9_CONCURRENCY_ENFORCE` stays default-off (criterion 2 vacuous: 0 `concurrency_offer` events in the window). Re-eval now event-gated (first real offer).
 
+### Gate catalog (T16 / TC-T16, machine-derived)
+
+[`.claude/shared/gate-catalog.json`](../.claude/shared/gate-catalog.json) (`make gate-catalog`, producer `scripts/gate-catalog.py`) is the machine-derived enumeration of **all 33 live gates** — each annotated with an authored `stage` (write-time | cycle-time | hook | standalone) + `source`, and a **derived** test `tier` (try-repo > dispatch > unit > none) computed by scanning `tests/fixtures/` + `scripts/tests/` live. `make gate-catalog-check` validates it in CI (fails on drift or an orphan try-repo fixture).
+
+**Live (33) vs instrumented (32):** the catalog counts every gate that fires; the F17 index above counts every gate that emits Mechanism A coverage. The 1-gate delta is **`CASE_STUDY_MISSING_FIELDS`** — a live, enforced write-time gate hosted in `scripts/check-case-study-preflight.py` (the *second* pre-commit gate host, distinct from `check-state-schema.py`) that emits no Mechanism A coverage, so it is invisible to both the F17 index and `GATE_COVERAGE_ZERO`. Follow-up candidate: instrument it.
+
+**T1 precursor:** `summary.write_time_without_try_repo` lists the 4 write-time gates lacking a try-repo fixture (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`, `PLATFORMS_TESTED`, `PR_NUMBER_UNRESOLVED`) — the machine signal the planned **T1 `GATE_TEST_MISSING`** meta-gate consumes.
+
 ### New infra (2026-06-29 session)
 
 - **Cross-layer naming convention** (FIT-200) — every item carries slug (canonical) + `state.json.linear_id` (FIT-NNN) + scheme-prefixed code (`FW-`/`TC-`/`DE-`/`HADF-`/`AN-`/`PROD-`). `make crosswalk` → `.claude/shared/item-registry.json`. Spec: `docs/process/cross-layer-item-naming-convention.md`.
