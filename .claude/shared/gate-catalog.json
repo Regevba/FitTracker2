@@ -1,0 +1,620 @@
+{
+  "schema_version": 1,
+  "gate_count": 33,
+  "summary": {
+    "by_stage": {
+      "cycle-time": 9,
+      "hook": 2,
+      "standalone": 1,
+      "write-time": 21
+    },
+    "by_tier": {
+      "dispatch": 1,
+      "try-repo": 17,
+      "unit": 15
+    },
+    "untested_gates": [],
+    "write_time_without_try_repo": [
+      "CSV_TAXONOMY_DRIFT",
+      "GA4_MCP_DISCONNECTED",
+      "PLATFORMS_TESTED",
+      "PR_NUMBER_UNRESOLVED"
+    ]
+  },
+  "gates": {
+    "BRANCH_ISOLATION_VIOLATION": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Mode B — infra-path commit staged on a non-isolated branch.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/BRANCH_ISOLATION_VIOLATION_MODE_B/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_branch_isolation_and_closure_completeness.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_phase_0_reality_check.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_refresh_gate_last_fired.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_isolation_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "BRANCH_ISOLATION_VIOLATION_MODE_C": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Mode C — state.json current_phase mutation from a non-feature branch.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/BRANCH_ISOLATION_VIOLATION_MODE_C/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_try_repo_isolation_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Empty cache_hits[] on a post-v6 feature at complete-transition.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_gate_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_telemetry_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "CSV_TAXONOMY_DRIFT": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "advisory",
+      "description": "AN-1B.1 — staged AnalyticsEvent value has no analytics-taxonomy.csv row.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_csv_taxonomy_drift.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "CU_V2_INVALID": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "cu_v2 schema invalid (4 factors in [0,1], total within 0.01, valid tier_class).",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/CU_V2_INVALID/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_gate_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_pre_commit_self_test.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_telemetry_gates.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_validate_cu_v2.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "FEATURE_CLOSURE_COMPLETENESS": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "complete-transition missing required case-study frontmatter / kill_criteria_resolution / PR parity.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/FEATURE_CLOSURE_COMPLETENESS/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_branch_isolation_and_closure_completeness.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_refresh_gate_last_fired.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_closure_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "FRAMEWORK_VERSION_FORMAT": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "framework_version not in canonical vX.Y form.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/FRAMEWORK_VERSION_FORMAT/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_schema_gates.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_v7_9_measurement_snapshot.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "FRAMEWORK_VERSION_STALE": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "advisory",
+      "description": "F4 — framework_version behind the current framework version (advisory→enforced review ~2026-06-30).",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/FRAMEWORK_VERSION_STALE/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_framework_version_stale.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_framework_version_stale.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "GA4_MCP_DISCONNECTED": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "advisory-only",
+      "description": "AN-1B.2 — analytics code staged while GA4 MCP env unreachable. Never blocks by design.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_ga4_mcp_disconnected.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "ISOLATION_OPT_OUT_REASON_MISSING": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "isolation_opt_out:true with empty isolation_opt_out_reason.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/ISOLATION_OPT_OUT_REASON_MISSING/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_try_repo_isolation_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "PHASE_TRANSITION_NO_LOG": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "current_phase change without a matching .claude/logs/<feature>.log.json event in 15 min.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/PHASE_TRANSITION_NO_LOG/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_pre_commit_self_test.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_telemetry_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "PHASE_TRANSITION_NO_TIMING": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "current_phase change without timing.phases.<phase> started_at/ended_at.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/PHASE_TRANSITION_NO_TIMING/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_telemetry_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "PLATFORMS_TESTED": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "T14 — complete-transition with no platforms_tested platform true (Q2-exempt for framework-meta).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_platforms_tested.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_framework_version_stale.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "PR_NUMBER_UNRESOLVED": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "phases.merge.pr_number does not resolve in the cached gh pr list (skipped when gh unavailable).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_pre_commit_self_test.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "SCHEMA_DRIFT_LEGACY_CREATED": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Legacy `created` key present; canonical is `created_at`.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/SCHEMA_DRIFT_LEGACY_CREATED/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_try_repo_schema_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "SCHEMA_DRIFT_LEGACY_PHASE": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Legacy `phase` key present; canonical is `current_phase`.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/SCHEMA_DRIFT_LEGACY_PHASE/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_try_repo_regression_proof.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_schema_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "STATE_NO_CASE_STUDY_LINK": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Terminal phase with no case_study link and no case_study_type exemption.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/STATE_NO_CASE_STUDY_LINK/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_gate_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_pre_commit_self_test.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_closure_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "STATE_OWNER_INVALID": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "state_owner not in the valid enum {ft2, fitme-story}.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/STATE_OWNER_INVALID/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_try_repo_schema_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "STATE_OWNER_LOCATION_MISMATCH": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "state.json file location does not match state_owner (reverse-sync mirrors exempt).",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/STATE_OWNER_LOCATION_MISMATCH/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_try_repo_closure_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "STATE_OWNER_MISSING": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "enforced",
+      "description": "Required state_owner field absent.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/STATE_OWNER_MISSING/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_state_schema.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_gate_coverage_zero.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_baseline.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_schema_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "CASE_STUDY_MISSING_FIELDS": {
+      "stage": "write-time",
+      "source": "scripts/check-case-study-preflight.py",
+      "enforcement": "enforced",
+      "description": "Post-cutoff (>= 2026-04-21) scoped case study missing required frontmatter fields. Lives in check-case-study-preflight.py (a 2nd pre-commit gate host), NOT check-state-schema.py.",
+      "tier": "try-repo",
+      "fixture_path": "tests/fixtures/CASE_STUDY_MISSING_FIELDS/",
+      "test_files": [
+        {
+          "file": "scripts/tests/test_check_case_study_preflight.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_closure_gates.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "BROKEN_PR_CITATION": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "finding",
+      "description": "Case study cites a PR number that does not resolve (skipped gracefully when gh unavailable).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_pre_commit_self_test.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "CASE_STUDY_MISSING_TIER_TAGS": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "finding",
+      "description": "Scoped case study (dated >= 2026-04-21) with no T1/T2/T3 tier tag.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_pre_commit_self_test.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "PATTERN_SKILL_UNMAPPED": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "finding",
+      "description": "Observed-patterns entry not mapped to a skill in pattern-skill-map.json.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "TIER_TAG_LIKELY_INCORRECT": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "advisory-permanent",
+      "description": "Heuristic T1/T2/T3 mismatch (kill criterion 2 fired at baseline; ships advisory-permanent).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_validate_tier_tags.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "PHASE_LIE": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "finding",
+      "description": "state.json current_phase inconsistent with the phases block / evidence.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_close_feature.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_refresh_gate_last_fired.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "advisory",
+      "description": "Session events show Reads but state.json cache_hits[] is empty.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "BRANCH_ISOLATION_HISTORICAL": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "advisory",
+      "description": "T17 forward-only audit of past infra commits' isolation.",
+      "tier": "dispatch",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_integrity_check_dispatch.py",
+          "layer": "dispatch"
+        },
+        {
+          "file": "scripts/tests/test_integrity_cycle_coverage.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "STATE_TASKS_FILESYSTEM_DRIFT": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "advisory-permanent",
+      "description": "f1 — state.json tasks reference files that do not exist (shipped 2026-06-17 #752).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_state_tasks_filesystem_drift.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "DEPENDENCY_GRAPH_CYCLE": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "advisory-permanent",
+      "description": "f3 — Phase 2 task dependency graph contains a cycle/mismatch (shipped 2026-06-17 #753).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_dependency_graph_cycle.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "w9.auto_isolate": {
+      "stage": "hook",
+      "source": "scripts/check-branch-drift.py",
+      "enforcement": "advisory",
+      "description": "W9 — offers auto-isolation when infra work is detected off an isolated branch.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_w9_auto_isolate.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "w9.concurrency": {
+      "stage": "hook",
+      "source": "scripts/check-branch-drift.py",
+      "enforcement": "advisory",
+      "description": "W9 — detects an unexpected concurrent branch flip within a session (HOLD at advisory 2026-06-28).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_w9_auto_isolate.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "FIGMA_MIRROR_STALENESS": {
+      "stage": "standalone",
+      "source": "scripts/figma-mirror-staleness.py",
+      "enforcement": "advisory-permanent",
+      "description": "Code-token (tokens.json) vs Figma-mirror-snapshot drift. Runs on `make figma-mirror-staleness`.",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_figma_mirror_staleness.py",
+          "layer": "unit"
+        }
+      ]
+    }
+  }
+}
