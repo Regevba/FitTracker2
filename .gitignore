@@ -136,3 +136,6 @@ ai-engine/htmlcov/
 .mutmut-cache
 /.coverage
 .claude/shared/mutation-baseline.json
+
+# FIT-181: machine-specific pre-commit latency report (regenerate via make profile-hooks)
+.claude/shared/precommit-hook-latency.json

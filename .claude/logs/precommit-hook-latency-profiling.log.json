@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "precommit-hook-latency-profiling",
+  "title": "precommit hook latency profiling",
+  "work_type": "chore",
+  "current_phase": "implement",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-02T17:30:29Z",
+  "updated_at": "2026-07-02T17:30:29Z",
+  "events": [
+    {
+      "timestamp": "2026-07-02T17:30:29Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Chore implement: pre-commit hook latency profiler (FIT-181/R15) \u2014 profile-precommit-hooks.py + make profile-hooks{,-check} + 7 unit tests. Baseline total P95 0.119s (budget 8s).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
