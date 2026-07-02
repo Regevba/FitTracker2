@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "weekly-digest-silent-gate-enrichment",
+  "title": "weekly digest silent gate enrichment",
+  "work_type": "chore",
+  "current_phase": "implement",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-02T18:17:54Z",
+  "updated_at": "2026-07-02T18:17:54Z",
+  "events": [
+    {
+      "timestamp": "2026-07-02T18:17:54Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Chore implement: A5 silent-gate enrichment in weekly-trend-scan.py \u2014 compute_silent_gate_candidates() from F17 index + digest section + JSON + 5 tests. Informational (zero-firing often healthy).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

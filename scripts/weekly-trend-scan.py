@@ -85,6 +85,47 @@ def _gates_from_index(index_path: Path) -> set[str]:
     return {g for g in gates} if isinstance(gates, dict) else set()
 
 
+def compute_silent_gate_candidates(index: dict, top_n: int = 3) -> list[dict]:
+    """(A5, R19) Rank "silent-gate candidates" from the F17 gate-last-fired
+    index: gates that reached >=1 candidate but whose check has NEVER fired
+    (``total_firings == 0``, where firings = sum of the ledger's ``checked``
+    field). Ordered by candidate volume (loudest-but-silent first), truncated
+    to ``top_n``.
+
+    Interpretation is deliberately *informational*, not a regression: a
+    zero-firing gate is often healthy — it simply never found a violation (e.g.
+    ``STATE_OWNER_MISSING``: many candidates, all compliant). The value is
+    pre-promotion calibration attention: if a gate is about to flip
+    advisory->enforced but has never once fired, an operator should eyeball
+    whether that is healthy-zero or a mis-wire that never reaches its finding
+    branch. Reads the *committed* F17 index, so it is CI-available (the raw
+    gate-coverage ledger is gitignored / absent on runners).
+    """
+    gates = index.get("gates", {})
+    if not isinstance(gates, dict):
+        return []
+    out = []
+    for name, e in gates.items():
+        if not isinstance(e, dict):
+            continue
+        cands = e.get("total_candidates", 0) or 0
+        firings = e.get("total_firings", 0) or 0
+        if cands > 0 and firings == 0:
+            out.append({
+                "gate": name,
+                "candidates": cands,
+                "skips": e.get("total_skips", 0) or 0,
+                "last_checked_at": e.get("last_checked_at"),
+            })
+    out.sort(key=lambda r: r["candidates"], reverse=True)
+    return out[: max(0, top_n)]
+
+
+def silent_gate_candidates(top_n: int = 3, index_path: Path = GATE_LAST_FIRED) -> list[dict]:
+    """Load the committed F17 index and compute the A5 silent-gate list."""
+    return compute_silent_gate_candidates(load_json(index_path), top_n)
+
+
 def _gates_from_ledger(ledger_path: Path) -> set[str]:
     """Distinct gate names from the raw (gitignored) gate-coverage ledger.
 
@@ -230,6 +271,8 @@ def main() -> int:
 
     deltas, a4_regression = dim_deltas()
 
+    a5_silent = silent_gate_candidates()
+
     append_weekly_row(cur_gates, append=not args.no_append)
 
     payload = {
@@ -239,6 +282,8 @@ def main() -> int:
         "a2_gates_missing": ",".join(missing),
         "a4_dim_regression": "true" if a4_regression else "false",
         "a4_dim_deltas": deltas,
+        "a5_silent_count": len(a5_silent),
+        "a5_silent_gates": ",".join(r["gate"] for r in a5_silent),
     }
     write_github_outputs(payload)
 
@@ -254,6 +299,10 @@ def main() -> int:
             "a4": {
                 "regression": a4_regression,
                 "deltas": deltas,
+            },
+            "a5": {
+                "silent_gate_candidates": a5_silent,
+                "note": "informational — zero-firing may be healthy (never violated); verify healthy-zero vs mis-wire before promotion",
             },
         }, indent=2))
         return 0
@@ -285,6 +334,18 @@ def main() -> int:
     lines.append("")
     if a4_regression:
         lines.append("⚠ At least one dimension regressed; opens digest issue per workflow regression rule.")
+    lines.append("")
+    lines.append(f"**A5 — Silent-gate candidates** (top {len(a5_silent)}; informational, not a regression):")
+    if a5_silent:
+        lines.append("")
+        lines.append("Gates with candidates but zero firings — verify healthy-zero vs mis-wire before any promotion:")
+        lines.append("")
+        lines.append("| Gate | Candidates | Skips | Last checked |")
+        lines.append("|---|---|---|---|")
+        for r in a5_silent:
+            lines.append(f"| `{r['gate']}` | {r['candidates']} | {r['skips']} | {r['last_checked_at'] or '—'} |")
+    else:
+        lines.append(" none — every gate with candidates has fired at least once.")
     print("\n".join(lines))
     return 0
 
