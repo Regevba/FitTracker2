@@ -82,16 +82,16 @@ Three causes, ordered by likelihood:
 2. **W19 — Environment-variable trailing newline silently corrupts runtime string** (this incident's GA_ID bug) — captures the "env-var paste residue makes it through 3 layers of injection before being rejected at the receiving service" pattern. Closed by PR #157.
 3. **v7.9.1 candidate F-DEPLOYED-URL-PROBE** — adds a post-deploy CI step that curl-HEAD's `og:image` + curl-200's `gtag/js?id=$NEXT_PUBLIC_GA_ID` + asserts canonical/sitemap/robots. Catches both W18 + W19 classes + future siblings. Filed in [`.claude/shared/v7-9-1-candidates.md`](../../.claude/shared/v7-9-1-candidates.md). Implementation deferred to v7.9.1 cycle (~2026-06-04+) per Phase E infra-glob constraint.
 
-### Phase 2 — Crosslinking (~2h, target 2026-05-23 → 05-25)
+### Phase 2 — Crosslinking (~2h, target 2026-05-23 → 05-25) — ✅ SHIPPED (verified 2026-07-01)
 
-| # | Action | Effort | Effect |
+| # | Action | Effort | Status |
 |---|---|---|---|
-| **P2.1** | Add `fitme-story.vercel.app` link to **FT2 README.md** (in description + top section) | 15 min | Anyone landing on FT2 GitHub repo finds the showcase |
-| **P2.2** | Add `fitme-story.vercel.app` link to **fitme-story repo README.md** (in description) | 10 min | Same for fitme-story GitHub repo |
-| **P2.3** | Set up **301 redirect** from `fit-tracker2.vercel.app/*` → `fitme-story.vercel.app/control-room/*` (preserve query strings — `?view=board` etc map to canonical routes) | 1h | Captures the 4 existing legacy web users + future legacy traffic + preserves SEO equity |
-| **P2.4** | Update `fit-tracker2.vercel.app` deploy with a temporary banner: "Moved to fitme-story.vercel.app" before redirect lands | 15 min | Soft migration notice for any cached users |
+| **P2.1** | Add `fitme-story.vercel.app` link to **FT2 README.md** (in description + top section) | 15 min | ✅ Done — FT2 `README.md` lines 12 & 20 |
+| **P2.2** | Add `fitme-story.vercel.app` link to **fitme-story repo README.md** (in description) | 10 min | ✅ Done — fitme-story `README.md` line 5 (`Production: fitme-story.vercel.app`) + upstream FT2 links |
+| **P2.3** | Set up **301 redirect** from `fit-tracker2.vercel.app/*` → `fitme-story.vercel.app/control-room/*` (preserve query strings) | 1h | ✅ Done — `dashboard/vercel.json` permanent catch-all redirect, shipped [PR #467](https://github.com/Regevba/FitTracker2/pull/467) `d1a271ab` (superseded the earlier 307 temporary from T35 #229) |
+| **P2.4** | Update `fit-tracker2.vercel.app` deploy with a temporary banner: "Moved to fitme-story.vercel.app" before redirect lands | 15 min | ⊘ Superseded — the live 301 (P2.3) redirects every path immediately, so the interim "before redirect lands" banner is moot |
 
-**Outcome:** existing 4 web users (and any future legacy traffic) flow to the new site.
+**Outcome:** existing 4 web users (and any future legacy traffic) flow to the new site. **Achieved** — all crosslinks live + legacy domain 301s to the canonical `/control-room`.
 
 ### Phase 3 — Promotion (~3h, target 2026-05-26 → 05-30)
 

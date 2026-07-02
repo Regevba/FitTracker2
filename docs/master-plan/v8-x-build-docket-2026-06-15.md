@@ -101,7 +101,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | **F15** ✅ | Unit tests for 5 zero-coverage gates | Test discipline | 40.0 | SHIPPED (joint w/ F14) |
 | **F16** ✅ | try-repo end-to-end harness | Test infra foundation | 48.0 | SHIPPED v7.9.1 #607–#612 · enforce flip 2026-06-18 |
 | **F17** ✅ | Per-gate `last_fired_at` derived index | Telemetry materialization | 66.7 | SHIPPED v7.9.1 #617 (+T13 #694) |
-| **F18** | Nightly mutation testing on dispatcher files | Mutation testing | 13.7 | OPEN — gated on F16 Phase E + F14 |
+| ~~**F18**~~ ✅ | Nightly mutation testing on dispatcher files | Mutation testing | 13.7 | **SHIPPED 2026-06-26 #809** (`f18-mutation-testing` complete) — see §0 |
 
 **Source E — post-v7.9 candidate plan (2026-05-20):**
 
@@ -110,7 +110,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | **F19** | Analytics Phase 1.B GA4 conversions (D-2) + dashboard wiring | Telemetry wiring | M | OPEN — D-2 operator + post-launch signal |
 | **F20** | Phase 1.B conversion event mapping + Firebase cleanup (D-4) | Schema cleanup | L | OPEN |
 | ~~**F21**~~ | ~~Sentry full integration~~ | — | — | **PAUSED → pre-launch** (PR #418) |
-| **F22** | Funnel Analysis Dashboards | Product observability | M | OPEN — depends on F19 + GA4 data |
+| ~~**F22**~~ ✅ | Funnel Analysis Dashboards | Product observability | M | **SHIPPED 2026-06-24 #799** (`funnel-analysis-dashboards` complete) — see §0 |
 | **F23** | `/ops digest` skill | Skill extension | M | OPEN — depends on F22 + Sentry resume |
 
 **Resolved by exemption (v7.8.2):** F7 (cross-repo gate parity) + F8 (`gate-coverage.jsonl` parity) — documented exemptions.
