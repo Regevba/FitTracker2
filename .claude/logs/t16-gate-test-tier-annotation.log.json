@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "feature": "t16-gate-test-tier-annotation",
+  "title": "t16 gate test tier annotation",
+  "work_type": "chore",
+  "current_phase": "implement",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-02T16:46:50Z",
+  "updated_at": "2026-07-02T16:48:39Z",
+  "events": [
+    {
+      "timestamp": "2026-07-02T16:46:50Z",
+      "event_type": "implementation",
+      "phase": "implement",
+      "summary": "Built .claude/shared/gate-catalog.json (33 gates: 21 write-time + 9 cycle + 2 hook + 1 standalone) + scripts/gate-catalog.py deriving test tier from live fixtures/tests + make gate-catalog{,-check} + 7 unit tests. Surfaced 2 real findings: CASE_STUDY_MISSING_FIELDS is a live write-time gate in check-case-study-preflight.py that FRAMEWORK-FACTS's check-state-schema.py-scoped '20' missed (true count 33); and 4 write-time gates lack try-repo fixtures (T1 gap signal).",
+      "artifacts": [
+        "scripts/gate-catalog.py",
+        ".claude/shared/gate-catalog.json",
+        "scripts/tests/test_gate_catalog.py"
+      ],
+      "metrics": {
+        "tests_passing": 7,
+        "gate_count": 33
+      },
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-02T16:48:39Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Chore implement phase: gate catalog (T16) \u2014 33-gate machine-derived manifest + validator + tests + docs.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_8",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
