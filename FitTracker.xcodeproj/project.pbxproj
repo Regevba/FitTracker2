@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		SNAP000001000000000000002 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = SNAP000002000000000000001 /* SnapshotTesting */; };
+		SNAP000001000000000000003 /* SnapshotTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = SNAP000000000000000000003 /* SnapshotTestSupport.swift */; };
+		SNAP000001000000000000004 /* V2ComponentSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SNAP000000000000000000004 /* V2ComponentSnapshotTests.swift */; };
 		111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E012F64641D006E7013 /* WatchConnectivityService.swift */; };
 		111A5E042F64641D006E7013 /* TrainingProgramStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E032F64641D006E7013 /* TrainingProgramStore.swift */; };
 		111A5E062F64641D006E7013 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E052F64641D006E7013 /* AppTheme.swift */; };
@@ -329,6 +332,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		SNAP000000000000000000003 /* SnapshotTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTests/SnapshotTestSupport.swift; sourceTree = "<group>"; };
+		SNAP000000000000000000004 /* V2ComponentSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTests/V2ComponentSnapshotTests.swift; sourceTree = "<group>"; };
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
@@ -677,6 +682,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				SNAP000001000000000000002 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -982,6 +988,8 @@
 				HA200000000000000000001 /* AnalyticsTests.swift */,
 				DA200000000000000000AT01 /* DebugSinkAdapterTests.swift */,
 				B20000010000000000000001 /* FitTrackerCoreTests.swift */,
+				SNAP000000000000000000003 /* SnapshotTestSupport.swift */,
+				SNAP000000000000000000004 /* V2ComponentSnapshotTests.swift */,
 				HA200000000000000000002 /* HomeAnalyticsTests.swift */,
 				TA200000000000000000001 /* TrainingAnalyticsTests.swift */,
 				NA200000000000000000001 /* NutritionAnalyticsTests.swift */,
@@ -1473,6 +1481,9 @@
 			dependencies = (
 				B80000010000000000000001 /* PBXTargetDependency */,
 			);
+			packageProductDependencies = (
+				SNAP000002000000000000001 /* SnapshotTesting */,
+			);
 			name = FitTrackerTests;
 			productName = FitTrackerTests;
 			productReference = B20000010000000000000002 /* FitTrackerTests.xctest */;
@@ -1528,6 +1539,7 @@
 				FC3000000000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				GG3000000000000000000001 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				SNAP000003000000000000001 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			productRefGroup = A40000010000000000000003 /* Products */;
 			projectDirPath = "";
@@ -1786,6 +1798,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */,
+				SNAP000001000000000000003 /* SnapshotTestSupport.swift in Sources */,
+				SNAP000001000000000000004 /* V2ComponentSnapshotTests.swift in Sources */,
 				HA100000000000000000001 /* AnalyticsTests.swift in Sources */,
 				DA100000000000000000AT01 /* DebugSinkAdapterTests.swift in Sources */,
 				HA100000000000000000002 /* HomeAnalyticsTests.swift in Sources */,
@@ -2360,6 +2374,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		SNAP000003000000000000001 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.17.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2382,6 +2404,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		SNAP000002000000000000001 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = SNAP000003000000000000001 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

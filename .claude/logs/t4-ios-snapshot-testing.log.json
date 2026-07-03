@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "t4-ios-snapshot-testing",
+  "title": "t4 ios snapshot testing",
+  "work_type": "chore",
+  "current_phase": "implement",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-03T20:40:20Z",
+  "updated_at": "2026-07-03T20:40:20Z",
+  "events": [
+    {
+      "timestamp": "2026-07-03T20:40:20Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "FIT-152 (T4) foundation \u2014 swift-snapshot-testing SPM dep + harness + starter DS-component snapshots + record-in-CI workflow. Verified: TEST BUILD SUCCEEDED locally (package resolves, test target compiles).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "success",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

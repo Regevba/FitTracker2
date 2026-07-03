@@ -1,5 +1,5 @@
 {
-  "originHash" : "3e19959b3888f301d8ed88c18f3b496ddbce6062c1fa41420e4130f7b3694017",
+  "originHash" : "b0ec5a6ba1887a5aba532ba34fe849a32a5c0239fc7fccb0b8ea98ab6ebb2d76",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -191,6 +191,15 @@
       }
     },
     {
+      "identity" : "swift-custom-dump",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-custom-dump",
+      "state" : {
+        "revision" : "a8cd6c976f335ed361dcecddb0dc39ebda51bc3e",
+        "version" : "1.6.1"
+      }
+    },
+    {
       "identity" : "swift-http-types",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-http-types.git",
@@ -206,6 +215,24 @@
       "state" : {
         "revision" : "a008af1a102ff3dd6cc3764bb69bf63226d0f5f6",
         "version" : "1.36.1"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
+      "state" : {
+        "revision" : "ad5e3190cc63dc288f28546f9c6827efc1e9d495",
+        "version" : "1.19.2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax",
+      "state" : {
+        "revision" : "79e4b74a295b6eb74a8b585e3a39d29e70c1dbd1",
+        "version" : "603.0.2"
       }
     },
     {
