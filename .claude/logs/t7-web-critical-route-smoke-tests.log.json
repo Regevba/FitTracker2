@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "feature": "t7-web-critical-route-smoke-tests",
+  "title": "t7 web critical route smoke tests",
+  "work_type": "chore",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-03T07:09:54Z",
+  "updated_at": "2026-07-03T07:09:54Z",
+  "events": [
+    {
+      "timestamp": "2026-07-03T07:09:54Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "FIT-155 (T7) closure \u2014 shipped via fitme-story PR #257; 5-route Playwright smoke, verified 5 passed via real build+start. FT2 state reconciled to complete.",
+      "artifacts": [
+        "fitme-story#257"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "success",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
