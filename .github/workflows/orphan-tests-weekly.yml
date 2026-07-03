@@ -1,0 +1,113 @@
+name: Orphan Tests — Weekly
+
+# FIT-163 (T15) — advisory orphan-test + untested-symbol scan.
+#
+# Read-only observability (never blocks a merge; no commit/PR). Complements:
+#   - integrity-cycle.yml (every 72h, state.json health)
+#   - framework-status-weekly.yml (Mon 05:00 UTC, adoption trend)
+# This runs Mondays 07:00 UTC (2h after framework-status, 1h after the
+# dependency audit) so the weekly cron pool doesn't collide.
+#
+# Opens an issue ONLY on an orphan-test regression (a *Tests.swift that
+# references no production symbol — its subject was renamed/deleted). The
+# untested-significant-symbol list is a coarse standing inventory, so it is
+# always written to the step summary but does NOT open a weekly issue on its
+# own (avoids recurring noise from a stable list). workflow_dispatch with
+# open_issue_always=true forces the issue open for an on-demand readout.
+#
+# Security (per github.blog injection guide): no github.event.* user input is
+# used anywhere. Step outputs we set ourselves (integer counts) are routed
+# through env: into run:/script: blocks, never interpolated directly. The only
+# direct ${{ }} usages are in if: conditions, which evaluate in GitHub's
+# expression engine, not in a shell.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      open_issue_always:
+        description: "Open the digest issue even with no orphan-test regression"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  orphan-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Run orphan-test scan
+        id: scan
+        run: |
+          set -o pipefail
+          python3 scripts/scan-orphan-tests.py \
+            --output /tmp/orphan-scan.json 2>&1 | tee /tmp/orphan-scan.txt
+          orphans=$(python3 -c "import json;print(len(json.load(open('/tmp/orphan-scan.json'))['orphan_tests']))")
+          untested=$(python3 -c "import json;print(len(json.load(open('/tmp/orphan-scan.json'))['untested_significant_symbols']))")
+          echo "orphans=${orphans}" >> "$GITHUB_OUTPUT"
+          echo "untested=${untested}" >> "$GITHUB_OUTPUT"
+
+      - name: Workflow summary
+        if: always()
+        env:
+          ORPHANS: ${{ steps.scan.outputs.orphans }}
+          UNTESTED: ${{ steps.scan.outputs.untested }}
+        run: |
+          {
+            echo "## Orphan-test scan (weekly)"
+            echo ""
+            echo "- Orphan tests: **${ORPHANS}**"
+            echo "- Untested significant symbols: **${UNTESTED}**"
+            echo ""
+            echo '```'
+            cat /tmp/orphan-scan.txt 2>/dev/null || echo "(no output)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open advisory issue on orphan-test regression
+        if: steps.scan.outputs.orphans != '0' || inputs.open_issue_always == 'true'
+        uses: actions/github-script@v9
+        env:
+          ORPHANS: ${{ steps.scan.outputs.orphans }}
+          UNTESTED: ${{ steps.scan.outputs.untested }}
+        with:
+          script: |
+            const fs = require('fs');
+            const orphans = process.env.ORPHANS;
+            const untested = process.env.UNTESTED;
+            const report = fs.readFileSync('/tmp/orphan-scan.txt', 'utf8').slice(0, 8000);
+            const today = new Date().toISOString().slice(0, 10);
+            const title = orphans !== '0'
+              ? `Orphan tests ${today}: ${orphans} test file(s) reference no production symbol`
+              : `Orphan-test digest ${today}`;
+            const body = [
+              '**Advisory** — FIT-163 (T15) weekly orphan-test scan.',
+              '',
+              `- Orphan tests: **${orphans}** (a \`*Tests.swift\` referencing no production symbol — subject likely renamed/deleted)`,
+              `- Untested significant symbols: **${untested}** (logic-bearing types no test references — coarse inventory)`,
+              '',
+              '```',
+              report,
+              '```',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['test-coverage', 'orphan-tests', 'advisory'],
+            });
