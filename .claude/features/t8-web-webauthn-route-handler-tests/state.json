@@ -1,0 +1,74 @@
+{
+  "feature": "t8-web-webauthn-route-handler-tests",
+  "linear_id": "FIT-156",
+  "thematic_code": "TC-T8",
+  "created_at": "2026-07-03T05:30:00Z",
+  "updated": "2026-07-03T05:42:00Z",
+  "branch": "chore/fit156-ft2-state-closure",
+  "current_phase": "complete",
+  "work_type": "chore",
+  "schema_version": 1,
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "has_ui": false,
+  "requires_analytics": false,
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "Test-coverage chore (TC-T8 / test-coverage-master-plan §4 T8): adds route-handler tests for the 6 fitme-story /api/auth/* WebAuthn handlers. No product surface; the fitme-story PR #256 body + this state.json are the provenance record.",
+  "isolation_opt_out": false,
+  "platforms_tested": {
+    "ios": false,
+    "web": true,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "summary": "T8 (test-coverage plan §4) — 28 route-handler tests across all 6 fitme-story /api/auth/* WebAuthn handlers (register/authenticate × options/verify, devices, revoke). Exercises real handlers via the __setRedisForTests in-memory Redis seam + real @simplewebauthn; session routes mock next/headers cookies() via node:test module mocking. Signed happy path deferred to FIT-155 (T7) Playwright. Shipped in fitme-story PR #256; full suite 399/399 pass (+28).",
+  "cross_repo_code_pr": "fitme-story#256",
+  "pr_citation_exempt": [
+    { "pr_number": 256, "reason": "Code + tests live in fitme-story (cross-repo); FT2 state.json tracks the test-coverage-plan item only." }
+  ],
+  "phases": {
+    "research": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "prd": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "tasks": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "ux_or_integration": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "implementation": { "status": "complete", "commits": [] },
+    "testing": { "status": "complete" },
+    "review": { "status": "complete" },
+    "merge": { "status": "complete", "pr_number": null },
+    "documentation": { "status": "complete" }
+  },
+  "timing": {
+    "phases": {
+      "implement": { "started_at": "2026-07-03T05:30:00Z", "ended_at": "2026-07-03T05:40:00Z" },
+      "complete": { "started_at": "2026-07-03T05:42:00Z", "ended_at": "2026-07-03T05:42:00Z" }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Shared in-memory Upstash Redis mock + request/env test kit (test-support/)",
+      "type": "test",
+      "skill": "qa",
+      "status": "complete",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "completed_at": "2026-07-03T05:40:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "28 route-handler tests across all 6 /api/auth/* handlers (fitme-story PR #256)",
+      "type": "test",
+      "skill": "qa",
+      "status": "complete",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": ["T1"],
+      "completed_at": "2026-07-03T05:40:00Z"
+    }
+  ],
+  "transitions": [],
+  "figma_node_ids": {},
+  "pre_merge_review": { "ux": null, "design": null }
+}

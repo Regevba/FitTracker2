@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "feature": "t8-web-webauthn-route-handler-tests",
+  "title": "t8 web webauthn route handler tests",
+  "work_type": "chore",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-03T05:45:59Z",
+  "updated_at": "2026-07-03T05:46:08Z",
+  "events": [
+    {
+      "timestamp": "2026-07-03T05:45:59Z",
+      "event_type": "phase_completed",
+      "phase": "complete",
+      "summary": "FIT-156 (T8) shipped via fitme-story PR #256 \u2014 28 route-handler tests across all 6 /api/auth/* WebAuthn handlers; full suite 399/399. FT2 state closure.",
+      "artifacts": [
+        "fitme-story#256"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "success",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-03T05:46:08Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "FIT-156 (T8) closure \u2014 shipped via fitme-story PR #256; 28 route-handler tests, full suite 399/399. FT2 state.json reconciled to complete.",
+      "artifacts": [
+        "fitme-story#256"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "success",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
