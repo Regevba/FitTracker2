@@ -136,4 +136,67 @@ final class EncryptionServiceTests: XCTestCase {
         let decrypted = try await EncryptionService.shared.decryptRaw(blob)
         XCTAssertEqual(decrypted, plaintext)
     }
+
+    // MARK: - Concurrency + payload chaos (FIT-157 / T9 — adversarial edge cases)
+    //
+    // These exercise the session-context encrypt/decrypt path (the path the app
+    // uses at runtime) under load / large data / high cardinality. The
+    // biometric-gated `rotateKeys` path is NOT covered here: it calls
+    // `authenticatedContext()`, which requires an enrolled authenticator the CI
+    // simulator does not have (LAError -7 "No identities are enrolled"). Testing
+    // rotation needs either a biometry-enrolled CI simulator or a prod-code test
+    // seam — tracked as a follow-up (state.json task T2/T3), not attempted here.
+
+    func testEncrypt_concurrentRoundTrips_allSucceed() async throws {
+        // The EncryptionService actor must serialize concurrent crypto ops
+        // without data races or cross-talk. Fire many parallel encrypt→decrypt
+        // round-trips and assert every one preserves its own bytes.
+        let enc = EncryptionService.shared
+        let count = 32
+
+        try await withThrowingTaskGroup(of: Bool.self) { group in
+            for i in 0..<count {
+                group.addTask {
+                    let payload = "concurrent-\(i)-\(String(repeating: "x", count: i))".data(using: .utf8)!
+                    let blob = try await enc.encryptRaw(payload)
+                    let back = try await enc.decryptRaw(blob)
+                    return back == payload
+                }
+            }
+            var ok = 0
+            for try await result in group where result { ok += 1 }
+            XCTAssertEqual(ok, count, "Every concurrent round-trip must preserve its own bytes")
+        }
+    }
+
+    func testEncrypt_largePayload_roundTripsLosslessly() async throws {
+        // ~2 MB of random bytes must survive the double-seal (AES-GCM → ChaCha20)
+        // container round-trip exactly — guards against buffer/length bugs on the
+        // large end (a full day of health data is far smaller, but the ceiling
+        // must hold).
+        let enc = EncryptionService.shared
+        var big = Data(count: 2 * 1024 * 1024)
+        big.withUnsafeMutableBytes { _ = SecRandomCopyBytes(kSecRandomDefault, $0.count, $0.baseAddress!) }
+
+        let blob = try await enc.encryptRaw(big)
+        let back = try await enc.decryptRaw(blob)
+        XCTAssertEqual(back, big, "Large payload must round-trip byte-for-byte")
+        XCTAssertGreaterThan(blob.count, big.count, "Container must add header + auth overhead")
+    }
+
+    func testEncrypt_manyDistinctPayloads_noCrossContamination() async throws {
+        // Encrypt many distinct plaintexts, then decrypt each blob and assert it
+        // maps back to its OWN plaintext — a blob must never decrypt to another
+        // record's data (IV/key reuse or container-mixup regression guard).
+        let enc = EncryptionService.shared
+        let payloads = (0..<50).map { "record-\($0)-value-\($0 * 7)".data(using: .utf8)! }
+
+        var blobs: [Data] = []
+        for p in payloads { blobs.append(try await enc.encryptRaw(p)) }
+
+        for (idx, blob) in blobs.enumerated() {
+            let back = try await enc.decryptRaw(blob)
+            XCTAssertEqual(back, payloads[idx], "Blob \(idx) must decrypt to its own plaintext")
+        }
+    }
 }
