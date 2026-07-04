@@ -1,0 +1,80 @@
+{
+  "feature": "t9-backend-chaos-tests",
+  "linear_id": "FIT-157",
+  "thematic_code": "TC-T9",
+  "created_at": "2026-07-04T05:45:00Z",
+  "updated": "2026-07-04T06:05:00Z",
+  "branch": "chore/fit157-encryption-rotation-tests",
+  "current_phase": "implement",
+  "work_type": "chore",
+  "schema_version": 1,
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "has_ui": false,
+  "requires_analytics": false,
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "Adversarial backend test-coverage (TC-T9): adds chaos/edge tests to existing test files. No product surface; PR body + this state.json are the provenance record.",
+  "isolation_opt_out": false,
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "summary": "T9 (test-coverage plan §4) FOUNDATION — adversarial backend chaos/edge tests. First slice: 3 EncryptionService chaos tests on the session-context path (concurrent round-trips / actor serialization, ~2MB large-payload round-trip, 50-payload no-cross-contamination). NOTE: the biometric-gated rotateKeys path is untestable on the CI simulator (LAError -7 no enrolled authenticator) — deferred to T2 pending biometry-enrolled CI or a prod test seam. Remaining bullet areas (sync reconciliation, GDPR cascade, network-churn auth) are T3 follow-ups. Test-only, no prod change.",
+  "phases": {
+    "research": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "prd": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "tasks": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "ux_or_integration": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "implementation": { "status": "in_progress", "commits": [] },
+    "testing": { "status": "pending" },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending", "pr_number": null },
+    "documentation": { "status": "pending" }
+  },
+  "timing": {
+    "phases": {
+      "implement": { "started_at": "2026-07-04T05:45:00Z" }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "EncryptionService session-context chaos tests (3): concurrency, large-payload, no-cross-contamination",
+      "type": "test",
+      "skill": "qa",
+      "status": "complete",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [],
+      "completed_at": "2026-07-04T06:00:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "Key-rotation chaos tests (rotateKeys) — needs biometry-enrolled CI simulator or a prod test seam for authenticatedContext()",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T3",
+      "title": "GDPR cascade (CloudKit+Supabase) + network-churn auth recovery chaos tests",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.7,
+      "depends_on": [],
+      "completed_at": null
+    }
+  ],
+  "transitions": [],
+  "figma_node_ids": {},
+  "pre_merge_review": { "ux": null, "design": null }
+}
