@@ -1,0 +1,80 @@
+name: iOS Snapshot — Record Baselines
+
+# FIT-152 (T4) — operator-triggered baseline recorder.
+#
+# Snapshot reference PNGs must be recorded in the CI simulator environment
+# (local Xcode 26 / iPhone 17 Pro does NOT match the CI iPhone 15/16 sims), so
+# this workflow runs the snapshot tests with SNAPSHOT_MODE=record and uploads
+# the generated __Snapshots__ dirs as an artifact. The operator downloads the
+# artifact, commits the PNGs under FitTrackerTests/SnapshotTests/__Snapshots__/,
+# and flips the gate to SNAPSHOT_MODE=verify (a follow-up PR wiring these into
+# the required test job). See docs/process/snapshot-testing.md.
+#
+# workflow_dispatch only — never runs on PRs, so it can never block a merge.
+#
+# Security: no github.event.* input and no ${{ }} interpolation anywhere — the
+# simulator destination is computed inside the run: block as a shell variable.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PROJECT_PATH: FitTracker.xcodeproj
+  SCHEME: FitTracker
+
+jobs:
+  record:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Resolve packages
+        run: |
+          xcodebuild -resolvePackageDependencies -project "$PROJECT_PATH" -scheme "$SCHEME"
+
+      - name: Record snapshots
+        env:
+          SNAPSHOT_MODE: record
+        run: |
+          set -o pipefail
+          # Pick the same simulator family the required CI test job uses so the
+          # recorded baselines will match at verify time.
+          sim_list="$(xcrun simctl list devices available)"
+          SIM_DEST=""
+          for d in "iPhone 16 Pro" "iPhone 16" "iPhone 15 Pro" "iPhone 15" "iPhone 14"; do
+            if echo "$sim_list" | grep -qF "${d} ("; then
+              SIM_DEST="platform=iOS Simulator,name=${d}"
+              break
+            fi
+          done
+          if [ -z "$SIM_DEST" ]; then
+            fb="$(echo "$sim_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
+            SIM_DEST="platform=iOS Simulator,name=${fb}"
+          fi
+          echo "Selected simulator: ${SIM_DEST}"
+
+          # Record mode: swift-snapshot-testing writes the reference PNGs and
+          # (by design) reports the tests as failed on the recording run, so we
+          # tolerate a non-zero exit and rely on the uploaded artifact instead.
+          xcodebuild test \
+            -project "$PROJECT_PATH" \
+            -scheme "$SCHEME" \
+            -destination "$SIM_DEST" \
+            -only-testing:FitTrackerTests/V2ComponentSnapshotTests \
+            -parallel-testing-enabled NO \
+            CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES \
+            2>&1 | tee /tmp/snapshot-record.log || true
+
+      - name: Upload recorded baselines
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-baselines
+          path: |
+            **/__Snapshots__/**
+          if-no-files-found: warn
+          retention-days: 14

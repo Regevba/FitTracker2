@@ -1,0 +1,81 @@
+{
+  "feature": "t4-ios-snapshot-testing",
+  "linear_id": "FIT-152",
+  "thematic_code": "TC-T4",
+  "created_at": "2026-07-03T18:40:00Z",
+  "updated": "2026-07-03T19:10:00Z",
+  "branch": "chore/fit152-snapshot-testing",
+  "current_phase": "implement",
+  "work_type": "chore",
+  "work_subtype": "framework_feature",
+  "schema_version": 1,
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "has_ui": false,
+  "requires_analytics": false,
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "iOS test/CI-infrastructure foundation (TC-T4): adds the swift-snapshot-testing SPM dep + harness + record-in-CI workflow. Snapshot baselines + screen coverage are follow-up tasks; PR body + this state.json are the provenance record.",
+  "isolation_opt_out": false,
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "summary": "T4 (test-coverage plan §4) FOUNDATION — pointfreeco/swift-snapshot-testing SPM dep wired into FitTrackerTests + a snapshot harness (SnapshotTestSupport SNAPSHOT_MODE gate: tests SKIP by default so the required Build+Test never reddens pre-baseline) + starter design-system-component snapshots + an operator-triggered ios-snapshot-record.yml that records CI-environment baselines and uploads them as an artifact. Baselines can't be recorded locally (Xcode 26/iPhone 17 Pro local vs iPhone 15/16 CI). Verified locally: SnapshotTesting package resolves + test target compiles.",
+  "phases": {
+    "research": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "prd": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "tasks": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "ux_or_integration": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "implementation": { "status": "in_progress", "commits": [] },
+    "testing": { "status": "pending" },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending", "pr_number": null },
+    "documentation": { "status": "pending" }
+  },
+  "timing": {
+    "phases": {
+      "implement": { "started_at": "2026-07-03T18:40:00Z" }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "SPM dep (swift-snapshot-testing) + SnapshotTestSupport harness + starter DS-component snapshots + ios-snapshot-record.yml (record-in-CI)",
+      "type": "infra",
+      "skill": "qa",
+      "status": "complete",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [],
+      "completed_at": "2026-07-03T19:05:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "Run ios-snapshot-record job → download artifact → commit CI-recorded baselines → flip harness into required test job (SNAPSHOT_MODE=verify)",
+      "type": "infra",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": ["T1"],
+      "completed_at": null
+    },
+    {
+      "id": "T3",
+      "title": "Expand snapshot coverage to the 6 v2 screens (Home/Stats/Settings/Nutrition/Training/Readiness) + 4 auth views with mock view-model/store injection",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.8,
+      "depends_on": ["T2"],
+      "completed_at": null
+    }
+  ],
+  "transitions": [],
+  "figma_node_ids": {},
+  "pre_merge_review": { "ux": null, "design": null }
+}
