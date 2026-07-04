@@ -606,6 +606,41 @@ def pr_babysit(repos: tuple[str, ...] = ("Regevba/FitTracker2", "Regevba/fitme-s
     return result
 
 
+STATE_SYNC_HEALTH_URL = os.environ.get(
+    "FT2_STATE_SYNC_HEALTH_URL",
+    "https://fitme-story.vercel.app/api/control-room/state-sync-health",
+)
+
+
+def state_sync_health_probe(url: str = STATE_SYNC_HEALTH_URL, timeout: int = 8) -> dict:
+    """N4 (FIT-183 / R17) — probe the fitme-story cross-repo state-sync health
+    endpoint. Returns a dict describing the outcome; NEVER raises.
+
+    The endpoint returns 200 + healthy=true when the FT2→fitme-story mirror is
+    fresh (<6h), or 503 + a reason (`stale` / `empty_mirror` / …) when not. A
+    network error / 404 (endpoint not yet deployed) is reported as
+    reachable=False — best-effort, so a transient outage never fails the daily
+    checkpoint.
+    """
+    import urllib.error
+    import urllib.request
+
+    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 — fixed https URL
+            body = json.loads(resp.read().decode("utf-8"))
+            return {"reachable": True, "http_status": resp.status, **body}
+    except urllib.error.HTTPError as e:
+        # 503 (stale/broken) still carries a JSON body with the reason.
+        try:
+            body = json.loads(e.read().decode("utf-8"))
+        except Exception:  # noqa: BLE001
+            body = {}
+        return {"reachable": True, "http_status": e.code, **body}
+    except Exception as e:  # noqa: BLE001 — best-effort; any failure = unreachable
+        return {"reachable": False, "error": f"{type(e).__name__}: {e}"}
+
+
 def upcoming_followups(today: dt.date, lookahead_days: int = FOLLOWUP_LOOKAHEAD_DAYS) -> list[dict]:
     """Parse must-have-cadence-followups.md and return rows whose date is within lookahead_days.
 
@@ -1001,6 +1036,26 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
                     log(f"    #{p['number']} ({p['updated_hours_ago']}h idle): {p['title']}")
                 if len(prs) > 3:
                     log(f"    ... +{len(prs) - 3} more")
+
+    # N4 (FIT-183 / R17) — cross-repo state-sync freshness probe
+    sync = state_sync_health_probe()
+    if not sync.get("reachable"):
+        log(f"\n🔗 State-sync health: endpoint unreachable ({sync.get('error', 'unknown')}) "
+            "— best-effort, ignoring (transient network).")
+    elif "healthy" not in sync:
+        # Reachable but no valid health body (e.g. 404 before the route
+        # deploys, or an unexpected response) — best-effort, not an alert.
+        log(f"\n🔗 State-sync health: endpoint returned http {sync.get('http_status')} "
+            "without a health body — best-effort, ignoring (route not deployed yet?).")
+    elif sync.get("healthy"):
+        age = sync.get("age_minutes")
+        log(f"\n🔗 State-sync health: OK (mirror {age}m old, "
+            f"{sync.get('ft2_state_count')} states, {sync.get('gate_coverage_lines')} gate-cov lines).")
+    else:
+        age = sync.get("age_minutes")
+        log(f"\n⚠ STATE-SYNC STALE: reason={sync.get('reason')} age={age}m "
+            f"(threshold 360m) — the fitme-story FT2 mirror has gone stale. "
+            f"Check scripts/sync-from-fittracker2.ts / the pre-build sync.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,75 @@
+{
+  "feature": "r17-state-sync-health-endpoint",
+  "linear_id": "FIT-183",
+  "thematic_code": "DE-R17",
+  "created_at": "2026-07-04T05:00:00Z",
+  "updated": "2026-07-04T05:30:00Z",
+  "branch": "chore/fit183-state-sync-probe",
+  "current_phase": "complete",
+  "work_type": "chore",
+  "work_subtype": "framework_feature",
+  "schema_version": 1,
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "has_ui": false,
+  "requires_analytics": false,
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "Cross-repo dev-env observability infra (DE-R17, parent FIT-166 Tier 3): fitme-story health endpoint + FT2 daily-checkpoint probe. No product surface; PR bodies + this state.json are the provenance record.",
+  "isolation_opt_out": false,
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "summary": "R17 (dev-env plan / FIT-166 Tier 3) — cross-repo state-sync read-only health endpoint. fitme-story GET /api/control-room/state-sync-health reports FT2-mirror freshness ({last_sync_ts, ft2_state_count, gate_coverage_lines, age_minutes, healthy, reason}; 200 fresh / 503 stale; public, not proxy-gated). FT2 daily-integrity-checkpoint.py gains an N4 best-effort probe that alerts on stale (>6h) and no-ops gracefully on unreachable/not-deployed. fitme-story: pure computeSyncHealth + 7 tests. FT2: probe + 4 tests.",
+  "cross_repo_code_pr": "fitme-story#258",
+  "pr_citation_exempt": [
+    { "pr_number": 258, "reason": "Endpoint code lives in fitme-story (cross-repo); this FT2 PR ships the daily-checkpoint probe + tracking." }
+  ],
+  "phases": {
+    "research": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "prd": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "tasks": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "ux_or_integration": { "status": "skipped", "skip_reason": "work_type:chore" },
+    "implementation": { "status": "complete", "commits": [] },
+    "testing": { "status": "complete" },
+    "review": { "status": "complete" },
+    "merge": { "status": "complete", "pr_number": null },
+    "documentation": { "status": "complete" }
+  },
+  "timing": {
+    "phases": {
+      "implement": { "started_at": "2026-07-04T05:00:00Z", "ended_at": "2026-07-04T05:28:00Z" },
+      "complete": { "started_at": "2026-07-04T05:30:00Z", "ended_at": "2026-07-04T05:30:00Z" }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "fitme-story GET /api/control-room/state-sync-health + pure computeSyncHealth + 7 tests (PR #258)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "complete",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [],
+      "completed_at": "2026-07-04T05:20:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "FT2 daily-integrity-checkpoint.py N4 best-effort probe (alert on stale >6h) + 4 tests",
+      "type": "infra",
+      "skill": "dev",
+      "status": "complete",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": ["T1"],
+      "completed_at": "2026-07-04T05:28:00Z"
+    }
+  ],
+  "transitions": [],
+  "figma_node_ids": {},
+  "pre_merge_review": { "ux": null, "design": null }
+}
