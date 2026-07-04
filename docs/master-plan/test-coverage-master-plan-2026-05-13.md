@@ -9,6 +9,8 @@
 > the source of truth; this doc is a planning view. Bare thematic codes (`F4`/`T14`/`R14`) are
 > retired in favor of prefixed codes to prevent the cross-scheme collisions reconciled 2026-06-29.
 
+> **Progress (2026-07-03 → 07-04 bucket-A batch):** **T8** (FIT-156, WebAuthn route tests) · **T7** (FIT-155, Playwright smoke) · **T15** (FIT-163, orphan-test cron) · **R17** (FIT-183, cross-repo sync-health endpoint) → **Done**. **T4** (FIT-152, iOS snapshot) + **T9** (FIT-157, backend chaos) → **In Progress (foundation slice shipped)** — T4 baselines record-in-CI (local iOS 26 ≠ CI iOS 18); T9 key-rotation deferred (biometric-gated `rotateKeys` untestable on CI sim). Live status: [`.claude/shared/item-registry.json`](../../.claude/shared/item-registry.json).
+>
 > **Status:** CURRENT · Opened 2026-05-13 as a sub-doc of [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md)
 > **Scope:** Test discipline across every system layer — iOS, web (fitme-story), framework (Python gates), backend (Supabase/CloudKit/auth), AI, analytics. Forward-looking calibration of where tests exist, where they've drifted, and where they're missing.
 > **Purpose:** Answer the question the infra master plan does NOT answer: "are all current tests in spec across all layers?" The infra plan covers Theme G — Test discipline for the framework layer only (F14–F18 + F19/F20 from analytics-observability). This sub-doc widens the scope to iOS + web + backend + AI + analytics and proposes a per-layer T-series candidate docket.
