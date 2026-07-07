@@ -11,6 +11,15 @@ location changed to `/Users/regevbarak/FitTracker2` (see CLAUDE.md).
 > `/Users/regevbarak/Developer/FitMe/FitTracker2` with a compat symlink at
 > `~/FitTracker2`. The `~/FitTracker2` paths below still resolve via that symlink.
 
+> ⛔ **HARDWARE VERDICT 2026-07-07 — build-on-SSD is BLOCKED.** After reformat, the
+> SSD passed a 256MB write/verify but then **dropped off the USB bus mid-build**
+> (`disk8` vanished during compile). That's the 4th fault in one day (fsroot
+> corruption → EILSEQ write-fault → post-format `verifyVolume` exit-8 → hard
+> disconnect under load) ⇒ **failing cable/enclosure or NAND.** Do NOT rely on it
+> as the build drive until the hardware is cleared (§8). Everything runs on
+> **internal storage** (source + build); nothing was lost (all data redundant on
+> internal/GitHub). §3 and §7 below only apply *after* the drive passes §8.
+
 ---
 
 ## 1. Pre-format data-safety manifest (VERIFIED before wiping)
@@ -157,3 +166,45 @@ build tooling at the SSD. **Source stays on internal; only build output moves.**
 > run a scratch write/verify (copy a few GB to `/Volumes/DevSSD` + `shasum`
 > round-trip) on a **different cable + port**. If it faults again, treat the drive
 > as build-only-disposable (never the sole copy of anything) or replace it.
+
+---
+
+## 8. 2026-07-07 fault record + hardware-clearance gate
+
+**What happened.** Operator reformatted the SSD; §3+§7 setup was applied and a
+real iOS build was run to SSD DerivedData as the proof. Sequence:
+1. Post-format `diskutil verifyVolume /Volumes/DevSSD` → **exit 8** (inconclusive; ran without root).
+2. 256MB write/read `shasum` round-trip → **matched** (basic I/O OK).
+3. First build failed on a SwiftPM manifest-cache write — root cause was **5 stale
+   `~/Library` symlinks** from the old all-on-SSD setup (2026-04-06) that dangled
+   after reformat (their SSD targets were gone): `~/Library/Caches/{org.swift.swiftpm,
+   Homebrew,pip,node-gyp}` + `~/Library/Developer/Xcode/DerivedData`.
+4. Recreated the symlink targets; retried build → **the SSD dropped off the USB bus
+   mid-compile** (`disk8` disappeared entirely and did not return).
+
+**Verdict.** 4 faults in one day ⇒ **failing cable/enclosure or NAND. build-on-SSD
+is blocked.** No data lost (source + all data redundant on internal/GitHub).
+
+**Remediation applied 2026-07-07 (machine is now SSD-independent):**
+- The 5 `~/Library` symlinks were **converted from SSD-pointers to real internal
+  directories** — they were an *unguarded* SSD dependency (unlike the `~/.zshrc`
+  env-var block, they don't fall back to internal; they just dangle and break
+  Homebrew/pip/SwiftPM/DerivedData whenever the SSD is absent). This is the durable
+  fix for "SSD unplugged breaks the toolchain."
+- Xcode DerivedData default reverted to internal (`defaults delete … IDECustomDerivedDataLocation`).
+
+**Hardware-clearance gate — pass ALL before re-attempting §3/§7:**
+1. **Swap cable + USB port** (ideally a different enclosure — the X10 Pro is a bare NVMe behind a USB bridge; bridge/cable faults present exactly like this).
+2. `sudo diskutil verifyVolume /Volumes/DevSSD` → must report **OK** (with root, definitive).
+3. **Sustained stress test** — must stay mounted through the whole run:
+   ```bash
+   for i in $(seq 1 20); do
+     dd if=/dev/urandom of=/Volumes/DevSSD/.stress bs=1m count=512 2>/dev/null || { echo "WRITE FAULT round $i"; break; }
+     [ -d /Volumes/DevSSD ] || { echo "DROPPED round $i"; break; }
+   done; rm -f /Volumes/DevSSD/.stress; echo "survived: check for DROPPED/FAULT above"
+   ```
+4. A full `xcodebuild … -derivedDataPath /Volumes/DevSSD/XcodeData/DerivedData build` completes without the drive dropping.
+
+If any step fails → **replace the enclosure/drive; keep everything on internal.**
+Internal storage has ample space and is reliable; the SSD is a *convenience*, not a
+requirement, for this project.
