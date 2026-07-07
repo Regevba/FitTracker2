@@ -6,6 +6,11 @@ migrated to internal storage; the SSD is being reformatted and repurposed as the
 **build/tooling drive** (source stays on internal). Source repo canonical
 location changed to `/Users/regevbarak/FitTracker2` (see CLAUDE.md).
 
+> **Update 2026-07-07:** all project folders were consolidated under
+> `~/Developer/FitMe/`; the canonical repo is now
+> `/Users/regevbarak/Developer/FitMe/FitTracker2` with a compat symlink at
+> `~/FitTracker2`. The `~/FitTracker2` paths below still resolve via that symlink.
+
 ---
 
 ## 1. Pre-format data-safety manifest (VERIFIED before wiping)

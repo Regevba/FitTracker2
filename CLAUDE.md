@@ -1,14 +1,26 @@
 # FitMe (FitTracker2) — Project Rules
 
-> **Canonical repo location:** `/Users/regevbarak/FitTracker2` (internal storage).
+> **Canonical repo location:** `/Users/regevbarak/Developer/FitMe/FitTracker2` (internal storage).
 >
-> **Changed 2026-07-05.** The canonical source-of-truth checkout now lives on
-> the Mac's **internal storage** at `/Users/regevbarak/FitTracker2`, re-cloned
+> **Consolidated 2026-07-07.** All project-connected folders were moved under a
+> single parent, `~/Developer/FitMe/`, so everything lives in one place:
+> `FitTracker2/` (this canonical monorepo), the satellite repos (`orchid/`,
+> `fittracker-ai/`, `fittracker-backend/`), and `backups/` (the former
+> `~/Documents/FitTracker2-backups`, `~/orchid-backup-*.git`, and
+> `~/SSD-backup-2026-05-03`). A compatibility symlink `~/FitTracker2 →
+> ~/Developer/FitMe/FitTracker2` is **kept intentionally** (decision 2026-07-07)
+> so legacy absolute paths still resolve — notably the Python venvs
+> (`.build/venv`, `ai-engine/.venv`) bake the old absolute path into their `bin/`
+> shebangs and are NOT relocatable, so removing the symlink later requires
+> recreating both venvs. Absolute paths in docs,
+> commit messages, handoffs, or scripts should reference
+> `/Users/regevbarak/Developer/FitMe/FitTracker2` for the source repo.
+>
+> **Changed 2026-07-05.** The canonical source-of-truth checkout moved to the
+> Mac's **internal storage** (was `/Users/regevbarak/FitTracker2`), re-cloned
 > from origin after the external SSD (`/Volumes/DevSSD`, Crucial X10) suffered
 > APFS `fsroot` corruption. The source tree (git repo, all layers) is small and
-> belongs on the reliable internal disk. Absolute paths in docs, commit
-> messages, handoffs, or scripts should reference `/Users/regevbarak/FitTracker2`
-> for the source repo.
+> belongs on the reliable internal disk.
 >
 > **Build-artifact split (SSD = build drive).** Once the external SSD is
 > reformatted and healthy again, it becomes the **build/tooling drive** only —

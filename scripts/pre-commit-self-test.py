@@ -76,7 +76,15 @@ def extract_declared_gates(text: str) -> set[str]:
         if m:
             name = m.group(1)
             # Filter out non-gate words that match the regex shape.
-            if name not in {"IMPORTANT", "WARNING", "TODO", "FIXME", "NOTE"}:
+            # `*_ADVISORY_MODE` are module-level mode flags (e.g.
+            # CSV_TAXONOMY_DRIFT_ADVISORY_MODE), not gate codes; and some
+            # gate descriptions cite env-var names (GOOGLE_APPLICATION_
+            # CREDENTIALS, GA4_PROPERTY_ID) which are not gates either.
+            non_gate = {
+                "IMPORTANT", "WARNING", "TODO", "FIXME", "NOTE",
+                "GOOGLE_APPLICATION_CREDENTIALS", "GA4_PROPERTY_ID",
+            }
+            if name not in non_gate and not name.endswith("_ADVISORY_MODE"):
                 gates.add(name)
     return gates
 
@@ -127,6 +135,12 @@ def extract_inline_drift_codes(text: str) -> set[str]:
         inline_codes.add("BRANCH_ISOLATION_HISTORICAL")
     if "BRANCH_ISOLATION_LAUNCHD_DRIFT" in text:
         inline_codes.add("BRANCH_ISOLATION_LAUNCHD_DRIFT")
+    # AN-1B analytics gates (advisory) — implemented via a `GATE = "NAME"`
+    # variable + coverage.candidate(), not a `"code": "NAME"` literal.
+    if "CSV_TAXONOMY_DRIFT" in text:
+        inline_codes.add("CSV_TAXONOMY_DRIFT")
+    if "GA4_MCP_DISCONNECTED" in text:
+        inline_codes.add("GA4_MCP_DISCONNECTED")
     return inline_codes
 
 
