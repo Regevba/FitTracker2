@@ -107,12 +107,16 @@ def _run(state, monkeypatch, *, committed=None, canonical="v7.10",
 
 
 def test_fires_on_stale_with_transition(monkeypatch):
+    # Enforced since the 2026-07-05 Phase D promotion: a stale version + phase
+    # transition now yields a blocking (advisory=False) finding by default.
+    # The advisory-mode path is covered by test_advisory_finding_is_not_an_error.
+    monkeypatch.setattr(_mod, "FRAMEWORK_VERSION_STALE_ADVISORY_MODE", False)
     findings, stats = _run(_base_state(framework_version="v7.5"), monkeypatch,
                            committed=None)  # None HEAD => transition
     assert len(findings) == 1
     f = findings[0]
     assert f["code"] == GATE
-    assert f["advisory"] is True
+    assert f["advisory"] is False
     assert f["recorded"] == "v7.5"
     assert f["canonical"] == "v7.10"
     assert stats["checked"] == 1

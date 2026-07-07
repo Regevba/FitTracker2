@@ -178,7 +178,13 @@ _FRAMEWORK_VERSION_RE = re.compile(r"^(pre-)?v\d+\.\d+(\.\d+)?$")
 # advisory→enforced flip independent of any sibling gate (mirrors
 # PLATFORMS_TESTED_ADVISORY_MODE). Phase A artifacts:
 # .claude/features/f4-framework-version-stale/calibration-artifacts.md
-FRAMEWORK_VERSION_STALE_ADVISORY_MODE = True
+# PROMOTED advisory->enforced 2026-07-05 (Phase D): 18-day window (2026-06-17
+# first_seen -> 07-05); 382 candidates / 35 checked (not mis-wired); canonical
+# v7.10 resolves cleanly from FRAMEWORK-FACTS.md; 0 false positives (gate fires
+# only on phase transitions, so the 95 sub-v7.10 complete/frozen features are
+# stale-by-design and never trip it). Reversible: flip back to True on
+# chore/f4-rollback. Phase E validate 7d -> ~2026-07-12.
+FRAMEWORK_VERSION_STALE_ADVISORY_MODE = False
 
 # AN-1B.1 (analytics-master-plan §8.2, Theme C / F19): CSV_TAXONOMY_DRIFT.
 # Commit-level gate — fires when AnalyticsProvider.swift is staged and an
