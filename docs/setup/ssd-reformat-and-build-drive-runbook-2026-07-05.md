@@ -77,8 +77,8 @@ Open a fresh shell after format to pick up the SSD paths, or `source ~/.zshrc`.
 |---|---|---|
 | Framework (Python gates/tests) | ✅ ready | `.build/venv` (pytest + pytest-cov); 60/60 F4+schema tests pass |
 | Web — dashboard | ✅ `npm install` done | |
-| Web — website + root | ⏳ reinstalling post-zshrc-guard | were blocked by SSD-anchored npm cache |
-| ai-engine (Python) | ⏳ `ai-engine/.venv` (hatchling, non-editable) | deterministic golden-set evals need no LLM key |
+| Web — website + root | ✅ done 2026-07-07 | root `fittracker-design-tokens` needed `NODE_ENV=development npm ci --include=dev` (env had `NODE_ENV=production` → skipped devDeps); `make tokens-check` green |
+| ai-engine (Python) | ✅ done 2026-07-07 | `.venv` rebuilt on internal Python 3.14.5 (was mis-built on Xcode's 3.9.6, no deps); `pip install -e '.[dev]'` → 60 pass / 1 skip |
 | iOS (Xcode 26.6) | ✅ toolchain present | SPM resolves on build; **build output → SSD** post-format (`-derivedDataPath`) |
 | backend | ✅ n/a | `backend/` is Supabase SQL/edge-fn only — no local runtime |
 | HADF experiment SDKs | ⏸️ on-demand | `scripts/requirements-hadf-phase2.txt` (openai/anthropic/boto3/scipy) — heavy; install only to run cloud experiments (operator-gated on API keys/AWS) |
@@ -86,6 +86,74 @@ Open a fresh shell after format to pick up the SSD paths, or `source ~/.zshrc`.
 ---
 
 ## 5. Open follow-ups
-- Push the `chore/canonical-location-internal` branch + open PR (CLAUDE.md change).
+- ~~Push the `chore/canonical-location-internal` branch~~ ✅ pushed 2026-07-07 (`9435699`; also carries the ~/Developer/FitMe consolidation).
 - Update `docs/setup/ssd-setup-guide.md` to reflect the source-on-internal / build-on-SSD split (currently describes the retired all-on-SSD layout).
-- After format + first successful iOS build to SSD DerivedData, confirm the split works end-to-end.
+- After format + first successful iOS build to SSD DerivedData, confirm the split works end-to-end (§7).
+
+---
+
+## 6. On-reconnect data-safety reconciliation (MANDATORY before erase)
+
+**Status 2026-07-07: SSD is disconnected.** Everything the §1 manifest lists is
+already redundant on internal + GitHub — verified this session:
+
+| Asset | Internal copy | GitHub | Backup |
+|---|---|---|---|
+| repos (4) | `~/Developer/FitMe/{FitTracker2,orchid,fittracker-ai,fittracker-backend}` | all 4 head-synced; orchid `feat`+`main` both pushed | orchid bare mirror `~/Developer/FitMe/backups/orchid-backup-2026-07-05.git` |
+| HADF data | `.claude/shared/hadf` (38 files, git-tracked) | FitTracker2 origin | 27 raw-data backup dirs in `backups/` |
+| local secrets | `.vercel/.env.production.local` + `FitTracker/GoogleService-Info.plist` | (intentionally not in git) | — |
+| build artifacts | regenerable | — | — |
+
+A **live byte-diff against the SSD can only run once it is remounted.** Do this
+FIRST, before Disk Utility → Erase (§2):
+
+1. Mount the SSD read-only if possible; confirm the actual mount path (`/Volumes/DevSSD`, or `/Volumes/DevSSD 1` if a stale mount lingers).
+2. Reconcile the source tree — flag any SSD file not present/identical on internal:
+   ```bash
+   diff -qr /Volumes/DevSSD/FitTracker2 ~/Developer/FitMe/FitTracker2 \
+     --exclude .git --exclude node_modules --exclude .build \
+     --exclude .venv --exclude DerivedData | tee ~/ssd-reconcile-source.txt
+   ```
+   Any `Only in /Volumes/DevSSD/...` line that is NOT a build artifact = potential loss → investigate before erasing.
+3. Scan for non-repo data unique to the SSD (esp. HADF experiment worktrees):
+   ```bash
+   find /Volumes/DevSSD -maxdepth 3 -type d | \
+     grep -viE "XcodeData|DerivedData|dev-cache|dev-home|node_modules|\.build|\.git"
+   ```
+   Confirm every `FitTracker2-hadf-phase2bis-subexp*/.claude/shared/hadf` raw dataset is already in `~/Developer/FitMe/backups/*hadf*` (27 dirs) before erasing.
+4. Orchid: confirm `/Volumes/DevSSD/orchid` HEAD == `3005c752` (now on GitHub + internal clone + bare mirror → redundant).
+5. **Only when steps 2–4 show zero un-backed-up files → proceed to §2 Erase.** If the SSD won't mount at all (dead controller), rely on the table above: all assets are already redundant, so erase/replace is still safe.
+
+---
+
+## 7. Post-format: move iOS heavy tooling to the SSD build drive
+
+After Erase (§2) + cache-tree recreation (§3), point the heavy, regenerable iOS
+build tooling at the SSD. **Source stays on internal; only build output moves.**
+
+1. **Xcode DerivedData → SSD** (reverts the 2026-07-07 internal repoint):
+   ```bash
+   defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation /Volumes/DevSSD/XcodeData/DerivedData
+   # per-build alternative: xcodebuild -derivedDataPath /Volumes/DevSSD/XcodeData/DerivedData ...
+   ```
+   (To restore internal: `defaults delete com.apple.dt.Xcode IDECustomDerivedDataLocation`.)
+2. **SwiftPM SourcePackages** ride inside DerivedData → already on SSD once step 1 is set. (SPM's global cache at `~/Library/Caches/org.swift.swiftpm` is small; leave it internal.)
+3. **clang module cache → SSD** (optional; set in the shell that drives builds):
+   ```bash
+   export CLANG_MODULE_CACHE_PATH=/Volumes/DevSSD/XcodeData/ModuleCache
+   ```
+4. **iOS Simulator data** (`~/Library/Developer/CoreSimulator/Devices`, the heaviest tree): relocation is higher-risk (must be done with Xcode + all simulators fully quit, via symlink). **Defer** unless internal space pressure demands it — DerivedData (step 1) is ~90% of the win.
+5. **npm/pip/tool caches → SSD**: automatic. `~/.zshrc`'s `if [ -d /Volumes/DevSSD ]` block re-exports `npm_config_cache` / `PIP_CACHE_DIR` / `UV_CACHE_DIR` / `XDG_CACHE_HOME` / etc. to the SSD on the next **fresh shell** once it is mounted. (Just open a new terminal after remount.)
+6. **Verify the split end-to-end:**
+   ```bash
+   xcodebuild -scheme FitTracker \
+     -destination 'generic/platform=iOS Simulator' \
+     -derivedDataPath /Volumes/DevSSD/XcodeData/DerivedData build
+   ```
+   Confirm DerivedData populates on the SSD, the source tree on internal is untouched, and the build **succeeds**. Then update `docs/setup/ssd-setup-guide.md` (§5 follow-up) to describe the final source-on-internal / build-on-SSD layout.
+
+> **Cable/enclosure caveat (from §2.4):** two faults in one day suggest a failing
+> cable/enclosure, not the NAND. Before trusting the SSD as the build drive again,
+> run a scratch write/verify (copy a few GB to `/Volumes/DevSSD` + `shasum`
+> round-trip) on a **different cable + port**. If it faults again, treat the drive
+> as build-only-disposable (never the sole copy of anything) or replace it.
