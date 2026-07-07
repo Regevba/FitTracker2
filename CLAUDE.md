@@ -1,21 +1,31 @@
 # FitMe (FitTracker2) — Project Rules
 
-> **Canonical repo location:** `/Volumes/DevSSD/FitTracker2`
+> **Canonical repo location:** `/Users/regevbarak/FitTracker2` (internal storage).
 >
-> The project lives on an external SSD at `/Volumes/DevSSD/FitTracker2`, not
-> on the Mac's internal storage. All build artifacts (Xcode DerivedData, SPM
-> cache, npm cache, Python venvs, clang module cache, simulator data) are
-> kept under `.build/` inside the repo, which is already on the SSD. Any
-> absolute paths in documentation, commit messages, handoffs, or scripts
-> should reference `/Volumes/DevSSD/FitTracker2` when pointing at the local
-> repo — never `/Users/{name}/` or `/tmp/`. Setup details live in
-> `docs/setup/ssd-setup-guide.md`.
+> **Changed 2026-07-05.** The canonical source-of-truth checkout now lives on
+> the Mac's **internal storage** at `/Users/regevbarak/FitTracker2`, re-cloned
+> from origin after the external SSD (`/Volumes/DevSSD`, Crucial X10) suffered
+> APFS `fsroot` corruption. The source tree (git repo, all layers) is small and
+> belongs on the reliable internal disk. Absolute paths in docs, commit
+> messages, handoffs, or scripts should reference `/Users/regevbarak/FitTracker2`
+> for the source repo.
+>
+> **Build-artifact split (SSD = build drive).** Once the external SSD is
+> reformatted and healthy again, it becomes the **build/tooling drive** only —
+> not the source. Heavy, regenerable artifacts (Xcode DerivedData, SPM cache,
+> clang module cache, iOS Simulator data, and optionally npm/Python caches) are
+> pointed at the SSD (via `xcodebuild -derivedDataPath`, `DERIVED_DATA` env, or
+> symlinks) so internal storage stays lean. The source stays on internal; the
+> SSD holds only reproducible build output. Setup details:
+> `docs/setup/ssd-setup-guide.md` (update pending to reflect this split).
+>
+> **Historical:** before 2026-07-05 the repo lived entirely on the SSD with
+> `.build/` inside the repo. That layout is retired due to the SSD fault; see
+> the DevSSD corruption incident + migration record.
 >
 > Agents running in sandboxed environments may see a different working
 > directory path (e.g. `/home/user/FitTracker2`). That's the sandbox mount
-> of the repo, not the real location. Files written inside the sandbox are
-> the user's real files, but human-readable paths in docs should always
-> point at the SSD.
+> of the repo, not the real location.
 
 ## Product Management Lifecycle
 
