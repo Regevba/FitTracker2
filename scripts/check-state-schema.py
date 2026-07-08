@@ -174,11 +174,15 @@ _FRAMEWORK_VERSION_RE = re.compile(r"^(pre-)?v\d+\.\d+(\.\d+)?$")
 # F4 (v8.x docket, Theme C): FRAMEWORK_VERSION_STALE advisory gate.
 # Fires when a feature is actively advanced (current_phase transition) while its
 # `framework_version` is strictly older than the canonical current version.
-# Ships ADVISORY for a 14-day calibration window; its own flag keeps the
-# advisory→enforced flip independent of any sibling gate (mirrors
-# PLATFORMS_TESTED_ADVISORY_MODE). Phase A artifacts:
+# Shipped ADVISORY 2026-06-17; its own flag keeps the advisory→enforced flip
+# independent of any sibling gate (mirrors PLATFORMS_TESTED_ADVISORY_MODE).
+# ENFORCED 2026-07-08 (cadence F4) — all §2.2 criteria held over the window:
+# 8 emission days (2026-06-17→07-01, 40 fires / 387 candidates), 0 false
+# positives (the two legit-stale classes route to skips: reverse_sync_mirror +
+# explicit_exempt), 0 silent skips (no_phase_change / not_staged_mode only),
+# canonical resolves to v7.10, reversible single-flag. Phase A artifacts:
 # .claude/features/f4-framework-version-stale/calibration-artifacts.md
-FRAMEWORK_VERSION_STALE_ADVISORY_MODE = True
+FRAMEWORK_VERSION_STALE_ADVISORY_MODE = False
 
 # AN-1B.1 (analytics-master-plan §8.2, Theme C / F19): CSV_TAXONOMY_DRIFT.
 # Commit-level gate — fires when AnalyticsProvider.swift is staged and an
