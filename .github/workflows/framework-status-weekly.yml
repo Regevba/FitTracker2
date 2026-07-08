@@ -355,29 +355,35 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Open digest issue
-        if: steps.compare.outputs.regression == 'true' || steps.trend.outputs.a2_gate_regression == 'true' || steps.trend.outputs.a4_dim_regression == 'true' || inputs.open_issue_on_no_regression == 'true'
+        if: steps.compare.outputs.regression == 'true' || steps.trend.outputs.a2_gate_regression == 'true' || steps.trend.outputs.a4_dim_regression == 'true' || steps.trend.outputs.auth_lockout_detected == 'true' || inputs.open_issue_on_no_regression == 'true'
         uses: actions/github-script@v9
         env:
           REGRESSION: ${{ steps.compare.outputs.regression }}
           A2_REGRESSION: ${{ steps.trend.outputs.a2_gate_regression }}
           A4_REGRESSION: ${{ steps.trend.outputs.a4_dim_regression }}
+          AUTH_LOCKOUT: ${{ steps.trend.outputs.auth_lockout_detected }}
         with:
           script: |
             const adoptionRegr = process.env.REGRESSION === 'true';
             const a2Regr = process.env.A2_REGRESSION === 'true';
             const a4Regr = process.env.A4_REGRESSION === 'true';
+            const authLockout = process.env.AUTH_LOCKOUT === 'true';
             const regression = adoptionRegr || a2Regr || a4Regr;
+            // A6 auth-lockout is a security anomaly, not a measurement regression —
+            // it opens the issue and flags the title, but keeps its own reason label.
+            const anomaly = regression || authLockout;
             const digest = process.env.DIGEST || '(empty)';
             const today = new Date().toISOString().slice(0, 10);
             const reasons = [];
             if (adoptionRegr) reasons.push('measurement-adoption');
             if (a2Regr) reasons.push('A2 gate-coverage');
             if (a4Regr) reasons.push('A4 per-dimension');
-            const title = regression
-              ? `Framework status ${today}: regression — ${reasons.join(', ')}`
+            if (authLockout) reasons.push('A6 auth-lockout');
+            const title = anomaly
+              ? `Framework status ${today}: ${authLockout && !regression ? 'security — auth lockout' : 'regression'} — ${reasons.join(', ')}`
               : `Framework status ${today}: weekly digest`;
-            const labels = regression
-              ? ['framework-status', 'regression']
+            const labels = anomaly
+              ? ['framework-status', authLockout ? 'security' : 'regression']
               : ['framework-status'];
             const body = [
               digest,
