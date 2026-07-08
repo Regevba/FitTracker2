@@ -58,8 +58,15 @@ GATE_LAST_FIRED = REPO_ROOT / ".claude" / "shared" / "gate-last-fired.json"
 WEEKLY_GATE_LEDGER = REPO_ROOT / ".claude" / "shared" / "gate-coverage-weekly.jsonl"
 ADOPT = REPO_ROOT / ".claude" / "shared" / "measurement-adoption.json"
 ADOPT_HIST = REPO_ROOT / ".claude" / "shared" / "measurement-adoption-history.json"
+# E-3 / OQ-4: UCC auth audit log, synced from the fitme-story Blob store via the
+# B7 UCC_AUDIT_BLOB_URL sync. Absent until the sync runs — treated as clean.
+UCC_AUTH_LOG = REPO_ROOT / ".claude" / "logs" / "ucc-auth-events.jsonl"
 
 DIMENSION_KEYS = ("timing_wall_time", "per_phase_timing", "cache_hits", "cu_v2")
+# Security-relevant lockout events (open a digest issue). auth_lockout_cleared is
+# informational (lockout expired) — counted but never sets `detected`.
+LOCKOUT_ALARM_EVENTS = ("auth_lockout_triggered", "auth_lockout_blocked_attempt")
+AUTH_LOCKOUT_WINDOW_DAYS = 7
 
 
 def load_json(p: Path) -> dict:
@@ -245,6 +252,71 @@ def dim_deltas() -> tuple[dict, bool]:
     return deltas, regression
 
 
+def _parse_ts(raw) -> "dt.datetime | None":
+    """Parse an ISO-8601 UTC timestamp (trailing 'Z' tolerated). None on failure."""
+    if not isinstance(raw, str) or not raw:
+        return None
+    try:
+        return dt.datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def auth_lockout_activity(
+    log_path: Path = UCC_AUTH_LOG,
+    window_days: int = AUTH_LOCKOUT_WINDOW_DAYS,
+    ref_date: str | None = None,
+) -> dict:
+    """E-3 / OQ-4: count UCC auth-lockout events within the trailing window.
+
+    Reads the synced audit log and tallies lockout events in the last
+    `window_days`. `detected` is True when any ALARM event (triggered / blocked)
+    falls in the window — that flag drives the workflow's issue-open condition.
+    `auth_lockout_cleared` is counted but informational (never sets detected).
+
+    Fail-safe: a missing log (sync hasn't run) or malformed/undated lines yield
+    a clean, non-detecting result rather than an error — the digest must never
+    crash the Monday cron over an absent optional input.
+    """
+    now = _parse_ts(ref_date) if ref_date else dt.datetime.now(dt.timezone.utc)
+    if now is None:
+        now = dt.datetime.now(dt.timezone.utc)
+    cutoff = now - dt.timedelta(days=window_days)
+
+    result = {
+        "log_present": log_path.exists(),
+        "window_days": window_days,
+        "triggered": 0,
+        "blocked": 0,
+        "cleared": 0,
+        "detected": False,
+    }
+    if not result["log_present"]:
+        return result
+
+    for line in log_path.read_text().splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        ts = _parse_ts(ev.get("timestamp"))
+        if ts is None or ts < cutoff:
+            continue
+        et = ev.get("event_type")
+        if et == "auth_lockout_triggered":
+            result["triggered"] += 1
+        elif et == "auth_lockout_blocked_attempt":
+            result["blocked"] += 1
+        elif et == "auth_lockout_cleared":
+            result["cleared"] += 1
+
+    result["detected"] = (result["triggered"] + result["blocked"]) > 0
+    return result
+
+
 def write_github_outputs(payload: dict) -> None:
     out_path = os.environ.get("GITHUB_OUTPUT")
     if not out_path:
@@ -273,6 +345,8 @@ def main() -> int:
 
     a5_silent = silent_gate_candidates()
 
+    lockout = auth_lockout_activity()
+
     append_weekly_row(cur_gates, append=not args.no_append)
 
     payload = {
@@ -284,6 +358,9 @@ def main() -> int:
         "a4_dim_deltas": deltas,
         "a5_silent_count": len(a5_silent),
         "a5_silent_gates": ",".join(r["gate"] for r in a5_silent),
+        "auth_lockout_detected": "true" if lockout["detected"] else "false",
+        "auth_lockout_triggered": lockout["triggered"],
+        "auth_lockout_blocked": lockout["blocked"],
     }
     write_github_outputs(payload)
 
@@ -304,6 +381,7 @@ def main() -> int:
                 "silent_gate_candidates": a5_silent,
                 "note": "informational — zero-firing may be healthy (never violated); verify healthy-zero vs mis-wire before promotion",
             },
+            "a6_auth_lockout": lockout,
         }, indent=2))
         return 0
 
@@ -346,6 +424,21 @@ def main() -> int:
             lines.append(f"| `{r['gate']}` | {r['candidates']} | {r['skips']} | {r['last_checked_at'] or '—'} |")
     else:
         lines.append(" none — every gate with candidates has fired at least once.")
+    lines.append("")
+    lines.append(f"**A6 — UCC auth-lockout activity** (last {lockout['window_days']}d):")
+    if not lockout["log_present"]:
+        lines.append(" audit log not synced yet (`ucc-auth-events.jsonl` absent) — no lockout data.")
+    elif lockout["detected"]:
+        lines.append(
+            f" ⚠ **{lockout['triggered']} lockout(s) triggered + {lockout['blocked']} blocked "
+            f"attempt(s)** in the window (cleared: {lockout['cleared']}). Opens digest issue — "
+            f"investigate the fitme-story auth audit log for the operator/IP pattern."
+        )
+    else:
+        lines.append(
+            f" ✓ no lockouts (triggered=0, blocked=0, cleared={lockout['cleared']}) — "
+            f"auth surface healthy."
+        )
     print("\n".join(lines))
     return 0
 
