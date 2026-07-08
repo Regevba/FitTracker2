@@ -1,10 +1,10 @@
-"""F16 try-repo harness — F4 FRAMEWORK_VERSION_STALE advisory gate.
+"""F16 try-repo harness — F4 FRAMEWORK_VERSION_STALE gate.
 
-FRAMEWORK_VERSION_STALE ships ADVISORY (FRAMEWORK_VERSION_STALE_ADVISORY_MODE),
-so it never makes pre-commit exit non-zero during its calibration window. The
-advisory-gate analog of the rc!=0 assertion (per the PLATFORMS_TESTED precedent)
-is therefore an assertion on the `[ADVISORY] FRAMEWORK_VERSION_STALE` text in
-stderr: present for the positive fixture, absent for the negative — both rc==0.
+ENFORCED 2026-07-08 (cadence F4): FRAMEWORK_VERSION_STALE_ADVISORY_MODE flipped
+to False, so a stale-version transition now makes pre-commit exit non-zero (the
+standard rc!=0 assertion). Positive fixture → gate code in stderr + rc!=0;
+negative fixture → clean, rc==0. (During the 2026-06-17→07-08 advisory window
+the positive fixture instead emitted an `[ADVISORY]` line at rc==0.)
 
 Canonical version is injected via FRAMEWORK_VERSION_CANONICAL_OVERRIDE so the
 test does not depend on the throwaway repo carrying docs/FRAMEWORK-FACTS.md.
@@ -27,7 +27,7 @@ from _try_repo_harness import (  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_ROOT = REPO_ROOT / "tests" / "fixtures" / "FRAMEWORK_VERSION_STALE"
-ADVISORY_MARKER = "[ADVISORY] FRAMEWORK_VERSION_STALE"
+GATE_MARKER = "[FRAMEWORK_VERSION_STALE]"
 
 
 def _run_fixture(fixture_dir: Path, tmp_path: Path) -> tuple[int, str, str]:
@@ -45,20 +45,20 @@ def _run_fixture(fixture_dir: Path, tmp_path: Path) -> tuple[int, str, str]:
 
 def test_framework_version_stale_fires_on_positive_fixture(tmp_path: Path):
     """Stale framework_version (v7.5 < canonical v7.10) on a transition →
-    advisory in stderr. rc stays 0 (advisory mode does not block)."""
+    enforced rejection: gate code in stderr and rc!=0 (blocks the commit)."""
     rc, out, err = _run_fixture(FIXTURE_ROOT / "positive", tmp_path)
     combined = out + err
-    assert ADVISORY_MARKER in combined, (
-        f"expected advisory marker in output; rc={rc}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
+    assert GATE_MARKER in combined, (
+        f"expected gate marker in output; rc={rc}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
     )
-    assert rc == 0, f"advisory gate must not block the commit; rc={rc}\n{err}"
+    assert rc != 0, f"enforced gate must block the commit; rc={rc}\n{err}"
 
 
 def test_framework_version_stale_silent_on_negative_fixture(tmp_path: Path):
-    """Current framework_version (v7.10 == canonical) → no advisory, rc 0."""
+    """Current framework_version (v7.10 == canonical) → no violation, rc 0."""
     rc, out, err = _run_fixture(FIXTURE_ROOT / "negative", tmp_path)
     combined = out + err
-    assert ADVISORY_MARKER not in combined, (
+    assert GATE_MARKER not in combined, (
         f"gate must NOT fire on a current version; rc={rc}\nSTDOUT:\n{out}\nSTDERR:\n{err}"
     )
     assert rc == 0, f"clean commit must pass; rc={rc}\n{err}"

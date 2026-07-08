@@ -115,3 +115,33 @@ that stops the gate reaching a candidate is caught by `GATE_COVERAGE_ZERO`'s 0-c
    machine-readable source before enforcing.
 3. **Zero candidates across the window** (gate never reaches a transition) → mis-wire; investigate
    via `GATE_COVERAGE_ZERO`.
+
+## Calibration outcome — PROMOTED 2026-07-08
+
+Phase C/D review executed 2026-07-08 (8 days past the ~06-30 target; the flag stayed advisory in
+the interim, no harm). **Verdict: PROMOTE.** `FRAMEWORK_VERSION_STALE_ADVISORY_MODE = True → False`
+at [`scripts/check-state-schema.py`](../../../scripts/check-state-schema.py).
+
+| §2.2 criterion | Result |
+|---|---|
+| 1. Coverage — ≥7d `{candidates, checked, skipped}` | ✓ **8 emission days** (2026-06-17 → 07-01), 40 fires / 387 candidates |
+| 2. No false positives — every fire maps to a legitimate violation | ✓ 40 fires all true-positive; the two legit-stale classes route to **skips** (`reverse_sync_mirror` ×3, `explicit_exempt` ×5), never fires |
+| 3. No silent skips — skip counts track real reasons | ✓ skip reasons: `no_phase_change` ×210, `not_staged_mode` ×129 (+ the 2 exempt classes) — all legit |
+| 4. Reversibility — advisory restorable in <5 min | ✓ single-line flag flip |
+
+**Kill criteria at review:** KC1 (>0 false positives) — none; KC2 (canonical resolution) — resolves
+to **v7.10** from `docs/FRAMEWORK-FACTS.md`; KC3 (zero candidates) — 387 candidates, not zero. All clear.
+
+**Corpus-scan safety:** 99 features carry a stale `framework_version` but 97 are `complete` and never
+re-transition (cannot fire — mirrors the `PLATFORMS_TESTED` precedent). The 2 non-complete stale
+features (`app-store-assets` v5.0, `orchid-v1-5` v7.7) are legitimate future catches: enforced mode
+will require a `framework_version` bump the next time either advances a phase — the intended behavior,
+not a false positive. `make integrity-check` post-flip: **0 findings** (full-corpus scans skip
+`not_staged_mode`).
+
+**Tests updated for enforced mode** (mirrors the PLATFORMS_TESTED flip): `test_framework_version_stale.py`
+now asserts `advisory is False`; `test_try_repo_framework_version_stale.py` positive fixture now asserts
+rc!=0 + gate-code marker (was `[ADVISORY]` + rc==0). 28/28 F4 tests + 24/24 schema-gate tests pass.
+
+**Reversibility runbook:** flip back on `chore/f4-rollback` (`FRAMEWORK_VERSION_STALE_ADVISORY_MODE = True`),
+revert the two test assertions, merge. <5 min.
