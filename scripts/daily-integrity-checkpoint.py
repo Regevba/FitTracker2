@@ -50,7 +50,12 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from flock_writer import flocked  # noqa: E402
 LOCAL_BACKUP_ROOT = Path.home() / "Documents" / "FitTracker2-backups" / "daily"
 SSD_BACKUP_ROOT = Path("/Volumes/DevSSD/FitTracker2-snapshots")
-FITME_STORY_REPO = Path("/Volumes/DevSSD/fitme-story")
+# fitme-story canonical location follows the 2026-07-07 consolidation under
+# ~/Developer/FitMe/ (was /Volumes/DevSSD/fitme-story on the retired SSD layout).
+# Env override kept so the path survives future relocations without a code edit.
+FITME_STORY_REPO = Path(
+    os.environ.get("FITME_STORY_REPO", str(Path.home() / "Developer" / "FitMe" / "fitme-story"))
+)
 
 LEDGER_JSONL = REPO_ROOT / ".claude" / "shared" / "integrity-checkpoint-ledger.jsonl"
 LEDGER_MD = REPO_ROOT / ".claude" / "shared" / "integrity-checkpoint-ledger.md"

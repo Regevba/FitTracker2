@@ -61,8 +61,8 @@
       "time_window_days": 1,
       "cohort": "all_users",
       "steps": [
-        { "order": 1, "event": "home_readiness_alert_shown", "param_filter": null, "alt_event": "home_trend_alert_shown", "taxonomy_status": "in_code_not_taxonomy", "live_28d_event_count": 0 },
-        { "order": 2, "event": "home_readiness_alert_tap", "param_filter": null, "alt_event": "home_trend_alert_tap", "taxonomy_status": "in_code_not_taxonomy", "live_28d_event_count": 0 },
+        { "order": 1, "event": "home_readiness_alert_shown", "param_filter": null, "alt_event": "home_trend_alert_shown", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 },
+        { "order": 2, "event": "home_readiness_alert_tap", "param_filter": null, "alt_event": "home_trend_alert_tap", "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 },
         { "order": 3, "event": "home_action_tap", "param_filter": null, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 },
         { "order": 4, "event": "home_action_completed", "param_filter": null, "conversion_target": true, "taxonomy_status": "in_taxonomy", "live_28d_event_count": 0 }
       ],
