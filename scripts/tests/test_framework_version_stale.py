@@ -112,7 +112,9 @@ def test_fires_on_stale_with_transition(monkeypatch):
     assert len(findings) == 1
     f = findings[0]
     assert f["code"] == GATE
-    assert f["advisory"] is True
+    # ENFORCED 2026-07-08 (cadence F4): flag flipped to False, so the finding
+    # is now blocking (advisory=False). Was True during the advisory window.
+    assert f["advisory"] is False
     assert f["recorded"] == "v7.5"
     assert f["canonical"] == "v7.10"
     assert stats["checked"] == 1
