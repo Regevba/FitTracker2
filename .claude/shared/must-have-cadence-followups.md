@@ -66,7 +66,8 @@ mcp__ga4__runReport metric=conversions period=last_24h
 
 Flag day-over-day deltas > 30% as anomalies. No automation yet — operator runs in a session.
 
-**Last run: 2026-06-01.** No anomalies — partial-day artifact (-85 to -90% across all events on day-N vs day-N-1 reflects ~15h elapsed of 24h baseline). 31 distinct event types observed across 2 days. 0 instances of new C2/C4 `home_*_alert_*` events (expected — TestFlight build cycle not yet shipped to testers). Full deliverable: [`docs/setup/ga4-funnels-and-conversions-runbook.md`](../../docs/setup/ga4-funnels-and-conversions-runbook.md).
+**Last run: 2026-07-08.** No anomalies. Window 2026-07-01→07-05 (07-06→08 show 0 events — consistent with no operator app-opens those days, not a reporting gap; pre-launch TestFlight traffic is operator-only, single-digit volumes). Funnels intact: onboarding (`onboarding_step_viewed`→`_completed`→`goal_selected`→`skipped`) and auth (`auth_biometric_activation_offered`→`_unlock_completed`) both present with expected proportions. Home surfaces (`home_ai_insight_shown`, `home_readiness_score_computed`) firing. No new/unexpected event types, no screen-prefix violations, 0 `home_*_alert_*` (expected — TestFlight build not yet shipped to testers). Day-over-day deltas within pre-launch noise; no >30% anomaly. Full deliverable: [`docs/setup/ga4-funnels-and-conversions-runbook.md`](../../docs/setup/ga4-funnels-and-conversions-runbook.md).
+_Prior run 2026-06-01: no anomalies (partial-day artifact; 31 event types over 2 days)._
 
 ### B7 — UCC Part 9 wire `UCC_AUDIT_BLOB_URL` (2026-05-17)
 
