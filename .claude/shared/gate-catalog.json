@@ -1,24 +1,25 @@
 {
   "schema_version": 1,
-  "gate_count": 33,
+  "gate_count": 34,
   "summary": {
     "by_stage": {
       "cycle-time": 9,
       "hook": 2,
       "standalone": 1,
-      "write-time": 21
+      "write-time": 22
     },
     "by_tier": {
       "dispatch": 1,
       "try-repo": 17,
-      "unit": 15
+      "unit": 16
     },
     "untested_gates": [],
     "write_time_without_try_repo": [
       "CSV_TAXONOMY_DRIFT",
       "GA4_MCP_DISCONNECTED",
       "PLATFORMS_TESTED",
-      "PR_NUMBER_UNRESOLVED"
+      "PR_NUMBER_UNRESOLVED",
+      "SCHEMA_DIFF"
     ]
   },
   "gates": {
@@ -98,6 +99,10 @@
       "test_files": [
         {
           "file": "scripts/tests/test_csv_taxonomy_drift.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_schema_diff.py",
           "layer": "unit"
         }
       ]
@@ -222,6 +227,24 @@
         }
       ]
     },
+    "SCHEMA_DIFF": {
+      "stage": "write-time",
+      "source": "scripts/check-state-schema.py",
+      "enforcement": "advisory",
+      "description": "T12/FIT-160 — SupabaseSyncService column literal (CodingKeys/.select/onConflict) references a column absent from the synced Supabase tables (migration rename/drop drift).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_schema_diff_gate.py",
+          "layer": "unit"
+        },
+        {
+          "file": "scripts/tests/test_try_repo_schema_diff.py",
+          "layer": "unit"
+        }
+      ]
+    },
     "PHASE_TRANSITION_NO_LOG": {
       "stage": "write-time",
       "source": "scripts/check-state-schema.py",
@@ -272,10 +295,6 @@
       "test_files": [
         {
           "file": "scripts/tests/test_platforms_tested.py",
-          "layer": "unit"
-        },
-        {
-          "file": "scripts/tests/test_try_repo_framework_version_stale.py",
           "layer": "unit"
         }
       ]
