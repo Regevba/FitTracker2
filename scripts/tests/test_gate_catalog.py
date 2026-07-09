@@ -29,15 +29,15 @@ gc = _load_module()
 def test_enumeration_counts():
     cat = gc.build_catalog()
     by_stage = cat["summary"]["by_stage"]
-    # 21 write-time (incl. CASE_STUDY_MISSING_FIELDS in check-case-study-preflight.py)
-    # + 9 cycle-time + 2 W9 hooks + 1 standalone = 33.
+    # 22 write-time (incl. CASE_STUDY_MISSING_FIELDS in check-case-study-preflight.py
+    # + SCHEMA_DIFF T12/FIT-160) + 9 cycle-time + 2 W9 hooks + 1 standalone = 34.
     assert by_stage == {
         "cycle-time": 9,
         "hook": 2,
         "standalone": 1,
-        "write-time": 21,
+        "write-time": 22,
     }, by_stage
-    assert cat["gate_count"] == 33
+    assert cat["gate_count"] == 34
 
 
 def test_every_gate_has_required_fields():
@@ -83,6 +83,11 @@ def test_write_time_gap_signal():
         "GA4_MCP_DISCONNECTED",
         "PLATFORMS_TESTED",
         "PR_NUMBER_UNRESOLVED",
+        # SCHEMA_DIFF (T12) is advisory: it ships a stderr-asserting try-repo
+        # test (test_try_repo_schema_diff.py) rather than an rc-based
+        # tests/fixtures/SCHEMA_DIFF/ dir, so the fixture-based tier derivation
+        # lists it here alongside the other advisory gates.
+        "SCHEMA_DIFF",
     }, gap
     # every listed gap gate really is write-time and really lacks a fixture
     for gid in gap:
