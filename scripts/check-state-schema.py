@@ -207,6 +207,22 @@ ANALYTICS_AFFECTING_GLOBS = (
     ANALYTICS_TAXONOMY_CSV,
 )
 
+# T12 / FIT-160 (test-coverage-master-plan §4): SCHEMA_DIFF.
+# Commit-level. Fires when a Supabase migration or SupabaseSyncService.swift is
+# staged and the sync code references a column (via CodingKeys / .select /
+# onConflict) that no longer exists in any synced Supabase table — the drift
+# class where a migration renames/drops a column the sync path still uses,
+# breaking sync at runtime. The synced domain models are opaque encrypted blobs
+# (no column mapping), so the real drift surface is the column string-literals in
+# SupabaseSyncService.swift, NOT DomainModels.swift (see the corrected spec at
+# docs/superpowers/specs/2026-07-09-t12-schema-diff-gate-corrected-scope.md).
+# Ships ADVISORY for a 14-day calibration window; own flag keeps the flip
+# independent (mirrors the sibling gates).
+SCHEMA_DIFF_ADVISORY_MODE = True
+SUPABASE_MIGRATIONS_DIR = "backend/supabase/migrations"
+SUPABASE_SYNC_SERVICE_PATH = "FitTracker/Services/Supabase/SupabaseSyncService.swift"
+SCHEMA_DIFF_SYNCED_TABLES = ("sync_records", "cardio_assets", "cohort_stats")
+
 # Canonical-version override (tests + operator escape hatch). When unset, the
 # resolver parses docs/FRAMEWORK-FACTS.md — the declared machine-derived SoT.
 _FRAMEWORK_VERSION_CANONICAL_OVERRIDE = os.environ.get(
@@ -2027,6 +2043,168 @@ def check_ga4_mcp_connectivity(
     return findings
 
 
+_SQL_CREATE_TABLE_RE = re.compile(
+    r"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(\w+)\s*\(", re.IGNORECASE)
+_SQL_COL_LINE_RE = re.compile(r"^([a-z_][a-z0-9_]*)\s+\S")
+_SQL_CONSTRAINT_KW = {"constraint", "primary", "foreign", "unique", "check", "exclude", "like"}
+
+
+def _extract_paren_body(text: str, open_idx: int) -> str:
+    """Return the substring inside the paren opened at text[open_idx] ('(')."""
+    depth = 0
+    for i in range(open_idx, len(text)):
+        if text[i] == "(":
+            depth += 1
+        elif text[i] == ")":
+            depth -= 1
+            if depth == 0:
+                return text[open_idx + 1:i]
+    return text[open_idx + 1:]
+
+
+def _parse_sql_schema_columns(repo_root: Path) -> dict[str, set[str]]:
+    """Parse the post-migration column set per table from all SQL migrations.
+
+    Handles CREATE TABLE (one column per line) + ALTER TABLE ADD/DROP/RENAME
+    COLUMN, applied in filename order. Constraint / index / comment lines are
+    ignored (column lines start with a lowercase identifier + a type token;
+    CONSTRAINT/PRIMARY/… start uppercase). Conservative on ALTER: requires the
+    COLUMN keyword so `DROP CONSTRAINT` / `ADD CONSTRAINT` never touch columns.
+    """
+    tables: dict[str, set[str]] = {}
+    mig_dir = repo_root / SUPABASE_MIGRATIONS_DIR
+    if not mig_dir.is_dir():
+        return tables
+    for sql_file in sorted(mig_dir.glob("*.sql")):
+        try:
+            text = sql_file.read_text()
+        except OSError:
+            continue
+        for m in _SQL_CREATE_TABLE_RE.finditer(text):
+            table = m.group(1).lower()
+            cols = tables.setdefault(table, set())
+            for raw in _extract_paren_body(text, m.end() - 1).splitlines():
+                line = raw.split("--", 1)[0].strip()
+                if not line:
+                    continue
+                if line.split(None, 1)[0].lower().strip(",") in _SQL_CONSTRAINT_KW:
+                    continue
+                cm = _SQL_COL_LINE_RE.match(line)
+                if cm:
+                    cols.add(cm.group(1))
+        for am in re.finditer(r"ALTER\s+TABLE\s+(\w+)\s+(.*?);", text, re.IGNORECASE | re.DOTALL):
+            cols = tables.setdefault(am.group(1).lower(), set())
+            body = am.group(2)
+            for a in re.finditer(r"ADD\s+COLUMN\s+(?:IF\s+NOT\s+EXISTS\s+)?([a-z_]\w*)", body, re.IGNORECASE):
+                cols.add(a.group(1).lower())
+            for d in re.finditer(r"DROP\s+COLUMN\s+(?:IF\s+EXISTS\s+)?([a-z_]\w*)", body, re.IGNORECASE):
+                cols.discard(d.group(1).lower())
+            for r in re.finditer(r"RENAME\s+COLUMN\s+([a-z_]\w*)\s+TO\s+([a-z_]\w*)", body, re.IGNORECASE):
+                cols.discard(r.group(1).lower())
+                cols.add(r.group(2).lower())
+    return tables
+
+
+def _parse_swift_referenced_columns(repo_root: Path) -> set[str]:
+    """Column names SupabaseSyncService.swift references via the Supabase API:
+    CodingKeys raw values (scoped to `enum CodingKeys` blocks), `.select("…")`
+    column lists, and `onConflict: "…"` tuples. All are snake_case column names.
+    """
+    try:
+        text = (repo_root / SUPABASE_SYNC_SERVICE_PATH).read_text()
+    except OSError:
+        return set()
+    cols: set[str] = set()
+    for block in re.finditer(r"enum\s+CodingKeys\b[^{]*\{(.*?)\}", text, re.DOTALL):
+        for m in re.finditer(r'case\s+\w+\s*=\s*"([a-z_][a-z0-9_]*)"', block.group(1)):
+            cols.add(m.group(1))
+    for pat in (r'\.select\(\s*"([^"]+)"', r'onConflict:\s*"([^"]+)"'):
+        for m in re.finditer(pat, text):
+            for c in m.group(1).split(","):
+                c = c.strip()
+                if re.fullmatch(r"[a-z_][a-z0-9_]*", c):
+                    cols.add(c)
+    return cols
+
+
+def _collect_schema_diff_exemptions(repo_root: Path) -> set[str]:
+    """Union of schema_diff_exempt[].column across all feature state.json."""
+    exempt: set[str] = set()
+    for sj in (repo_root / ".claude" / "features").glob("*/state.json"):
+        try:
+            d = json.loads(sj.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        for e in d.get("schema_diff_exempt") or []:
+            if isinstance(e, dict) and e.get("column"):
+                exempt.add(e["column"])
+    return exempt
+
+
+def check_schema_diff(
+    staged_files: list[str], *, coverage: GateCoverage | None = None,
+    repo_root: Path | None = None,
+) -> list[dict]:
+    """T12 / FIT-160 (test-coverage-master-plan §4): SCHEMA_DIFF.
+
+    Commit-level. Fires when a Supabase migration or SupabaseSyncService.swift is
+    staged and the sync code references a column that no longer exists in any
+    synced Supabase table (rename/drop drift that breaks sync at runtime).
+    Advisory during calibration (SCHEMA_DIFF_ADVISORY_MODE).
+    """
+    repo_root = repo_root or REPO_ROOT
+    findings: list[dict] = []
+    GATE = "SCHEMA_DIFF"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    relevant = [
+        f for f in staged_files
+        if f == SUPABASE_SYNC_SERVICE_PATH
+        or (f.startswith(SUPABASE_MIGRATIONS_DIR + "/") and f.endswith(".sql"))
+    ]
+    if not relevant:
+        if coverage is not None:
+            coverage.skip(GATE, "no_schema_or_sync_files_staged")
+        return findings
+
+    schema = _parse_sql_schema_columns(repo_root)
+    synced_union: set[str] = set()
+    for t in SCHEMA_DIFF_SYNCED_TABLES:
+        synced_union |= schema.get(t, set())
+    code_cols = _parse_swift_referenced_columns(repo_root)
+
+    # Can't diff if either side failed to parse (missing files) — skip rather
+    # than flag every code column as drift.
+    if not synced_union or not code_cols:
+        if coverage is not None:
+            coverage.skip(GATE, "schema_or_code_unparseable")
+        return findings
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    exempt = _collect_schema_diff_exemptions(repo_root)
+    drift = sorted(code_cols - synced_union - exempt)
+    if drift:
+        findings.append({
+            "code": GATE,
+            "advisory": SCHEMA_DIFF_ADVISORY_MODE,
+            "drift": drift,
+            "remediation": (
+                f"{len(drift)} column(s) referenced in SupabaseSyncService.swift "
+                f"(CodingKeys/.select/onConflict) have no matching column in the "
+                f"synced Supabase tables {list(SCHEMA_DIFF_SYNCED_TABLES)}: "
+                + ", ".join(drift)
+                + ". A migration likely renamed/dropped a column the sync path "
+                "still uses — this breaks sync at runtime. Align the migration or "
+                "the Swift column literal in the same commit, or record state.json "
+                "schema_diff_exempt: [{table, column, reason}]."
+            ),
+        })
+    return findings
+
+
 def main() -> int:
     args = sys.argv[1:]
     if args == ["--staged"]:
@@ -2115,6 +2293,23 @@ def main() -> int:
                 f"  {finding['remediation']}",
                 file=sys.stderr,
             )
+
+        # T12 / FIT-160 (test-coverage-master-plan §4): SCHEMA_DIFF — commit-level.
+        # Fires when a Supabase migration or SupabaseSyncService.swift is staged
+        # and the sync code references a column absent from the synced tables.
+        # Advisory during calibration: prints to stderr, does NOT block. Flip
+        # SCHEMA_DIFF_ADVISORY_MODE to add findings to errors[].
+        for finding in check_schema_diff(all_staged, coverage=coverage):
+            if finding.get("advisory"):
+                print(
+                    f"[ADVISORY] {finding['code']}\n"
+                    f"  {finding['remediation']}",
+                    file=sys.stderr,
+                )
+            else:
+                all_errors.append(
+                    f"COMMIT-LEVEL: [{finding['code']}] {finding['remediation']}"
+                )
 
     # Persist the coverage ledger. Failure to write must not affect the
     # exit code — Mechanism A is advisory in v7.8; the gate verdict is
