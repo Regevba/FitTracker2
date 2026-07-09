@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption orphan-tests framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status figma-mirror-staleness v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force daily-checkpoint-ci ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures mutation-test mutation-summary
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption orphan-tests framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status figma-mirror-staleness v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force daily-checkpoint-ci ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-backups install-backup-verify-cron uninstall-backup-verify-cron verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures mutation-test mutation-summary
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -866,6 +866,43 @@ install-devssd-watcher:
 
 uninstall-devssd-watcher:
 	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.devssd-uuid-watcher.plist; \
+	if [ ! -f "$$PLIST_DEST" ]; then \
+		echo "Not installed: $$PLIST_DEST"; \
+		exit 0; \
+	fi; \
+	launchctl unload "$$PLIST_DEST" 2>/dev/null || true; \
+	rm "$$PLIST_DEST"; \
+	echo "Uninstalled: $$PLIST_DEST"
+
+# FIT-206 / DI-Q3: off-SSD backup verification. Re-checks the sha256
+# CHECKSUMS.sha256 of the N most-recent daily snapshots in BOTH
+# ~/Documents/FitTracker2-backups/daily/ AND /Volumes/DevSSD/FitTracker2-snapshots/.
+# Filesystem-only (safe under launchd cron; no gh/network). A missing SSD is
+# tolerated; only a real checksum mismatch / missing file fails. Non-zero exit +
+# .claude/shared/backup-verify-failed.flag on corruption.
+# Usage: make verify-backups [RECENT=7]
+verify-backups:
+	@python3 scripts/verify-backups.py --recent $${RECENT:-7}
+
+# Install the weekly backup-verify launchd cron (fires Sundays 03:00 local).
+# Operator-driven: requires authorization before modifying ~/Library/LaunchAgents/.
+install-backup-verify-cron:
+	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.backup-verify.plist; \
+	if [ -f "$$PLIST_DEST" ]; then \
+		echo "Already installed: $$PLIST_DEST"; \
+		echo "To reinstall: make uninstall-backup-verify-cron && make install-backup-verify-cron"; \
+		exit 0; \
+	fi; \
+	cp infrastructure/launchd/com.fittracker.backup-verify.plist.template "$$PLIST_DEST"; \
+	launchctl load "$$PLIST_DEST"; \
+	echo "Installed launchd cron: $$PLIST_DEST"; \
+	echo "Will fire weekly Sundays at 03:00 local time."; \
+	echo "Verify with: launchctl list | grep backup-verify"; \
+	echo "Result:     .claude/shared/backup-verify-result.json"; \
+	echo "Logs at:    ~/Library/Logs/fittracker-backup-verify.{log,err}"
+
+uninstall-backup-verify-cron:
+	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.backup-verify.plist; \
 	if [ ! -f "$$PLIST_DEST" ]; then \
 		echo "Not installed: $$PLIST_DEST"; \
 		exit 0; \
