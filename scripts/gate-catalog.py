@@ -115,6 +115,11 @@ GATES: dict[str, dict] = {
         "enforcement": "enforced",
         "description": "isolation_opt_out:true with empty isolation_opt_out_reason.",
     },
+    "SCHEMA_DIFF": {
+        "stage": "write-time", "source": "scripts/check-state-schema.py",
+        "enforcement": "advisory",
+        "description": "T12/FIT-160 — SupabaseSyncService column literal (CodingKeys/.select/onConflict) references a column absent from the synced Supabase tables (migration rename/drop drift).",
+    },
     "PHASE_TRANSITION_NO_LOG": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",
         "enforcement": "enforced",
