@@ -142,14 +142,20 @@ final class AnalyticsTests: XCTestCase {
 
     @MainActor
     func testScreenViewTracking() {
+        // D-3: all 5 main tabs are tracked via .analyticsScreen(...) (Training now
+        // fires exactly once — the RootTabView double-application was removed).
         analyticsService.logScreenView(AnalyticsScreen.home)
         analyticsService.logScreenView(AnalyticsScreen.trainingPlan)
         analyticsService.logScreenView(AnalyticsScreen.nutrition)
+        analyticsService.logScreenView(AnalyticsScreen.stats)
+        analyticsService.logScreenView(AnalyticsScreen.settings)
 
-        XCTAssertEqual(mockAdapter.capturedScreens.count, 3)
+        XCTAssertEqual(mockAdapter.capturedScreens.count, 5)
         XCTAssertEqual(mockAdapter.capturedScreens[0], AnalyticsScreen.home)
         XCTAssertEqual(mockAdapter.capturedScreens[1], AnalyticsScreen.trainingPlan)
         XCTAssertEqual(mockAdapter.capturedScreens[2], AnalyticsScreen.nutrition)
+        XCTAssertEqual(mockAdapter.capturedScreens[3], AnalyticsScreen.stats)
+        XCTAssertEqual(mockAdapter.capturedScreens[4], AnalyticsScreen.settings)
     }
 
     // MARK: - Consent Gating Tests

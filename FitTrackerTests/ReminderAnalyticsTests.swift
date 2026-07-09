@@ -30,6 +30,12 @@ final class ReminderAnalyticsTests: XCTestCase {
 
     override func tearDown() {
         ReminderScheduler.shared.analytics = nil
+        ReminderScheduler.shared.reminderPreferences = nil
+        // Clear any ft.reminder.* keys my preference-gating tests persisted.
+        let defaults = UserDefaults.standard
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix("ft.reminder.") {
+            defaults.removeObject(forKey: key)
+        }
         mock = nil
         service = nil
         super.tearDown()
@@ -100,6 +106,53 @@ final class ReminderAnalyticsTests: XCTestCase {
 
         XCTAssertTrue(mock.capturedEvents.isEmpty,
                       "All reminder events must be gated by consent; none should fire when denied")
+    }
+
+    // MARK: - FIT-210: v2 preference gating in scheduleIfAllowed
+
+    func testScheduleIfAllowed_masterOff_suppressesWithUserDisabled() async {
+        let store = ReminderPreferencesStore()
+        store.masterEnabled = false
+        ReminderScheduler.shared.analytics = service
+        ReminderScheduler.shared.reminderPreferences = store
+
+        await ReminderScheduler.shared.scheduleIfAllowed(type: .trainingDay, body: "x")
+
+        let events = mock.capturedEvents.filter { $0.name == AnalyticsEvent.reminderSuppressed }
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.parameters?["reason"] as? String, "user_disabled")
+        XCTAssertFalse(store.masterEnabled)  // keep `store` alive past the await (weak ref)
+    }
+
+    func testScheduleIfAllowed_perTypeOff_suppressesWithUserDisabled() async {
+        let store = ReminderPreferencesStore()
+        store.masterEnabled = true
+        store.trainingDayEnabled = false   // this type off; others on
+        ReminderScheduler.shared.analytics = service
+        ReminderScheduler.shared.reminderPreferences = store
+
+        await ReminderScheduler.shared.scheduleIfAllowed(type: .trainingDay, body: "x")
+
+        let events = mock.capturedEvents.filter { $0.name == AnalyticsEvent.reminderSuppressed }
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.parameters?["reason"] as? String, "user_disabled")
+        XCTAssertFalse(store.trainingDayEnabled)  // keep `store` alive past the await (weak ref)
+    }
+
+    func testScheduleIfAllowed_userDailyCapZero_suppressesWithUserDailyCap() async {
+        let store = ReminderPreferencesStore()
+        store.masterEnabled = true
+        store.trainingDayEnabled = true
+        store.dailyCap = 0                 // user set the cap to zero
+        ReminderScheduler.shared.analytics = service
+        ReminderScheduler.shared.reminderPreferences = store
+
+        await ReminderScheduler.shared.scheduleIfAllowed(type: .trainingDay, body: "x")
+
+        let events = mock.capturedEvents.filter { $0.name == AnalyticsEvent.reminderSuppressed }
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.parameters?["reason"] as? String, "user_daily_cap")
+        XCTAssertEqual(store.dailyCap, 0)  // keep `store` alive past the await (weak ref)
     }
 
     // MARK: - ReminderScheduler — cancel paths
