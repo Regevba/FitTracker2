@@ -28,6 +28,13 @@ final class ReminderScheduler: ObservableObject {
     // analytics), instrumentation no-ops without affecting scheduling.
     weak var analytics: AnalyticsService?
 
+    // ── User preferences (v2) ────────────────────────────
+    // FIT-210: set by FitTrackerApp at launch to the app-level v2
+    // ReminderPreferencesStore. When nil (test harnesses without the store),
+    // user preferences don't gate — the per-type/lifetime caps + gateway still
+    // apply. Weak to avoid a retain cycle (the app owns the @StateObject).
+    weak var reminderPreferences: ReminderPreferencesStore?
+
     // ── Init ─────────────────────────────────────────────
 
     private init() {}
@@ -60,6 +67,21 @@ final class ReminderScheduler: ObservableObject {
         body: String,
         delayMinutes: Int = 0
     ) async {
+        // 0. User preferences (v2 settings screen — FIT-210): master switch +
+        //    per-type toggle + the user-configurable daily cap. `isEnabled(for:)`
+        //    maps 1:1 onto ReminderType (master AND per-type must be on).
+        //    Gates BEFORE the internal caps so a user opt-out short-circuits.
+        if let prefs = reminderPreferences {
+            guard prefs.isEnabled(for: type) else {
+                analytics?.logReminderSuppressed(type: type.rawValue, reason: "user_disabled")
+                return
+            }
+            guard todaySendCount() < prefs.dailyCap else {
+                analytics?.logReminderSuppressed(type: type.rawValue, reason: "user_daily_cap")
+                return
+            }
+        }
+
         // 1. Per-type daily cap (resets at midnight via key naming)
         guard !dailyCapReached(for: type) else {
             analytics?.logReminderSuppressed(type: type.rawValue, reason: "per_type_daily_cap")

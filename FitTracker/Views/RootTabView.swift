@@ -201,7 +201,7 @@ struct RootTabView: View {
     private func tabContent(_ tab: AppTab) -> some View {
         switch tab {
         case .main:      MainScreenView(selectedTab: $selectedTab, statsMetric: $pendingStatsMetric)
-        case .training:  TrainingPlanView().analyticsScreen(AnalyticsScreen.trainingPlan)
+        case .training:  TrainingPlanView()  // D-3: self-applies .analyticsScreen inside (was double-firing here)
         case .nutrition: NutritionView().analyticsScreen(AnalyticsScreen.nutrition)
         case .stats:     StatsView(initialMetric: pendingStatsMetric)
                             .analyticsScreen(AnalyticsScreen.stats)

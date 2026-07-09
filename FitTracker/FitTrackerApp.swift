@@ -153,6 +153,9 @@ struct FitTrackerApp: App {
                     // lifetime of the app.
                     reminderNotificationDelegate.setAnalytics(analytics)
                     ReminderScheduler.shared.analytics = analytics
+                    // FIT-210: let the live scheduler honor the v2 settings
+                    // screen's master/per-type toggles + configurable daily cap.
+                    ReminderScheduler.shared.reminderPreferences = reminderPreferences
 
                     // C1 first slice (L207): register smart-reminders as a
                     // consumer of the v2 notification platform. Idempotent.
