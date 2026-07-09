@@ -46,6 +46,8 @@ Carthage/Build/
 .claude/logs/devssd-uuid-watcher.log
 .claude/shared/preflight-cache.json
 .claude/shared/integrity-checkpoint-regression.flag
+.claude/shared/backup-verify-result.json
+.claude/shared/backup-verify-failed.flag
 .claude/worktrees/
 !.claude/entrypoints/
 !.claude/entrypoints/**

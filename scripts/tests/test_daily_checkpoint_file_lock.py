@@ -87,38 +87,61 @@ def test_run_pipeline_is_extracted_function():
     assert "args" in arg_names, "_run_pipeline must accept parsed argparse Namespace"
 
 
-def test_idempotent_run_does_not_append_when_today_row_exists(tmp_path, monkeypatch):
+def test_idempotent_run_does_not_append_when_today_row_exists():
     """Behavioral smoke test: when today's row is already present, invoking the
     script with --idempotent --quiet exits cleanly without appending a duplicate.
 
-    Subprocess-based to exercise the real flock acquisition path. Uses HOME
-    redirection so the test doesn't touch the operator's real backups dir.
+    Subprocess-based to exercise the real flock acquisition path. Hardened to be
+    deterministic on a fresh day (2026-07-09 flake): if today's ledger row does
+    not yet exist, a minimal one is seeded first so the --idempotent early-exit
+    path is exercised regardless of whether a prior checkpoint ran today — which
+    also avoids a real snapshot side effect (the early-exit fires before any
+    snapshot). The ledger is restored to its exact pre-test contents afterward,
+    so the seeded row never leaks into the repo.
     """
     today = subprocess.run(
         [sys.executable, "-c", "import datetime; print(datetime.date.today().isoformat())"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
 
-    # Snapshot ledger row count before invocation
     ledger = REPO_ROOT / ".claude" / "shared" / "integrity-checkpoint-ledger.jsonl"
     if not ledger.exists():
         pytest.skip("ledger not yet initialized in this checkout")
-    before = ledger.read_text().count(f'"date":"{today}"')
 
-    # Run the script in idempotent mode; should exit 0 without appending
-    result = subprocess.run(
-        [sys.executable, str(SCRIPT_PATH), "--idempotent", "--quiet"],
-        capture_output=True, text=True, timeout=30, cwd=str(REPO_ROOT),
-    )
-    assert result.returncode == 0, (
-        f"idempotent run exit={result.returncode}; stderr={result.stderr[:200]}"
-    )
+    original = ledger.read_text()
+    try:
+        # Guarantee the precondition: a today row must exist so --idempotent takes
+        # its early-exit. Seed a minimal one (as the last line) if absent.
+        if original.count(f'"date":"{today}"') == 0:
+            with ledger.open("a") as f:
+                # Match the script's compact serialization (append_ledger_row uses
+                # separators=(",", ":")) so the `"date":"…"` count pattern matches.
+                f.write(json.dumps(
+                    {"date": today, "metrics": {}, "_seeded_by_test": True},
+                    separators=(",", ":"),
+                ) + "\n")
 
-    after = ledger.read_text().count(f'"date":"{today}"')
-    assert after == before, (
-        f"idempotent run appended a duplicate row for {today}: "
-        f"before={before}, after={after}, stderr={result.stderr[:200]}"
-    )
+        before = ledger.read_text().count(f'"date":"{today}"')
+        assert before >= 1, "precondition seed failed"
+
+        # Run the script in idempotent mode; should exit 0 without appending.
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT_PATH), "--idempotent", "--quiet"],
+            capture_output=True, text=True, timeout=30, cwd=str(REPO_ROOT),
+        )
+        assert result.returncode == 0, (
+            f"idempotent run exit={result.returncode}; stderr={result.stderr[:200]}"
+        )
+
+        after = ledger.read_text().count(f'"date":"{today}"')
+        assert after == before, (
+            f"idempotent run appended a duplicate row for {today}: "
+            f"before={before}, after={after}, stderr={result.stderr[:200]}"
+        )
+    finally:
+        # Restore exact pre-test contents (drops the seeded row + anything an
+        # unexpected non-early-exit appended).
+        ledger.write_text(original)
 
 
 def test_concurrent_flocked_acquires_serialize(tmp_path):
