@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  TEMPLATE — DO NOT load directly. Install via `make install-backup-verify-cron`.
+
+  FIT-206 / DI-Q3 weekly off-SSD backup verification. Fires Sundays 03:00 local
+  and runs scripts/verify-backups.py, which re-checks the sha256 CHECKSUMS of the
+  7 most-recent daily snapshots in BOTH ~/Documents/FitTracker2-backups/daily/
+  and /Volumes/DevSSD/FitTracker2-snapshots/.
+
+  Anchored to the canonical INTERNAL repo path (per the 2026-07-07 consolidation
+  under ~/Developer/FitMe/), NOT the retired /Volumes/DevSSD/FitTracker2 layout —
+  the verifier reads snapshots by absolute path, so the WorkingDirectory only
+  needs to resolve the script + write the result flag. It is filesystem-only (no
+  gh/network), so it sidesteps the BRANCH_ISOLATION_LAUNCHD_DRIFT / gh-auth class
+  of cron failures. A missing SSD is tolerated (logged, not failed). On a real
+  checksum mismatch the script exits non-zero (surfaced in `launchctl list`) and
+  writes .claude/shared/backup-verify-failed.flag for the daily checkpoint /
+  monitoring surface to pick up.
+
+  Schedule spacing: daily checkpoint fires 06:00 daily; weekly-backup Sun 02:00;
+  this verifier Sun 03:00 — after the weekly backup, before the daily checkpoint.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fittracker.backup-verify</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/python3</string>
+        <string>/Users/regevbarak/Developer/FitMe/FitTracker2/scripts/verify-backups.py</string>
+        <string>--recent</string>
+        <string>7</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/regevbarak/Developer/FitMe/FitTracker2</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>0</integer>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/regevbarak/Library/Logs/fittracker-backup-verify.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/regevbarak/Library/Logs/fittracker-backup-verify.err</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>
