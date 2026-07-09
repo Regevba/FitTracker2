@@ -50,6 +50,13 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from flock_writer import flocked  # noqa: E402
 LOCAL_BACKUP_ROOT = Path.home() / "Documents" / "FitTracker2-backups" / "daily"
 SSD_BACKUP_ROOT = Path("/Volumes/DevSSD/FitTracker2-snapshots")
+# DI-Q2 (data-integrity-and-rollback §5): when the daily checkpoint detects a
+# regression it captures a SECOND, immutable forensic snapshot alongside the
+# daily one — stamped `post-regression-evidence-<ts>` — so the exact platform
+# state that tripped the regression is preserved for post-hoc analysis even if
+# the next day's checkpoint overwrites the rolling `daily/` view. Sibling of the
+# daily root (internal storage, never DevSSD — same drive-risk convention).
+POST_REGRESSION_EVIDENCE_ROOT = LOCAL_BACKUP_ROOT.parent
 # fitme-story canonical location follows the 2026-07-07 consolidation under
 # ~/Developer/FitMe/ (was /Volumes/DevSSD/fitme-story on the retired SSD layout).
 # Env override kept so the path survives future relocations without a code edit.
@@ -427,7 +434,8 @@ def write_snapshot(target_dir: Path, make_outputs: dict, metrics: dict) -> bool:
         return False
 
 
-def write_manifest(target_dir: Path, metrics: dict, ft2_git: dict, fs_git: dict, hw: dict | None = None) -> None:
+def write_manifest(target_dir: Path, metrics: dict, ft2_git: dict, fs_git: dict, hw: dict | None = None,
+                   trigger: str = "daily-integrity-checkpoint.py") -> None:
     iso = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     if hw and hw.get("available"):
         # Trim "1000.0 GB (999995129856 Bytes) (exactly ...)" to just "1000.0 GB" for display.
@@ -441,7 +449,7 @@ def write_manifest(target_dir: Path, metrics: dict, ft2_git: dict, fs_git: dict,
     manifest = f"""# Daily Integrity Checkpoint — {target_dir.name}
 
 **Created:** {iso}
-**Trigger:** daily-integrity-checkpoint.py
+**Trigger:** {trigger}
 **FT2 commit:** {ft2_git.get('commit','?')} (branch: {ft2_git.get('branch','?')}, dirty: {ft2_git.get('dirty_files',0)} files)
 **fitme-story commit:** {fs_git.get('commit','?')} (branch: {fs_git.get('branch','?')}, dirty: {fs_git.get('dirty_files',0)} files)
 {hw_line}
@@ -482,6 +490,56 @@ diff metrics.json <(jq '.' "$BASELINE/measurement-adoption.json")
 - Master plan: `docs/master-plan/data-integrity-and-rollback-2026-05-14.md`
 """
     (target_dir / "MANIFEST.md").write_text(manifest)
+
+
+def capture_post_regression_evidence(
+    today: str,
+    deltas: dict,
+    prev_date: str | None,
+    make_outputs: dict,
+    metrics: dict,
+    ft2_git: dict,
+    fs_git: dict,
+    hw: dict | None,
+    log,
+) -> Path | None:
+    """DI-Q2: capture an immutable forensic snapshot when a regression fires.
+
+    Reuses the same `write_snapshot` primitive as the daily checkpoint, into a
+    timestamped `post-regression-evidence-<today>T<HHMMZ>/` sibling of the daily
+    root, plus a machine-readable `evidence.json` recording the trigger + the
+    deltas that caused the regression. Best-effort: a snapshot failure logs and
+    returns None (it must never crash the checkpoint pipeline — the regression
+    flag write remains the load-bearing signal).
+    """
+    stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H%MZ")
+    evidence_dir = POST_REGRESSION_EVIDENCE_ROOT / f"post-regression-evidence-{stamp}"
+    ok = write_snapshot(evidence_dir, make_outputs, metrics)
+    if not ok:
+        log(f"   ⚠ post-regression evidence snapshot FAILED ({evidence_dir}); "
+            f"regression flag still written")
+        return None
+    # evidence.json is written BEFORE the manifest/checksums pass so it is
+    # covered by CHECKSUMS.sha256 (parity with the snapshot's other files).
+    (evidence_dir / "evidence.json").write_text(json.dumps({
+        "trigger": "post-regression-evidence",
+        "date": today,
+        "prev_date": prev_date,
+        "deltas": deltas,
+        "captured_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }, indent=2))
+    # Re-run the checksum pass so evidence.json is included, then the manifest.
+    files = sorted(p for p in evidence_dir.rglob("*")
+                   if p.is_file() and p.name not in ("CHECKSUMS.sha256", "MANIFEST.md"))
+    with (evidence_dir / "CHECKSUMS.sha256").open("w") as f:
+        for p in files:
+            h = hashlib.sha256(p.read_bytes()).hexdigest()
+            rel = p.relative_to(evidence_dir).as_posix()
+            f.write(f"{h}  ./{rel}\n")
+    write_manifest(evidence_dir, metrics, ft2_git, fs_git, hw,
+                   trigger="post-regression forensic evidence (DI-Q2)")
+    log(f"   ✓ post-regression evidence snapshot: {evidence_dir}")
+    return evidence_dir
 
 
 def detect_regression(prev: dict | None, curr: dict) -> tuple[bool, dict]:
@@ -967,12 +1025,19 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
     regenerate_ledger_md()
 
     if regression:
+        prev_date = prev_row.get("date") if prev_row else None
+        log(f"\n⚠ REGRESSION DETECTED vs {prev_date or 'baseline'}: {deltas}")
+        # DI-Q2: capture the immutable forensic snapshot first, so the flag can
+        # cite the evidence directory.
+        evidence_dir = capture_post_regression_evidence(
+            today, deltas, prev_date, make_outputs, metrics, ft2_git, fs_git, hw, log,
+        )
         REGRESSION_FLAG.write_text(json.dumps({
             "date": today,
             "deltas": deltas,
-            "prev_date": prev_row.get("date") if prev_row else None,
+            "prev_date": prev_date,
+            "evidence_snapshot": str(evidence_dir) if evidence_dir else None,
         }, indent=2))
-        log(f"\n⚠ REGRESSION DETECTED vs {prev_row.get('date') if prev_row else 'baseline'}: {deltas}")
         log(f"   Flag written: {REGRESSION_FLAG}")
     elif REGRESSION_FLAG.exists():
         REGRESSION_FLAG.unlink()
