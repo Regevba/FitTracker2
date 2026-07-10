@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "feature": "n6-data-freshness-audit",
+  "title": "n6 data freshness audit",
+  "work_type": "chore",
+  "current_phase": "complete",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-10T07:39:01Z",
+  "updated_at": "2026-07-10T07:39:02Z",
+  "events": [
+    {
+      "timestamp": "2026-07-10T07:39:01Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "N6 Data Freshness Audit (\u00a73.5.3): built data-freshness-audit.py (A1-A4) + 15 tests + make target",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-10T07:39:02Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "N6 tooling complete: 0 FAIL + 0 advisory live; gate-catalog + integrity green; chore/framework_feature no_case_study_required",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
