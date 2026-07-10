@@ -296,6 +296,15 @@ integrity-multi-anchor:
 integrity-data-lake:
 	@python3 scripts/integrity-data-lake.py --json .claude/shared/integrity-data-lake.json $(if $(EXIT_ON_ANOMALY),--exit-on-anomaly,)
 
+# N6 — Quarterly Data Freshness Audit (infra-master-plan §3.5.3). The meta-check
+# that asserts the gate-telemetry stack is internally consistent: emission keys ↔
+# canonical names (A1), recent candidacy (A2), fire-freshness vs introduction (A3),
+# and test-reference currency (A4). Uses the F17 gate-last-fired index for O(1).
+# Runs quarterly (first 2026-08-12); read-only advisory. CI/cron mode:
+# `make data-freshness-audit STRICT=1` exits 1 on any FAIL finding.
+data-freshness-audit:
+	@python3 scripts/data-freshness-audit.py $(if $(STRICT),--strict,) $(if $(JSON),--format json,)
+
 # Rotate / prune daily-checkpoint snapshots under
 # ~/Documents/FitTracker2-backups/daily/ (R2 from 2026-05-19 dev-env audit).
 # Dry-run by default — re-run with EXECUTE=1 to apply changes.
