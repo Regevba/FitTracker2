@@ -157,5 +157,6 @@
   "thematic_codes": [
     "FW-F18"
   ],
-  "platforms_tested_provenance": "exempt:framework_meta"
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "case_study_showcase": "fitme-story/content/04-case-studies/60-f18-mutation-testing.mdx"
 }

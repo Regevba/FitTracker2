@@ -77,11 +77,11 @@ The infra master plan is *forward-looking* — it ranks v8.x candidates and cale
 
 ### 2.1 The 4-checkpoint enforcement model — what exists today
 
-> **Counts below are as-of-writing (2026-05-14).** For current canonical counts (framework v7.10: 30 indexed gates, 117 features, ~118 case studies as of 2026-06-26) always defer to [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). The "70 features" references elsewhere in this doc describe the **canonical 2026-05-14 platform baseline** (non-superseding per §2.6/§2.7) and are intentionally not bumped.
+> **Counts below are as-of-writing (2026-05-14).** For current canonical counts (framework v7.10: 32 instrumented / 34 live gates, 130 features, ~119 case studies as of 2026-07-10) always defer to [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). The "70 features" references elsewhere in this doc describe the **canonical 2026-05-14 platform baseline** (non-superseding per §2.6/§2.7) and are intentionally not bumped.
 
 | Checkpoint | Cadence | Coverage | Source |
 |---|---|---|---|
-| Write-time pre-commit hook | Every commit | 26 gates as of 2026-05-14 (current: 18 write-time emitting — see FRAMEWORK-FACTS + CLAUDE.md "Data Integrity Framework") | `.githooks/pre-commit` |
+| Write-time pre-commit hook | Every commit | 26 gates as of 2026-05-14 (current: 20 write-time emitting — see FRAMEWORK-FACTS + CLAUDE.md "Data Integrity Framework") | `.githooks/pre-commit` |
 | 72h cycle-time | Every 72h via `integrity-cycle.yml` | 16 cycle-time check codes against all features (70 at baseline; 117 as of 2026-06-26) | `.github/workflows/integrity-cycle.yml` |
 | Per-PR integrity bot | Every PR HEAD | schema-check + integrity-check + measurement-adoption vs `origin/main` baseline | `.github/workflows/pr-integrity-check.yml` |
 | Weekly framework status | Mondays 05:00 UTC | Appends measurement-adoption snapshot; opens issue on regression | `.github/workflows/framework-status-weekly.yml` |

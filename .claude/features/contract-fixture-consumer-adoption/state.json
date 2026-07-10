@@ -31,7 +31,7 @@
   "kill_criteria_resolution": "All 3 mitigated by design. (1) Freshness is ASYMMETRIC: WARN (not hard) for FT2-produced fixtures fitme-story vendors but cannot re-sample; HARD only for fitme-story-owned contracts (audit-log) where it controls re-sampling. Test `stale FT2-produced fixture \u2192 WARN (not hard)` enforces. (2) The sampler runs `sanitizeForPublicExport` on every record before write (strips operator_label \u2192 hash); test `sanitize-strips-PII` asserts no raw PII survives. (3) The checker validates against the REAL producer-sampled fixture + live src/data/features data, never inline literals; the sampler's own sample-time required_keys assertion catches producer drift before a bad fixture ships. Tests use temp dirs, never hand-authoring the producer shape.",
   "dispatch_pattern": "serial (agent-driven, cross-repo: fitme-story consumer + FT2 fixture re-sample)",
   "case_study": "docs/case-studies/contract-fixture-consumer-adoption-case-study.md",
-  "case_study_showcase": "",
+  "case_study_showcase": "fitme-story/content/04-case-studies/58-contract-fixture-consumer-adoption.mdx",
   "case_study_type": "shipped",
   "spec": ".claude/shared/v7-9-1-candidates.md F-CONTRACT-FIXTURE-SAMPLING + docs/master-plan v8.x docket E-15",
   "predecessor_case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",

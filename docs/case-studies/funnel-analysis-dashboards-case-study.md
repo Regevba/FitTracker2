@@ -9,7 +9,7 @@ case_study_type: shipped
 tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/funnel-analysis-dashboards-case-study.md
-case_study_showcase: ""
+case_study_showcase: fitme-story/content/04-case-studies/59-funnel-analysis-dashboards.mdx
 related_prs:
   - 799
 dispatch_pattern: serial

@@ -15,6 +15,7 @@ kill_criteria_resolution: "n/a — warn-only posture; there is no kill criterion
 tier_tags_present: true
 related_prs: [809]
 case_study_type: framework_feature
+case_study_showcase: fitme-story/content/04-case-studies/60-f18-mutation-testing.mdx
 ---
 
 # F18 — Mutation Testing on the Gate Dispatchers
@@ -63,4 +64,4 @@ plan §3.5) feeding the planned **T1 `GATE_TEST_MISSING`** meta-gate. Until then
 survivors from the weekly run are triaged and closed by adding tests to
 `scripts/tests/`.
 
-> **Showcase MDX:** deferred (framework-internal chore; cross-repo fitme-story publish is a separate session, consistent with prior framework-chore closures).
+> **Showcase MDX:** published 2026-07-10 at [`fitme-story/content/04-case-studies/60-f18-mutation-testing.mdx`](https://github.com/Regevba/fitme-story/blob/main/content/04-case-studies/60-f18-mutation-testing.mdx) (slot 60 / order 73, v7.10) during the cross-repo doc-freshness reconcile.

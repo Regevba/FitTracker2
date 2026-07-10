@@ -18,7 +18,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | ID | Item | Shipped | PR(s) |
 |---|---|---|---|
 | F2 | Phase 0 reality-check sub-step | v7.9.1 | #618 |
-| F4 | `FRAMEWORK_VERSION_STALE` advisory gate (stale-version detector on phase-advance) | 2026-06-16 | #740 · advisory→enforced ~2026-06-30 |
+| F4 | `FRAMEWORK_VERSION_STALE` advisory gate (stale-version detector on phase-advance) | 2026-06-16 | #740 · advisory→**enforced 2026-07-08** (#858) |
 | F6 | B_medium tier documented in CLAUDE.md | done | CLAUDE.md "Impact tier labels" § + "Work Item Types" |
 | F9 | `make close-feature` closure automation | shipped | #591 + #711 (sub-phase normalize) |
 | F14 | Per-gate dispatch tests | 2026-05-22/23 | #451 / #452 / #455 |
@@ -41,7 +41,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 |---|---|---|---|---|
 | ~~F12~~ ✅ | `actionlint` warn-only CI on `.github/workflows/**` + `make actionlint` | ~~Write-time gate~~ → **CI linter** (reclassified: warn-only tooling like R18, not a state.json gate → no calibration walk) | **100.0 (highest)** | **SHIPPED** (feature `f12-actionlint-gate`; `.github/workflows/actionlint.yml` + Makefile target) |
 | ~~F11~~ ✅ | `BRANCH_ISOLATION_HISTORICAL` reverse-sync exemption (state_owner_sync_origin '-reverse' + reverse-sync/ ref) | Cycle-time gate | 40.0 | **SHIPPED** (feature `f11-reverse-sync-historical-exempt`; advisory narrowing — no calibration window) |
-| ~~F4~~ ✅ | `FRAMEWORK_VERSION_STALE` advisory gate — fires when a feature is advanced (current_phase transition) while `framework_version` < canonical (FRAMEWORK-FACTS.md). Scope = detection, NOT auto-mutation (operator-chosen) | Write-time gate (advisory) | 32.0 | **SHIPPED 2026-06-16** (feature `f4-framework-version-stale`, PR #740; advisory→enforced flip ~2026-06-30) |
+| ~~F4~~ ✅ | `FRAMEWORK_VERSION_STALE` advisory gate — fires when a feature is advanced (current_phase transition) while `framework_version` < canonical (FRAMEWORK-FACTS.md). Scope = detection, NOT auto-mutation (operator-chosen) | Write-time gate (advisory) | 32.0 | **SHIPPED 2026-06-16** (feature `f4-framework-version-stale`, PR #740; advisory→**enforced 2026-07-08** #858) |
 | ~~F10~~ ✅ | `experiment_outcome` enum on `tasks[]` (documented, advisory — not a blocking gate) | Schema | 32.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
 | ~~F13~~ ✅ | `source_commit` `workflow_dispatch` input + full-repo-scan fallback (reverse-sync) | GH Actions | 32.0 | **SHIPPED** (fitme-story PR #221 — reverse-sync workflow lives in fitme-story) |
 | ~~F5~~ ✅ | `scope_change` Tier 2.2 vocabulary event (advisory KNOWN_EVENT_TYPES note) | Vocabulary | 20.0 | **SHIPPED** (feature `v8-f10-f5-schema-vocab`) |
