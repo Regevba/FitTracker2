@@ -13,7 +13,7 @@
 | 2 | **F11** ✅ SHIPPED | `BRANCH_ISOLATION_HISTORICAL` reverse-sync exemption (advisory narrowing, no calibration) | 40.0 | ~0.3w | Cycle-time gate | yes (`scripts/`) |
 | 3 | **F10** ✅ SHIPPED | `experiment_outcome` enum on `tasks[]` (documented + advisory; not a gate) | 32.0 | ~0.3w | Schema extension | yes (`scripts/` schema) |
 | 4 | **F13** ✅ SHIPPED | `source_commit` `workflow_dispatch` input + full-repo-scan fallback | 32.0 | ~0.4w | GH Actions infra (fitme-story) | fitme-story PR #221 |
-| 5 | **F4** ✅ SHIPPED | `FRAMEWORK_VERSION_STALE` advisory gate — stale-version detector on phase-advance (PR #740, 2026-06-16; advisory→enforced ~2026-06-30) | 32.0 | ~0.5w | Write-time gate (advisory) | yes (`scripts/`) |
+| 5 | **F4** ✅ SHIPPED | `FRAMEWORK_VERSION_STALE` advisory gate — stale-version detector on phase-advance (PR #740, 2026-06-16; advisory→**enforced 2026-07-08** #858) | 32.0 | ~0.5w | Write-time gate (enforced) | yes (`scripts/`) |
 | 6 | **F5** ✅ SHIPPED | `scope_change` Tier 2.2 vocabulary event (advisory note) | 20.0 | ~0.2w | Vocabulary | yes (`scripts/` + log schema) |
 | 7 | **F1** ✅ SHIPPED | `STATE_TASKS_FILESYSTEM_DRIFT` cycle-time advisory — complete feature + empty `tasks[]` + shipped artifact = ledger drift (advisory-permanent; 5 baseline fires) | 19.2 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
 | 8 | **F3** ✅ SHIPPED | `DEPENDENCY_GRAPH_CYCLE` cycle-time advisory — cycles / self-loops / dangling refs across `scheduled_after` + `parent_feature` (advisory-permanent; 0 baseline findings, healthy guard) | 14.4 | ~0.5w | Cycle-time gate | yes (`scripts/`) |
@@ -37,7 +37,7 @@
 **Batch 2 — schema + vocabulary (coordinated, low risk):**
 - **F10 experiment_outcome enum** — add enum to `tasks[]` schema + backfill existing deferred tasks + validator. Not a gate.
 - **F5 scope_change event** — add to Tier 2.2 vocabulary + `append-feature-log.py`. Not a gate.
-- **F4 framework_version auto-update** — ✅ **SHIPPED 2026-06-16 (PR #740)** as `FRAMEWORK_VERSION_STALE` advisory detector (operator chose detection over auto-mutation). 28 tests + try-repo fixture pair + Phase A doc. Advisory→enforced flip ~2026-06-30.
+- **F4 framework_version auto-update** — ✅ **SHIPPED 2026-06-16 (PR #740)** as `FRAMEWORK_VERSION_STALE` advisory detector (operator chose detection over auto-mutation). 28 tests + try-repo fixture pair + Phase A doc. Advisory→**enforced 2026-07-08** (#858; 8 emission days / 40 fires / 0 FP).
 
 **Batch 3 — cycle-time advisories (read-only, lowest risk to commits):**
 - **F11 reverse-sync allowlist** — extend `BRANCH_ISOLATION_HISTORICAL` to read `state_owner_sync_origin` / `reverse-sync/*`.

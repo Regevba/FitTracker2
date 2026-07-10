@@ -342,7 +342,7 @@ The 3 tables above (Core iOS Features / Features Built via PM Workflow / Individ
 
 **Canonical sources for the full SHIPPED list:**
 - `docs/product/backlog.md` (item numbering through 100+) — current
-- `.claude/features/*/state.json` `current_phase: complete` (**114 complete of 117 tracked as of 2026-06-26**; was "45+ as of 2026-05-23")
+- `.claude/features/*/state.json` `current_phase: complete` (**125 complete of 130 tracked as of 2026-07-10**; was "45+ as of 2026-05-23")
 - `docs/case-studies/*.md` — narrative records of shipped features
 - `fitme-story/content/04-case-studies/*.mdx` — public showcase MDX (51+ slots)
 

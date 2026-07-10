@@ -9,7 +9,7 @@ case_study_type: shipped
 tier_tags_present: true
 status: shipped
 case_study: docs/case-studies/contract-fixture-consumer-adoption-case-study.md
-case_study_showcase: ""
+case_study_showcase: fitme-story/content/04-case-studies/58-contract-fixture-consumer-adoption.mdx
 related_prs:
   - 790
 pr_citation_exempt:

@@ -4,6 +4,8 @@
 > Last updated: 2026-04-15 | Author: Regev Barak | Version: 3.0
 >
 > **What changed in v3.0:** Added User Profile Settings, Smart Reminders, Onboarding Auth Flow, AI Engine Architecture Adaptation, and Normalization Framework. Updated feature count to 44 shipped. Updated framework to v5.1. Added case study references.
+>
+> **⚠️ Framework-state note (reconciled 2026-07-10):** the "44 shipped / framework v5.1" figures above are the **2026-04-15 v3.0 edition** and are NOT current. Product *strategy* below remains authoritative; for current framework version + feature/gate counts (v7.10 · 130 features · 32 instrumented / 34 live gates) **always defer to [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md)**. This doc's product-requirement content is not auto-reconciled to the feature ledger.
 
 ---
 
