@@ -357,6 +357,68 @@ def collect_metrics(make_outputs: dict) -> dict:
     }
 
 
+def _jsonl_row_count(p: Path) -> int | None:
+    """Non-blank line count for a .jsonl file, or None if unreadable."""
+    try:
+        return sum(1 for ln in p.read_text().splitlines() if ln.strip())
+    except OSError:
+        return None
+
+
+def summarize_fitme_story_cross_repo_state(
+    fs_repo: Path, ft2_gate_coverage: Path
+) -> dict:
+    """FIT-207 — summarize the fitme-story side of the cross-repo mirror for the
+    daily forensic baseline.
+
+    The daily checkpoint already captures fitme-story's git head; this adds its
+    *shared state*: the sync-freshness marker and the FT2 gate-coverage mirror,
+    plus a drift check of that mirror against FT2's own source-of-truth stream.
+    That drift check is the content-level complement to the N4 state-sync-health
+    probe (which only checks the freshness marker's age).
+
+    Best-effort by construction: a missing fitme-story checkout or any missing
+    input degrades to a typed marker rather than raising, so the checkpoint
+    never fails because the sibling repo isn't present (e.g. cron/CI contexts).
+    """
+    data_dir = fs_repo / "src" / "data"
+    summary: dict = {"fitme_story_repo": str(fs_repo), "present": fs_repo.is_dir()}
+    if not fs_repo.is_dir():
+        summary["reason"] = "fitme_story_repo_absent"
+        return summary
+
+    summary["freshness_present"] = (data_dir / "freshness.json").is_file()
+
+    # Gate-coverage mirror drift vs the FT2 source stream. fitme-story mirrors
+    # FT2's gate-coverage.jsonl verbatim on each prebuild sync, so a fresh mirror
+    # has ~equal rows; a mirror far behind the source means the sync has stalled.
+    mirror = data_dir / "integrity" / "gate-coverage-ft2.jsonl"
+    mirror_rows = _jsonl_row_count(mirror) if mirror.is_file() else None
+    source_rows = _jsonl_row_count(ft2_gate_coverage) if ft2_gate_coverage.is_file() else None
+    gc: dict = {"mirror_rows": mirror_rows, "ft2_source_rows": source_rows}
+    if mirror_rows is not None and source_rows is not None:
+        delta = source_rows - mirror_rows
+        gc["delta_source_minus_mirror"] = delta
+        # In sync when the mirror is at or just behind the source (tolerance
+        # scales with corpus so a large stream isn't held to an absolute row).
+        tolerance = max(50, source_rows // 20)
+        gc["mirror_in_sync"] = 0 <= delta <= tolerance
+    else:
+        gc["mirror_in_sync"] = None
+    summary["gate_coverage_mirror"] = gc
+
+    def _count(rel: str, pattern: str) -> int:
+        d = data_dir / rel
+        return len(list(d.glob(pattern))) if d.is_dir() else 0
+
+    summary["synced_inventory"] = {
+        "features": _count("features", "*.json"),
+        "logs": _count("logs", "*.json"),
+        "integrity_snapshots": _count("integrity/snapshots", "*.json"),
+    }
+    return summary
+
+
 def write_snapshot(target_dir: Path, make_outputs: dict, metrics: dict) -> bool:
     """Write a full snapshot to target_dir. Returns True if successful."""
     try:
@@ -415,6 +477,21 @@ def write_snapshot(target_dir: Path, make_outputs: dict, metrics: dict) -> bool:
         for label, repo in (("ft2", REPO_ROOT), ("fitme-story", FITME_STORY_REPO)):
             rc, out = run(["git", "log", "--oneline", "-20"], cwd=repo, timeout=10)
             (target_dir / f"{label}-git-log-last-20.txt").write_text(out)
+
+        # 5b. FIT-207 — fitme-story cross-repo shared-state baseline. Captures the
+        # sibling repo's sync-freshness marker + a gate-coverage mirror-vs-source
+        # drift summary, so the daily forensic snapshot records BOTH sides of the
+        # cross-repo contract (not just FT2's). Best-effort: absent sibling repo
+        # degrades to a typed marker, never fails the snapshot.
+        fs_dir = target_dir / "fitme-story"
+        fs_dir.mkdir(exist_ok=True)
+        fs_summary = summarize_fitme_story_cross_repo_state(
+            FITME_STORY_REPO, REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
+        )
+        (fs_dir / "cross-repo-summary.json").write_text(json.dumps(fs_summary, indent=2))
+        fs_freshness = FITME_STORY_REPO / "src" / "data" / "freshness.json"
+        if fs_freshness.is_file():
+            shutil.copy2(fs_freshness, fs_dir / "freshness.json")
 
         # 6. Metrics summary
         (target_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
