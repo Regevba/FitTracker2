@@ -43,6 +43,13 @@ def unified_status(state: dict) -> str:
     phase = (state.get("current_phase") or "").lower()
     if phase in TERMINAL:
         return "Done"
+    # Won't-Do (terminal park / cancelled) — checked BEFORE the Blocked
+    # signals because a Won't-Do feature is also `paused: true`, and the
+    # terminal decision must win over the resumable-Blocked coarsening.
+    # Canonical marker is `wont_do: true`; the Linear mirror status
+    # (`linear_status` == Canceled) is accepted as a secondary signal.
+    if state.get("wont_do") or (state.get("linear_status") or "").lower() in ("canceled", "cancelled"):
+        return "Won't-Do"
     # Blocked signals (paused / external dependency).
     if state.get("paused") or state.get("blocked") or state.get("blocked_on"):
         return "Blocked"
