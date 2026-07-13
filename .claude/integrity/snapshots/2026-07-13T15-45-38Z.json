@@ -1,0 +1,1814 @@
+{
+  "timestamp": "2026-07-13T15:45:47.419331Z",
+  "commit_head": "68c33cde984b2f2c0db003838a9368ad0f2859e0",
+  "snapshot_context": {
+    "trigger": "manual",
+    "counts_for_trend": false
+  },
+  "feature_count": 131,
+  "case_study_count": 119,
+  "finding_count": 0,
+  "advisory_finding_count": 1,
+  "findings_by_severity": {
+    "CRITICAL": 0,
+    "INCONSISTENT": 0,
+    "MISSING": 0,
+    "WARN": 0,
+    "ADVISORY": 1
+  },
+  "auditor_agent": {
+    "citation_check_ran": true,
+    "known_pr_count": 2106
+  },
+  "features": [
+    {
+      "name": "3d-interactive-framework-flow-diagram",
+      "phase": "tasks_phase",
+      "case_study": null,
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "66a8cee3aef3e36e"
+    },
+    {
+      "name": "adaptive-intelligence",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "d4d1cd6ceddde34f"
+    },
+    {
+      "name": "adaptive-intelligence-next-pass",
+      "phase": "complete",
+      "case_study": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "45b8de1d1b97ec99"
+    },
+    {
+      "name": "ai-cohort-intelligence",
+      "phase": "complete",
+      "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "6d411ff94826242f"
+    },
+    {
+      "name": "ai-engine-architecture-adaptation",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 13,
+      "task_completed": 13,
+      "state_hash": "cb953f02b89047eb"
+    },
+    {
+      "name": "ai-engine-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "38161390fa616e08"
+    },
+    {
+      "name": "ai-golden-set-evals",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-golden-set-evals-case-study.md",
+      "case_study_type": null,
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "8b6c6c85d57ba0b2"
+    },
+    {
+      "name": "ai-recommendation-ui",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "a8f7df3f879ff5d2"
+    },
+    {
+      "name": "ai-user-feedback-loop",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-user-feedback-loop-case-study.md",
+      "case_study_type": null,
+      "task_total": 12,
+      "task_completed": 12,
+      "state_hash": "881a9be86f271e46"
+    },
+    {
+      "name": "an-1b1-csv-taxonomy-drift",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "70777ff90d4c1d13"
+    },
+    {
+      "name": "an-1b2-ga4-mcp-disconnected",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "d574f88df5b6ad1e"
+    },
+    {
+      "name": "analytics-observability",
+      "phase": "complete",
+      "case_study": "docs/case-studies/analytics-observability-case-study.md",
+      "case_study_type": null,
+      "task_total": 15,
+      "task_completed": 14,
+      "state_hash": "1e5d86f9b4f66401"
+    },
+    {
+      "name": "android-design-system",
+      "phase": "complete",
+      "case_study": "docs/case-studies/android-design-system-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "94bd1c0dd5c1c466"
+    },
+    {
+      "name": "android-token-pipeline",
+      "phase": "complete",
+      "case_study": "docs/case-studies/android-token-pipeline-case-study.md",
+      "case_study_type": null,
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "e537e5cadccdea48"
+    },
+    {
+      "name": "app-store-assets",
+      "phase": "implementation",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 10,
+      "task_completed": 5,
+      "state_hash": "67890d1aedb7c8fb"
+    },
+    {
+      "name": "audit-1-corrections",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "de6f0491115c3117"
+    },
+    {
+      "name": "auth-polish-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+      "case_study_type": "live_pm_workflow",
+      "task_total": 18,
+      "task_completed": 14,
+      "state_hash": "bc439bc1bb17e4a2"
+    },
+    {
+      "name": "authentication",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "dfe4945142d7f1e6"
+    },
+    {
+      "name": "case-study-comparison-table",
+      "phase": "complete",
+      "case_study": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "ba114de27191ab51"
+    },
+    {
+      "name": "case-study-presentation",
+      "phase": "complete",
+      "case_study": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+      "case_study_type": null,
+      "task_total": 1,
+      "task_completed": 1,
+      "state_hash": "b9844f69a60e1c3c"
+    },
+    {
+      "name": "code-connect-automation",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 5,
+      "task_completed": 4,
+      "state_hash": "b0d73c6f48be5a16"
+    },
+    {
+      "name": "contract-fixture-consumer-adoption",
+      "phase": "complete",
+      "case_study": "docs/case-studies/contract-fixture-consumer-adoption-case-study.md",
+      "case_study_type": "shipped",
+      "task_total": 8,
+      "task_completed": 7,
+      "state_hash": "39e72f97c8a9d4ec"
+    },
+    {
+      "name": "cross-repo-state-sync-impl",
+      "phase": "complete",
+      "case_study": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
+      "case_study_type": null,
+      "task_total": 11,
+      "task_completed": 11,
+      "state_hash": "27df87c1d8bc34eb"
+    },
+    {
+      "name": "data-integrity-framework-v7-6",
+      "phase": "complete",
+      "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "b3a050ad9c57773f"
+    },
+    {
+      "name": "data-sync",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "4b562553f82c536c"
+    },
+    {
+      "name": "de-r14-integrity-parallel",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "55be4483a012cd63"
+    },
+    {
+      "name": "design-system-v2",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "e7b3b8d833120672"
+    },
+    {
+      "name": "dev-env-r11-r13-r14-r17-r18-batch",
+      "phase": "complete",
+      "case_study": "docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
+      "case_study_type": null,
+      "task_total": 7,
+      "task_completed": 7,
+      "state_hash": "5c3160079752a381"
+    },
+    {
+      "name": "development-dashboard",
+      "phase": "complete",
+      "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "ae20a0686770c646"
+    },
+    {
+      "name": "dispatch-intelligence-v5.2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "00c4a96cc4bfe0a5"
+    },
+    {
+      "name": "exercise-search-filter",
+      "phase": "complete",
+      "case_study": "docs/case-studies/exercise-search-filter-case-study.md",
+      "case_study_type": null,
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "f5ac2a136a424680"
+    },
+    {
+      "name": "f-deployed-url-probe-ft2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f-deployed-url-probe-ft2-case-study.md",
+      "case_study_type": null,
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "1fcf326e3d95a0dc"
+    },
+    {
+      "name": "f-launchd-drift-extension",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",
+      "case_study_type": null,
+      "task_total": 7,
+      "task_completed": 6,
+      "state_hash": "f9ee1f6774a0a9cf"
+    },
+    {
+      "name": "f-launchd-drift-extension-sub-a",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md",
+      "case_study_type": null,
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "0bbedfe2632e13ac"
+    },
+    {
+      "name": "f-phase-e-adoption-freeze-discipline",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md",
+      "case_study_type": null,
+      "task_total": 4,
+      "task_completed": 4,
+      "state_hash": "16ee01a1d821528e"
+    },
+    {
+      "name": "f1-state-tasks-filesystem-drift",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "0b9525e2bf180c97"
+    },
+    {
+      "name": "f11-reverse-sync-historical-exempt",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "28785e70cb0ed21e"
+    },
+    {
+      "name": "f12-actionlint-gate",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "355933a792a76dfe"
+    },
+    {
+      "name": "f16-try-repo-harness",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f16-try-repo-harness-case-study.md",
+      "case_study_type": null,
+      "task_total": 14,
+      "task_completed": 14,
+      "state_hash": "6f25dd7cc29791ab"
+    },
+    {
+      "name": "f17-last-fired-at-index",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f17-last-fired-at-index-case-study.md",
+      "case_study_type": null,
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "63a859398be3df19"
+    },
+    {
+      "name": "f18-mutation-testing",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f18-mutation-testing-case-study.md",
+      "case_study_type": null,
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "61a053fa2ee05361"
+    },
+    {
+      "name": "f2-phase-0-reality-check",
+      "phase": "complete",
+      "case_study": "docs/case-studies/f2-phase-0-reality-check-case-study.md",
+      "case_study_type": null,
+      "task_total": 7,
+      "task_completed": 7,
+      "state_hash": "354777f947d6b595"
+    },
+    {
+      "name": "f3-dependency-graph-cycle-check",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "70d4868bdfbfa36d"
+    },
+    {
+      "name": "f4-framework-version-stale",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "d1b4e4b001a84966"
+    },
+    {
+      "name": "figma-design-architecture",
+      "phase": "complete",
+      "case_study": "docs/case-studies/figma-design-architecture-case-study.md",
+      "case_study_type": null,
+      "task_total": 15,
+      "task_completed": 12,
+      "state_hash": "02e0ddb63e859421"
+    },
+    {
+      "name": "fitme-story-design-system-p2-cleanup",
+      "phase": "complete",
+      "case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+      "case_study_type": null,
+      "task_total": 1,
+      "task_completed": 1,
+      "state_hash": "7fc784c0e0d3f792"
+    },
+    {
+      "name": "fitme-story-ds-p2-deferred",
+      "phase": "complete",
+      "case_study": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+      "case_study_type": null,
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "5d03e04d8a9cbfee"
+    },
+    {
+      "name": "fitme-story-ds-p2-final-sweep",
+      "phase": "complete",
+      "case_study": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 7,
+      "state_hash": "035580f4d827f3ba"
+    },
+    {
+      "name": "fitme-story-dual-audience-redesign",
+      "phase": "complete",
+      "case_study": "docs/case-studies/fitme-story-dual-audience-redesign-case-study.md",
+      "case_study_type": null,
+      "task_total": 16,
+      "task_completed": 16,
+      "state_hash": "972863343b683d90"
+    },
+    {
+      "name": "fitme-story-public-enhancements",
+      "phase": "complete",
+      "case_study": "docs/case-studies/fitme-story-public-enhancements-case-study.md",
+      "case_study_type": null,
+      "task_total": 24,
+      "task_completed": 24,
+      "state_hash": "764d64a822734fce"
+    },
+    {
+      "name": "fitme-story-website-design-system",
+      "phase": "complete",
+      "case_study": "docs/case-studies/fitme-story-website-design-system-case-study.md",
+      "case_study_type": null,
+      "task_total": 28,
+      "task_completed": 23,
+      "state_hash": "10aa2a17ee15f1ff"
+    },
+    {
+      "name": "foundation-models-tier3",
+      "phase": "complete",
+      "case_study": "docs/case-studies/foundation-models-tier3-case-study.md",
+      "case_study_type": null,
+      "task_total": 13,
+      "task_completed": 13,
+      "state_hash": "4d9d21f44736bfd5"
+    },
+    {
+      "name": "framework-f14-f15-dispatch-test-coverage",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
+      "case_study_type": "feature_case_study",
+      "task_total": 12,
+      "task_completed": 12,
+      "state_hash": "07bbe9612b3e9a33"
+    },
+    {
+      "name": "framework-honesty-fixes-2026-05-01",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "case_study_type": "live_pm_workflow",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "9559d6515b40703d"
+    },
+    {
+      "name": "framework-measurement-v6",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "d8778a2db4c8688a"
+    },
+    {
+      "name": "framework-story-site",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-story-site-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "abe1f39d5d37944e"
+    },
+    {
+      "name": "framework-v5-0-soc",
+      "phase": "complete",
+      "case_study": "docs/case-studies/soc-v5-framework-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "8a8799eef66afbe8"
+    },
+    {
+      "name": "framework-v7-1-integrity-cycle",
+      "phase": "complete",
+      "case_study": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "60aa27306319c903"
+    },
+    {
+      "name": "framework-v7-5-data-integrity",
+      "phase": "complete",
+      "case_study": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "fe988c474fdb289e"
+    },
+    {
+      "name": "framework-v7-7-validity-closure",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "e470923b01d12272"
+    },
+    {
+      "name": "framework-v7-8-branch-isolation",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
+      "case_study_type": null,
+      "task_total": 29,
+      "task_completed": 28,
+      "state_hash": "cff36244d84323ec"
+    },
+    {
+      "name": "framework-v7-8-bridge",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-8-bridge-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "877ef37b947d68ed"
+    },
+    {
+      "name": "framework-v7-9-1-promotion",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-9-1-promotion-case-study.md",
+      "case_study_type": null,
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "4ea07e081c7108f5"
+    },
+    {
+      "name": "framework-v7-9-promotion",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+      "case_study_type": null,
+      "task_total": 7,
+      "task_completed": 7,
+      "state_hash": "015fa3def29e33a9"
+    },
+    {
+      "name": "framework-w30-w31-w32-durable-fixes",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md",
+      "case_study_type": null,
+      "task_total": 7,
+      "task_completed": 7,
+      "state_hash": "55ea385ee689d1c1"
+    },
+    {
+      "name": "funnel-analysis-dashboards",
+      "phase": "complete",
+      "case_study": "docs/case-studies/funnel-analysis-dashboards-case-study.md",
+      "case_study_type": null,
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "aec08068c3d29281"
+    },
+    {
+      "name": "garmin-health-connection",
+      "phase": "complete",
+      "case_study": "docs/case-studies/garmin-health-connection-case-study.md",
+      "case_study_type": null,
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "3d951f5519366ab6"
+    },
+    {
+      "name": "gdpr-compliance",
+      "phase": "complete",
+      "case_study": "docs/case-studies/gdpr-compliance-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "d112782d27b3edc9"
+    },
+    {
+      "name": "google-analytics",
+      "phase": "complete",
+      "case_study": "docs/case-studies/google-analytics-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "7cb6037f8cbf77cb"
+    },
+    {
+      "name": "hadf-infrastructure",
+      "phase": "complete",
+      "case_study": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "1d046a0df6483db1"
+    },
+    {
+      "name": "hadf-phase2-cloud-fingerprinting",
+      "phase": "complete",
+      "case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+      "case_study_type": "measurement_study",
+      "task_total": 4,
+      "task_completed": 4,
+      "state_hash": "d1c2616aeaccd5d9"
+    },
+    {
+      "name": "hadf-phase2bis-replication",
+      "phase": "complete",
+      "case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+      "case_study_type": null,
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "55cd23dd11c632bb"
+    },
+    {
+      "name": "hadf-phase3a-sensing",
+      "phase": "complete",
+      "case_study": "docs/case-studies/hadf-phase3a-sensing-case-study.md",
+      "case_study_type": null,
+      "task_total": 7,
+      "task_completed": 6,
+      "state_hash": "976a8fdd142e9dd2"
+    },
+    {
+      "name": "hadf-signature-expansion",
+      "phase": "complete",
+      "case_study": "docs/case-studies/hadf-signature-expansion-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "4c34d919e657612e"
+    },
+    {
+      "name": "home-status-goal-card",
+      "phase": "complete",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "74850ff791d28c5c"
+    },
+    {
+      "name": "home-today-screen",
+      "phase": "complete",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 17,
+      "task_completed": 17,
+      "state_hash": "00632a21f03b15b3"
+    },
+    {
+      "name": "import-training-plan",
+      "phase": "complete",
+      "case_study": "docs/case-studies/import-training-plan-case-study.md",
+      "case_study_type": null,
+      "task_total": 18,
+      "task_completed": 18,
+      "state_hash": "c380f6a0aedde064"
+    },
+    {
+      "name": "ios-code-connect",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 5,
+      "task_completed": 4,
+      "state_hash": "4759a5220e16ffdf"
+    },
+    {
+      "name": "ios-ui-audit-p1-burndown",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ios-ui-audit-p1-burndown-case-study.md",
+      "case_study_type": null,
+      "task_total": 1,
+      "task_completed": 1,
+      "state_hash": "5b033a670a95ebd8"
+    },
+    {
+      "name": "ios-ui-audit-p1-drift-cleanup",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ios-ui-audit-p1-drift-cleanup-case-study.md",
+      "case_study_type": null,
+      "task_total": 8,
+      "task_completed": 8,
+      "state_hash": "1c5d4491a8943db1"
+    },
+    {
+      "name": "marketing-website",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "9b60a08f2235c4a1"
+    },
+    {
+      "name": "meta-analysis-audit",
+      "phase": "complete",
+      "case_study": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "832f70edc3d3b8cb"
+    },
+    {
+      "name": "meta-analysis-refresh-phase-1",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 7,
+      "task_completed": 7,
+      "state_hash": "63d2a42adb34275f"
+    },
+    {
+      "name": "metric-tile-deep-linking",
+      "phase": "complete",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "77d58c306ae74637"
+    },
+    {
+      "name": "n6-data-freshness-audit",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 2,
+      "task_completed": 2,
+      "state_hash": "d7f1775f06ab1d49"
+    },
+    {
+      "name": "nutrition-logging",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "d658aaefca03cf1e"
+    },
+    {
+      "name": "nutrition-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "case_study_type": null,
+      "task_total": 14,
+      "task_completed": 14,
+      "state_hash": "a3ff495aba54f582"
+    },
+    {
+      "name": "onboarding",
+      "phase": "complete",
+      "case_study": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+      "case_study_type": null,
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "d3013140e625db98"
+    },
+    {
+      "name": "onboarding-v2-auth-flow",
+      "phase": "complete",
+      "case_study": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 12,
+      "task_completed": 12,
+      "state_hash": "5d8c470fa304b5f3"
+    },
+    {
+      "name": "onboarding-v2-retroactive",
+      "phase": "complete",
+      "case_study": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "b27eb22e02cbebf2"
+    },
+    {
+      "name": "orchid-v1-5",
+      "phase": "implementation",
+      "case_study": "docs/case-studies/orchid-v1-5-additive-units-case-study.md",
+      "case_study_type": "live_pm_workflow",
+      "task_total": 7,
+      "task_completed": 5,
+      "state_hash": "7127d9f9082be018"
+    },
+    {
+      "name": "parallel-write-safety-v5.2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+      "case_study_type": null,
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "a85403c11b450bd2"
+    },
+    {
+      "name": "precommit-hook-latency-profiling",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "4d3ec3d664966b29"
+    },
+    {
+      "name": "push-notifications",
+      "phase": "complete",
+      "case_study": "docs/case-studies/push-notifications-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 16,
+      "task_completed": 16,
+      "state_hash": "f845c17a995192e4"
+    },
+    {
+      "name": "r17-state-sync-health-endpoint",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 2,
+      "task_completed": 2,
+      "state_hash": "e19c2b011c808d7b"
+    },
+    {
+      "name": "r9-track-b-coverage-aggregator",
+      "phase": "complete",
+      "case_study": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
+      "case_study_type": null,
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "2406b673c65b70da"
+    },
+    {
+      "name": "readiness-aware-training-alert",
+      "phase": "complete",
+      "case_study": "docs/case-studies/readiness-aware-training-alert-case-study.md",
+      "case_study_type": null,
+      "task_total": 13,
+      "task_completed": 13,
+      "state_hash": "a58fe2896daa6416"
+    },
+    {
+      "name": "readiness-score-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "a9879d8b62c4555e"
+    },
+    {
+      "name": "recovery-biometrics",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "693d063196630022"
+    },
+    {
+      "name": "roadmap-stress-test-2026-05-07",
+      "phase": "complete",
+      "case_study": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "3a5dd56655886f23"
+    },
+    {
+      "name": "settings",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "eccaae134d3711ac"
+    },
+    {
+      "name": "settings-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "06d24cdfa93806a8"
+    },
+    {
+      "name": "smart-reminders",
+      "phase": "complete",
+      "case_study": "docs/case-studies/smart-reminders-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "7352de1ac5d8b7b0"
+    },
+    {
+      "name": "smart-reminders-behavioral-learning",
+      "phase": "complete",
+      "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+      "case_study_type": null,
+      "task_total": 1,
+      "task_completed": 1,
+      "state_hash": "a7d443cf284662f3"
+    },
+    {
+      "name": "stats-progress-hub",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "5f30ff2e13875cb0"
+    },
+    {
+      "name": "stats-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/stats-v2-case-study.md",
+      "case_study_type": "shipped",
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "c635d812b213f995"
+    },
+    {
+      "name": "t13-last-failed-at-index",
+      "phase": "complete",
+      "case_study": "docs/case-studies/t13-last-failed-at-index-case-study.md",
+      "case_study_type": null,
+      "task_total": 4,
+      "task_completed": 4,
+      "state_hash": "25a0cd5479e2446d"
+    },
+    {
+      "name": "t14-platform-parity-state-field",
+      "phase": "complete",
+      "case_study": "docs/case-studies/t14-platform-parity-state-field-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "125218e7995d28b6"
+    },
+    {
+      "name": "t15-orphan-test-weekly-cron",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 2,
+      "task_completed": 2,
+      "state_hash": "abfbefe76df1015e"
+    },
+    {
+      "name": "t16-gate-test-tier-annotation",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 5,
+      "task_completed": 5,
+      "state_hash": "885993813aaaf0d0"
+    },
+    {
+      "name": "t3-signinservice-passkey-tests",
+      "phase": "complete",
+      "case_study": "docs/case-studies/t3-signinservice-passkey-tests-case-study.md",
+      "case_study_type": null,
+      "task_total": 4,
+      "task_completed": 4,
+      "state_hash": "e14be5e916ea47a4"
+    },
+    {
+      "name": "t4-ios-snapshot-testing",
+      "phase": "implement",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 1,
+      "state_hash": "c57d5cb33ef80237"
+    },
+    {
+      "name": "t5-mock-protocol-drift",
+      "phase": "complete",
+      "case_study": "docs/case-studies/t5-mock-protocol-drift-case-study.md",
+      "case_study_type": null,
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "7c03d26364ce4c1a"
+    },
+    {
+      "name": "t7-web-critical-route-smoke-tests",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 1,
+      "task_completed": 1,
+      "state_hash": "ddca8bc24d1631c6"
+    },
+    {
+      "name": "t8-web-webauthn-route-handler-tests",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 2,
+      "task_completed": 2,
+      "state_hash": "0f7fb997fa449e17"
+    },
+    {
+      "name": "t9-backend-chaos-tests",
+      "phase": "implement",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 4,
+      "task_completed": 2,
+      "state_hash": "90f068f152ae8c37"
+    },
+    {
+      "name": "training-plan-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/training-plan-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "77c0a4726ebb5ffa"
+    },
+    {
+      "name": "training-program-customization",
+      "phase": "complete",
+      "case_study": "docs/case-studies/training-program-customization-case-study.md",
+      "case_study_type": null,
+      "task_total": 15,
+      "task_completed": 15,
+      "state_hash": "0dc0e8661805a4b6"
+    },
+    {
+      "name": "training-tracking",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "2438e981823ae81c"
+    },
+    {
+      "name": "trend-alerts-hrv",
+      "phase": "complete",
+      "case_study": "docs/case-studies/trend-alerts-hrv-case-study.md",
+      "case_study_type": null,
+      "task_total": 1,
+      "task_completed": 1,
+      "state_hash": "3ce3cb236ef9715a"
+    },
+    {
+      "name": "ucc-passkey-auth",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "case_study_type": null,
+      "task_total": 28,
+      "task_completed": 28,
+      "state_hash": "a7d4b28152f4fc4d"
+    },
+    {
+      "name": "ucc-passkey-auth-audit-log-redis-fix",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "a913f730775ffaf1"
+    },
+    {
+      "name": "ucc-passkey-auth-security-hardening",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
+      "case_study_type": "feature_case_study",
+      "task_total": 26,
+      "task_completed": 25,
+      "state_hash": "805adc2689309d1d"
+    },
+    {
+      "name": "ucc-sign-in-figma-mapping",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "case_study_type": null,
+      "task_total": 11,
+      "task_completed": 8,
+      "state_hash": "cebc32f8f99277e0"
+    },
+    {
+      "name": "ui-audit-baseline-burndown",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ui-audit-baseline-burndown.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "403f843778d06b61"
+    },
+    {
+      "name": "ui-ux-final-sweep-2026-05-12",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "5fd9e19dec41670a"
+    },
+    {
+      "name": "unified-control-center",
+      "phase": "complete",
+      "case_study": {
+        "started_at": "2026-04-26T05:30:00Z",
+        "log_path": ".claude/logs/unified-control-center.log.json",
+        "case_study_path": "docs/case-studies/unified-control-center-case-study.md",
+        "monitored_from_day_one": true
+      },
+      "case_study_type": null,
+      "task_total": 44,
+      "task_completed": 43,
+      "state_hash": "09ab8340cffc46ce"
+    },
+    {
+      "name": "user-profile-settings",
+      "phase": "complete",
+      "case_study": "docs/case-studies/user-profile-v4.4-case-study.md",
+      "case_study_type": null,
+      "task_total": 13,
+      "task_completed": 13,
+      "state_hash": "1607344a4137c953"
+    },
+    {
+      "name": "v8-f10-f5-schema-vocab",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "ab61e03ec2dce77b"
+    },
+    {
+      "name": "w9-drift-triggered-auto-isolation",
+      "phase": "complete",
+      "case_study": "docs/case-studies/w9-drift-triggered-auto-isolation-case-study.md",
+      "case_study_type": null,
+      "task_total": 12,
+      "task_completed": 11,
+      "state_hash": "a6049435443f11b3"
+    },
+    {
+      "name": "weekly-digest-silent-gate-enrichment",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 3,
+      "task_completed": 3,
+      "state_hash": "d0c8819f434ef6c3"
+    }
+  ],
+  "case_studies": [
+    {
+      "path": "docs/case-studies/adaptive-intelligence-next-pass-case-study.md",
+      "size_bytes": 8787,
+      "first_commit_date": "2026-06-02"
+    },
+    {
+      "path": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "size_bytes": 13351,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/ai-golden-set-evals-case-study.md",
+      "size_bytes": 5911,
+      "first_commit_date": "2026-06-10"
+    },
+    {
+      "path": "docs/case-studies/ai-user-feedback-loop-case-study.md",
+      "size_bytes": 8653,
+      "first_commit_date": "2026-06-02"
+    },
+    {
+      "path": "docs/case-studies/analytics-observability-case-study.md",
+      "size_bytes": 4700,
+      "first_commit_date": "2026-06-09"
+    },
+    {
+      "path": "docs/case-studies/android-design-system-case-study.md",
+      "size_bytes": 6573,
+      "first_commit_date": "2026-05-05"
+    },
+    {
+      "path": "docs/case-studies/android-token-pipeline-case-study.md",
+      "size_bytes": 5903,
+      "first_commit_date": "2026-06-17"
+    },
+    {
+      "path": "docs/case-studies/audit-remediation-case-study.md",
+      "size_bytes": 4873,
+      "first_commit_date": "2026-04-17"
+    },
+    {
+      "path": "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
+      "size_bytes": 18669,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
+      "size_bytes": 12324,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g1-ui-case-study.md",
+      "size_bytes": 1877,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g2-tests-case-study.md",
+      "size_bytes": 1886,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g3-ai-case-study.md",
+      "size_bytes": 1877,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g4-backend-case-study.md",
+      "size_bytes": 1892,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g5-ds-case-study.md",
+      "size_bytes": 1877,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g6-config-case-study.md",
+      "size_bytes": 1889,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/auth-polish-v2-case-study.md",
+      "size_bytes": 9096,
+      "first_commit_date": "2026-04-27"
+    },
+    {
+      "path": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+      "size_bytes": 17428,
+      "first_commit_date": "2026-04-28"
+    },
+    {
+      "path": "docs/case-studies/cleanup-control-room-case-study.md",
+      "size_bytes": 7947,
+      "first_commit_date": "2026-04-13"
+    },
+    {
+      "path": "docs/case-studies/contract-fixture-consumer-adoption-case-study.md",
+      "size_bytes": 7608,
+      "first_commit_date": "2026-06-22"
+    },
+    {
+      "path": "docs/case-studies/control-center-alignment-ia-refresh-case-study.md",
+      "size_bytes": 4611,
+      "first_commit_date": "2026-04-13"
+    },
+    {
+      "path": "docs/case-studies/control-room-live-feed-case-study.md",
+      "size_bytes": 7434,
+      "first_commit_date": "2026-06-16"
+    },
+    {
+      "path": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
+      "size_bytes": 21732,
+      "first_commit_date": "2026-05-11"
+    },
+    {
+      "path": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+      "size_bytes": 23174,
+      "first_commit_date": "2026-04-24"
+    },
+    {
+      "path": "docs/case-studies/data-quality-tiers.md",
+      "size_bytes": 5267,
+      "first_commit_date": "2026-04-21"
+    },
+    {
+      "path": "docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
+      "size_bytes": 10470,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/dual-outlet-pattern.md",
+      "size_bytes": 15798,
+      "first_commit_date": "2026-05-08"
+    },
+    {
+      "path": "docs/case-studies/eval-layer-v4.4-case-study.md",
+      "size_bytes": 9568,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/exercise-search-filter-case-study.md",
+      "size_bytes": 11383,
+      "first_commit_date": "2026-06-02"
+    },
+    {
+      "path": "docs/case-studies/f-deployed-url-probe-ft2-case-study.md",
+      "size_bytes": 9777,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/f-launchd-drift-extension-case-study.md",
+      "size_bytes": 10290,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md",
+      "size_bytes": 8694,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md",
+      "size_bytes": 9009,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/f16-try-repo-harness-case-study.md",
+      "size_bytes": 13521,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/f17-last-fired-at-index-case-study.md",
+      "size_bytes": 8143,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/f18-mutation-testing-case-study.md",
+      "size_bytes": 3948,
+      "first_commit_date": "2026-06-26"
+    },
+    {
+      "path": "docs/case-studies/f2-phase-0-reality-check-case-study.md",
+      "size_bytes": 8084,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/figma-design-architecture-case-study.md",
+      "size_bytes": 6936,
+      "first_commit_date": "2026-06-18"
+    },
+    {
+      "path": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+      "size_bytes": 8274,
+      "first_commit_date": "2026-05-11"
+    },
+    {
+      "path": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+      "size_bytes": 7313,
+      "first_commit_date": "2026-05-12"
+    },
+    {
+      "path": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md",
+      "size_bytes": 5125,
+      "first_commit_date": "2026-05-12"
+    },
+    {
+      "path": "docs/case-studies/fitme-story-dual-audience-redesign-case-study.md",
+      "size_bytes": 6205,
+      "first_commit_date": "2026-06-09"
+    },
+    {
+      "path": "docs/case-studies/fitme-story-public-enhancements-case-study.md",
+      "size_bytes": 18380,
+      "first_commit_date": "2026-05-09"
+    },
+    {
+      "path": "docs/case-studies/fitme-story-website-design-system-case-study.md",
+      "size_bytes": 13262,
+      "first_commit_date": "2026-05-10"
+    },
+    {
+      "path": "docs/case-studies/fittracker-evolution-walkthrough.md",
+      "size_bytes": 7699,
+      "first_commit_date": "2026-04-01"
+    },
+    {
+      "path": "docs/case-studies/foundation-models-tier3-case-study.md",
+      "size_bytes": 6750,
+      "first_commit_date": "2026-06-18"
+    },
+    {
+      "path": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
+      "size_bytes": 21348,
+      "first_commit_date": "2026-05-23"
+    },
+    {
+      "path": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "size_bytes": 12885,
+      "first_commit_date": "2026-05-01"
+    },
+    {
+      "path": "docs/case-studies/framework-honesty-ledger.md",
+      "size_bytes": 29620,
+      "first_commit_date": "2026-05-04"
+    },
+    {
+      "path": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "size_bytes": 22211,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-case-study.md",
+      "size_bytes": 51194,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-dispatchreplay.md",
+      "size_bytes": 9704,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-ssr-regression.md",
+      "size_bytes": 8889,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+      "size_bytes": 51914,
+      "first_commit_date": "2026-04-27"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
+      "size_bytes": 16537,
+      "first_commit_date": "2026-05-07"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-bridge-case-study.md",
+      "size_bytes": 18135,
+      "first_commit_date": "2026-05-04"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-pr1-advisory-calibration-2026-05-09.md",
+      "size_bytes": 13250,
+      "first_commit_date": "2026-05-09"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-9-1-promotion-case-study.md",
+      "size_bytes": 24674,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+      "size_bytes": 22828,
+      "first_commit_date": "2026-05-21"
+    },
+    {
+      "path": "docs/case-studies/framework-w30-w31-w32-durable-fixes-case-study.md",
+      "size_bytes": 12564,
+      "first_commit_date": "2026-06-05"
+    },
+    {
+      "path": "docs/case-studies/funnel-analysis-dashboards-case-study.md",
+      "size_bytes": 5020,
+      "first_commit_date": "2026-06-24"
+    },
+    {
+      "path": "docs/case-studies/garmin-health-connection-case-study.md",
+      "size_bytes": 6772,
+      "first_commit_date": "2026-06-14"
+    },
+    {
+      "path": "docs/case-studies/gdpr-compliance-case-study.md",
+      "size_bytes": 7320,
+      "first_commit_date": "2026-05-05"
+    },
+    {
+      "path": "docs/case-studies/google-analytics-case-study.md",
+      "size_bytes": 8496,
+      "first_commit_date": "2026-05-05"
+    },
+    {
+      "path": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+      "size_bytes": 18821,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+      "size_bytes": 20435,
+      "first_commit_date": "2026-05-02"
+    },
+    {
+      "path": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+      "size_bytes": 33948,
+      "first_commit_date": "2026-05-27"
+    },
+    {
+      "path": "docs/case-studies/hadf-phase3a-sensing-case-study.md",
+      "size_bytes": 10461,
+      "first_commit_date": "2026-06-10"
+    },
+    {
+      "path": "docs/case-studies/hadf-signature-expansion-case-study.md",
+      "size_bytes": 6682,
+      "first_commit_date": "2026-06-06"
+    },
+    {
+      "path": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "size_bytes": 13975,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/import-training-plan-case-study.md",
+      "size_bytes": 16807,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+      "size_bytes": 16100,
+      "first_commit_date": "2026-04-21"
+    },
+    {
+      "path": "docs/case-studies/ios-ui-audit-p1-burndown-case-study.md",
+      "size_bytes": 11621,
+      "first_commit_date": "2026-05-11"
+    },
+    {
+      "path": "docs/case-studies/ios-ui-audit-p1-drift-cleanup-case-study.md",
+      "size_bytes": 4724,
+      "first_commit_date": "2026-05-12"
+    },
+    {
+      "path": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "size_bytes": 17758,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "size_bytes": 20399,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/m-3-design-system-completion-case-study.md",
+      "size_bytes": 17629,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/m-4-xcuitest-infrastructure-case-study.md",
+      "size_bytes": 18331,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "size_bytes": 59431,
+      "first_commit_date": "2026-04-25"
+    },
+    {
+      "path": "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+      "size_bytes": 21029,
+      "first_commit_date": "2026-04-17"
+    },
+    {
+      "path": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
+      "size_bytes": 35111,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/normalization-framework.md",
+      "size_bytes": 10274,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+      "size_bytes": 11096,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
+      "size_bytes": 1546,
+      "first_commit_date": "2026-04-27"
+    },
+    {
+      "path": "docs/case-studies/orchid-ai-accelerator-case-study.md",
+      "size_bytes": 15758,
+      "first_commit_date": "2026-04-17"
+    },
+    {
+      "path": "docs/case-studies/orchid-v1-5-additive-units-case-study.md",
+      "size_bytes": 9782,
+      "first_commit_date": "2026-05-03"
+    },
+    {
+      "path": "docs/case-studies/original-readme-redesign-case-study.md",
+      "size_bytes": 8325,
+      "first_commit_date": "2026-02-28"
+    },
+    {
+      "path": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+      "size_bytes": 9847,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/pm-flow-orbital-iteration-case-study.md",
+      "size_bytes": 9093,
+      "first_commit_date": "2026-05-24"
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-evolution-v1-to-v4.md",
+      "size_bytes": 61177,
+      "first_commit_date": "2026-04-10"
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+      "size_bytes": 17608,
+      "first_commit_date": "2026-04-07"
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-skill.md",
+      "size_bytes": 9068,
+      "first_commit_date": "2026-04-02"
+    },
+    {
+      "path": "docs/case-studies/post-stress-test-audit-remediation-case-study.md",
+      "size_bytes": 34022,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/push-notifications-case-study.md",
+      "size_bytes": 15994,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/push-notifications-v2-case-study.md",
+      "size_bytes": 24813,
+      "first_commit_date": "2026-05-07"
+    },
+    {
+      "path": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
+      "size_bytes": 8526,
+      "first_commit_date": "2026-06-04"
+    },
+    {
+      "path": "docs/case-studies/readiness-aware-training-alert-case-study.md",
+      "size_bytes": 8701,
+      "first_commit_date": "2026-06-01"
+    },
+    {
+      "path": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
+      "size_bytes": 26115,
+      "first_commit_date": "2026-05-07"
+    },
+    {
+      "path": "docs/case-studies/six-features-roundup-case-study.md",
+      "size_bytes": 29272,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+      "size_bytes": 8906,
+      "first_commit_date": "2026-05-04"
+    },
+    {
+      "path": "docs/case-studies/smart-reminders-case-study.md",
+      "size_bytes": 14671,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/soc-v5-framework-case-study.md",
+      "size_bytes": 11279,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/stats-v2-case-study.md",
+      "size_bytes": 21262,
+      "first_commit_date": "2026-04-30"
+    },
+    {
+      "path": "docs/case-studies/t13-last-failed-at-index-case-study.md",
+      "size_bytes": 5989,
+      "first_commit_date": "2026-06-10"
+    },
+    {
+      "path": "docs/case-studies/t14-platform-parity-state-field-case-study.md",
+      "size_bytes": 8011,
+      "first_commit_date": "2026-06-07"
+    },
+    {
+      "path": "docs/case-studies/t3-signinservice-passkey-tests-case-study.md",
+      "size_bytes": 5694,
+      "first_commit_date": "2026-06-10"
+    },
+    {
+      "path": "docs/case-studies/t5-mock-protocol-drift-case-study.md",
+      "size_bytes": 5346,
+      "first_commit_date": "2026-06-11"
+    },
+    {
+      "path": "docs/case-studies/training-plan-v2-case-study.md",
+      "size_bytes": 15816,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/training-program-customization-case-study.md",
+      "size_bytes": 13203,
+      "first_commit_date": "2026-06-02"
+    },
+    {
+      "path": "docs/case-studies/trend-alerts-hrv-case-study.md",
+      "size_bytes": 11014,
+      "first_commit_date": "2026-06-01"
+    },
+    {
+      "path": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "size_bytes": 38911,
+      "first_commit_date": "2026-05-07"
+    },
+    {
+      "path": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
+      "size_bytes": 17555,
+      "first_commit_date": "2026-05-21"
+    },
+    {
+      "path": "docs/case-studies/ui-audit-baseline-burndown.md",
+      "size_bytes": 14102,
+      "first_commit_date": "2026-04-21"
+    },
+    {
+      "path": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+      "size_bytes": 9299,
+      "first_commit_date": "2026-05-12"
+    },
+    {
+      "path": "docs/case-studies/unified-control-center-case-study.md",
+      "size_bytes": 23559,
+      "first_commit_date": "2026-05-06"
+    },
+    {
+      "path": "docs/case-studies/user-profile-v4.4-case-study.md",
+      "size_bytes": 18957,
+      "first_commit_date": "2026-04-13"
+    },
+    {
+      "path": "docs/case-studies/v5.1-parallel-stress-test-case-study.md",
+      "size_bytes": 20176,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+      "size_bytes": 13706,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/w9-drift-triggered-auto-isolation-case-study.md",
+      "size_bytes": 6201,
+      "first_commit_date": "2026-06-06"
+    }
+  ],
+  "findings": [
+    {
+      "feature": "google-analytics-case-study.md",
+      "severity": "ADVISORY",
+      "code": "TIER_TAG_LIKELY_INCORRECT",
+      "message": "TIER_TAG_LIKELY_INCORRECT: google-analytics-case-study.md: T1 claim 79.0d has no ledger match. Context: 'Ordered chain: `7b320bc` (PM phases 0-3), `e09b58f` (core infrastructure), `48d1dd3` (GA4 2025 naming), `05d34d8` (Fireb'"
+    }
+  ]
+}
