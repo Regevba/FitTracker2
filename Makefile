@@ -296,6 +296,15 @@ integrity-multi-anchor:
 integrity-data-lake:
 	@python3 scripts/integrity-data-lake.py --json .claude/shared/integrity-data-lake.json $(if $(EXIT_ON_ANOMALY),--exit-on-anomaly,)
 
+# N6 — Quarterly Data Freshness Audit (infra-master-plan §3.5.3). The meta-check
+# that asserts the gate-telemetry stack is internally consistent: emission keys ↔
+# canonical names (A1), recent candidacy (A2), fire-freshness vs introduction (A3),
+# and test-reference currency (A4). Uses the F17 gate-last-fired index for O(1).
+# Runs quarterly (first 2026-08-12); read-only advisory. CI/cron mode:
+# `make data-freshness-audit STRICT=1` exits 1 on any FAIL finding.
+data-freshness-audit:
+	@python3 scripts/data-freshness-audit.py $(if $(STRICT),--strict,) $(if $(JSON),--format json,)
+
 # Rotate / prune daily-checkpoint snapshots under
 # ~/Documents/FitTracker2-backups/daily/ (R2 from 2026-05-19 dev-env audit).
 # Dry-run by default — re-run with EXECUTE=1 to apply changes.
@@ -771,14 +780,19 @@ app-store-check:
 # against the .figma.tsx mapping files in src/components/**. Optional: appends
 # a dated snapshot to docs/design-system/figma-code-sync-status.md.
 #
-# Requires the fitme-story checkout to live next to FitTracker2 at
-# /Volumes/DevSSD/fitme-story (or an isolated worktree under /Volumes/DevSSD/).
+# Requires the fitme-story checkout to live next to FitTracker2. Canonical
+# location (post-2026-07-07 consolidation) is ~/Developer/FitMe/fitme-story;
+# the legacy /Volumes/DevSSD/fitme-story path is checked as a fallback for the
+# retired SSD layout. Override explicitly with FITME_STORY_DIR=<path>.
 # If not found, the target prints a hint and exits 0.
 figma-drift:
-	@FITME_STORY_DIR=$$(ls -d /Volumes/DevSSD/fitme-story 2>/dev/null | head -1); \
-	if [ -z "$$FITME_STORY_DIR" ]; then \
-		echo "make figma-drift: fitme-story checkout not found at /Volumes/DevSSD/fitme-story"; \
-		echo "  → clone Regevba/fitme-story alongside FitTracker2, then re-run."; \
+	@FITME_STORY_DIR=$${FITME_STORY_DIR:-$$(ls -d \
+		"$(HOME)/Developer/FitMe/fitme-story" \
+		"$(HOME)/FitTracker2/../fitme-story" \
+		/Volumes/DevSSD/fitme-story 2>/dev/null | head -1)}; \
+	if [ -z "$$FITME_STORY_DIR" ] || [ ! -d "$$FITME_STORY_DIR" ]; then \
+		echo "make figma-drift: fitme-story checkout not found (looked in ~/Developer/FitMe/fitme-story, then legacy /Volumes/DevSSD/fitme-story)"; \
+		echo "  → clone Regevba/fitme-story under ~/Developer/FitMe/, or set FITME_STORY_DIR=<path>, then re-run."; \
 		exit 0; \
 	fi; \
 	echo "Running figma-drift in $$FITME_STORY_DIR..."; \

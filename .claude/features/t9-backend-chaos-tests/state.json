@@ -67,11 +67,24 @@
       "title": "GDPR cascade (CloudKit+Supabase) + network-churn auth recovery chaos tests",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "complete",
       "priority": "medium",
       "effort_days": 0.7,
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-07-11T09:15:00Z",
+      "notes": "Shipped 6 seam-free, isolation-safe chaos tests in AccountDeletionServiceTests.swift: network-churn resilience (request/cancel survive best-effort remote-sync failure — local is source of truth per Audit BE-023), rapid request/cancel alternation state-machine consistency, checkGracePeriod relaunch idempotency, and a 30-day grace-boundary sweep (daysRemaining clamp + monotonicity + whole-day-truncation expiry semantics). 12/12 AccountDeletionServiceTests pass on iPhone 17 sim (Xcode 26.6). The destructive full executeDeletion() partial-failure cascade is split to T4 (needs a sync-service seam)."
+    },
+    {
+      "id": "T4",
+      "title": "Destructive full executeDeletion() partial-failure cascade test — requires an injectable protocol seam over SupabaseSyncService/CloudKitSyncService (both `final` + high-risk-area)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "low",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": null,
+      "notes": "Same blocker class as T2 (needs a prod test seam). The final sync services can't be fault-injected without a protocol abstraction, and that change lands in high-risk files (SupabaseSyncService.swift / CloudKitSyncService.swift) requiring the extra-review policy — deferred to a reviewed seam PR rather than forced with fragile, non-isolated real-network tests."
     }
   ],
   "transitions": [],

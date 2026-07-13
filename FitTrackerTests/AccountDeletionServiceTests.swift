@@ -95,6 +95,125 @@ final class AccountDeletionServiceTests: XCTestCase {
                       "Deletion scheduled 35 days ago should be past the 30-day grace window")
     }
 
+    // MARK: - Cascade + network-churn chaos (FIT-157 / T9 T3 — adversarial edge cases)
+    //
+    // T3 exercises the GDPR deletion-intent state machine and its documented
+    // "local is source of truth, remote is best-effort" resilience (Audit
+    // BE-023) under adversarial conditions that need NO network mock: in the
+    // test environment the Supabase/CloudKit stores are unreachable, so the
+    // best-effort remote writes throw — which is precisely the network-churn
+    // condition these assertions pin down.
+    //
+    // The destructive full executeDeletion() cascade (partial-failure across the
+    // 9 real stores, incl. keychain wipe + UserDefaults purge) needs an
+    // injectable sync-service seam. SupabaseSyncService / CloudKitSyncService are
+    // `final` and in the high-risk-area list, so that path is deferred to a
+    // reviewed protocol-seam change (same blocker class as T2's biometry-gated
+    // rotateKeys). These tests stay seam-free and side-effect-isolated (they
+    // touch only the deletion key that setUp/tearDown already resets).
+
+    func testRequestDeletion_remoteFailureDoesNotLoseLocalIntent() async {
+        // Network-churn resilience: even when the best-effort remote write to
+        // Supabase fails (offline test env), the LOCAL deletion intent must
+        // survive — local is the source of truth (Audit BE-023).
+        let service = makeService()
+        await service.requestDeletion(authMethod: "email")
+
+        XCTAssertNotNil(service.deletionScheduledAt,
+                        "Local deletion intent must survive a failed remote sync")
+        XCTAssertTrue(service.isDeletionPending)
+        XCTAssertGreaterThan(UserDefaults.standard.double(forKey: deletionKey), 0,
+                             "Local persistence must not depend on remote reachability")
+        // deletionError MAY be set (remote failed) — allowed; the invariant is
+        // that the local intent is intact regardless of remote outcome.
+    }
+
+    func testCancelDeletion_remoteFailureStillClearsLocalIntent() async {
+        let service = makeService()
+        await service.requestDeletion(authMethod: "apple")
+        XCTAssertTrue(service.isDeletionPending)
+
+        await service.cancelDeletion()
+
+        XCTAssertNil(service.deletionScheduledAt,
+                     "Local cancel must land even when the remote clear fails offline")
+        XCTAssertEqual(UserDefaults.standard.double(forKey: deletionKey), 0)
+    }
+
+    func testRapidRequestCancelAlternation_leavesConsistentState() async {
+        // Hammer the state machine: 20 alternating request/cancel cycles. After
+        // each terminal op the published property and the UserDefaults mirror
+        // must agree — no torn state, no orphaned persistence.
+        let service = makeService()
+        for i in 0..<20 {
+            if i.isMultiple(of: 2) {
+                await service.requestDeletion(authMethod: "email")
+            } else {
+                await service.cancelDeletion()
+            }
+        }
+        // Last op (i=19, odd) was a cancel → cleared everywhere.
+        XCTAssertNil(service.deletionScheduledAt)
+        XCTAssertEqual(UserDefaults.standard.double(forKey: deletionKey), 0,
+                       "UserDefaults must mirror the final published state exactly")
+
+        // One more request → both set, still consistent.
+        await service.requestDeletion(authMethod: "email")
+        XCTAssertNotNil(service.deletionScheduledAt)
+        XCTAssertGreaterThan(UserDefaults.standard.double(forKey: deletionKey), 0)
+    }
+
+    func testCheckGracePeriod_repeatedRelaunchIsIdempotent() async {
+        // Simulate repeated cold starts (checkGracePeriod runs on every launch).
+        // The resolved timestamp must be stable — repeated resolution must not
+        // drift it.
+        let sixDaysAgo = Date().addingTimeInterval(-6 * 86_400)
+        UserDefaults.standard.set(sixDaysAgo.timeIntervalSince1970, forKey: deletionKey)
+
+        let service = makeService()
+        var resolved: [TimeInterval] = []
+        for _ in 0..<8 {
+            await service.checkGracePeriod()
+            resolved.append(service.deletionScheduledAt?.timeIntervalSince1970 ?? -1)
+        }
+        XCTAssertEqual(Set(resolved).count, 1,
+                       "checkGracePeriod must be idempotent across relaunches")
+        XCTAssertEqual(resolved.first ?? 0, sixDaysAgo.timeIntervalSince1970, accuracy: 1.0)
+    }
+
+    func testDaysRemaining_boundarySweep_clampedAndMonotonic() async {
+        // Adversarial sweep across the 30-day grace boundary. daysRemaining must
+        // stay within [0, 30] and be monotonic non-increasing as the request
+        // ages. Note the production semantics: daysRemaining is *whole* days
+        // (Calendar truncates), and isGracePeriodExpired == (daysRemaining <= 0),
+        // so expiry lands once fewer than one full day remains — i.e. at ~30d
+        // elapsed. The 29↔30 truncation edge is deliberately excluded from the
+        // expiry assertion (offsets stay ≤28 or ≥30) so the test is robust to
+        // sub-day clock jitter.
+        let offsetsDays: [Double] = [0, 1, 15, 28, 30, 31, 100]
+        var lastRemaining = Int.max
+        for days in offsetsDays {
+            UserDefaults.standard.set(Date().addingTimeInterval(-days * 86_400).timeIntervalSince1970,
+                                      forKey: deletionKey)
+            let service = makeService()
+            await service.checkGracePeriod()
+            let remaining = service.daysRemaining ?? -1
+
+            XCTAssertGreaterThanOrEqual(remaining, 0, "daysRemaining must clamp at 0 (age=\(days)d)")
+            XCTAssertLessThanOrEqual(remaining, 30, "daysRemaining must never exceed 30 (age=\(days)d)")
+            XCTAssertLessThanOrEqual(remaining, lastRemaining,
+                                     "daysRemaining must be monotonic non-increasing as the request ages")
+            lastRemaining = remaining
+
+            if days >= 30 {
+                XCTAssertTrue(service.isGracePeriodExpired, "grace period must be expired at age=\(days)d")
+                XCTAssertEqual(remaining, 0, "expired → 0 days remaining (age=\(days)d)")
+            } else {
+                XCTAssertFalse(service.isGracePeriodExpired, "grace period must be active at age=\(days)d")
+            }
+        }
+    }
+
     // MARK: - Helpers
 
     private func makeService() -> AccountDeletionService {

@@ -68,11 +68,12 @@
       "title": "Expand snapshot coverage to the 6 v2 screens (Home/Stats/Settings/Nutrition/Training/Readiness) + 4 auth views with mock view-model/store injection",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "in_progress",
       "priority": "medium",
       "effort_days": 0.8,
       "depends_on": ["T2"],
-      "completed_at": null
+      "completed_at": null,
+      "notes": "Screen-level snapshot pattern established (2026-07-11): added an assertScreen helper (393x852 fixed light-mode) + testHomeScreenV2 mirroring MainScreenView's shipping #Preview env-object graph (EncryptedDataStore/HealthKitService/TrainingProgramStore/AppSettings/AnalyticsService/WatchConnectivityService). Verified: full target compiles + testHomeScreenV2 SKIPS cleanly in the default run (never reddens the required check). Remaining 5 v2 screens + 4 auth views need per-screen construction recipes — only MainScreenView ships a #Preview today; the others must grow one (or a mock view-model injector) before they can be snapshotted. Real baseline capture + render verification is gated on T2 (the ios-snapshot-record CI job records simulator-matched PNGs; local sim != CI sim per SnapshotTestSupport)."
     }
   ],
   "transitions": [],

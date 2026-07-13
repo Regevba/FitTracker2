@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "updated": "2026-07-09T06:05:30Z",
+  "updated": "2026-07-13T06:06:00Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 130,
-    "features_post_v6": 96,
+    "features_total": 131,
+    "features_post_v6": 97,
     "features_pre_v6": 34,
     "fully_adopted": 9,
-    "partial_adopted": 83,
+    "partial_adopted": 84,
     "zero_adopted": 38,
     "fully_adopted_post_v6": 9,
     "tier_1_1_status": "partial"
@@ -16,29 +16,29 @@
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 37,
-      "overall_percent": 28.5,
+      "overall_percent": 28.2,
       "post_v6_present": 37,
-      "post_v6_percent": 38.5,
+      "post_v6_percent": 38.1,
       "overall_instrumented": 18,
       "overall_derived": 19,
       "post_v6_instrumented": 18,
       "post_v6_derived": 19
     },
     "per_phase_timing": {
-      "overall_present": 92,
-      "overall_percent": 70.8,
-      "post_v6_present": 89,
-      "post_v6_percent": 92.7,
-      "overall_instrumented": 92,
+      "overall_present": 93,
+      "overall_percent": 71.0,
+      "post_v6_present": 90,
+      "post_v6_percent": 92.8,
+      "overall_instrumented": 93,
       "overall_derived": 0,
-      "post_v6_instrumented": 89,
+      "post_v6_instrumented": 90,
       "post_v6_derived": 0
     },
     "cache_hits": {
       "overall_present": 34,
-      "overall_percent": 26.2,
+      "overall_percent": 26.0,
       "post_v6_present": 33,
-      "post_v6_percent": 34.4,
+      "post_v6_percent": 34.0,
       "overall_instrumented": 34,
       "overall_derived": 0,
       "post_v6_instrumented": 33,
@@ -46,9 +46,9 @@
     },
     "cu_v2": {
       "overall_present": 27,
-      "overall_percent": 20.8,
+      "overall_percent": 20.6,
       "post_v6_present": 27,
-      "post_v6_percent": 28.1,
+      "post_v6_percent": 27.8,
       "overall_instrumented": 27,
       "overall_derived": 0,
       "post_v6_instrumented": 27,
@@ -559,6 +559,15 @@
         "timing_wall_time": true,
         "per_phase_timing": true,
         "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "n6-data-freshness-audit",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
         "cu_v2": false
       }
     },
@@ -2687,6 +2696,26 @@
       },
       "fully_adopted": false,
       "any_adopted": false
+    },
+    {
+      "feature": "n6-data-freshness-audit",
+      "created": "2026-07-10",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "provenance": {
+        "timing_wall_time": null,
+        "per_phase_timing": "instrumented",
+        "cache_hits": null,
+        "cu_v2": null
+      },
+      "fully_adopted": false,
+      "any_adopted": true
     },
     {
       "feature": "nutrition-logging",

@@ -30,6 +30,24 @@ def test_unified_status_no_phase_is_backlog():
     assert bir.unified_status({}) == "Backlog"
 
 
+def test_unified_status_wont_do_marker_wins_over_paused():
+    # A parked-permanently feature is also paused; Won't-Do must win.
+    assert bir.unified_status({"current_phase": "tasks_phase", "paused": True, "wont_do": True}) == "Won't-Do"
+
+
+def test_unified_status_linear_canceled_is_wont_do():
+    assert bir.unified_status({"current_phase": "prd", "linear_status": "Canceled"}) == "Won't-Do"
+
+
+def test_unified_status_paused_without_wont_do_still_blocked():
+    # Regression guard: a normal pause (no wont_do / cancel) stays Blocked.
+    assert bir.unified_status({"current_phase": "tasks_phase", "paused": True}) == "Blocked"
+
+
+def test_unified_status_completed_wins_over_wont_do():
+    assert bir.unified_status({"current_phase": "complete", "wont_do": True}) == "Done"
+
+
 def test_collect_prs_merges_all_sources_deduped_sorted():
     state = {
         "related_prs": [10, "12", 10],
