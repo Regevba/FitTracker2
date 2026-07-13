@@ -67,14 +67,22 @@ The advisory→enforced flip (B16, `scripts/check-state-schema.py`
 `CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True → False`) now awaits **only criterion 1**
 (≥7 days of `CSV_TAXONOMY_DRIFT` coverage, ~2026-07-13) + the criterion-3 review.
 
-## Promotion criteria (advisory → enforced; all four required)
+## Promotion criteria (advisory → enforced; all four required) — EXECUTED 2026-07-13 (B16): PROMOTE
 
-| # | Criterion | How measured |
-|---|---|---|
-| 1 | **Coverage emitted** — ≥7 days of `{candidates, checked, skipped}` rows | `gate-coverage.jsonl` grep `CSV_TAXONOMY_DRIFT` |
-| 2 | ✅ **Baseline burned down** — drift = 0 (27 CSV rows added 2026-06-29, B16) | `_parse_analytics_event_values` ∖ `_parse_csv_event_names` ∖ exemptions |
-| 3 | **No false positives** — every fired row maps to a genuinely-undocumented event | manual review at flip |
-| 4 | **Reversibility** — advisory restorable in <2 min (set `CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True`) | single-flag flip |
+| # | Criterion | How measured | Result |
+|---|---|---|---|
+| 1 | **Coverage emitted** — ≥7 days of `{candidates, checked, skipped}` rows | `gate-coverage.jsonl` grep `CSV_TAXONOMY_DRIFT` | ✅ **8 emission days** (2026-06-29, 06-30, 07-01, 07-05, 07-07, 07-08, 07-10, 07-11) across a 12-day span; 38 candidate rows |
+| 2 | ✅ **Baseline burned down** — drift = 0 (27 CSV rows added 2026-06-29, B16) | `_parse_analytics_event_values` ∖ `_parse_csv_event_names` ∖ exemptions | ✅ **drift 27 → 0** at burndown; re-verified **0** on the live repo 2026-07-13 (146 enum values, all documented; 217 CSV names) |
+| 3 | **No false positives** — every fired row maps to a genuinely-undocumented event | manual review at flip | ✅ **0 firings** across the window (`total_firings=0` in `gate-last-fired.json`); the only demonstrated firing was the 27-item baseline burndown, all legitimate |
+| 4 | **Reversibility** — advisory restorable in <2 min (set `CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True`) | single-flag flip | ✅ single-line flag; rollback branch `chore/csv-taxonomy-drift-rollback` |
+
+**Flip executed 2026-07-13:** `CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True → False` at
+[`scripts/check-state-schema.py`](../../../scripts/check-state-schema.py). 38 gate
+tests pass (`test_csv_taxonomy_drift.py` + `test_gate_catalog.py` +
+`test_check_state_schema.py`). Behavioral check: live repo with
+`AnalyticsProvider.swift` staged + drift 0 → 0 findings (normal commits unaffected);
+a drifted event now routes to `errors[]` and blocks. Surfaced by the 2026-07-13
+morning integrity sweep (calibration ladder cadence B16).
 
 ## Kill criteria
 
