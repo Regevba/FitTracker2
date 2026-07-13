@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
   "generated_by": "manual seed 2026-05-28; future generator: fitme-story/scripts/sync-from-fittracker2.ts (Phase 4 of feature 3d-interactive-framework-flow-diagram)",
-  "last_reconciled": "2026-07-10",
-  "reconciled_by": "2026-07-10 doc-freshness reconcile (F4 FRAMEWORK_VERSION_STALE advisory→enforced 2026-07-08 #858; SCHEMA_DIFF T12/FIT-160 shipped 2026-07-09 #862 as 34th live gate; test-coverage batch + 130 features) — FT2 docs/FRAMEWORK-FACTS.md",
+  "last_reconciled": "2026-07-13",
+  "reconciled_by": "2026-07-13 morning-sweep freshness reconcile (feature count 130→131 via n6-data-freshness-audit FIT-101 #869; CSV_TAXONOMY_DRIFT promoted advisory→enforced cadence B16; gate counts unchanged 32 instrumented / 34 live). Prior: 2026-07-10 doc-freshness reconcile (F4 FRAMEWORK_VERSION_STALE advisory→enforced 2026-07-08 #858; SCHEMA_DIFF T12/FIT-160 shipped 2026-07-09 #862 as 34th live gate; test-coverage batch + 130 features) — FT2 docs/FRAMEWORK-FACTS.md",
   "current": {
     "version": "v7.10",
     "shipped_at": "2026-06-10",

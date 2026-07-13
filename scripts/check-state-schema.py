@@ -187,10 +187,14 @@ FRAMEWORK_VERSION_STALE_ADVISORY_MODE = False
 # AN-1B.1 (analytics-master-plan §8.2, Theme C / F19): CSV_TAXONOMY_DRIFT.
 # Commit-level gate — fires when AnalyticsProvider.swift is staged and an
 # AnalyticsEvent constant's raw value has no row in analytics-taxonomy.csv.
-# Ships ADVISORY for a 14-day calibration window; own flag keeps the
-# advisory→enforced flip independent (mirrors the sibling gates). Phase A
+# Shipped ADVISORY 2026-06-29 for a 14-day calibration window; own flag keeps
+# the advisory→enforced flip independent (mirrors the sibling gates). Phase A
 # artifacts: .claude/features/an-1b1-csv-taxonomy-drift/calibration-artifacts.md
-CSV_TAXONOMY_DRIFT_ADVISORY_MODE = True
+# PROMOTED advisory→enforced 2026-07-13 (cadence B16): all 4 §8.2 criteria met
+# — 8 emission days (2026-06-29→07-11), baseline drift 27→0, 0 false positives
+# (live drift 0 across 146 enum values), reversible single-flag. Rollback: set
+# back to True on chore/csv-taxonomy-drift-rollback (<2 min).
+CSV_TAXONOMY_DRIFT_ADVISORY_MODE = False
 ANALYTICS_PROVIDER_PATH = "FitTracker/Services/Analytics/AnalyticsProvider.swift"
 ANALYTICS_TAXONOMY_CSV = "docs/product/analytics-taxonomy.csv"
 
