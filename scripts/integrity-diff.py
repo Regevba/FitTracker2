@@ -46,12 +46,20 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # regression VERDICT below is dilution-aware (see classify_delta import). For the
 # full dilution-immune cohort/numerator view across all anchors, use
 # `make integrity-multi-anchor`.
-DEFAULT_BASELINE = (
-    Path.home()
-    / "Documents"
-    / "FitTracker2-backups"
-    / "2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14"
+# Anchor location moved during the 2026-07-07 ~/Developer/FitMe consolidation
+# (backups now live under ~/Developer/FitMe/backups/FitTracker2-backups/). The
+# legacy ~/Documents/FitTracker2-backups path is kept as a fallback so pre-
+# consolidation checkouts still resolve. Override with INTEGRITY_DIFF_BASELINE.
+_BASELINE_LEAF = (
+    Path("2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14")
     / "platform-baseline"
+)
+_BASELINE_CANDIDATES = (
+    Path.home() / "Developer" / "FitMe" / "backups" / "FitTracker2-backups" / _BASELINE_LEAF,
+    Path.home() / "Documents" / "FitTracker2-backups" / _BASELINE_LEAF,
+)
+DEFAULT_BASELINE = next(
+    (p for p in _BASELINE_CANDIDATES if p.exists()), _BASELINE_CANDIDATES[0]
 )
 
 
