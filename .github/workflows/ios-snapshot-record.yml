@@ -71,7 +71,12 @@ jobs:
 
       - name: Record snapshots
         env:
+          # SIMCTL_CHILD_<VAR> forwards <VAR> INTO the simulator test process.
+          # A plain env var lives only on the runner shell; the app/test bundle
+          # runs in the sim and does NOT inherit it, so without this the tests
+          # read SNAPSHOT_MODE=nil and XCTSkip (isActive=false). Set both.
           SNAPSHOT_MODE: record
+          SIMCTL_CHILD_SNAPSHOT_MODE: record
         run: |
           set -o pipefail
           # Pick the same simulator family the required CI test job uses so the

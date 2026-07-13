@@ -83,7 +83,11 @@ jobs:
 
       - name: Verify snapshots against committed baselines
         env:
+          # SIMCTL_CHILD_<VAR> forwards <VAR> INTO the simulator test process
+          # (a plain runner-shell env var is not inherited by the sim). Without
+          # it the tests XCTSkip instead of verifying. Set both.
           SNAPSHOT_MODE: verify
+          SIMCTL_CHILD_SNAPSHOT_MODE: verify
         run: |
           set -o pipefail
           # Same simulator family the baselines were recorded on (the recorder
