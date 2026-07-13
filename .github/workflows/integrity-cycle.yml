@@ -112,24 +112,20 @@ jobs:
             echo "Snapshot staged for commit ${TIMESTAMP}."
           fi
 
-      # W37 fix (option B, 2026-06-15): commit the append-only snapshot straight
-      # to main. Bot PRs (GITHUB_TOKEN) never trigger CI, so under strict branch
-      # protection the required checks stay "expected" and the PR deadlocks
-      # (13/13 bot PRs needed hand-merge, 3 abandoned). Direct push needs the
-      # github-actions app in main's bypass_pull_request_allowances; until that
-      # is configured the push is rejected and we fall back to the legacy PR
-      # (no regression). See .claude/integrity/observed-patterns.md W37.
-      # Option B (2026-07-13): the append-only snapshot goes to main via a PR
-      # opened with WORKFLOW_PR_TOKEN (a PAT), NOT the default GITHUB_TOKEN.
-      # Root cause it fixes: PRs opened by GITHUB_TOKEN never trigger the
-      # required-check workflows (GitHub recursion guard), so bot PRs deadlock
-      # ("3 of 3 required status checks are expected" forever). A PAT-opened PR
-      # fires ci-docs-skip + pr-integrity, then auto-merge lands it once green.
-      # GitHub's squash-merge commit stays verified (no signature relaxation).
-      # The W37 direct-push is still tried first (harmless no-op today; works if
-      # a bot bypass is ever configured). If WORKFLOW_PR_TOKEN is unset the whole
-      # thing falls back to GITHUB_TOKEN — no regression, just the old deadlock.
-      - name: Commit snapshot to main (direct push; PAT-PR + auto-merge fallback)
+      # Option B (2026-07-13, completed): land the append-only snapshot on main
+      # via a SIGNED-commit PR that auto-merges. Two blockers had to be closed:
+      #   1. PRs opened by GITHUB_TOKEN never trigger the required-check workflows
+      #      (GitHub recursion guard) → checks stay "expected" → deadlock.
+      #      Fix: open the PR with WORKFLOW_PR_TOKEN (a PAT) so CI fires.
+      #   2. main has required_signatures on; a runner `git commit` is UNSIGNED,
+      #      so even a CI-triggering PR can't merge ("base branch policy prohibits").
+      #      Fix: create the commit via GraphQL createCommitOnBranch, which GitHub
+      #      auto-signs (verified) — no branch-protection change, no signature
+      #      relaxation, least-privilege PAT (Contents R/W + PRs R/W).
+      # scripts/create-signed-snapshot-pr.py does both + enables squash auto-merge.
+      # If WORKFLOW_PR_TOKEN is unset it runs as GITHUB_TOKEN → old deadlock
+      # (no regression); the warning below flags it. See W37 + docs/setup/bot-pr-ci-trigger-setup.md.
+      - name: Land snapshot on main (signed PR + auto-merge)
         if: steps.stage.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
@@ -137,29 +133,21 @@ jobs:
           TIMESTAMP: ${{ steps.paths.outputs.timestamp }}
           NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ "${HAVE_PAT}" != "true" ]; then
+            echo "::warning title=Option B not configured::WORKFLOW_PR_TOKEN unset — the PR runs as GITHUB_TOKEN, will NOT trigger required checks, and will deadlock. Provision the PAT. See docs/setup/bot-pr-ci-trigger-setup.md."
+          fi
           git add .claude/integrity/snapshots/
-          git commit -m "chore(integrity): cycle snapshot ${TIMESTAMP}" \
-                     -m "Automated 72h integrity cycle. Run: ${RUN_URL}"
-          if git push origin "HEAD:main"; then
-            echo "✓ Snapshot pushed directly to main (${TIMESTAMP})."
-            exit 0
-          fi
-          if [ "${HAVE_PAT}" = "true" ]; then
-            echo "Direct push rejected — opening a PR via WORKFLOW_PR_TOKEN so CI triggers + auto-merge lands it."
-          else
-            echo "::warning title=Option B not configured::WORKFLOW_PR_TOKEN secret is unset — falling back to a GITHUB_TOKEN PR, which will NOT trigger required checks and will deadlock. Provision the PAT to close this. See docs/setup/bot-pr-ci-trigger-setup.md."
-          fi
-          BRANCH="integrity-cycle/${TIMESTAMP}"
-          git push -u origin "HEAD:${BRANCH}" --force-with-lease
-          gh pr create --base main --head "${BRANCH}" \
-            --title "chore(integrity): cycle snapshot ${TIMESTAMP}" \
-            --body "Automated 72h integrity cycle snapshot. Snapshot: \`${NEW_SNAPSHOT}\`. Run: ${RUN_URL}. (Opened via WORKFLOW_PR_TOKEN so required checks fire; auto-merge enabled.)" \
-            --label "integrity-cycle,automated" || true
-          gh pr merge "${BRANCH}" --squash --auto --delete-branch \
-            || echo "::warning title=auto-merge::Could not enable auto-merge (PAT unset or perms) — PR will need a manual merge once checks pass."
+          python3 scripts/create-signed-snapshot-pr.py \
+            --repo "${REPO}" \
+            --branch "integrity-cycle/${TIMESTAMP}" \
+            --base main \
+            --message "chore(integrity): cycle snapshot ${TIMESTAMP}" \
+            --message-body "Automated 72h integrity cycle. Run: ${RUN_URL}" \
+            --pr-title "chore(integrity): cycle snapshot ${TIMESTAMP}" \
+            --pr-body "Automated 72h integrity cycle snapshot. Snapshot: \`${NEW_SNAPSHOT}\`. Run: ${RUN_URL}. (Signed commit via createCommitOnBranch; auto-merge enabled.)" \
+            --label integrity-cycle --label automated
 
       - name: Package report for issue body
         if: steps.check.outputs.regression == 'true'
