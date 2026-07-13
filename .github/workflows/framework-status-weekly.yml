@@ -166,164 +166,42 @@ jobs:
             echo "Snapshot staged for ${today}."
           fi
 
-      # W37 fix (option B, 2026-06-15): try a direct push of the append-only
-      # weekly snapshot to main FIRST. Bot PRs (GITHUB_TOKEN) never trigger CI,
-      # so under strict branch protection they deadlock ("expected" forever).
-      # Direct push needs the github-actions app in main's
-      # bypass_pull_request_allowances; until configured the push is rejected,
-      # the commit is rolled back (reset --soft), and the legacy PR paths below
-      # run unchanged (no regression). See observed-patterns.md W37.
-      - name: Push weekly snapshot to main (W37 direct path)
-        id: direct-push
+      # Option B (2026-07-13, completed): land the weekly snapshot on main via a
+      # SIGNED-commit PR that auto-merges. Closes BOTH deadlock blockers that
+      # stranded bot PRs: (1) GITHUB_TOKEN PRs never trigger the required-check
+      # workflows (recursion guard) -> open the PR with WORKFLOW_PR_TOKEN (a PAT)
+      # so CI fires; (2) main has required_signatures on and a runner `git commit`
+      # is UNSIGNED, so even a CI-triggering PR can't merge -> create the commit
+      # via GraphQL createCommitOnBranch, which GitHub auto-signs (verified). No
+      # branch-protection change, no signature relaxation, least-privilege PAT.
+      # scripts/create-signed-snapshot-pr.py does both + squash auto-merge and
+      # commits the multi-file weekly snapshot atomically. If WORKFLOW_PR_TOKEN is
+      # unset it runs as GITHUB_TOKEN -> old deadlock (no regression); the warning
+      # below flags it. Replaces the former direct-push + peter-evans + B14 shell
+      # fallback. See observed-patterns.md W37 + docs/setup/bot-pr-ci-trigger-setup.md.
+      - name: Land weekly snapshot on main (signed PR + auto-merge)
         if: steps.stage.outputs.has_changes == 'true'
         env:
-          TODAY: ${{ steps.stage.outputs.today }}
-          REGRESSION: ${{ steps.compare.outputs.regression }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "chore(framework-status): weekly snapshot ${TODAY} (Regression=${REGRESSION})"
-          if git push origin "HEAD:main"; then
-            echo "pushed=true" >> "$GITHUB_OUTPUT"
-            echo "✓ Weekly snapshot pushed directly to main (${TODAY})."
-          else
-            echo "pushed=false" >> "$GITHUB_OUTPUT"
-            echo "::warning title=W37 fallback::Direct push to main rejected (bypass not configured?) — restoring staged changes for the PR path."
-            git reset --soft HEAD~1
-          fi
-
-      # B14 (2026-05-30): peter-evans/create-pull-request@v8 fails when GitHub
-      # returns 500 on the internal push (2 transient failures observed in last
-      # 5 weeks: 2026-05-04 + 2026-05-25). continue-on-error keeps the workflow
-      # from terminating; the shell fallback below retries push + PR creation
-      # via gh CLI with linear backoff (2s, 5s, 15s).
-      #
-      # Injection-safe: all dynamic values are passed via env: (TODAY,
-      # REGRESSION, GH_TOKEN) and consumed as $-prefixed shell vars. No
-      # ${{ ... }} substitution inside run: blocks.
-      - name: Open PR with weekly snapshot (primary path)
-        id: open-pr
-        if: steps.stage.outputs.has_changes == 'true' && steps.direct-push.outputs.pushed != 'true'
-        continue-on-error: true
-        uses: peter-evans/create-pull-request@v8
-        env:
-          REGRESSION: ${{ steps.compare.outputs.regression }}
-        with:
-          # Option B (2026-07-13): a PAT so the opened PR triggers required-check
-          # workflows (GITHUB_TOKEN PRs never do → deadlock). Falls back to
-          # GITHUB_TOKEN when the secret is unset (no regression, old deadlock).
-          token: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
-          commit-message: |
-            chore(framework-status): weekly snapshot ${{ steps.stage.outputs.today }}
-
-            Automated weekly framework-status cycle. Regression=${{ steps.compare.outputs.regression }}.
-          title: "chore(framework-status): weekly snapshot ${{ steps.stage.outputs.today }}"
-          body: |
-            Automated weekly framework-status snapshot.
-
-            - Snapshot date: `${{ steps.stage.outputs.today }}`
-            - Regression detected: `${{ steps.compare.outputs.regression }}`
-            - Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Branch protection on `main` blocks direct cron push, so the snapshot is opened as a PR.
-            Merging this PR persists the cron-tagged snapshot — required for Tier 1.1 trend mode unlock (3 cron snapshots needed).
-          branch: framework-status/${{ steps.stage.outputs.today }}
-          base: main
-          committer: Framework Status Bot <framework-status@actions>
-          author: Framework Status Bot <framework-status@actions>
-          labels: framework-status,automated
-
-      # Option B: enable auto-merge so the PAT-opened PR lands once the required
-      # checks go green, instead of sitting open. GitHub's squash-merge commit
-      # stays verified. No-op if the primary path did not open a PR.
-      - name: Enable auto-merge on weekly-snapshot PR (primary path)
-        if: |
-          steps.stage.outputs.has_changes == 'true' &&
-          steps.direct-push.outputs.pushed != 'true' &&
-          steps.open-pr.outcome == 'success' &&
-          steps.open-pr.outputs.pull-request-number != ''
-        env:
           GH_TOKEN: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
-          PR_NUM: ${{ steps.open-pr.outputs.pull-request-number }}
-        run: |
-          gh pr merge "$PR_NUM" --squash --auto --delete-branch \
-            || echo "::warning title=auto-merge::Could not enable auto-merge on PR #${PR_NUM} (PAT unset or perms) — merge manually once checks pass."
-
-      - name: Open PR with weekly snapshot (shell fallback on primary-path failure)
-        if: |
-          steps.stage.outputs.has_changes == 'true' &&
-          steps.direct-push.outputs.pushed != 'true' &&
-          steps.open-pr.outcome == 'failure'
-        env:
-          GH_TOKEN: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          HAVE_PAT: ${{ secrets.WORKFLOW_PR_TOKEN != '' }}
           TODAY: ${{ steps.stage.outputs.today }}
           REGRESSION: ${{ steps.compare.outputs.regression }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
-          set -euo pipefail
-          echo "Primary path (peter-evans/create-pull-request@v8) failed — falling back to shell with retry/backoff."
-          BRANCH="framework-status/${TODAY}"
-
-          git config user.name "Framework Status Bot"
-          git config user.email "framework-status@actions"
-          if ! git rev-parse --verify "${BRANCH}" >/dev/null 2>&1; then
-            git checkout -b "${BRANCH}"
-          else
-            git checkout "${BRANCH}"
+          if [ "${HAVE_PAT}" != "true" ]; then
+            echo "::warning title=Option B not configured::WORKFLOW_PR_TOKEN unset - the PR runs as GITHUB_TOKEN, will NOT trigger required checks, and will deadlock. Provision the PAT. See docs/setup/bot-pr-ci-trigger-setup.md."
           fi
-          if [ -n "$(git status --porcelain)" ]; then
-            git add -A
-            git commit -m "chore(framework-status): weekly snapshot ${TODAY} (shell-fallback after primary action failed) - Regression=${REGRESSION}"
-          fi
-
-          push_ok=""
-          for delay in 2 5 15; do
-            if git push --force-with-lease origin "HEAD:${BRANCH}"; then
-              echo "::notice::push succeeded after primary-action failure"
-              push_ok=1
-              break
-            fi
-            echo "push failed, sleeping ${delay}s before retry…"
-            sleep "${delay}"
-          done
-          if [ -z "${push_ok}" ]; then
-            echo "::error::push failed all 3 retry attempts; abandoning fallback"
-            exit 1
-          fi
-
-          pr_ok=""
-          PR_BODY="Automated weekly framework-status snapshot (shell-fallback path).
-
-          - Snapshot date: ${TODAY}
-          - Regression detected: ${REGRESSION}
-          - Run: ${RUN_URL}
-          - Primary path (peter-evans/create-pull-request@v8) returned a non-zero outcome; this PR was opened via the B14 shell-fallback after push --force-with-lease succeeded.
-
-          Merging this PR persists the cron-tagged snapshot — required for Tier 1.1 trend mode unlock."
-          for delay in 2 5 15; do
-            if gh pr create \
-                --base main \
-                --head "${BRANCH}" \
-                --title "chore(framework-status): weekly snapshot ${TODAY}" \
-                --body "${PR_BODY}" \
-                --label framework-status \
-                --label automated; then
-              echo "::notice::PR created via shell fallback"
-              pr_ok=1
-              break
-            fi
-            echo "gh pr create failed, sleeping ${delay}s before retry…"
-            sleep "${delay}"
-          done
-          if [ -z "${pr_ok}" ]; then
-            echo "::error::gh pr create failed all 3 retry attempts after successful push"
-            exit 1
-          fi
-
-          # Option B: enable auto-merge so the PAT-opened PR lands once checks pass.
-          gh pr merge "${BRANCH}" --squash --auto --delete-branch \
-            || echo "::warning title=auto-merge::Could not enable auto-merge on ${BRANCH} — merge manually once checks pass."
+          git add -A
+          python3 scripts/create-signed-snapshot-pr.py \
+            --repo "${REPO}" \
+            --branch "framework-status/${TODAY}" \
+            --base main \
+            --message "chore(framework-status): weekly snapshot ${TODAY} (Regression=${REGRESSION})" \
+            --message-body "Automated weekly framework-status cycle. Run: ${RUN_URL}" \
+            --pr-title "chore(framework-status): weekly snapshot ${TODAY}" \
+            --pr-body "Automated weekly framework-status snapshot. Regression=${REGRESSION}. Run: ${RUN_URL}. (Signed commit via createCommitOnBranch; auto-merge enabled.) Merging persists the cron-tagged snapshot - required for Tier 1.1 trend mode." \
+            --label framework-status --label automated
 
       - name: Package digest body
         if: always()

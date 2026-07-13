@@ -16,15 +16,25 @@ can never merge. Empirically this stranded ~13 bot PRs (3 abandoned) before the
 
 ## The fix (Option B)
 
-Have the two crons open their PRs with a **Personal Access Token (PAT)** instead
-of `GITHUB_TOKEN`. A PAT-opened PR is authored by a real user, so it **triggers
-the required-check workflows**; the workflows already enable **auto-merge**, so
-the PR lands the moment the checks go green. GitHub's squash-merge commit stays
-**verified** — no branch-protection change, no signature relaxation.
+Two blockers had to be closed (the second was found during the 2026-07-13
+end-to-end verification):
+
+1. **PRs don't trigger CI.** Have the crons open their PRs with a **PAT** instead
+   of `GITHUB_TOKEN`. A PAT-opened PR is authored by a real user, so it triggers
+   the required-check workflows, and the workflows enable **auto-merge** so it
+   lands once green.
+2. **`required_signatures` rejects unsigned commits.** A runner `git commit` is
+   unsigned, so even a CI-triggering PR is refused ("the base branch policy
+   prohibits the merge"). So the crons now create their snapshot commit through
+   the GitHub GraphQL **`createCommitOnBranch`** mutation
+   ([`scripts/create-signed-snapshot-pr.py`](../../scripts/create-signed-snapshot-pr.py)),
+   which GitHub **auto-signs** (`verified`). No branch-protection change, no
+   signature relaxation.
 
 The workflows read `secrets.WORKFLOW_PR_TOKEN` and fall back to `GITHUB_TOKEN`
 when it is unset (so nothing breaks before you do this — you just keep the old
-deadlock until the secret lands).
+deadlock until the secret lands). The PAT stays least-privilege (Contents R/W +
+Pull requests R/W) — `createCommitOnBranch` needs only Contents write.
 
 ## Steps
 
