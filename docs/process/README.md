@@ -15,6 +15,7 @@ Operational playbooks and groundwork tied to the 2026-04-21 Google Gemini 2.5 Pr
 | [documentation-debt-dashboard.md](./documentation-debt-dashboard.md) | **3.2** — Documentation debt dashboard | Baseline dashboard shipped; weekly cron (v7.6 Phase 2c) appends history snapshots; trend mode unlocks after 3 scheduled cycle snapshots | `make documentation-debt` + `.claude/shared/documentation-debt.json` |
 | [data-integrity-telemetry-sweep.md](./data-integrity-telemetry-sweep.md) | — (cross-layer) | Codified one-command cross-layer health verdict (10 layers: framework integrity, regression-vs-anchor, adoption/gate telemetry, doc-debt, cross-repo sync, CI automation, GA4, backup, cadence). Shipped 2026-07-13 | `make integrity-sweep` + `scripts/integrity-telemetry-sweep.py` |
 | [product-management-lifecycle.md](./product-management-lifecycle.md) | — (pre-existing) | Canonical 10-phase PM lifecycle definition | `/pm-workflow <feature>` skill |
+| [snapshot-testing.md](./snapshot-testing.md) | — (FIT-152 / T4) | iOS visual-regression snapshots — record baselines in CI, commit PNGs, verify advisory-first | `ios-snapshot-record.yml` (dispatch) + `ios-snapshot-verify.yml` (advisory) + `SNAPSHOT_MODE` |
 
 ## Related canonical artifacts
 

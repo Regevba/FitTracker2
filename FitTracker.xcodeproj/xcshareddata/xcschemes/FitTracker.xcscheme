@@ -122,6 +122,11 @@
             value = "1"
             isEnabled = "YES">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "SNAPSHOT_MODE"
+            value = "$(SNAPSHOT_MODE)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
