@@ -562,6 +562,12 @@ pre-commit-self-test:
 membrane-status:
 	python3 scripts/membrane-status.py
 
+# bot-pr-health — Option B soak monitor. Flags deadlocked automated snapshot PRs
+# (integrity-cycle / framework-status) whose required checks never ran. Exit 1 if
+# any are stuck. Setup: docs/setup/bot-pr-ci-trigger-setup.md.
+bot-pr-health:
+	python3 scripts/check-bot-pr-health.py
+
 # figma-mirror-staleness (Gap D, feature figma-design-architecture) — advisory
 # drift check between code tokens (design-tokens/tokens.json) and the last-audited
 # Figma mirror snapshot (.claude/shared/figma-mirror-snapshot.json). Emits a
