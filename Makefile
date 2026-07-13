@@ -568,6 +568,14 @@ membrane-status:
 bot-pr-health:
 	python3 scripts/check-bot-pr-health.py
 
+# integrity-sweep — the codified cross-layer data-integrity + telemetry check.
+# One command → a PASS/WARN/FAIL verdict for every layer (framework integrity,
+# regression-vs-anchor, adoption telemetry, gate calibration, doc-debt, cross-repo
+# sync, CI automation, GA4 pointer, backup, cadence). Exit 1 on any FAIL.
+# --no-refresh reads existing ledgers. Docs: docs/process/data-integrity-telemetry-sweep.md
+integrity-sweep:
+	python3 scripts/integrity-telemetry-sweep.py
+
 # figma-mirror-staleness (Gap D, feature figma-design-architecture) — advisory
 # drift check between code tokens (design-tokens/tokens.json) and the last-audited
 # Figma mirror snapshot (.claude/shared/figma-mirror-snapshot.json). Emits a
