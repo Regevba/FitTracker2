@@ -82,13 +82,12 @@ jobs:
           echo "Decoded plist ($(wc -c < FitTracker/GoogleService-Info.plist) bytes)"
 
       - name: Verify snapshots against committed baselines
-        env:
-          # SIMCTL_CHILD_<VAR> forwards <VAR> INTO the simulator test process
-          # (a plain runner-shell env var is not inherited by the sim). Without
-          # it the tests XCTSkip instead of verifying. Set both.
-          SNAPSHOT_MODE: verify
-          SIMCTL_CHILD_SNAPSHOT_MODE: verify
         run: |
+          # SNAPSHOT_MODE reaches the SIMULATOR test process via the scheme's
+          # TestAction env var SNAPSHOT_MODE=$(SNAPSHOT_MODE), which expands the
+          # SNAPSHOT_MODE=verify BUILD SETTING passed to xcodebuild below (a plain
+          # runner env var / SIMCTL_CHILD_ is not inherited by xcodebuild's sim
+          # launch). See docs/process/snapshot-testing.md.
           set -o pipefail
           # Same simulator family the baselines were recorded on (the recorder
           # and this verifier share the selection ladder), so the reference PNGs
@@ -112,7 +111,8 @@ jobs:
             -destination "$SIM_DEST" \
             -only-testing:FitTrackerTests/V2ComponentSnapshotTests \
             -parallel-testing-enabled NO \
-            CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES
+            CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES \
+            SNAPSHOT_MODE=verify
 
       - name: Upload snapshot diffs on failure
         if: failure()
