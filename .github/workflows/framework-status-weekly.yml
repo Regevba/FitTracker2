@@ -210,7 +210,10 @@ jobs:
         env:
           REGRESSION: ${{ steps.compare.outputs.regression }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Option B (2026-07-13): a PAT so the opened PR triggers required-check
+          # workflows (GITHUB_TOKEN PRs never do → deadlock). Falls back to
+          # GITHUB_TOKEN when the secret is unset (no regression, old deadlock).
+          token: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
           commit-message: |
             chore(framework-status): weekly snapshot ${{ steps.stage.outputs.today }}
 
@@ -231,13 +234,29 @@ jobs:
           author: Framework Status Bot <framework-status@actions>
           labels: framework-status,automated
 
+      # Option B: enable auto-merge so the PAT-opened PR lands once the required
+      # checks go green, instead of sitting open. GitHub's squash-merge commit
+      # stays verified. No-op if the primary path did not open a PR.
+      - name: Enable auto-merge on weekly-snapshot PR (primary path)
+        if: |
+          steps.stage.outputs.has_changes == 'true' &&
+          steps.direct-push.outputs.pushed != 'true' &&
+          steps.open-pr.outcome == 'success' &&
+          steps.open-pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          PR_NUM: ${{ steps.open-pr.outputs.pull-request-number }}
+        run: |
+          gh pr merge "$PR_NUM" --squash --auto --delete-branch \
+            || echo "::warning title=auto-merge::Could not enable auto-merge on PR #${PR_NUM} (PAT unset or perms) — merge manually once checks pass."
+
       - name: Open PR with weekly snapshot (shell fallback on primary-path failure)
         if: |
           steps.stage.outputs.has_changes == 'true' &&
           steps.direct-push.outputs.pushed != 'true' &&
           steps.open-pr.outcome == 'failure'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
           TODAY: ${{ steps.stage.outputs.today }}
           REGRESSION: ${{ steps.compare.outputs.regression }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -301,6 +320,10 @@ jobs:
             echo "::error::gh pr create failed all 3 retry attempts after successful push"
             exit 1
           fi
+
+          # Option B: enable auto-merge so the PAT-opened PR lands once checks pass.
+          gh pr merge "${BRANCH}" --squash --auto --delete-branch \
+            || echo "::warning title=auto-merge::Could not enable auto-merge on ${BRANCH} — merge manually once checks pass."
 
       - name: Package digest body
         if: always()
