@@ -781,6 +781,30 @@ def state_sync_health_probe(url: str = STATE_SYNC_HEALTH_URL, timeout: int = 8) 
         return {"reachable": False, "error": f"{type(e).__name__}: {e}"}
 
 
+def run_integrity_sweep() -> dict:
+    """Run the codified cross-layer sweep (scripts/integrity-telemetry-sweep.py)
+    and return its verdict so the daily ledger RECORDS the per-layer health over
+    time. Uses --no-refresh (the 6 make targets already ran above, so ledgers are
+    fresh). Best-effort: an absent script (e.g. before its PR merges) or any error
+    yields {"overall": "SKIPPED"} — it must never crash the checkpoint.
+    """
+    sweep = REPO_ROOT / "scripts" / "integrity-telemetry-sweep.py"
+    if not sweep.exists():
+        return {"overall": "SKIPPED", "reason": "sweep script not present yet"}
+    try:
+        p = subprocess.run(
+            ["python3", str(sweep), "--no-refresh", "--json"],
+            capture_output=True, text=True, timeout=180, check=False,
+        )
+        data = json.loads(p.stdout or "{}")
+        return {
+            "overall": data.get("overall", "UNKNOWN"),
+            "layers": {row["layer"]: row["status"] for row in data.get("layers", [])},
+        }
+    except Exception as e:  # noqa: BLE001 — best-effort; never crash the checkpoint
+        return {"overall": "SKIPPED", "reason": f"{type(e).__name__}: {e}"}
+
+
 def upcoming_followups(today: dt.date, lookahead_days: int = FOLLOWUP_LOOKAHEAD_DAYS) -> list[dict]:
     """Parse must-have-cadence-followups.md and return rows whose date is within lookahead_days.
 
@@ -793,9 +817,13 @@ def upcoming_followups(today: dt.date, lookahead_days: int = FOLLOWUP_LOOKAHEAD_
     import re
     rows = []
     for line in FOLLOWUPS_FILE.read_text().splitlines():
-        if not line.startswith("| ") or not "**20" in line:
+        if not line.startswith("| ") or "**" not in line:
             continue
-        m = re.search(r"\| ([A-Z]\d+) \| \*\*(\d{4}-\d{2}-\d{2})\*\* \| (.+?) \|", line)
+        # Accept both firm dates `**2026-07-23**` and approximate dates
+        # `**~2026-07-23**` (a leading `~` means "around this date"). Struck-through
+        # rows (`| ~~B16~~ | ~~2026-…~~ |`) still fail the `| Bxx | **date**` anchor
+        # since their id/date cells use `~~…~~`, not `**…**`.
+        m = re.search(r"\| ([A-Z]\d+) \| \*\*~?\s*(\d{4}-\d{2}-\d{2})\*\* \| (.+?) \|", line)
         if not m:
             continue
         try:
@@ -1080,6 +1108,9 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
         prev_row.get("metrics") if prev_row else None, metrics
     )
 
+    # Cross-layer sweep verdict, recorded into the ledger for over-time tracking.
+    sweep = run_integrity_sweep()
+
     row = {
         "date": today,
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -1093,6 +1124,7 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
         "metrics": metrics,
         "regression": regression,
         "deltas_vs_prev": deltas,
+        "integrity_sweep": sweep,
         "snapshot_local": str(local_dir),
         "snapshot_local_ok": local_ok,
         "snapshot_ssd": str(ssd_dir),
@@ -1203,6 +1235,19 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
         log(f"\n⚠ STATE-SYNC STALE: reason={sync.get('reason')} age={age}m "
             f"(threshold 360m) — the fitme-story FT2 mirror has gone stale. "
             f"Check scripts/sync-from-fittracker2.ts / the pre-build sync.")
+
+    # Cross-layer sweep verdict (recorded in the ledger row above).
+    sw_overall = sweep.get("overall", "?")
+    if sw_overall == "PASS":
+        log("\n🩺 Integrity sweep: PASS — all layers green.")
+    elif sw_overall == "WARN":
+        warn_layers = [k for k, v in sweep.get("layers", {}).items() if v == "WARN"]
+        log(f"\n🩺 Integrity sweep: WARN — {', '.join(warn_layers)}. Run `make integrity-sweep`.")
+    elif sw_overall == "FAIL":
+        fail_layers = [k for k, v in sweep.get("layers", {}).items() if v == "FAIL"]
+        log(f"\n🚨 Integrity sweep: FAIL — {', '.join(fail_layers)}. Run `make integrity-sweep`.")
+    else:
+        log(f"\n🩺 Integrity sweep: {sw_overall} ({sweep.get('reason', 'n/a')}).")
 
 
 if __name__ == "__main__":
