@@ -915,10 +915,12 @@ def regenerate_ledger_md() -> None:
 
 
 def _running_under_launchd() -> bool:
-    """True iff we're in cron context (launchd or manually-set CRON_CONTEXT)."""
-    if os.environ.get("LAUNCHD_LABEL"):
-        return True
+    """True iff we're in cron context. CRON_CONTEXT=1 (set in the launchd plist)
+    is the reliable signal — launchd does NOT dependably export LAUNCHD_LABEL, so
+    that check is a best-effort fallback only (see ensure-pr-cache-fresh.py)."""
     if os.environ.get("CRON_CONTEXT") == "1":
+        return True
+    if os.environ.get("LAUNCHD_LABEL"):
         return True
     xpc = os.environ.get("XPC_SERVICE_NAME", "")
     if xpc and "fittracker" in xpc.lower() and "daily" in xpc.lower():

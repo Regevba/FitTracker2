@@ -8,11 +8,19 @@
   if today's snapshot already exists (e.g. ran via SessionStart hook earlier),
   this fire is a no-op.
 
-  KnownIssue: BRANCH_ISOLATION_LAUNCHD_DRIFT is a v7.8.1 advisory that fires
-  when launchd plists reference repo paths that diverge from the actual
-  working directory. This template anchors to /Volumes/DevSSD/FitTracker2;
-  if the SSD ever unmounts at fire time, the script's SSD-write step skips
-  gracefully (logs warning, continues with local-only write).
+  Path: anchors to the canonical INTERNAL checkout
+  /Users/regevbarak/Developer/FitMe/FitTracker2 (the SSD is the build drive, not
+  the source, post-2026-07-05 corruption migration). The old /Volumes/DevSSD path
+  was stale template drift — the installed plist had already been repointed; this
+  template now matches. BRANCH_ISOLATION_LAUNCHD_DRIFT (v7.8.1) + the sub-fix (a)
+  path-existence health checks guard against this diverging again.
+
+  CRON_CONTEXT=1: REQUIRED. The F-LAUNCHD-DRIFT-EXTENSION phantom-finding
+  suppression (empty-PR-cache → 441 BROKEN_PR_CITATION + 71 PR_NUMBER_UNRESOLVED
+  false positives) only engages when the run is detected as cron context. launchd
+  does NOT reliably export LAUNCHD_LABEL, so we set CRON_CONTEXT=1 explicitly here;
+  without it the 06:00 cron produced a +512 phantom integrity regression
+  (observed 2026-07-14). See scripts/ensure-pr-cache-fresh.py.
 -->
 <plist version="1.0">
 <dict>
@@ -22,12 +30,12 @@
     <key>ProgramArguments</key>
     <array>
         <string>/opt/homebrew/bin/python3</string>
-        <string>/Volumes/DevSSD/FitTracker2/scripts/daily-integrity-checkpoint.py</string>
+        <string>/Users/regevbarak/Developer/FitMe/FitTracker2/scripts/daily-integrity-checkpoint.py</string>
         <string>--idempotent</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Volumes/DevSSD/FitTracker2</string>
+    <string>/Users/regevbarak/Developer/FitMe/FitTracker2</string>
 
     <key>StartCalendarInterval</key>
     <dict>
@@ -50,6 +58,8 @@
     <dict>
         <key>PATH</key>
         <string>/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin</string>
+        <key>CRON_CONTEXT</key>
+        <string>1</string>
     </dict>
 </dict>
 </plist>
