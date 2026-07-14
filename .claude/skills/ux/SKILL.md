@@ -14,7 +14,7 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 ## Observed patterns preflight
 
 <!-- BEGIN pattern-preflight (generated) -->
-The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/ux` work — probe the mechanized ones, checklist the rest:
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **67 work-blocking patterns** (25 gate-firing patterns + 42 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/ux` work — probe the mechanized ones, checklist the rest:
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
