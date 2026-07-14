@@ -46,9 +46,13 @@ def _is_cron_context() -> bool:
     """Return True iff we're running under launchd (or another cron context).
 
     Detection signals (any one is sufficient):
-      - LAUNCHD_LABEL set (launchd sets this for every job it spawns)
-      - CRON_CONTEXT=1 (manual override / our own daily-checkpoint cron)
-      - XPC_SERVICE_NAME set + matches our daily-checkpoint label
+      - CRON_CONTEXT=1 — the PRIMARY, reliable signal. Set explicitly in the
+        launchd plist's EnvironmentVariables (infrastructure/launchd/*.template).
+        launchd does NOT reliably export LAUNCHD_LABEL to the spawned process, so
+        relying on it silently failed the 06:00 cron on 2026-07-14 and let a +512
+        empty-PR-cache phantom regression through.
+      - LAUNCHD_LABEL set (best-effort fallback — only some launchd contexts set it)
+      - XPC_SERVICE_NAME set + matches our daily-checkpoint label (fallback)
 
     Falls back to False for interactive shells; W11.b silent-pass only
     triggers in cron context, so false negatives here mean "behave as
