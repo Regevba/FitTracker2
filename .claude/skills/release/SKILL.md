@@ -14,7 +14,7 @@ You are the Release Management specialist for FitMe. You handle version bumps, c
 ## Observed patterns preflight
 
 <!-- BEGIN pattern-preflight (generated) -->
-The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-blocking patterns** (23 gate-firing patterns + 28 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/release` work — probe the mechanized ones, checklist the rest:
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **67 work-blocking patterns** (25 gate-firing patterns + 42 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/release` work — probe the mechanized ones, checklist the rest:
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
@@ -24,8 +24,9 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **51 work-
 | `W19` | Env-var trailing newline corrupts runtime string | no | Trim string env vars at the boundary (process.env.X?.trim()) to strip trailing newlines. |
 | `W26` | Two workflows sharing name: clash in github.workflow concurrency groups *(probed)* | no | Give each workflow a hardcoded concurrency-group prefix, not ${{ github.workflow }}, when names collide. |
 | `W28` | Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required) | no | Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI. |
+| `W41` | Runner git commit is unsigned -> required_signatures rejects it; GraphQL createCommitOnBranch auto-signs (signature half of W37) *(probed)* | no | When a workflow-authored commit must land on a branch with required_signatures=true, a runner `git commit`/`git push` is unsigned and rejected (a PAT fixes W37's check-trigger half but NOT the signature). Create the commit via the GitHub GraphQL createCommitOnBranch mutation instead -> GitHub auto-signs with its web-flow key, satisfying required_signatures. scripts/create-signed-snapshot-pr.py does this (reads staged diff, resolves base OID, signed commit, opens PR, squash auto-merge) driven by WORKFLOW_PR_TOKEN so required checks also run. See observed-patterns.md W41 (companion to W37). |
 
-At activation run `make skill-preflight SKILL=release` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
+At activation run `make skill-preflight SKILL=release` — probes the 2 mechanized blockers for this work type; clear any before proceeding.
 
 **Mandatory** (CLAUDE.md §v7.8.5): any novel pattern surfaced this session MUST be appended to [`observed-patterns.md`](../../integrity/observed-patterns.md) before the feature closes — then re-run `make gen-skill-preflight`.
 <!-- END pattern-preflight -->

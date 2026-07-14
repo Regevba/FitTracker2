@@ -49,7 +49,7 @@ END = "<!-- END pattern-preflight -->"
 
 
 def pattern_sort_key(pid: str) -> tuple[int, int]:
-    """Sort gates #1..#23 first, then workflow W1..W28."""
+    """Sort gate patterns (#N) first, then workflow patterns (WN), each numerically."""
     if pid.startswith("#"):
         return (0, int(pid[1:]))
     return (1, int(pid[1:]))
@@ -59,11 +59,16 @@ def build_block(skill: str, patterns: list[dict]) -> str:
     mine = sorted([p for p in patterns if skill in p["skills"]],
                   key=lambda p: pattern_sort_key(p["id"]))
     n_mech = sum(1 for p in mine if p["detector"] != "manual")
+    # Counts are computed from the map (not hardcoded) so the header never drifts
+    # when patterns are added. Gate patterns are `#N`; workflow patterns are `WN`.
+    n_gate = sum(1 for p in patterns if p["id"].startswith("#"))
+    n_wf = sum(1 for p in patterns if p["id"].startswith("W"))
+    n_total = n_gate + n_wf
 
     lines = [BEGIN]
     lines.append(
         "The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks "
-        "**51 work-blocking patterns** (23 gate-firing patterns + 28 workflow "
+        f"**{n_total} work-blocking patterns** ({n_gate} gate-firing patterns + {n_wf} workflow "
         "patterns) drawn from the [Observed Patterns Catalog]"
         "(../../integrity/observed-patterns.md) (`make observed-patterns`). The "
         f"patterns below are the ones mapped to `/{skill}` work — probe the "
