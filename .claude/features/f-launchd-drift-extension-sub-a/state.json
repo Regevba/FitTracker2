@@ -30,7 +30,7 @@
   "kill_criteria_resolution": "",
   "dispatch_pattern": "agent-driven (1-file extension + test suite)",
   "case_study": "docs/case-studies/f-launchd-drift-extension-sub-a-case-study.md",
-  "case_study_showcase": "",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47-framework-v7-9-1-promotion.mdx",
   "spec": ".claude/shared/v7-9-1-candidates.md F-LAUNCHD-DRIFT-EXTENSION sub-fix (a) + docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md E-14",
   "predecessor_case_study": "docs/case-studies/f-launchd-drift-extension-case-study.md",
   "scope_summary": "Sub-fix (a) of the 3-part F-LAUNCHD-DRIFT-EXTENSION plan. Sub-fixes (b) + (c) shipped via PR #621 (merge ed20cbf, 2026-06-04). This PR extends the existing `check_branch_isolation_launchd_drift()` advisory to validate (i) plist WorkingDirectory path resolves on current filesystem, (ii) ProgramArguments[0] script path resolves, (iii) StandardOutPath / StandardErrorPath writability. Catches the 2026-05-19 SSD-migration drift class (5 silently-broken cron days) on day 1. Ships as ADVISORY (not enforced) \u2014 no calibration window needed because the new sub-checks are additive on top of an existing advisory; operator can ignore false positives without breaking anything.",
