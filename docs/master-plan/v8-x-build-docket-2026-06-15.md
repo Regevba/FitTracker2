@@ -143,13 +143,13 @@ The 2026-05-21 prioritization pass at `framework-v7-8-branch-isolation` Phase 9 
 
 | Theme | Open items | Notes |
 |---|---|---|
-| A — Roadmap realism | F1, F3 | F2 shipped |
+| A — Roadmap realism | — | F1/F2/F3 shipped (F1/F3 enforced 2026-06-17) |
 | C — Schema drift | — | F4 (PR #740) + F10 shipped |
 | D — Vocabulary | — | F5 + F6 shipped |
 | E — Ergonomics | — | F9 shipped |
-| F — v7.8.3 cutover | F11, F12, F13 | F12 highest-RICE (100) |
-| G — Test discipline | F18, F19, F20, T1 | F14/F15/F16/F17 shipped |
-| H — App-layer test coverage | T1, T4 (+ T-series, see [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md)) | T3/T5/T10/T13/T14 shipped |
+| F — v7.8.3 cutover | — | F11/F12/F13 shipped 2026-06-15 |
+| G — Test discipline | F19, F20, T1 | F14/F15/F16/F17/F18 shipped; F19/F20 operator-gated, T1 gated 2026-08-22 |
+| H — App-layer test coverage | T1, T4 (+ T-series, see [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md)) | T3/T5/T7/T8/T10/T13/T14/T15/T16 shipped; T4 in flight, T1 gated 2026-08-22 |
 | Icebox | V8-I1–V8-I7 | trigger-gated |
 
 ---

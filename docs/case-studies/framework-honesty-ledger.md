@@ -241,7 +241,7 @@ This compared **raw percentages** against the canonical anchor with no rule for 
 5. **Codified** — data-integrity sub-plan §2.6 (normalization overlay) + §2.7 (unified data-layer `make integrity-data-lake`) + §2.3/§2.5 amendments; CLAUDE.md Soak-window section; infra-master-plan pointer.
 6. **Tests** — `test_integrity_multi_anchor.py` (classify_delta verdicts), `test_backfill_timing_wall_time.py` (clean/multiday/dirty), `test_integrity_data_lake.py` (R1/R5 reconciliation), provenance cases in `test_measurement_adoption_report.py`.
 
-**Operator note:** the same `make integrity-data-lake` reconciliation pass surfaced a *separate* open anomaly — the weekly gate-coverage trend reports `distinct_gate_count=0` for 2026-05-18 / 06-01 / 06-08 while the F17 index has 25 gates. Flagged for a follow-up investigation (cron-context emptiness, F-LAUNCHD-DRIFT class); not part of this entry's closure.
+**Operator note:** the same `make integrity-data-lake` reconciliation pass surfaced a *separate* open anomaly — the weekly gate-coverage trend reports `distinct_gate_count=0` for 2026-05-18 / 06-01 / 06-08 while the F17 index has 25 gates. Flagged for a follow-up investigation (cron-context emptiness, F-LAUNCHD-DRIFT class); not part of this entry's closure. **Status 2026-07-14:** still open; same cron-context-emptiness class as observed-pattern W42 (launchd not exporting env → empty cache). The `CRON_CONTEXT=1` plist fix (#892) hardens the launchd integrity-check path; the GitHub-Actions weekly gate-coverage scan should be re-verified against a recent run before closing.
 
 **Cross-references:**
 

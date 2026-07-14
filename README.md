@@ -56,7 +56,7 @@ Design source: [FitMe Design System Library on Figma](https://www.figma.com/desi
 | AI — Cloud | FastAPI on Railway, JWT + JWKS validation, k≥50 anonymity |
 | AI — On-device | Apple Intelligence Foundation Models (iOS 26+) |
 | Analytics | Firebase Analytics (GA4) with GDPR consent |
-| Design System | 125 semantic tokens, Style Dictionary pipeline, CI drift detection |
+| Design System | ~175 semantic tokens, Style Dictionary pipeline, CI drift detection |
 
 ---
 
