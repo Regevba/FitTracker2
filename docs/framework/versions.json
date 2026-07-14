@@ -30,6 +30,7 @@
   "stats": {
     "write_time_gates": 21,
     "cycle_time_gates": 16,
+    "_cycle_time_gates_note": "16 = all cycle-time gate CODES; 9 emit Mechanism A coverage (instrumented). See instrumented_gates_total.",
     "advisory_gates": 5,
     "instrumented_gates_total": 33,
     "mechanisms": [
