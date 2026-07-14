@@ -192,7 +192,7 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 | F9 | `make close-feature` closure automation | shipped | #591 + #711 (sub-phase normalize) |
 | F14 | Per-gate dispatch tests | 2026-05-22/23 | #451 / #452 / #455 |
 | F15 | Zero-coverage gate unit tests | 2026-05-22/23 | (same feature) |
-| F16 | try-repo harness | v7.9.1 | #607–#612 · **advisory→enforced 2026-06-18** |
+| F16 | try-repo harness | v7.9.1 | #607–#612 · **enforced 2026-06-17** (#764, 1d early) |
 | F17 | `last_fired_at` index (+ T13 `last_failed_at`) | v7.9.1 / v7.10 | #617 / #694 |
 | — | GATE_COVERAGE_ZERO meta-check | v7.10 | #673 + #689 |
 | T3 | SignInService passkey/WebAuthn tests | v7.10 | #695 |
@@ -207,7 +207,7 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 | F11 | `BRANCH_ISOLATION_HISTORICAL` reverse-sync allowlist | 2026-06-15 | #722 |
 | F10 | `experiment_outcome` enum on `tasks[]` | 2026-06-15 | #720 (`v8-f10-f5-schema-vocab`) |
 | F5 | `scope_change` Tier 2.2 vocabulary event | 2026-06-15 | #720 (`v8-f10-f5-schema-vocab`) |
-| F4 | Auto-update `framework_version` (`FRAMEWORK_VERSION_STALE`) | 2026-06-16 | #740 · **advisory→enforced review ~2026-06-30** |
+| F4 | Auto-update `framework_version` (`FRAMEWORK_VERSION_STALE`) | 2026-06-16 | #740 · **enforced 2026-07-08** (#858) |
 | F1 | `STATE_TASKS_FILESYSTEM_DRIFT` advisory (permanent) | 2026-06-17 | #752 |
 | F3 | Phase 2 dependency-graph cycle check (advisory-permanent) | 2026-06-17 | #753 |
 | F13 | `source_commit` `workflow_dispatch` input (reverse-sync workflow) | 2026-06-15 | fitme-story #221 (`reverse-sync-fitme-story-to-ft2.yml`) |

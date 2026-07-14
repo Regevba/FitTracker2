@@ -20,19 +20,21 @@ v7.10 hardens the **observability of the gates themselves** — the meta-layer t
 | **Cycle-time coverage emission** | `BROKEN_PR_CITATION` + `CASE_STUDY_MISSING_TIER_TAGS` + `PATTERN_SKILL_UNMAPPED` now emit `mode="cycle"` Mechanism A coverage (previously blind to the F17 index) | [`scripts/integrity-check.py`](../../scripts/integrity-check.py) (PR #689) | — |
 | **Field-rename closure (#24)** | `measurement-adoption-report.py` read only legacy `complexity.cu_version` not canonical `cu_v2` (halved adoption; PR #687); `refresh-gate-last-fired.py` read only `timestamp`, dropping `w9.auto_isolate` rows keyed `ts` (PR #688) | reader scripts | — |
 
-## Current canonical counts (reconciled 2026-06-15)
+## Current canonical counts (reconciled 2026-07-14)
 
 **v7.10 · 131 features · 33 instrumented gates (21 write-time + 9 cycle-time + 2 W9 hooks + 1 standalone), 28 firing · 0 integrity findings, 0 real regressions** (current as of 2026-07-14; at v7.10 ship these were 106 / 26 / 19). Full breakdown + gate list: [`docs/FRAMEWORK-FACTS.md`](../../docs/FRAMEWORK-FACTS.md).
 
 > Earlier docs report different gate totals (25 / 27 / 30 / 33 / 34 / 37) — those are accurate records of earlier eras OR count a different denominator (mechanisms+CI+hooks ≈ 37 vs gate codes ≈ 26). Always check the date.
 
-## Calibration ladder still pending (date-gated)
+## Calibration ladder (date-gated)
 
-- **2026-06-18** — F16 try-repo harness advisory→enforced flip
-- **2026-06-20** — W9 drift-auto-isolation calibration
-- **2026-06-21** — `PLATFORMS_TESTED` (T14) advisory→enforced review (B15)
-- **2026-07-04** — R9 Track-B 30-day coverage read → feeds `GATE_TEST_MISSING`
-- **2026-08-12** — Data Freshness Audit #1 (uses F17 index)
+- ~~**2026-06-18** — F16 try-repo harness advisory→enforced flip~~ ✅ **enforced 2026-06-17** (#764, 1d early)
+- ~~**2026-06-20** — W9 drift-auto-isolation calibration~~ ⏸ **HELD at advisory** (reset to 06-28, then event-gated — 0 field firings)
+- ~~**2026-06-21** — `PLATFORMS_TESTED` (T14) advisory→enforced review (B15)~~ ✅ **enforced 2026-06-21** (#781)
+- ~~**2026-07-04** — R9 Track-B 30-day coverage read → feeds `GATE_TEST_MISSING`~~ ✅ **shipped 2026-07-04** (#849)
+- ~~**~2026-06-30** — F4 `FRAMEWORK_VERSION_STALE` advisory→enforced~~ ✅ **enforced 2026-07-08** (#858)
+- ~~**2026-07-13** — `CSV_TAXONOMY_DRIFT` advisory→enforced (B16)~~ ✅ **enforced 2026-07-13**
+- **2026-08-12** — Data Freshness Audit #1 (uses F17 index) — *pending*
 
 ## Canonical sources
 

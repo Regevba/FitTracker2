@@ -69,7 +69,7 @@ Issue #140 was closed in spec, open in practice.
 
 **Predecessor: none** (this is the first ledger entry).
 
-**Successor: TBD** (next entry will be appended when the next "we got this wrong" surfaces and is closed).
+**Successor:** FT2-FH-002 (v7.8.3 PR-cache-staleness silent-pass).
 
 **Cross-references:**
 
@@ -121,7 +121,7 @@ Issue #140 was closed in spec, open in practice.
 
 **Predecessor:** [`FT2-FH-001`](#ft2-fh-001--v77-silent-pass-on-cache_hits_empty_post_v6) — v7.7 silent-pass on `CACHE_HITS_EMPTY_POST_V6`.
 
-**Successor: TBD.**
+**Successor:** FT2-FH-003 (v7.9 promotion — no silent-pass; discipline pattern).
 
 **Cross-references:**
 
