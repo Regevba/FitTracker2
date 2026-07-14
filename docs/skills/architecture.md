@@ -2,7 +2,7 @@
 
 > **Version:** 7.10 | **Updated:** 2026-06-15 | **Branch:** `main`
 >
-> The hub-and-spoke skills architecture below (shared-data connectors, L1/L2/L3 cache, validation gate, skill lifecycle, SoC token optimizations) is **unchanged and still accurate at framework v7.10**. The v6.0 → v7.10 work (measurement, write-time/cycle-time integrity gates, branch-isolation enforcement, the pattern↔skill overlay) layered on top of this substrate without re-architecting it. Canonical current gate/feature counts: [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md) (26 instrumented gates = 17 write-time + 7 cycle-time + 2 W9 hooks; 106 features). Skill ecosystem: **12 skills** = 1 hub (`pm-workflow`) + 11 spokes.
+> The hub-and-spoke skills architecture below (shared-data connectors, L1/L2/L3 cache, validation gate, skill lifecycle, SoC token optimizations) is **unchanged and still accurate at framework v7.10**. The v6.0 → v7.10 work (measurement, write-time/cycle-time integrity gates, branch-isolation enforcement, the pattern↔skill overlay) layered on top of this substrate without re-architecting it. Canonical current gate/feature counts: [`docs/FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md) (33 instrumented gates = 21 write-time + 9 cycle-time + 2 W9 hooks + 1 standalone; 131 features). Skill ecosystem: **12 skills** = 1 hub (`pm-workflow`) + 11 spokes.
 >
 > This is the **full deep-dive guide** for the skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 > For a quick-reference system overview with diagrams and tables, see the [Architecture One-Pager](architecture-one-pager.md).

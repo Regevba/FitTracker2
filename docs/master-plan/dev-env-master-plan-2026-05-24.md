@@ -22,7 +22,7 @@
 
 ## 0. TL;DR
 
-**6 of 24 shipped, 18 open.** Memory's "16/24" tally was an optimistic count; ground-truth fs sweep on 2026-05-24 confirms R1+R2+R3+R4+R5+R6 (all fully shipped — R6 re-verified 2026-05-24 PR-2A audit). The other 18 R-items remain open work — primarily lint/coverage/security tooling that's been calendar-blocked by the v7.9 calibration window (2026-05-15 → 2026-05-21) and is now eligible to ship starting **2026-05-22** with most items unblocking after Phase E exit (~2026-06-04).
+**Most R-items shipped** (was "6 of 24 shipped, 18 open" at the 2026-05-24 baseline). Per the 2026-06-07 refresh header above, R1–R6 + R7/R8/R9/R11/R12/R13/R14/R17/R18 + R10 (launchd→GHA, 2026-07-01) have shipped; the lint/coverage/security tooling that was calendar-blocked by the v7.9 window has since landed. Residual open items are tracked per-row below.
 
 **Tier breakdown (post-audit ground truth):**
 
