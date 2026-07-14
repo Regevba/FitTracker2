@@ -31,7 +31,7 @@
   "kill_criteria_resolution": "All 3 mitigated by design. (1) continue-on-error: true on all 3 jobs (build, slather-aggregate, pytest-cov) means a flake produces a `failure` annotation in the run logs but the PR-level check still resolves to success. (2) The Makefile target has explicit `command -v slather` and ls-of-xcresult guards; missing tool prints a skip notice and exits 0. (3) The ai-engine pytest output is piped through `tail -30` for the summary and the full coverage.xml is uploaded as an artifact for 14-day retention.",
   "dispatch_pattern": "agent-driven (Makefile edit + new workflow YAML + state.json)",
   "case_study": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
-  "case_study_showcase": "",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47-framework-v7-9-1-promotion.mdx",
   "spec": "docs/master-plan/dev-env-master-plan-2026-05-24.md \u00a73 R9 Track B",
   "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "scope_summary": "R9 Track B (post-Phase-E hygiene). Track A shipped 2026-05-25 (.slather.yml + [tool.coverage.*]). This PR adds the operator surface \u2014 3 Makefile targets (coverage-ios, coverage-py, coverage-report) + 1 CI workflow (.github/workflows/coverage.yml) with two warn-only jobs (iOS Slather on macos-15, Python pytest-cov on ubuntu-latest). Coverage data flows into upload-artifact for 14-day retention so the v8.0 GATE_TEST_MISSING meta-gate (backlog T1) has data to calibrate against. Web c8 is intentionally out of scope (lives in fitme-story per dev-env-plan).",

@@ -28,7 +28,7 @@
   "kill_criteria_resolution": "Both mitigated by the spec's design. (1) The promotion clause ('enforce if 2 consecutive soak windows show >5pp regression on any post-v6 percentage metric') gives the doc-only rule a concrete trigger for upgrading to a gate. The 2026-05-28 v7.9 baseline + the next post-soak baseline will be the first data points. (2) The rule's wording uses 'soak window' as the generic term and 'Phase E for v7.X' as a specific instance \u2014 see CLAUDE.md change in this PR.",
   "dispatch_pattern": "agent-driven (2-file doc edit)",
   "case_study": "docs/case-studies/f-phase-e-adoption-freeze-discipline-case-study.md",
-  "case_study_showcase": "",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47-framework-v7-9-1-promotion.mdx",
   "spec": ".claude/shared/v7-9-1-candidates.md F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE + docs/case-studies/framework-v7-9-promotion-case-study.md \u00a799.4 lesson 2",
   "predecessor_case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "scope_summary": "Documentation-only fix codifying the soak-window adoption-metric discipline. Adds a 'Soak-window discipline (v7.9.1+)' subsection to CLAUDE.md (freeze adoption metrics OR backfill in same PR) + a backlog cross-reference entry. Rationale: v7.9 Phase E observed 3 process regressions caused by denominator dilution (+9 features), not framework regressions. Future Phase E windows for v7.10+ would repeat the noise without this discipline. ADVISORY at v7.9.1 ship; promotion clause built in (enforce after 2 consecutive >5pp regressions). No gate; no telemetry impact; Phase-E-safe (doc-only).",
