@@ -32,7 +32,7 @@
   "kill_criteria_resolution": "All 3 mitigated by design. (1) Every new job uses `continue-on-error: true`; lint validated all 5 YAMLs parse. (2) `paths:` filters include `.github/workflows/<name>.yml` for the relevant workflow so a workflow edit auto-tests itself on PR. (3) gitleaks allowlist covers docs/case-studies/observed-patterns/test-fixtures explicitly; commitlint type-enum lists only the 11 conventional types the project actually uses. False-positive surface is bounded.",
   "dispatch_pattern": "agent-driven (5 new files + 1 config + master-plan update)",
   "case_study": "docs/case-studies/dev-env-r11-r13-r14-r17-r18-batch-case-study.md",
-  "case_study_showcase": "",
+  "case_study_showcase": "fitme-story/content/04-case-studies/47-framework-v7-9-1-promotion.mdx",
   "spec": "docs/master-plan/dev-env-master-plan-2026-05-24.md \u00a73 R11 + R13 + R14 + R17 + R18",
   "predecessor_case_study": "docs/case-studies/r9-track-b-coverage-aggregator-case-study.md",
   "scope_summary": "Tier-2/Tier-3 dev-env hygiene batch shipping 5 warn-only baselines in one PR. (1) R11 gitleaks GH Action + .gitleaks.toml (pre-commit hook integration deferred). (2) R13 pip-audit ai-engine workflow (PR-paths-filtered + Monday weekly cron). (3) R14 syft SBOM on v* tag pushes (SPDX-JSON + CycloneDX-JSON; dormant until first release tag). (4) R17 commitlint config + PR workflow (lints every commit in PR range). (5) R18 shellcheck GH Action against scripts/ + .githooks/ (pre-commit hook integration deferred for same reason as R11). All 5 ship continue-on-error: true so a finding produces an annotation but does not gate. Dev-env-master-plan R-table updated accordingly.",
