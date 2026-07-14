@@ -22,7 +22,7 @@ v7.10 hardens the **observability of the gates themselves** — the meta-layer t
 
 ## Current canonical counts (reconciled 2026-06-15)
 
-**v7.10 · 106 features · 26 instrumented gates (17 write-time + 7 cycle-time + 2 W9 hooks), 19 firing · 0 integrity findings, 0 real regressions.** Full breakdown + gate list: [`docs/FRAMEWORK-FACTS.md`](../../docs/FRAMEWORK-FACTS.md).
+**v7.10 · 131 features · 33 instrumented gates (21 write-time + 9 cycle-time + 2 W9 hooks + 1 standalone), 28 firing · 0 integrity findings, 0 real regressions** (current as of 2026-07-14; at v7.10 ship these were 106 / 26 / 19). Full breakdown + gate list: [`docs/FRAMEWORK-FACTS.md`](../../docs/FRAMEWORK-FACTS.md).
 
 > Earlier docs report different gate totals (25 / 27 / 30 / 33 / 34 / 37) — those are accurate records of earlier eras OR count a different denominator (mechanisms+CI+hooks ≈ 37 vs gate codes ≈ 26). Always check the date.
 

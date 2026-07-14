@@ -77,7 +77,7 @@ The infra master plan is *forward-looking* — it ranks v8.x candidates and cale
 
 ### 2.1 The 4-checkpoint enforcement model — what exists today
 
-> **Counts below are as-of-writing (2026-05-14).** For current canonical counts (framework v7.10: 32 instrumented / 34 live gates, 131 features, ~119 case studies as of 2026-07-13) always defer to [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). The "70 features" references elsewhere in this doc describe the **canonical 2026-05-14 platform baseline** (non-superseding per §2.6/§2.7) and are intentionally not bumped.
+> **Counts below are as-of-writing (2026-05-14).** For current canonical counts (framework v7.10: 33 instrumented / 34 live gates, 131 features, ~119 case studies as of 2026-07-14) always defer to [`../FRAMEWORK-FACTS.md`](../FRAMEWORK-FACTS.md). The "70 features" references elsewhere in this doc describe the **canonical 2026-05-14 platform baseline** (non-superseding per §2.6/§2.7) and are intentionally not bumped.
 
 | Checkpoint | Cadence | Coverage | Source |
 |---|---|---|---|
