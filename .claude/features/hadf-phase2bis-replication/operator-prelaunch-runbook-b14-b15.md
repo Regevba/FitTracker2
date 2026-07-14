@@ -270,7 +270,7 @@ scripts/requirements-hadf-phase2.txt                               +8 -1 lines
 .claude/features/hadf-phase2bis-replication/operator-prelaunch-runbook-b14-b15.md  (NEW)
 
 fitme-story:.worktrees/hadf-block-c/content/04-case-studies/
-  22c-hadf-phase2bis-cross-sub-exp-synthesis.mdx → 22e-...mdx       (git mv)
+  33c-hadf-phase2bis-cross-sub-exp-synthesis.mdx → 22e-...mdx       (git mv)
 ```
 
 No commits made. No locks fired. No launchd jobs touched. No real API calls.

@@ -152,7 +152,7 @@ plan: docs/superpowers/plans/2026-05-30-orchid-research-capstone-publication-rea
 predecessor_case_studies:
   - 12-hadf
   - 22b-hadf-phase2-cloud-fingerprinting
-  - 22c-hadf-phase2bis-cross-sub-exp-synthesis
+  - 33c-hadf-phase2bis-cross-sub-exp-synthesis
 external_audit_status: pending     # Audit #2 (2026-06-12) covers raw HADF data
 kill_criterion_fired: false
 key_numbers: [ ... see §4.3 ... ]
