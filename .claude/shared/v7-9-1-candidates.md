@@ -1,6 +1,6 @@
 # v7.9.1 candidate docket
 
-> **v7.9.1 BUILD WINDOW CLOSED 2026-06-04.** 5 of 7 docket candidates shipped on the same day (F-LAUNCHD-DRIFT-EXTENSION, F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE, F-DEPLOYED-URL-PROBE FT2 substrate, plus the predecessor F16/F17/F2/Dev-env Track B). Two remain open (F-AUTH-LATENCY-SERVER-METRIC + F-CONTRACT-FIXTURE-SAMPLING) — both fitme-story-side or cross-repo, deferred to a fitme-story-focused session. **Synthesis case study:** [`framework-v7-9-1-promotion-case-study.md`](../../docs/case-studies/framework-v7-9-1-promotion-case-study.md). **CLAUDE.md cold-start pointer:** `## v7.9.1 Build Window (shipped 2026-06-04 — 8 ships, 14 PRs)` section.
+> **v7.9.1 BUILD WINDOW CLOSED 2026-06-04.** 5 of 7 docket candidates shipped on the same day (F-LAUNCHD-DRIFT-EXTENSION, F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE, F-DEPLOYED-URL-PROBE FT2 substrate, plus the predecessor F16/F17/F2/Dev-env Track B). Both remaining candidates have since shipped (F-CONTRACT-FIXTURE-SAMPLING consumer adoption 2026-06-22; F-AUTH-LATENCY-SERVER-METRIC fitme-story-side, fitme-story #208) — 0 open. **Synthesis case study:** [`framework-v7-9-1-promotion-case-study.md`](../../docs/case-studies/framework-v7-9-1-promotion-case-study.md). **CLAUDE.md cold-start pointer:** `## v7.9.1 Build Window (shipped 2026-06-04 — 8 ships, 14 PRs)` section.
 >
 > Created 2026-05-27. Successor to the v7.9 promotion (shipped 2026-05-21 via PR #417). Items here are the queued enhancements + bug-fixes for the next framework patch cycle, expected to open after v7.9 Phase E exit (~2026-06-04).
 >
@@ -15,7 +15,7 @@
 ## F-AUTH-LATENCY-SERVER-METRIC
 
 **Discovered:** 2026-05-27 (B12 UCC hardening T+7d kill-criteria evaluation, PR #503).
-**Status:** queued.
+**Status:** SHIPPED (fitme-story-side, fitme-story #208 — `duration_ms_server` on the WebAuthn audit event).
 **Owner:** TBD (likely 1 PR on fitme-story, no FT2 changes).
 **Effort:** ~0.5 day (1 field + 1 emission site + 1 test).
 
@@ -319,10 +319,10 @@ When a new candidate surfaces (during session work, audit, or incident review):
 
 ---
 
-## F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING
+## ~~F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING~~ (DUPLICATE — see the struck closed entry below; closed 2026-05-30)
 
 **Discovered:** 2026-05-28 (B2 post-v7.9 baseline snapshot run; framework-v7-9-promotion case study §99.4 lesson 1).
-**Status:** queued.
+**Status:** CLOSED 2026-05-30 (duplicate of the struck entry below).
 **Owner:** TBD (FT2; single script + 1-2 line fix).
 **Effort:** ~15 min (1 script reorder + 1 manual test pass).
 
@@ -596,7 +596,7 @@ To be filled when shipped (or marked CLOSED if operator chooses to retire Sub-ex
 ## F-W9-DRIFT-TRIGGERED-AUTO-ISOLATION
 
 **Discovered:** 2026-06-06 (data-integrity + system-health session; branch drift struck twice mid-task in a shared checkout with 8 active worktrees + a concurrent session).
-**Status:** queued.
+**Status:** SHIPPED 2026-06-05 — feature `w9-drift-triggered-auto-isolation` complete (PRs #646/#648/#649); case study present.
 **Owner:** TBD.
 **Impact tier:** **A_high** — changes default dispatch behavior and extends the *enforced* `BRANCH_ISOLATION_VIOLATION` gate beyond infra paths. Per CLAUDE.md tier table: full `Feature` lifecycle (PRD + tasks NOT optional; any new auto-trigger behavior runs an advisory→enforced calibration window before it acts without confirmation).
 **Effort:** L (multi-phase; design-heavy — see open design questions).
