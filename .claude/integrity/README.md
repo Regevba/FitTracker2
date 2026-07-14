@@ -168,7 +168,7 @@ The `state_hash` field is a truncated SHA-256 of the state.json content — dete
 
 4. **Features with `partial_ship: true`** are flagged via `PARTIAL_SHIP_TERMINAL` if they ALSO have a terminal phase — the policy is either "downgrade phase from complete" or "remove the partial_ship flag", pick one.
 
-5. **`BRANCH_ISOLATION_HISTORICAL` after a squash-merge + branch-cleanup pass** (v7.8.1 advisory, observed 2026-05-13) and ~22 other gate-firing patterns are catalogued in **[`.claude/integrity/observed-patterns.md`](./observed-patterns.md)** — the canonical Observed Patterns Catalog. View with `make observed-patterns`. The catalog is auto-loaded as preflight by `/pm-workflow` (see [SKILL.md](../skills/pm-workflow/SKILL.md) § Preflight). When any gate fires, **check the catalog first** before debugging. New patterns must be appended to the catalog before closing the feature that surfaced them.
+5. **`BRANCH_ISOLATION_HISTORICAL` after a squash-merge + branch-cleanup pass** (v7.8.1 advisory, observed 2026-05-13) and 24 other gate-firing patterns (plus 43 workflow patterns) are catalogued in **[`.claude/integrity/observed-patterns.md`](./observed-patterns.md)** — the canonical Observed Patterns Catalog. View with `make observed-patterns`. The catalog is auto-loaded as preflight by `/pm-workflow` (see [SKILL.md](../skills/pm-workflow/SKILL.md) § Preflight). When any gate fires, **check the catalog first** before debugging. New patterns must be appended to the catalog before closing the feature that surfaced them.
 
 ---
 

@@ -14,7 +14,7 @@ coverage cannot see.
 
 F18 applies this to the two **gate-dispatcher files** the whole framework rests on:
 
-- [`scripts/check-state-schema.py`](../../scripts/check-state-schema.py) — write-time gate dispatcher (18 gates fire here on `git commit`)
+- [`scripts/check-state-schema.py`](../../scripts/check-state-schema.py) — write-time gate dispatcher (21 gates fire here on `git commit`)
 - [`scripts/integrity-check.py`](../../scripts/integrity-check.py) — cycle-time dispatcher (9 checks fire every 72h)
 
 It validates the quality of the F14 (dispatch) + F15 (unit) + F16 (try-repo) suites,
