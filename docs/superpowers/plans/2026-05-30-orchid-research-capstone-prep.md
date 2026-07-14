@@ -18,17 +18,17 @@
 
 **Files:**
 - Read (for exact schema): `/Volumes/DevSSD/fitme-story/src/lib/content-schema.ts`
-- Read (for real frontmatter shape): `/Volumes/DevSSD/fitme-story/content/04-case-studies/22c-hadf-phase2bis-cross-sub-exp-synthesis.mdx`
+- Read (for real frontmatter shape): `/Volumes/DevSSD/fitme-story/content/04-case-studies/33c-hadf-phase2bis-cross-sub-exp-synthesis.mdx`
 - Read (closed-evidence numbers): `/Volumes/DevSSD/FitTracker2/docs/research/2026-05-29-hadf-activation-orchid-validation-analysis.md`, `/Volumes/DevSSD/FitTracker2/docs/case-studies/orchid-ai-accelerator-case-study.md`
 - Create: `/Volumes/DevSSD/fitme-story/content/04-case-studies/37-orchid-research-arc.mdx.draft`
 
 - [ ] **Step 1: Resolve the real frontmatter shape.**
 
-Read `content-schema.ts` and `22c-hadf-phase2bis-cross-sub-exp-synthesis.mdx`. Determine authoritatively whether version/order are flat (`version:` / `order:`) or nested under `timeline_position:` — `content.ts` sorts on `frontmatter.timeline_position?.order`, but the 22b/22c files may use flat keys. Match whatever 22c actually uses. Record the resolved shape in a one-line comment at the top of the draft body (HTML comment) for the next worker.
+Read `content-schema.ts` and `33c-hadf-phase2bis-cross-sub-exp-synthesis.mdx`. Determine authoritatively whether version/order are flat (`version:` / `order:`) or nested under `timeline_position:` — `content.ts` sorts on `frontmatter.timeline_position?.order`, but the 22b/22c files may use flat keys. Match whatever 22c actually uses. Record the resolved shape in a one-line comment at the top of the draft body (HTML comment) for the next worker.
 
 - [ ] **Step 2: Write the frontmatter block.**
 
-Use the resolved shape. Required: `title`, `slug: orchid-research-arc`, `tier: standard`, `tldr` (one sentence). Include: `status: draft`, version `7.9` + order `37` (in the resolved shape), `date_written: '2026-05-30'`, NO `date` key (commented out: `# date: SET ON PUBLISH DAY`), `upstream_path`, `spec`, `plan`, `predecessor_case_studies: [12-hadf, 22b-hadf-phase2-cloud-fingerprinting, 22c-hadf-phase2bis-cross-sub-exp-synthesis]`, `external_audit_status: pending`, `kill_criterion_fired: false`, `persona_emphasis` (hr/pm/dev/academic), and a `visual_aid` (component `FrameworkAdvancement`; if its `data` shape is unclear from existing usages, fall back to a non-empty `key_numbers` array which the schema also accepts). Pre-populate `key_numbers`, `honest_disclosures`, `kill_criteria` for CLOSED evidence only (see Step 4).
+Use the resolved shape. Required: `title`, `slug: orchid-research-arc`, `tier: standard`, `tldr` (one sentence). Include: `status: draft`, version `7.9` + order `37` (in the resolved shape), `date_written: '2026-05-30'`, NO `date` key (commented out: `# date: SET ON PUBLISH DAY`), `upstream_path`, `spec`, `plan`, `predecessor_case_studies: [12-hadf, 22b-hadf-phase2-cloud-fingerprinting, 33c-hadf-phase2bis-cross-sub-exp-synthesis]`, `external_audit_status: pending`, `kill_criterion_fired: false`, `persona_emphasis` (hr/pm/dev/academic), and a `visual_aid` (component `FrameworkAdvancement`; if its `data` shape is unclear from existing usages, fall back to a non-empty `key_numbers` array which the schema also accepts). Pre-populate `key_numbers`, `honest_disclosures`, `kill_criteria` for CLOSED evidence only (see Step 4).
 
 - [ ] **Step 3: Write the 7-section narrative spine (closed-evidence prose).**
 

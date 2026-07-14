@@ -37,7 +37,7 @@ preregistration_paths:
   subexp1: .claude/shared/hadf/preregistration-phase2bis-subexp1.json
   subexp2: .claude/shared/hadf/preregistration-phase2bis-subexp2.json
   subexp3: .claude/shared/hadf/preregistration-phase2bis-subexp3.json
-case_study_showcase: fitme-story/content/04-case-studies/22c-hadf-phase2bis-cross-sub-exp-synthesis.mdx
+case_study_showcase: fitme-story/content/04-case-studies/33c-hadf-phase2bis-cross-sub-exp-synthesis.mdx
 external_audit_schedule:
   - audit-1-v7-9-promotion: 2026-05-22 (scope: Sub-exp 1 prereg + smoke-fire data quality)
   - audit-2-v7-9-1-ship: 2026-06-12 (scope: Sub-exps 1-3 raw data integrity + verdict scripts + THIS case study)
