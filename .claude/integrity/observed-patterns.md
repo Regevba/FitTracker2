@@ -840,7 +840,14 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W33 Pattern↔skill preflight overlay (catalog ⇄ skill mapping + `make skill-preflight`; self-doc, map-exempt) | W33 | 2026-06-04 |
 | W34 PR cache window truncation past the 500-PR limit (raised to 2000) | W34 | 2026-06-05 |
 | W35 Hook session-id keyed on never-set `CLAUDE_SESSION_ID` env → constant `"default"` → cross-session marker suppresses gate forever | W35 | 2026-06-14 |
+| W36 Plan/seat-gated external capability documented as "operational" while it never once succeeded | W36 | 2026-06-15 |
 | W37 Bot-authored (GITHUB_TOKEN) PR + `strict` branch protection → required checks never run / re-block → permanent "expected" merge deadlock | W37 | 2026-06-15 |
+| W38 Figma read tools reflect the DESKTOP-APP context, not the `fileKey` you pass → false "empty file" reads | W38 | 2026-06-18 |
+| W39 Breaking-change major Dependabot bump can't auto-merge → churns as closed-unmerged PRs until a human ships a golden-verified migration | W39 | 2026-06-18 |
+| W40 Cross-layer tracker lag — item OPEN in Linear/Notion/backlog while already SHIPPED in repo (no mechanical slug↔tracker join) | W40 | 2026-06-29 |
+| W41 Runner `git commit` unsigned → rejected by `required_signatures`; GraphQL `createCommitOnBranch` auto-signs (bot-PR signature half of W37) | W41 | 2026-07-13 |
+| W42 launchd doesn't reliably export `LAUNCHD_LABEL` → cron-context finding-suppression no-ops unless the plist sets `CRON_CONTEXT=1` | W42 | 2026-07-14 |
+| W43 iOS `SNAPSHOT_MODE` must reach the simulator via the scheme's TestAction env (build-setting expansion), not a runner env var / `SIMCTL_CHILD_` | W43 | 2026-07-13 |
 
 ---
 
@@ -850,7 +857,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-06-11 (Index sync — added `#24` field-rename-reader pattern [2026-06-10 PRs #687/#688/#689] + W30–W34 rows; corrected the stale W29 Index label [the pattern↔skill overlay renumbered to W33 during the 2026-06-04 rebase, but the Index still listed the overlay under W29]; refreshed the W33 body's work-blocking count 55→57 [24 gate + 33 workflow]). Prior (2026-06-04): added W29 — pattern↔skill preflight overlay — documenting the catalog⇄skill mapping layer + `make skill-preflight`; see `docs/skills/pattern-skill-overlay.md`. Prior (2026-06-02): added W28 — local xcodebuild CoreSimulator-out-of-date — to the index; entry body shipped earlier by a parallel session without an index row. Prior (2026-06-01): index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561.
+Last refreshed: 2026-07-14 (full-review sync — added the missing **W36 / W38 / W39 / W40** Index rows [their bodies existed since 2026-06-15→06-29 but were never indexed; the Index jumped W35→W37]; appended **W41** signed-commit bot-PR route [`required_signatures` + GraphQL `createCommitOnBranch`], **W42** launchd `CRON_CONTEXT` plist requirement, **W43** `SNAPSHOT_MODE`→simulator plumbing, and a 2026-07-14 recurrence note on W40 — all from the 2026-07-13→07-14 session. Catalog now **25 gate-firing (#1–#25) + 43 workflow (W1–W43) = 68 entries**. **Adjacent drift flagged for follow-up:** `.claude/shared/pattern-skill-map.json` [64 mapped entries, 30 blocking], the generated per-skill preflight tables [claim "51 / 23 gate + 28 workflow"], and this doc's W33 body ["57 / 24+33"] all disagree — run `make gen-skill-preflight` on a branch to resync the work-blocking counts to the current catalog.) Prior — 2026-06-11 (Index sync — added `#24` field-rename-reader pattern [2026-06-10 PRs #687/#688/#689] + W30–W34 rows; corrected the stale W29 Index label [the pattern↔skill overlay renumbered to W33 during the 2026-06-04 rebase, but the Index still listed the overlay under W29]; refreshed the W33 body's work-blocking count 55→57 [24 gate + 33 workflow]). Prior (2026-06-04): added W29 — pattern↔skill preflight overlay — documenting the catalog⇄skill mapping layer + `make skill-preflight`; see `docs/skills/pattern-skill-overlay.md`. Prior (2026-06-02): added W28 — local xcodebuild CoreSimulator-out-of-date — to the index; entry body shipped earlier by a parallel session without an index row. Prior (2026-06-01): index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561.
 
 ---
 
@@ -1767,4 +1774,46 @@ Applied 2026-06-16 to clear #741 (already up-to-date → direct `--admin`) and #
 
 **Silence path:** the convention + crosswalk + the `linear_id`-missing advisory are the durable mechanism. Promotion: once the `linear_id` backfill is broad and the missing-join count is stable, a `LINEAR_ID_MISSING` cycle-time advisory→gate can flag features whose repo status and Linear status disagree, via the standard calibration ladder.
 
-**First observed:** 2026-06-29 (R8 near-miss → 25-item reconcile). **Sibling patterns:** W20 (stale-session-state inventory drift — same "tracker ≠ reality" family, session scope), W17 (stale-base branch file lists mislead), W36 (a capability documented as operational while it never worked — claim vs reality), W39 (closed-unmerged churn). Convention companion: FIT-200.
+**First observed:** 2026-06-29 (R8 near-miss → 25-item reconcile). **Recurrence:** 2026-07-14 — a "start A" request resolved to Linear items **FIT-208/209/211** shown as advanceable in a session-built overlay; all three were **Done in Linear (07-09)** and shipped in code (`Views/Stats/v2/StatsView.swift`, `Services/DataExportService.swift`), plus E-1 (C12), E-3 (#859), E-15 all shipped. Verify-first against the repo caught it before any redundant build. **Sibling patterns:** W20 (stale-session-state inventory drift — same "tracker ≠ reality" family, session scope), W17 (stale-base branch file lists mislead), W36 (a capability documented as operational while it never worked — claim vs reality), W39 (closed-unmerged churn). Convention companion: FIT-200.
+
+### W41 — Runner `git commit` is unsigned → rejected by `required_signatures`; GitHub GraphQL `createCommitOnBranch` auto-signs (2026-07-13)
+
+**Surfaced by:** the bot-PR Option-B hardening (B18/B19). After fixing W37's check-trigger half with a PAT (`WORKFLOW_PR_TOKEN`) so cron snapshot PRs actually run required checks, the PR still couldn't merge: `main` has `required_signatures = true`, and the workflow's plain `git commit` on the ephemeral runner is **unsigned** (no GPG/SSH signing key on the runner).
+
+**The pattern:** `required_signatures` requires every commit landing on the protected branch to carry a verified signature. A runner's `git commit`/`git push` produces unsigned commits → the push (or the admin/auto merge) is rejected. Crucially, a PAT solves the *recursion / check-trigger* problem (W37) but **not** the *signature* problem — they are two independent branch-protection requirements that a naive "use a PAT and push" approach only half-satisfies.
+
+**Detection:**
+```bash
+# Protected branch requires signatures?
+gh api repos/<owner>/<repo>/branches/main/protection --jq '.required_signatures.enabled'   # true
+# A pushed runner commit shows unverified:
+gh api repos/<owner>/<repo>/commits/<sha> --jq '.commit.verification.verified'              # false
+```
+
+**Silence path (the fix, shipped this session):** create the commit via the GitHub **GraphQL `createCommitOnBranch`** mutation instead of `git commit` + `git push`. Commits authored through the GraphQL API are **automatically signed by GitHub's web-flow key** → they satisfy `required_signatures`. [`scripts/create-signed-snapshot-pr.py`](../../scripts/create-signed-snapshot-pr.py) reads the staged diff, resolves the base-branch OID via the REST API, builds the `FileChanges` payload, calls `createCommitOnBranch` (signed), opens the PR, and enables squash auto-merge — driven by the `WORKFLOW_PR_TOKEN` PAT so required checks also run. Wired into `integrity-cycle.yml` + `framework-status-weekly.yml`. Proven end-to-end: #887 (auto-merged) + #892.
+
+**First observed:** 2026-07-13. **Sibling patterns:** [W37 — bot-PR required-checks deadlock](#w37) (W41 is the *signature* half of the same bot-PR problem; W37 chose push-to-main+bypass, W41 keeps the PR so required checks still gate), #12 `PR_CACHE_STALE`, W35. **Note:** W37's option-B removes the bot PR entirely; W41 is the path when you deliberately keep the bot PR (so required checks run) AND `required_signatures` is enforced — the GraphQL signed-commit satisfies both at once.
+
+### W42 — launchd doesn't reliably export `LAUNCHD_LABEL`; cron-context finding-suppression no-ops unless the plist sets `CRON_CONTEXT=1` (2026-07-14)
+
+**Surfaced by:** the +512 phantom integrity-regression resume. A daily launchd job ran `make integrity-check`; in cron context `gh` couldn't reach the macOS keychain → empty PR cache → a burst of phantom `BROKEN_PR_CITATION` / `PR_NUMBER_UNRESOLVED` findings. The F-LAUNCHD-DRIFT suppression (which detects cron context and skips those checks, per the sub-fix (b)+(c) mechanism) **never engaged** because it keyed on the `LAUNCHD_LABEL` env var — which launchd did **not** export to the child process.
+
+**The pattern:** `ensure-pr-cache-fresh.py::in_cron_context()` detects launchd via `LAUNCHD_LABEL` OR `CRON_CONTEXT=1` OR `XPC_SERVICE_NAME` matching fittracker+daily. Empirically `LAUNCHD_LABEL` is frequently absent in the child env, so the only reliable signal is an **explicit `CRON_CONTEXT=1`** in the plist's `EnvironmentVariables`. Without it the cron run looks interactive → suppression off → phantom findings surface. This is the launchd-vs-interactive execution-context divergence (same family as E-14 F-LAUNCHD-DRIFT).
+
+**Distinguishing real signal:** if `make integrity-check` under cron emits a burst of PR-citation findings that vanish when the same command is run interactively, it's empty-cache-in-cron (this pattern / #12), not real broken citations. Verify the artifact, not the exit code.
+
+**Silence path (fixed this session):** add `<key>CRON_CONTEXT</key><string>1</string>` to `EnvironmentVariables` in [`com.fittracker.daily-integrity-checkpoint.plist.template`](../../infrastructure/launchd/com.fittracker.daily-integrity-checkpoint.plist.template) so the sentinel-flag suppression engages. Guard test [`scripts/tests/test_daily_cron_plist_template.py`](../../scripts/tests/test_daily_cron_plist_template.py) asserts the plist carries it. Same commit fixed the stale `WorkingDirectory` (SSD path → canonical repo path) and the misleading "launchd sets `LAUNCHD_LABEL`" comment. Shipped #892.
+
+**First observed:** 2026-07-14. **Sibling patterns:** E-14 / F-LAUNCHD-DRIFT-EXTENSION (a/b/c), #12 `PR_CACHE_STALE`, W11/W34 (PR cache), `ci-green-can-mask-noop` memory.
+
+### W43 — iOS `SNAPSHOT_MODE` (and any test-time env) must reach the *simulator* test process via the scheme's TestAction env with build-setting expansion — not a runner env var, not `SIMCTL_CHILD_` (2026-07-13)
+
+**Surfaced by:** the t4·T2 snapshot recorder. `ios-snapshot-record.yml` set `SNAPSHOT_MODE=record` as a workflow / `xcodebuild` env var, but the snapshot tests still `XCTSkip` (they read `SNAPSHOT_MODE`, saw it unset) → the record job produced **no baselines while reporting green** — the ci-green-masks-a-noop class.
+
+**The pattern:** env vars set on the `xcodebuild` process (or via `SIMCTL_CHILD_*`) do not deterministically propagate into the app/test process running **inside the simulator** under a normal `test` action. The reliable channel is the **scheme's TestAction environment**: with `shouldUseLaunchSchemeArgsEnv=YES` the TestAction inherits the LaunchAction env, so adding `<EnvironmentVariable key="SNAPSHOT_MODE" value="$(SNAPSHOT_MODE)">` to the scheme's LaunchAction — AND passing `SNAPSHOT_MODE=record` as an `xcodebuild` **build setting** so `$(SNAPSHOT_MODE)` expands — is what actually lands the value in the simulator process.
+
+**Distinguishing real signal:** the record/verify job is green but the artifact is empty or unchanged (0 PNGs committed / all snapshot tests skipped). Always verify the produced artifact, not the exit code.
+
+**Silence path (fixed this session):** (1) scheme TestAction env `SNAPSHOT_MODE=$(SNAPSHOT_MODE)` in [`FitTracker.xcscheme`](../../FitTracker.xcodeproj/xcshareddata/xcschemes/FitTracker.xcscheme); (2) pass `SNAPSHOT_MODE=record` as an xcodebuild build-setting arg; (3) the recorder also needed `GoogleService-Info.plist` decoded first or the build failed before any test ran (a third stacked bug). Fixed across `ios-snapshot-record.yml` + the scheme; 4 CI-recorded baselines committed (#843-era work → 10c9878e).
+
+**First observed:** 2026-07-13. **Sibling patterns:** W28 (local `xcodebuild` sim out-of-date), `ci-green-can-mask-noop` memory (green run ≠ produced artifact).
