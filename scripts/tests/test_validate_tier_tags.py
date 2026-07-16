@@ -88,6 +88,21 @@ date_written: 2026-04-29
     assert "TIER_TAG_LIKELY_INCORRECT" in result.stdout
 
 
+def test_commit_hash_digit_run_not_read_as_measurement(tmp_path):
+    # Regression: the claim regex used to read "79d" out of the git short-hash
+    # `05ef79d` in an "Ordered chain" citation as a spurious "79 days" T1 claim
+    # (google-analytics-case-study.md). A digit-run embedded inside an
+    # alphanumeric token (preceded by a word char) is not a measurement.
+    text = """---
+date_written: 2026-04-29
+---
+# Case
+| PR / commits | Merge `ac85c73` [T1]. Ordered chain: `7b320bc`, `05ef79d`, `35d770a` |
+"""
+    result = run_on_text(text, tmp_path)
+    assert "TIER_TAG_LIKELY_INCORRECT" not in result.stdout
+
+
 def test_pre_cutoff_case_study_exempt(tmp_path):
     text = """---
 date_written: 2026-04-15

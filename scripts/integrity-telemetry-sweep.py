@@ -34,6 +34,7 @@ import argparse
 import datetime as dt
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -73,12 +74,13 @@ def layer_framework_integrity() -> tuple[str, str]:
     findings, advisory = -1, -1
     for line in (r.stdout + r.stderr).splitlines():
         if line.strip().startswith("Findings:"):
-            rhs = line.split(":", 1)[1]
-            try:
-                findings = int(rhs.split("+")[0].strip())
-                advisory = int("".join(c for c in rhs.split("+", 1)[1] if c.isdigit()) or "0")
-            except (ValueError, IndexError):
-                pass
+            # Format is "Findings: N ()" (0 advisories) or
+            # "Findings: N + M advisory (...)". Match both — the older
+            # split("+") parse raised on the no-advisory form.
+            m = re.search(r"Findings:\s*(\d+)(?:\s*\+\s*(\d+)\s*advisor)?", line)
+            if m:
+                findings = int(m.group(1))
+                advisory = int(m.group(2)) if m.group(2) else 0
             break
     if findings < 0:
         return WARN, "could not parse integrity-check output"
