@@ -5,6 +5,29 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Injectable sync seams (FIT-157 / T9)
+//
+// executeDeletion() drives a partial-failure cascade across remote stores. The
+// concrete sync services (SupabaseSyncService / CloudKitSyncService) are `final`
+// and in the high-risk-area list, so they can't be subclassed or fault-injected
+// directly. These narrow protocols capture ONLY the surface AccountDeletionService
+// uses; the concrete services conform via zero-behavior extensions (declared in
+// their own files), and tests inject fault-controllable mocks to exercise the
+// cascade without real network. Kept `@MainActor` to match the services' isolation.
+
+@MainActor
+protocol AccountDeletionSupabaseSyncing: AnyObject {
+    func setRemoteDeletionScheduledAt(_ date: Date?) async throws
+    func fetchRemoteDeletionScheduledAt() async -> Date?
+    func unsubscribeRealtime() async
+    func deleteAllUserData() async throws
+}
+
+@MainActor
+protocol AccountDeletionCloudSyncing: AnyObject {
+    func deleteAllUserRecords() async throws
+}
+
 @MainActor
 final class AccountDeletionService: ObservableObject {
 
@@ -41,8 +64,8 @@ final class AccountDeletionService: ObservableObject {
     // MARK: - Dependencies
 
     private let dataStore: EncryptedDataStore
-    private let cloudSync: CloudKitSyncService
-    private let supabaseSync: SupabaseSyncService
+    private let cloudSync: any AccountDeletionCloudSyncing
+    private let supabaseSync: any AccountDeletionSupabaseSyncing
     private let signIn: SignInService
     private let analytics: AnalyticsService
 
@@ -50,8 +73,8 @@ final class AccountDeletionService: ObservableObject {
 
     init(
         dataStore: EncryptedDataStore,
-        cloudSync: CloudKitSyncService,
-        supabaseSync: SupabaseSyncService,
+        cloudSync: any AccountDeletionCloudSyncing,
+        supabaseSync: any AccountDeletionSupabaseSyncing,
         signIn: SignInService,
         analytics: AnalyticsService
     ) {
