@@ -611,3 +611,9 @@ private extension Array {
         }
     }
 }
+
+// FIT-157 / T9: conformance-only seam for AccountDeletionService fault injection.
+// Zero behavior — deleteAllUserRecords() already exists above with a matching
+// signature. Lets the executeDeletion() partial-failure cascade be tested with
+// a mock without touching this high-risk service's implementation.
+extension CloudKitSyncService: AccountDeletionCloudSyncing {}

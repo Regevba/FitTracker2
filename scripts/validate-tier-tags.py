@@ -77,6 +77,14 @@ def find_claims(text: str) -> List[dict]:
     """Extract every T-tagged quantitative claim."""
     claims = []
     for m in TIER_CLAIM_RE.finditer(text):
+        # Skip digit-runs embedded inside an alphanumeric token — git short
+        # hashes (`05ef79d` → "79d"), symbol names, file paths. A real
+        # measurement is preceded by whitespace or punctuation, never a word
+        # char; without this guard the regex reads "79d" out of a commit hash
+        # in an "Ordered chain" citation as a spurious "79 days" T1 claim.
+        start = m.start("number")
+        if start > 0 and re.match(r"\w", text[start - 1]):
+            continue
         try:
             value = float(m.group("number"))
         except ValueError:

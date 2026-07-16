@@ -105,12 +105,12 @@ final class AccountDeletionServiceTests: XCTestCase {
     // condition these assertions pin down.
     //
     // The destructive full executeDeletion() cascade (partial-failure across the
-    // 9 real stores, incl. keychain wipe + UserDefaults purge) needs an
-    // injectable sync-service seam. SupabaseSyncService / CloudKitSyncService are
-    // `final` and in the high-risk-area list, so that path is deferred to a
-    // reviewed protocol-seam change (same blocker class as T2's biometry-gated
-    // rotateKeys). These tests stay seam-free and side-effect-isolated (they
-    // touch only the deletion key that setUp/tearDown already resets).
+    // remote stores) is now covered by the "executeDeletion() partial-failure
+    // cascade" section below, via the AccountDeletionSupabaseSyncing /
+    // AccountDeletionCloudSyncing protocol seam (T9 — conformance-only extensions
+    // on the `final` high-risk services, zero behavior change). The grace-period
+    // tests here stay seam-free and side-effect-isolated (they touch only the
+    // deletion key that setUp/tearDown already resets).
 
     func testRequestDeletion_remoteFailureDoesNotLoseLocalIntent() async {
         // Network-churn resilience: even when the best-effort remote write to
@@ -224,5 +224,134 @@ final class AccountDeletionServiceTests: XCTestCase {
             signIn: SignInService(),
             analytics: AnalyticsService(provider: MockAnalyticsAdapter(), consent: ConsentManager())
         )
+    }
+
+    // MARK: - executeDeletion() partial-failure cascade (FIT-157 / T9)
+    //
+    // Uses the AccountDeletionSupabaseSyncing / AccountDeletionCloudSyncing seams
+    // to fault-inject remote-store failures and assert the cascade semantics: a
+    // failing remote step must NOT abort the cascade, and each failed store must
+    // surface in deletionError's "Still pending:" segment. The local
+    // device/keychain/UserDefaults steps run for real (fast + idempotent in the
+    // simulator); assertions key ONLY on the two injectable remote stores so they
+    // stay deterministic regardless of the local steps' outcome.
+
+    func testExecuteDeletion_allRemoteStoresSucceed_noRemotePending() async {
+        let supabase = MockDeletionSupabaseSync()
+        let cloud = MockDeletionCloudSync()
+        let service = makeService(supabase: supabase, cloud: cloud)
+
+        await service.executeDeletion()
+
+        XCTAssertTrue(supabase.unsubscribeCalled, "must unsubscribe realtime before deleting")
+        XCTAssertTrue(supabase.deleteCalled)
+        XCTAssertTrue(cloud.deleteCalled)
+        XCTAssertFalse(service.isDeleting, "isDeleting must reset when the cascade finishes")
+        XCTAssertFalse(pendingStores(service.deletionError).contains("supabase"),
+                       "supabase succeeded → must not be reported pending")
+        XCTAssertFalse(pendingStores(service.deletionError).contains("cloudkit"),
+                       "cloudkit succeeded → must not be reported pending")
+    }
+
+    func testExecuteDeletion_supabaseFailure_cascadeContinues_andRecordsPending() async {
+        let supabase = MockDeletionSupabaseSync(); supabase.deleteShouldThrow = true
+        let cloud = MockDeletionCloudSync()
+        let service = makeService(supabase: supabase, cloud: cloud)
+
+        await service.executeDeletion()
+
+        // Cascade integrity: a first-step (supabase) failure must NOT abort the
+        // remaining steps — cloudkit deletion still runs.
+        XCTAssertTrue(cloud.deleteCalled, "cloudkit deletion must still run after supabase throws")
+        XCTAssertTrue(pendingStores(service.deletionError).contains("supabase"),
+                      "failed supabase store must be reported as still pending")
+        XCTAssertFalse(pendingStores(service.deletionError).contains("cloudkit"),
+                       "cloudkit succeeded → not pending")
+        XCTAssertFalse(service.isDeleting)
+    }
+
+    func testExecuteDeletion_cloudkitFailure_cascadeContinues_andRecordsPending() async {
+        let supabase = MockDeletionSupabaseSync()
+        let cloud = MockDeletionCloudSync(); cloud.deleteShouldThrow = true
+        let service = makeService(supabase: supabase, cloud: cloud)
+
+        await service.executeDeletion()
+
+        XCTAssertTrue(supabase.deleteCalled, "supabase deletion must have run")
+        XCTAssertTrue(pendingStores(service.deletionError).contains("cloudkit"),
+                      "failed cloudkit store must be reported as still pending")
+        XCTAssertFalse(pendingStores(service.deletionError).contains("supabase"),
+                       "supabase succeeded → not pending")
+        XCTAssertFalse(service.isDeleting)
+    }
+
+    func testExecuteDeletion_bothRemoteFailures_bothPending_cascadeStillCompletes() async {
+        let supabase = MockDeletionSupabaseSync(); supabase.deleteShouldThrow = true
+        let cloud = MockDeletionCloudSync(); cloud.deleteShouldThrow = true
+        let service = makeService(supabase: supabase, cloud: cloud)
+
+        await service.executeDeletion()
+
+        let pending = pendingStores(service.deletionError)
+        XCTAssertTrue(pending.contains("supabase"), "supabase must be pending after it throws")
+        XCTAssertTrue(pending.contains("cloudkit"), "cloudkit must be pending after it throws")
+        XCTAssertTrue(cloud.deleteCalled, "both delete attempts must be made even when both fail")
+        XCTAssertFalse(service.isDeleting, "isDeleting resets even when every remote store fails")
+    }
+
+    // MARK: - Cascade helpers + fault-injectable mocks (FIT-157 / T9)
+
+    /// Everything after "Still pending:" in the deletionError, or "" when the
+    /// error is nil / has no pending segment. Lets cascade assertions target ONLY
+    /// the injectable remote stores, independent of the local steps' outcome.
+    private func pendingStores(_ error: String?) -> String {
+        guard let error, let r = error.range(of: "Still pending:") else { return "" }
+        return String(error[r.upperBound...])
+    }
+
+    private func makeService(
+        supabase: MockDeletionSupabaseSync,
+        cloud: MockDeletionCloudSync
+    ) -> AccountDeletionService {
+        AccountDeletionService(
+            dataStore: EncryptedDataStore(),
+            cloudSync: cloud,
+            supabaseSync: supabase,
+            signIn: SignInService(),
+            analytics: AnalyticsService(provider: MockAnalyticsAdapter(), consent: ConsentManager())
+        )
+    }
+}
+
+// MARK: - Fault-injectable sync mocks (FIT-157 / T9)
+
+@MainActor
+private final class MockDeletionSupabaseSync: AccountDeletionSupabaseSyncing {
+    var deleteShouldThrow = false
+    private(set) var unsubscribeCalled = false
+    private(set) var deleteCalled = false
+    private(set) var setRemoteCalls: [Date?] = []
+
+    struct InjectedFailure: Error {}
+
+    func setRemoteDeletionScheduledAt(_ date: Date?) async throws { setRemoteCalls.append(date) }
+    func fetchRemoteDeletionScheduledAt() async -> Date? { nil }
+    func unsubscribeRealtime() async { unsubscribeCalled = true }
+    func deleteAllUserData() async throws {
+        deleteCalled = true
+        if deleteShouldThrow { throw InjectedFailure() }
+    }
+}
+
+@MainActor
+private final class MockDeletionCloudSync: AccountDeletionCloudSyncing {
+    var deleteShouldThrow = false
+    private(set) var deleteCalled = false
+
+    struct InjectedFailure: Error {}
+
+    func deleteAllUserRecords() async throws {
+        deleteCalled = true
+        if deleteShouldThrow { throw InjectedFailure() }
     }
 }

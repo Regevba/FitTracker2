@@ -624,3 +624,9 @@ private extension SupabaseSyncService {
         }
     }
 }
+
+// FIT-157 / T9: conformance-only seam for AccountDeletionService fault injection.
+// Zero behavior — every required method already exists above with a matching
+// signature. Lets the executeDeletion() partial-failure cascade be tested with
+// a mock without touching this high-risk service's implementation.
+extension SupabaseSyncService: AccountDeletionSupabaseSyncing {}
