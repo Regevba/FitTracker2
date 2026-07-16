@@ -159,6 +159,7 @@ final class V2ComponentSnapshotTests: XCTestCase {
     @MainActor
     func testWelcomeAuthView() throws {
         try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
         assertScreen(
             WelcomeView()
                 .environmentObject(SignInService())
@@ -168,6 +169,7 @@ final class V2ComponentSnapshotTests: XCTestCase {
     @MainActor
     func testSignInAuthView() throws {
         try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
         assertScreen(
             NavigationStack {
                 SignInView()
@@ -179,6 +181,7 @@ final class V2ComponentSnapshotTests: XCTestCase {
     @MainActor
     func testBiometricUnlockAuthView() throws {
         try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
         assertScreen(
             BiometricUnlockView()
                 .environmentObject(AuthManager())
@@ -190,6 +193,7 @@ final class V2ComponentSnapshotTests: XCTestCase {
     @MainActor
     func testOnboardingWelcomeV2View() throws {
         try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
         assertScreen(
             OnboardingWelcomeView(onContinue: {})
                 .environmentObject(AnalyticsService.makeDefault())

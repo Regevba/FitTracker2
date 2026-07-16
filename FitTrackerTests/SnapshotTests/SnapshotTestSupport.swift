@@ -43,4 +43,20 @@ extension XCTestCase {
             )
         }
     }
+
+    /// Skip in verify mode when a test's CI baseline hasn't been recorded and
+    /// committed yet. A new recipe is render-verified locally (record mode) but
+    /// its simulator-matched baseline PNG lands via a follow-up
+    /// ios-snapshot-record cycle; until then, running it under SNAPSHOT_MODE=verify
+    /// would fail on a missing reference. Skipping keeps the verify gate green
+    /// without a fabricated (local-sim) baseline. Remove the guard from a test
+    /// once its baseline is committed. Record mode is unaffected (records the PNG).
+    func skipVerifyUntilBaselineRecorded(
+        _ reason: String = "baseline pending ios-snapshot-record cycle (T3)",
+        file: StaticString = #filePath, line: UInt = #line
+    ) throws {
+        if SnapshotMode.current == "verify" {
+            throw XCTSkip(reason)
+        }
+    }
 }
