@@ -144,4 +144,55 @@ final class V2ComponentSnapshotTests: XCTestCase {
             .background(AppGradient.screenBackground)
         )
     }
+
+    // MARK: - Auth-view screen snapshots (T3)
+    //
+    // The 4 auth views need only a tiny env-object graph (unlike Home's full
+    // 15-object graph + AIOrchestrator), so their recipes are complete and were
+    // verified to render without env-graph crashes in local SNAPSHOT_MODE=record
+    // (the same failure mode Home hit). They skip in the default `Build and Test`
+    // run (requireSnapshotMode) and are captured by the SNAPSHOT_MODE=record CI
+    // job (T2), then committed and flipped to verify. The 5 remaining v2 screens
+    // (Home/Stats/Settings/Nutrition/Training/Readiness) need the shared
+    // full-graph SnapshotFixtures helper (multi-session — see snapshot-testing.md).
+
+    @MainActor
+    func testWelcomeAuthView() throws {
+        try requireSnapshotMode()
+        assertScreen(
+            WelcomeView()
+                .environmentObject(SignInService())
+        )
+    }
+
+    @MainActor
+    func testSignInAuthView() throws {
+        try requireSnapshotMode()
+        assertScreen(
+            NavigationStack {
+                SignInView()
+                    .environmentObject(SignInService())
+            }
+        )
+    }
+
+    @MainActor
+    func testBiometricUnlockAuthView() throws {
+        try requireSnapshotMode()
+        assertScreen(
+            BiometricUnlockView()
+                .environmentObject(AuthManager())
+                .environmentObject(SignInService())
+                .environmentObject(AnalyticsService.makeDefault())
+        )
+    }
+
+    @MainActor
+    func testOnboardingWelcomeV2View() throws {
+        try requireSnapshotMode()
+        assertScreen(
+            OnboardingWelcomeView(onContinue: {})
+                .environmentObject(AnalyticsService.makeDefault())
+        )
+    }
 }
