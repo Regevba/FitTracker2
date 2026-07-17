@@ -1,5 +1,0 @@
-{
-  "ts": "2026-07-16T04:09:55Z",
-  "reason": "refresh unavailable: TimeoutExpired: Command '['python3', '/Users/regevbarak/Developer/FitMe/FitTracker2/scripts/refresh-pr-cache.py']' timed out after 60 seconds",
-  "context": "launchd"
-}
