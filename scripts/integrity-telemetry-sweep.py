@@ -196,6 +196,18 @@ def main() -> int:
     args = ap.parse_args()
     refresh = not args.no_refresh
 
+    if refresh:
+        # Refresh the PR cache BEFORE the framework-integrity layer. The sweep
+        # calls integrity-check.py directly (not `make integrity-check`), so it
+        # otherwise skips the `ensure-pr-cache-fresh` prerequisite and can fire
+        # phantom BROKEN_PR_CITATION / PR_NUMBER_UNRESOLVED findings against a
+        # stale/empty cache — the documented false-FAIL class (e.g. the launchd
+        # cron-timeout on 2026-07-16 → phantom +512). Best-effort: a failed or
+        # absent refresh leaves the existing cache in place and never blocks the
+        # sweep (the downstream citation gates degrade gracefully). Skipped under
+        # --no-refresh, matching the other producer layers.
+        _run(["python3", str(REPO / "scripts" / "ensure-pr-cache-fresh.py")])
+
     ckpt = _import_checkpoint()
     today = dt.date(2026, 1, 1)  # overwritten below via ledger; no Date.now in this env
     try:
