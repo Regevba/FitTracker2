@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "feature": "ops-digest-skill",
+  "title": "ops digest skill",
+  "work_type": "chore",
+  "current_phase": "implement",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-18T19:48:54Z",
+  "updated_at": "2026-07-18T19:49:48Z",
+  "events": [
+    {
+      "timestamp": "2026-07-18T19:48:54Z",
+      "event_type": "milestone",
+      "phase": "implement",
+      "summary": "F23 shipped: scripts/ops-digest.py (fail-soft 4-section post-deploy digest) + make ops-digest + /ops digest sub-command + 10 unit tests. Live run green (OVERALL OK).",
+      "artifacts": [
+        "scripts/ops-digest.py"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-18T19:49:48Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Implement phase opened for F23 /ops digest (chore/framework_feature): script + tests + make target + SKILL sub-command.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

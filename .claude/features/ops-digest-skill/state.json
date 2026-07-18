@@ -1,0 +1,81 @@
+{
+  "feature": "ops-digest-skill",
+  "linear_id": "FIT-205",
+  "created_at": "2026-07-18T19:47:58Z",
+  "updated": "2026-07-18T19:47:58Z",
+  "branch": "feature/ops-digest-skill",
+  "current_phase": "implement",
+  "work_type": "chore",
+  "work_subtype": "framework_feature",
+  "schema_version": 1,
+  "state_owner": "ft2",
+  "framework_version": "v7.10",
+  "has_ui": false,
+  "requires_analytics": false,
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "Framework observability chore \u2014 /ops digest sub-command + composing script + Makefile target + unit tests; no product surface, no novel scope. PR body is the provenance record (per v7.9.1 dev-env chore convention).",
+  "platforms_tested": {
+    "ios": false,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "exempt:framework_meta",
+  "description": "F23 \u2014 /ops digest post-deploy operator digest. Composes deploy/CI (recent merges + bot-PR health), integrity-sweep 10-layer verdict, Tier 1.1 adoption telemetry, and due cadence follow-ups into one fail-soft operator readout. scripts/ops-digest.py + make ops-digest + /ops digest sub-command + 10 unit tests.",
+  "phases": {
+    "implementation": {
+      "status": "in_progress",
+      "commits": []
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "scripts/ops-digest.py \u2014 fail-soft composing digest generator (4 sections + overall verdict + JSON snapshot)",
+      "type": "infra",
+      "skill": "ops",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [],
+      "completed_at": "2026-07-18T19:47:58Z"
+    },
+    {
+      "id": "T2",
+      "title": "scripts/tests/test_ops_digest.py \u2014 10 unit tests (verdict ordering, cadence window, dual-read schema #24, fail-soft)",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-07-18T19:47:58Z"
+    },
+    {
+      "id": "T3",
+      "title": "make ops-digest target + .PHONY + /ops digest SKILL.md section + frontmatter",
+      "type": "docs",
+      "skill": "ops",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-07-18T19:47:58Z"
+    }
+  ],
+  "timing": {
+    "session_start": "2026-07-18T19:47:58Z",
+    "phases": {
+      "implement": {
+        "started_at": "2026-07-18T19:47:58Z",
+        "ended_at": null,
+        "duration_minutes": null
+      }
+    },
+    "time_source": "measured"
+  }
+}
