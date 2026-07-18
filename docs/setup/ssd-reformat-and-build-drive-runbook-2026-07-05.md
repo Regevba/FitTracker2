@@ -208,3 +208,50 @@ is blocked.** No data lost (source + all data redundant on internal/GitHub).
 If any step fails → **replace the enclosure/drive; keep everything on internal.**
 Internal storage has ample space and is reliable; the SSD is a *convenience*, not a
 requirement, for this project.
+
+---
+
+## 9. 2026-07-18 re-attempt — reformat did NOT clear the fault (gate FAILS again)
+
+**Trigger.** Operator reformatted the SSD again and remounted it at `/Volumes/DevSSD`
+(same name, APFS, volume UUID `AB63A9B0-7CE8-499C-AC6E-0C9D585758B2`), then asked to
+re-establish the build-drive split per §3/§7.
+
+**What was tried.** §3/§7 were applied (SSD cache/build dirs recreated; the four Xcode
+build-artifact vars — `DERIVED_DATA`/`TEST_DERIVED_DATA`/`SPM_CACHE`/`CLANG_MODULE_CACHE_PATH`
+— exported in the guarded `~/.zshrc` block; Xcode GUI DerivedData/Archives defaults set).
+A full `xcodebuild … -derivedDataPath /Volumes/DevSSD/XcodeData/DerivedData build`
+**succeeded** (exit 0, 2.3G DerivedData written to the SSD, drive stayed mounted through
+the whole ~4-min compile). 8× 512MB stress writes also passed. **Basic + sustained I/O
+looked healthy** — the same false-reassurance as 2026-07-07.
+
+**Gate result — §8.2 FAILS.** `diskutil verifyVolume /Volumes/DevSSD` → **exit code 8**,
+reproduced **while the volume was idle** (not a concurrent-write artifact):
+
+```
+warning: found spaceman free queue tree entry (0x6dfc+1, xid 37457) which overlaps with existing range (0x6dfc+1)
+error: cib: ci_free_count (…) is not valid (…)   × 4
+error: sm:  sm_free_count (…) is not valid (…)
+Space Verification failed
+File system check exit code is 8
+Error: -69845: File system verify or repair failed
+```
+
+This is the **same APFS space-manager corruption signature (exit 8)** as the original
+2026-07-05 `fsroot` incident — now recurring on a **freshly reformatted** drive. A clean
+reformat does not fix it ⇒ the fault is in the **hardware (USB bridge/enclosure or NAND)**,
+not the filesystem. (`sudo` root verify could not be run this session — non-interactive; the
+non-root idle verify was already conclusive.)
+
+**Verdict.** §8 gate still FAILS. **build-on-SSD remains BLOCKED.**
+
+**Remediation applied 2026-07-18 (machine kept SSD-independent):**
+- Reverted the four `~/.zshrc` Xcode build-artifact exports (back to caches-only guarded block).
+- Reverted the Xcode GUI defaults (`defaults delete … IDECustomDerivedDataLocation` + the two Archives keys).
+- Reverted the Makefile change; working tree clean.
+- **Unmounted `/Volumes/DevSSD`** so the guarded cache block falls back to internal for everything.
+- Internal `.build/{spm-cache,TestDerivedData}` (~3G) were removed mid-session assuming SSD residency; they are regenerable — `make verify-ios` rebuilds them on internal. No data lost.
+
+**Operator action required.** Reformatting is exhausted as a remedy. **Replace the enclosure/cable
+(most likely — bare NVMe behind a USB bridge) or RMA the drive.** Do not re-run §3/§7 until the
+§8 gate passes on **replaced hardware** with `sudo diskutil verifyVolume` reporting OK as root.
