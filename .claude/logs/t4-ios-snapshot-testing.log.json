@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "v7.10",
   "started_at": "2026-07-03T20:40:20Z",
-  "updated_at": "2026-07-03T20:40:20Z",
+  "updated_at": "2026-07-18T09:57:23Z",
   "events": [
     {
       "timestamp": "2026-07-03T20:40:20Z",
@@ -17,6 +17,19 @@
       "metrics": {},
       "actor": "human_or_agent",
       "status": "success",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-18T09:57:23Z",
+      "event_type": "implementation",
+      "phase": "implement",
+      "summary": "T3: shared SnapshotFixtures full-graph helper + 4 v2 screen recipes (Stats/Nutrition/Training/Settings) verified rendering via local SNAPSHOT_MODE=record; Home hard-skipped pending AIOrchestrator stub",
+      "artifacts": [
+        "FitTrackerTests/SnapshotTests/SnapshotFixtures.swift"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
       "recording_mode": "contemporaneous"
     }
   ]

@@ -122,25 +122,85 @@ final class V2ComponentSnapshotTests: XCTestCase {
         )
     }
 
+    // T3: each screen recipe now injects the full env-object closure via
+    // `.snapshotEnvironment()` (SnapshotFixtures.swift), so a subview's
+    // dependency (e.g. Home's ReadinessAwareAlertStore) no longer crashes the
+    // render. Real initializers mirror the RootTabView call sites. All guard on
+    // requireSnapshotMode (skip in the default run) + skipVerifyUntilBaselineRecorded
+    // (skip in verify until the CI-recorded baseline lands), so they only render
+    // under SNAPSHOT_MODE=record. Baselines are captured by the ios-snapshot-record
+    // job, then committed and the gate flips to verify.
+
     @MainActor
     func testHomeScreenV2() throws {
-        // T3: the Home v2 screen crashes at render in the CI sim — its env-object
-        // recipe is incomplete (first missing: ReadinessAwareAlertStore; there may
-        // be more behind it). Screen recipes are T3 scope; skip until the full
-        // graph is wired so the T2 component-baseline pipeline stays green. The
-        // recipe below is preserved for that T3 pass. See docs/process/snapshot-testing.md.
-        try XCTSkipIf(true, "Home v2 screen recipe incomplete (missing ReadinessAwareAlertStore et al.) — recorded in T3.")
+        // T3: Home still fails to render even with the full `.snapshotEnvironment()`
+        // graph — verified 2026-07-18 via local SNAPSHOT_MODE=record (failed at
+        // 0.000s while Stats/Nutrition/Training/Settings all recorded PNGs). Home's
+        // AIInsightCard subtree needs a constructed AIOrchestrator, which has no
+        // factory (init takes engineClient + foundationModel + pcc + snapshot/goalMode
+        // closures — a stub AIEngineClient + FallbackFoundationModel is required).
+        // Building that stub is the remaining T3 piece; kept hard-skipped so the
+        // ios-snapshot-record job never crashes. Recipe preserved for that pass.
+        try XCTSkipIf(true, "Home v2 needs a stubbed AIOrchestrator (no factory) — remaining T3 piece; see SnapshotFixtures.")
         try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
         assertScreen(
             NavigationStack {
                 MainScreenView(selectedTab: .constant(.main), statsMetric: .constant(nil))
-                    .environmentObject(EncryptedDataStore())
-                    .environmentObject(HealthKitService())
-                    .environmentObject(TrainingProgramStore())
-                    .environmentObject(AppSettings())
-                    .environmentObject(AnalyticsService.makeDefault())
-                    .environmentObject(WatchConnectivityService())
             }
+            .snapshotEnvironment()
+            .background(AppGradient.screenBackground)
+        )
+    }
+
+    @MainActor
+    func testStatsScreenV2() throws {
+        try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
+        assertScreen(
+            NavigationStack {
+                StatsView(initialMetric: nil)
+            }
+            .snapshotEnvironment()
+            .background(AppGradient.screenBackground)
+        )
+    }
+
+    @MainActor
+    func testNutritionScreenV2() throws {
+        try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
+        assertScreen(
+            NavigationStack {
+                NutritionView()
+            }
+            .snapshotEnvironment()
+            .background(AppGradient.screenBackground)
+        )
+    }
+
+    @MainActor
+    func testTrainingPlanScreenV2() throws {
+        try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
+        assertScreen(
+            NavigationStack {
+                TrainingPlanView(initialDay: nil)
+            }
+            .snapshotEnvironment()
+            .background(AppGradient.screenBackground)
+        )
+    }
+
+    @MainActor
+    func testSettingsScreenV2() throws {
+        try requireSnapshotMode()
+        try skipVerifyUntilBaselineRecorded()
+        assertScreen(
+            NavigationStack {
+                SettingsView()
+            }
+            .snapshotEnvironment()
             .background(AppGradient.screenBackground)
         )
     }
