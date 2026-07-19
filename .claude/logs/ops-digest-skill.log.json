@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "v7.10",
   "started_at": "2026-07-18T19:48:54Z",
-  "updated_at": "2026-07-19T03:06:07Z",
+  "updated_at": "2026-07-19T03:07:16Z",
   "events": [
     {
       "timestamp": "2026-07-18T19:48:54Z",
@@ -103,6 +103,17 @@
       "event_type": "phase_approved",
       "phase": "review",
       "summary": "Review PASS \u2014 PR #916 CI 17/17 green (incl. ruff, try-repo-harness, integrity); main green; 0 high-risk-area files; risk=low (fail-soft mitigates the only coupling risk).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:07:16Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Merge phase \u2014 PR #916 (feature/ops-digest-skill \u2192 main), squash. CI 17/17 green pre-merge.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
