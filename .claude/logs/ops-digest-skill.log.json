@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "v7.10",
   "started_at": "2026-07-18T19:48:54Z",
-  "updated_at": "2026-07-19T03:05:13Z",
+  "updated_at": "2026-07-19T03:05:23Z",
   "events": [
     {
       "timestamp": "2026-07-18T19:48:54Z",
@@ -81,6 +81,17 @@
       "event_type": "phase_started",
       "phase": "implement",
       "summary": "Implement \u2014 code shipped in commit 4144c5e (PR #916): ops-digest.py + tests + make target + SKILL section.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:05:23Z",
+      "event_type": "phase_approved",
+      "phase": "testing",
+      "summary": "Testing \u2014 10/10 unit tests pass (verdict ordering, cadence window, #24 dual-read, fail-soft). Live make ops-digest green. instrumentation_verified=true.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

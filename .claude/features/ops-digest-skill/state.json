@@ -2,9 +2,9 @@
   "feature": "ops-digest-skill",
   "linear_id": "FIT-205",
   "created_at": "2026-07-18T19:47:58Z",
-  "updated": "2026-07-19T09:00:00Z",
+  "updated": "2026-07-19T09:20:00Z",
   "branch": "feature/ops-digest-skill",
-  "current_phase": "implement",
+  "current_phase": "testing",
   "work_type": "feature",
   "work_subtype": "framework_feature",
   "schema_version": 1,
@@ -47,16 +47,17 @@
       "approved_at": "2026-07-19T09:00:00Z"
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "commits": [
         "4144c5e"
-      ]
+      ],
+      "approved_at": "2026-07-19T09:20:00Z"
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
+      "status": "in_progress",
+      "ci_passed": true,
       "tests_added": 10,
-      "instrumentation_verified": false
+      "instrumentation_verified": true
     },
     "review": {
       "status": "pending",
@@ -156,7 +157,7 @@
       },
       "implement": {
         "started_at": "2026-07-19T09:00:00Z",
-        "ended_at": null,
+        "ended_at": "2026-07-19T09:20:00Z",
         "duration_minutes": null
       },
       "prd": {
@@ -172,6 +173,11 @@
       "integration": {
         "started_at": "2026-07-19T08:45:00Z",
         "ended_at": "2026-07-19T09:00:00Z",
+        "duration_minutes": null
+      },
+      "testing": {
+        "started_at": "2026-07-19T09:20:00Z",
+        "ended_at": null,
         "duration_minutes": null
       }
     },
@@ -203,6 +209,13 @@
       "from": "integration",
       "to": "implement",
       "timestamp": "2026-07-19T09:00:00Z",
+      "approved_by": "user",
+      "note": "full PM cycle (F23)"
+    },
+    {
+      "from": "implement",
+      "to": "testing",
+      "timestamp": "2026-07-19T09:20:00Z",
       "approved_by": "user",
       "note": "full PM cycle (F23)"
     }
