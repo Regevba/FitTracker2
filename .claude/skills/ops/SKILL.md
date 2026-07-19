@@ -1,8 +1,8 @@
 ---
 name: ops
-description: "Use when running an infrastructure health check, responding to a production incident, auditing cloud cost, configuring alert thresholds, or feeding the UCC Source Health panel. Monitors Railway (FastAPI), Supabase (PostgreSQL), CloudKit, Firebase/GA4, Vercel, GitHub Actions. Sub-commands: /ops health, /ops incident {description}, /ops cost, /ops alerts."
-last_updated: 2026-05-15
-framework_version: v7.8.6
+description: "Use when running an infrastructure health check, responding to a production incident, auditing cloud cost, configuring alert thresholds, or feeding the UCC Source Health panel. Monitors Railway (FastAPI), Supabase (PostgreSQL), CloudKit, Firebase/GA4, Vercel, GitHub Actions. Sub-commands: /ops health, /ops incident {description}, /ops cost, /ops alerts, /ops digest."
+last_updated: 2026-07-18
+framework_version: v7.10
 status: stable
 adapters_used: [security-audit, sentry]
 ---
@@ -139,6 +139,37 @@ Configure monitoring alerts.
    - CI pass rate drops below 85% → P2 alert
 3. Define notification channels (GitHub Issue, email)
 4. Generate alert configuration (for whatever monitoring is in place)
+
+### `/ops digest`
+
+Post-deploy operator digest (F23 / FIT-205). ONE readout answering "is
+everything OK after that ship?" — composes the framework's existing
+authoritative producers; it computes nothing new.
+
+```bash
+make ops-digest                       # human-readable digest
+make ops-digest ARGS="--json"         # machine-readable
+make ops-digest ARGS="--window-days 7"
+```
+
+Sections (each **fail-soft** — a missing/timed-out producer degrades that one
+section to `unknown` and never aborts the digest):
+
+1. **Deploy / CI** — recent squash-merges (last 2 days) + `check-bot-pr-health.py`
+   deadlock verdict.
+2. **Integrity** — `integrity-telemetry-sweep.py` 10-layer PASS/WARN/FAIL.
+3. **Telemetry** — Tier 1.1 adoption snapshot read from
+   `.claude/shared/measurement-adoption.json` (`summary.*`, dual-read).
+4. **Cadence** — calendar-anchored follow-ups from
+   `must-have-cadence-followups.md` due within the window (struck-through rows
+   skipped).
+
+**Overall verdict** = worst section (`ok < unknown < warn < fail`). Exit 1 only
+on a hard integrity `fail`, so a post-deploy GH Action / hook can gate on it.
+Writes a snapshot to `.claude/shared/ops-digest.json` (pass `--no-write` to
+skip). When to run: right after a merge-to-main triggers a Vercel deploy, or
+any time an operator wants a single-command health readout without invoking
+each producer separately. Producer: [`scripts/ops-digest.py`](../../../scripts/ops-digest.py).
 
 ## Key References
 
