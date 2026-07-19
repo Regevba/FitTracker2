@@ -10,6 +10,7 @@
 		SNAP000001000000000000002 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = SNAP000002000000000000001 /* SnapshotTesting */; };
 		SNAP000001000000000000003 /* SnapshotTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = SNAP000000000000000000003 /* SnapshotTestSupport.swift */; };
 		SNAP000001000000000000004 /* V2ComponentSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SNAP000000000000000000004 /* V2ComponentSnapshotTests.swift */; };
+		SNAP000001000000000000005 /* SnapshotFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = SNAP000000000000000000005 /* SnapshotFixtures.swift */; };
 		111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E012F64641D006E7013 /* WatchConnectivityService.swift */; };
 		111A5E042F64641D006E7013 /* TrainingProgramStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E032F64641D006E7013 /* TrainingProgramStore.swift */; };
 		111A5E062F64641D006E7013 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E052F64641D006E7013 /* AppTheme.swift */; };
@@ -334,6 +335,7 @@
 /* Begin PBXFileReference section */
 		SNAP000000000000000000003 /* SnapshotTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTests/SnapshotTestSupport.swift; sourceTree = "<group>"; };
 		SNAP000000000000000000004 /* V2ComponentSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTests/V2ComponentSnapshotTests.swift; sourceTree = "<group>"; };
+		SNAP000000000000000000005 /* SnapshotFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTests/SnapshotFixtures.swift; sourceTree = "<group>"; };
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
@@ -990,6 +992,7 @@
 				B20000010000000000000001 /* FitTrackerCoreTests.swift */,
 				SNAP000000000000000000003 /* SnapshotTestSupport.swift */,
 				SNAP000000000000000000004 /* V2ComponentSnapshotTests.swift */,
+				SNAP000000000000000000005 /* SnapshotFixtures.swift */,
 				HA200000000000000000002 /* HomeAnalyticsTests.swift */,
 				TA200000000000000000001 /* TrainingAnalyticsTests.swift */,
 				NA200000000000000000001 /* NutritionAnalyticsTests.swift */,
@@ -1800,6 +1803,7 @@
 				B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */,
 				SNAP000001000000000000003 /* SnapshotTestSupport.swift in Sources */,
 				SNAP000001000000000000004 /* V2ComponentSnapshotTests.swift in Sources */,
+				SNAP000001000000000000005 /* SnapshotFixtures.swift in Sources */,
 				HA100000000000000000001 /* AnalyticsTests.swift in Sources */,
 				DA100000000000000000AT01 /* DebugSinkAdapterTests.swift in Sources */,
 				HA100000000000000000002 /* HomeAnalyticsTests.swift in Sources */,
