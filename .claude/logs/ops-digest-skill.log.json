@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "v7.10",
   "started_at": "2026-07-18T19:48:54Z",
-  "updated_at": "2026-07-19T03:04:47Z",
+  "updated_at": "2026-07-19T03:05:13Z",
   "events": [
     {
       "timestamp": "2026-07-18T19:48:54Z",
@@ -70,6 +70,17 @@
       "event_type": "phase_started",
       "phase": "integration",
       "summary": "Integration spec (no UI): CLI + JSON schema + producer coupling contracts (compose-not-recompute) + fail-soft error handling.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:05:13Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Implement \u2014 code shipped in commit 4144c5e (PR #916): ops-digest.py + tests + make target + SKILL section.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
