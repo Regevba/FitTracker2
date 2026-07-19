@@ -2,9 +2,9 @@
   "feature": "ops-digest-skill",
   "linear_id": "FIT-205",
   "created_at": "2026-07-18T19:47:58Z",
-  "updated": "2026-07-19T09:20:00Z",
+  "updated": "2026-07-19T09:40:00Z",
   "branch": "feature/ops-digest-skill",
-  "current_phase": "testing",
+  "current_phase": "review",
   "work_type": "feature",
   "work_subtype": "framework_feature",
   "schema_version": 1,
@@ -54,16 +54,19 @@
       "approved_at": "2026-07-19T09:20:00Z"
     },
     "testing": {
-      "status": "in_progress",
+      "status": "approved",
       "ci_passed": true,
       "tests_added": 10,
-      "instrumentation_verified": true
+      "instrumentation_verified": true,
+      "approved_at": "2026-07-19T09:40:00Z"
     },
     "review": {
-      "status": "pending",
-      "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "status": "in_progress",
+      "risks": [
+        "Low: standalone script, no high-risk-area files (DomainModels/Encryption/Sync/Auth/AI untouched). Only coupling risk = producer output-shape drift \u2192 mitigated by fail-soft per-section + text-contract parse."
+      ],
+      "ci_main": true,
+      "ci_feature": true
     },
     "merge": {
       "status": "pending",
@@ -177,6 +180,11 @@
       },
       "testing": {
         "started_at": "2026-07-19T09:20:00Z",
+        "ended_at": "2026-07-19T09:40:00Z",
+        "duration_minutes": null
+      },
+      "review": {
+        "started_at": "2026-07-19T09:40:00Z",
         "ended_at": null,
         "duration_minutes": null
       }
@@ -218,6 +226,17 @@
       "timestamp": "2026-07-19T09:20:00Z",
       "approved_by": "user",
       "note": "full PM cycle (F23)"
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-07-19T09:40:00Z",
+      "approved_by": "user",
+      "note": "full PM cycle (F23)"
     }
-  ]
+  ],
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  }
 }
