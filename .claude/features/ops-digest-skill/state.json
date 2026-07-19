@@ -2,9 +2,9 @@
   "feature": "ops-digest-skill",
   "linear_id": "FIT-205",
   "created_at": "2026-07-18T19:47:58Z",
-  "updated": "2026-07-19T08:20:00Z",
+  "updated": "2026-07-19T08:35:00Z",
   "branch": "feature/ops-digest-skill",
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "work_type": "feature",
   "work_subtype": "framework_feature",
   "schema_version": 1,
@@ -31,12 +31,12 @@
       ]
     },
     "prd": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "approved",
+      "approved_at": "2026-07-19T08:35:00Z",
       "analytics_spec_complete": false
     },
     "tasks": {
-      "status": "pending",
+      "status": "in_progress",
       "count": 3
     },
     "ux_or_integration": {
@@ -159,6 +159,11 @@
       },
       "prd": {
         "started_at": "2026-07-19T08:20:00Z",
+        "ended_at": "2026-07-19T08:35:00Z",
+        "duration_minutes": null
+      },
+      "tasks": {
+        "started_at": "2026-07-19T08:35:00Z",
         "ended_at": null,
         "duration_minutes": null
       }
@@ -170,6 +175,13 @@
       "from": "research",
       "to": "prd",
       "timestamp": "2026-07-19T08:20:00Z",
+      "approved_by": "user",
+      "note": "full PM cycle (F23)"
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-07-19T08:35:00Z",
       "approved_by": "user",
       "note": "full PM cycle (F23)"
     }
