@@ -4,8 +4,8 @@
   "created_at": "2026-07-18T19:47:58Z",
   "updated": "2026-07-18T19:47:58Z",
   "branch": "feature/ops-digest-skill",
-  "current_phase": "implement",
-  "work_type": "chore",
+  "current_phase": "research",
+  "work_type": "feature",
   "work_subtype": "framework_feature",
   "schema_version": 1,
   "state_owner": "ft2",
@@ -23,9 +23,86 @@
   "platforms_tested_provenance": "exempt:framework_meta",
   "description": "F23 \u2014 /ops digest post-deploy operator digest. Composes deploy/CI (recent merges + bot-PR health), integrity-sweep 10-layer verdict, Tier 1.1 adoption telemetry, and due cadence follow-ups into one fail-soft operator readout. scripts/ops-digest.py + make ops-digest + /ops digest sub-command + 10 unit tests.",
   "phases": {
-    "implementation": {
+    "research": {
       "status": "in_progress",
-      "commits": []
+      "approved_at": null,
+      "sources": [
+        "research.md"
+      ]
+    },
+    "prd": {
+      "status": "pending",
+      "approved_at": null,
+      "analytics_spec_complete": false
+    },
+    "tasks": {
+      "status": "pending",
+      "count": 3
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "type": "integration",
+      "preflight_passed": null
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": [
+        "4144c5e"
+      ]
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 10,
+      "instrumentation_verified": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": 916
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "post-deploy digest coverage (deploy-days with fresh ops-digest.json / deploy-days)",
+        "baseline": 0,
+        "target": 70,
+        "current": null,
+        "unit": "percent",
+        "tier": "T1"
+      },
+      "secondary": [
+        {
+          "name": "false-alarm rate",
+          "target": 0,
+          "tier": "T2"
+        },
+        {
+          "name": "wall-time seconds",
+          "target": 3,
+          "tier": "T1"
+        },
+        {
+          "name": "section-degradation correctness",
+          "target": 1,
+          "tier": "T1"
+        }
+      ],
+      "guardrails": [
+        "fail-soft: never aborts / never blocks post-deploy flow",
+        "no new computation: every value traces to an existing producer"
+      ],
+      "instrumentation_ready": true,
+      "first_review_date": "2026-07-26",
+      "kill_criteria": "Kill/rollback if at +30d review ANY holds: (1) false alarms > 0; (2) fail-soft violated (digest aborted/blocked a flow); (3) drift (a section contradicts its authoritative producer).",
+      "kill_criteria_resolution": "None fired as of ship 2026-07-19; unit tests pin fail-soft + dual-read invariants; live run matched every producer. Re-evaluated at +30d."
     }
   },
   "tasks": [
@@ -68,14 +145,20 @@
     }
   ],
   "timing": {
-    "session_start": "2026-07-18T19:47:58Z",
+    "session_start": "2026-07-19T08:00:00Z",
     "phases": {
-      "implement": {
-        "started_at": "2026-07-18T19:47:58Z",
+      "research": {
+        "started_at": "2026-07-19T08:00:00Z",
         "ended_at": null,
+        "duration_minutes": null
+      },
+      "implement": {
+        "started_at": "2026-07-18T19:40:00Z",
+        "ended_at": "2026-07-19T07:59:00Z",
         "duration_minutes": null
       }
     },
     "time_source": "measured"
-  }
+  },
+  "transitions": []
 }
