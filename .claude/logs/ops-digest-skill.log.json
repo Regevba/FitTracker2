@@ -1,0 +1,146 @@
+{
+  "version": "1.0",
+  "feature": "ops-digest-skill",
+  "title": "ops digest skill",
+  "work_type": "chore",
+  "current_phase": "implement",
+  "framework_version": "v7.10",
+  "started_at": "2026-07-18T19:48:54Z",
+  "updated_at": "2026-07-19T03:08:37Z",
+  "events": [
+    {
+      "timestamp": "2026-07-18T19:48:54Z",
+      "event_type": "milestone",
+      "phase": "implement",
+      "summary": "F23 shipped: scripts/ops-digest.py (fail-soft 4-section post-deploy digest) + make ops-digest + /ops digest sub-command + 10 unit tests. Live run green (OVERALL OK).",
+      "artifacts": [
+        "scripts/ops-digest.py"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-18T19:49:48Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Implement phase opened for F23 /ops digest (chore/framework_feature): script + tests + make target + SKILL sub-command.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:03:13Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "F23 full PM cycle: Research phase \u2014 research.md (problem, 4-way alternatives table, Sentry-gate scope boundary, metrics).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:04:28Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "PRD approved \u2014 primary metric (post-deploy digest coverage, baseline 0% \u2192 target 70%), 3 secondary, guardrails (fail-soft), kill criteria (false-alarm>0 / fail-soft-violated / drift).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:04:38Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks: T1 composer / T2 10 tests / T3 make+SKILL. Effort 0.7d. Dependency T1\u2192{T2,T3}.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:04:47Z",
+      "event_type": "phase_started",
+      "phase": "integration",
+      "summary": "Integration spec (no UI): CLI + JSON schema + producer coupling contracts (compose-not-recompute) + fail-soft error handling.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:05:13Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Implement \u2014 code shipped in commit 4144c5e (PR #916): ops-digest.py + tests + make target + SKILL section.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:05:23Z",
+      "event_type": "phase_approved",
+      "phase": "testing",
+      "summary": "Testing \u2014 10/10 unit tests pass (verdict ordering, cadence window, #24 dual-read, fail-soft). Live make ops-digest green. instrumentation_verified=true.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:06:07Z",
+      "event_type": "phase_approved",
+      "phase": "review",
+      "summary": "Review PASS \u2014 PR #916 CI 17/17 green (incl. ruff, try-repo-harness, integrity); main green; 0 high-risk-area files; risk=low (fail-soft mitigates the only coupling risk).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:07:16Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Merge phase \u2014 PR #916 (feature/ops-digest-skill \u2192 main), squash. CI 17/17 green pre-merge.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:08:27Z",
+      "event_type": "phase_started",
+      "phase": "docs",
+      "summary": "Docs \u2014 backlog Done row #121 added; CHANGELOG is product-only/frozen (framework work tracked in backlog per convention).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-19T03:08:37Z",
+      "event_type": "phase_approved",
+      "phase": "complete",
+      "summary": "F23 complete \u2014 full PM cycle (Phases 0\u20139). Code in PR #916; 10/10 tests; kill_criteria none-fired; Sentry section deferred (MCP auth gate).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption orphan-tests framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status figma-mirror-staleness v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force daily-checkpoint-ci ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-backups install-backup-verify-cron uninstall-backup-verify-cron verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures mutation-test mutation-summary
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-multi-anchor integrity-data-lake integrity-snapshot preflight skill-preflight gen-skill-preflight schema-check documentation-debt measurement-adoption orphan-tests framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status ops-digest figma-mirror-staleness v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force daily-checkpoint-ci ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-backups install-backup-verify-cron uninstall-backup-verify-cron verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact close-feature gate-last-fired phase-0-reality-check w9-isolation-status lint lint-ios lint-py lint-md actionlint coverage-ios coverage-py coverage-report sample-contract-fixtures check-contract-fixtures mutation-test mutation-summary
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -575,6 +575,13 @@ bot-pr-health:
 # --no-refresh reads existing ledgers. Docs: docs/process/data-integrity-telemetry-sweep.md
 integrity-sweep:
 	python3 scripts/integrity-telemetry-sweep.py
+
+# ops-digest — post-deploy operator digest (F23 / FIT-205). Composes the
+# deploy/CI (recent merges + bot-PR health), integrity-sweep verdict, adoption
+# telemetry, and due cadence follow-ups into ONE operator readout. Each section
+# is fail-soft. Exit 1 only on a hard integrity FAIL. ARGS="--json"/"--window-days N".
+ops-digest:
+	python3 scripts/ops-digest.py $(ARGS)
 
 # figma-mirror-staleness (Gap D, feature figma-design-architecture) — advisory
 # drift check between code tokens (design-tokens/tokens.json) and the last-audited
