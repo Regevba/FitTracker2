@@ -13,7 +13,7 @@
   "has_ui": false,
   "requires_analytics": false,
   "case_study_type": "no_case_study_required",
-  "case_study_exempt_reason": "Framework observability chore \u2014 /ops digest sub-command + composing script + Makefile target + unit tests; no product surface, no novel scope. PR body is the provenance record (per v7.9.1 dev-env chore convention).",
+  "case_study_exempt_reason": "Framework observability chore — /ops digest sub-command + composing script + Makefile target + unit tests; no product surface, no novel scope. PR body is the provenance record (per v7.9.1 dev-env chore convention).",
   "platforms_tested": {
     "ios": false,
     "web": false,
@@ -21,7 +21,7 @@
     "ai": false
   },
   "platforms_tested_provenance": "exempt:framework_meta",
-  "description": "F23 \u2014 /ops digest post-deploy operator digest. Composes deploy/CI (recent merges + bot-PR health), integrity-sweep 10-layer verdict, Tier 1.1 adoption telemetry, and due cadence follow-ups into one fail-soft operator readout. scripts/ops-digest.py + make ops-digest + /ops digest sub-command + 10 unit tests.",
+  "description": "F23 — /ops digest post-deploy operator digest. Composes deploy/CI (recent merges + bot-PR health), integrity-sweep 10-layer verdict, Tier 1.1 adoption telemetry, and due cadence follow-ups into one fail-soft operator readout. scripts/ops-digest.py + make ops-digest + /ops digest sub-command + 10 unit tests.",
   "phases": {
     "research": {
       "status": "approved",
@@ -63,7 +63,7 @@
     "review": {
       "status": "approved",
       "risks": [
-        "Low: standalone script, no high-risk-area files (DomainModels/Encryption/Sync/Auth/AI untouched). Only coupling risk = producer output-shape drift \u2192 mitigated by fail-soft per-section + text-contract parse."
+        "Low: standalone script, no high-risk-area files (DomainModels/Encryption/Sync/Auth/AI untouched). Only coupling risk = producer output-shape drift → mitigated by fail-soft per-section + text-contract parse."
       ],
       "ci_main": true,
       "ci_feature": true,
@@ -117,7 +117,7 @@
   "tasks": [
     {
       "id": "T1",
-      "title": "scripts/ops-digest.py \u2014 fail-soft composing digest generator (4 sections + overall verdict + JSON snapshot)",
+      "title": "scripts/ops-digest.py — fail-soft composing digest generator (4 sections + overall verdict + JSON snapshot)",
       "type": "infra",
       "skill": "ops",
       "status": "done",
@@ -128,7 +128,7 @@
     },
     {
       "id": "T2",
-      "title": "scripts/tests/test_ops_digest.py \u2014 10 unit tests (verdict ordering, cadence window, dual-read schema #24, fail-soft)",
+      "title": "scripts/tests/test_ops_digest.py — 10 unit tests (verdict ordering, cadence window, dual-read schema #24, fail-soft)",
       "type": "test",
       "skill": "qa",
       "status": "done",
@@ -278,5 +278,37 @@
   "pre_merge_review": {
     "ux": null,
     "design": null
-  }
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-07-18T19:42:59Z",
+      "level": "L1",
+      "key": "skill:ops",
+      "type": "adapted",
+      "skill": "ops",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "note": "Read .claude/skills/ops/SKILL.md as the L1 reference for the ops-digest sub-command; adapted the existing ops skill structure to add /ops digest. Backfilled from Mechanism C session ledger 1251b897-b62b-4389-8d9a-7d6276b34a81 (2 attributed reads of ops/SKILL.md)."
+    },
+    {
+      "timestamp": "2026-07-18T19:46:37Z",
+      "level": "L3",
+      "key": "project:Makefile",
+      "type": "exact",
+      "skill": "ops",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "note": "Read Makefile as L3 project reference to wire the ops-digest target. Backfilled from Mechanism C session ledger 1251b897."
+    },
+    {
+      "timestamp": "2026-07-19T03:07:28Z",
+      "level": "L3",
+      "key": "project:docs/product/backlog.md",
+      "type": "exact",
+      "skill": "ops",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "note": "Read docs/product/backlog.md as L3 project reference for digest content sourcing. Backfilled from Mechanism C session ledger 1251b897 (2 attributed reads)."
+    }
+  ]
 }
