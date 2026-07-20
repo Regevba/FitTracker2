@@ -1,6 +1,6 @@
 # T12 — Supabase↔iOS schema-diff gate: corrected scope
 
-**Status:** spec (queued for build) · **Date:** 2026-07-09 · **Linear:** FIT-160 · **Plan:** test-coverage-master-plan §4 T12 (RICE 18.0, effort M)
+**Status:** SHIPPED advisory #862 (2026-07-09) → **ENFORCED 2026-07-20 (cadence B17, #926)** — 1 genuine field firing 2026-07-16, all 4 §2.2 criteria met · **Date:** 2026-07-09 · **Linear:** FIT-160 · **Plan:** test-coverage-master-plan §4 T12 (RICE 18.0, effort M)
 
 > **Why this doc exists.** A verify-first investigation (2026-07-09) found the
 > T12 line in `test-coverage-master-plan-2026-05-13.md` is **mis-specced**. It

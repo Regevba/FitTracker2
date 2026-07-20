@@ -59,14 +59,20 @@ discipline the framework applies to every new gate.
 
 ## Coverage
 
-**Baselined now (T2):** the 4 shared design-system components
-(`AppProgressRing`, `AppPickerChip`, `AppSegmentedControl`, `AppMetricColumn`) —
-the highest-leverage, lowest-flake surfaces — plus the Home v2 screen
-(`MainScreenView`), whose construction recipe mirrors its `#Preview` env-object
-graph.
+**Baselined (as of 2026-07-20 — 11 canonical CI baselines):** the 4 shared
+design-system components (`AppProgressRing`, `AppPickerChip`,
+`AppSegmentedControl`, `AppMetricColumn`) + 4 v2 screens (Stats / Nutrition /
+Training / Settings) + 3 auth views (SignIn / BiometricUnlock /
+OnboardingWelcome). Every recorded PNG is **visually inspected before commit** —
+a blank or crashed render is still a PNG, so "the recorder wrote a file" is not
+proof the surface rendered (this caught the blank `WelcomeView` below).
 
-**Follow-up (T3):** the remaining v2 screens (Stats / Settings / Nutrition /
-Training / Readiness) + the 4 auth views. Each lands a construction recipe
-alongside a re-record, then flows through the same record → commit → verify
-pipeline. When a screen changes intentionally, re-record (step 1) and commit the
-new baseline in the same PR.
+**Pending recipe fixes (hard-skipped so no blank baseline is ever committed):**
+- `testHomeScreenV2` — needs a stubbed `AIOrchestrator` (no factory: init takes
+  engineClient + foundationModel + pcc + snapshot/goalMode closures).
+- `testWelcomeAuthView` — renders **BLANK** in CI; `WelcomeView` needs a
+  `NavigationStack` wrapper / animation-settle (SignInView renders correctly
+  *because* it is NavigationStack-wrapped).
+
+When a screen changes intentionally, re-record (step 1) and commit the new
+baseline in the same PR.
