@@ -44,6 +44,7 @@
 | File | Date | Purpose |
 |---|---|---|
 | `infra-master-plan-2026-05-12.md` | 2026-05-12 · refreshed 2026-06-15 | **CURRENT infra plan.** Forward-looking framework master plan. §3.5 Calibration Protocol + §3.6 Forward Plan v7.9→v8.2 + HADF Phase 2-bis calendar. The v8.x candidate docket was extracted 2026-06-15 → see sub-plan below. |
+| `v8-x-overlay-2026-07-20.md` | 2026-07-20 | **CURRENT cross-plan overlay** — single reconciled view of the v8.x docket + every sub-plan (advanceable / calendar-gated / operator-gated / blocked / icebox) + the gate calendar. Start here for "what's actually open across everything." Supersedes the 2026-07-04 working-plan overlay. |
 | `v8-x-build-docket-2026-06-15.md` | 2026-06-15 | **CURRENT v8.x build docket** (sub-plan of infra plan). Reconciled candidate status (shipped/open/icebox), F-series + V8-I tables, T29 decision, theme distribution. |
 | `v8-0-ready-now-workplan-2026-06-15.md` | 2026-06-15 | **Ready-now execution plan** — the 8 ungated open v8.x items (F1/F3/F4/F5/F10/F11/F12/F13), sequenced into 3 batches with calibration + isolated-worktree constraints. |
 | `v8-0-docket-ranking-2026-05-13.md` | 2026-05-13 · decided 2026-05-21 | Frozen T29 RICE ranking artifact (historical). Superseded for live status by the v8.x build docket sub-plan above. |
