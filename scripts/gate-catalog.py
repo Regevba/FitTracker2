@@ -117,8 +117,8 @@ GATES: dict[str, dict] = {
     },
     "SCHEMA_DIFF": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",
-        "enforcement": "advisory",
-        "description": "T12/FIT-160 — SupabaseSyncService column literal (CodingKeys/.select/onConflict) references a column absent from the synced Supabase tables (migration rename/drop drift).",
+        "enforcement": "enforced",
+        "description": "T12/FIT-160 — SupabaseSyncService column literal (CodingKeys/.select/onConflict) references a column absent from the synced Supabase tables (migration rename/drop drift). Enforced 2026-07-20 (cadence B17).",
     },
     "PHASE_TRANSITION_NO_LOG": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",

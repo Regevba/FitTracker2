@@ -222,7 +222,7 @@ ANALYTICS_AFFECTING_GLOBS = (
 # docs/superpowers/specs/2026-07-09-t12-schema-diff-gate-corrected-scope.md).
 # Ships ADVISORY for a 14-day calibration window; own flag keeps the flip
 # independent (mirrors the sibling gates).
-SCHEMA_DIFF_ADVISORY_MODE = True
+SCHEMA_DIFF_ADVISORY_MODE = False
 SUPABASE_MIGRATIONS_DIR = "backend/supabase/migrations"
 SUPABASE_SYNC_SERVICE_PATH = "FitTracker/Services/Supabase/SupabaseSyncService.swift"
 SCHEMA_DIFF_SYNCED_TABLES = ("sync_records", "cardio_assets", "cohort_stats")
