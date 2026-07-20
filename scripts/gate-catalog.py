@@ -82,8 +82,8 @@ GATES: dict[str, dict] = {
     },
     "CSV_TAXONOMY_DRIFT": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",
-        "enforcement": "advisory",
-        "description": "AN-1B.1 — staged AnalyticsEvent value has no analytics-taxonomy.csv row.",
+        "enforcement": "enforced",
+        "description": "AN-1B.1 — staged AnalyticsEvent value has no analytics-taxonomy.csv row. Enforced 2026-07-13 (cadence B16).",
     },
     "CU_V2_INVALID": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",
@@ -102,8 +102,8 @@ GATES: dict[str, dict] = {
     },
     "FRAMEWORK_VERSION_STALE": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",
-        "enforcement": "advisory",
-        "description": "F4 — framework_version behind the current framework version (advisory→enforced review ~2026-06-30).",
+        "enforcement": "enforced",
+        "description": "F4 — framework_version behind the current framework version. Enforced 2026-07-08 (cadence F4, PR #858).",
     },
     "GA4_MCP_DISCONNECTED": {
         "stage": "write-time", "source": "scripts/check-state-schema.py",

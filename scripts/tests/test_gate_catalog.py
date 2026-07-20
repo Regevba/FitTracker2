@@ -107,3 +107,39 @@ def test_committed_catalog_matches_live_derivation():
     assert committed == gc.build_catalog(), (
         "gate-catalog.json is stale — run `make gate-catalog` and commit."
     )
+
+
+def test_enforcement_annotation_matches_advisory_flag():
+    """Parity guard: for every catalog gate controlled by a
+    `<GATE>_ADVISORY_MODE` flag in check-state-schema.py, the authored
+    `enforcement` annotation MUST match the flag's reality (flag False →
+    'enforced'; flag True → 'advisory'). This closes the drift class where a
+    gate is promoted advisory→enforced (the flag flips) but the catalog
+    annotation is left stale — as happened to CSV_TAXONOMY_DRIFT (B16) and
+    FRAMEWORK_VERSION_STALE (F4) before 2026-07-20. The pre-existing
+    `test_committed_catalog_matches_live_derivation` only checks committed ==
+    authored, so it could not catch authored != real-flag."""
+    import re
+
+    css_src = (REPO_ROOT / "scripts" / "check-state-schema.py").read_text(encoding="utf-8")
+    flags = {
+        name: (val == "True")
+        for name, val in re.findall(r"(\w+)_ADVISORY_MODE = (True|False)", css_src)
+    }
+    catalog = gc.build_catalog()["gates"]
+    checked = 0
+    for gate, meta in catalog.items():
+        if gate not in flags:  # only flag-controlled gates have a source of truth here
+            continue
+        checked += 1
+        is_advisory = flags[gate]
+        expected = "advisory" if is_advisory else "enforced"
+        assert meta["enforcement"] == expected, (
+            f"{gate}: catalog enforcement={meta['enforcement']!r} but "
+            f"{gate}_ADVISORY_MODE={is_advisory} → should be {expected!r}. "
+            f"Update the annotation in gate-catalog.py + run `make gate-catalog`."
+        )
+    assert checked >= 4, (
+        f"expected >=4 flag-controlled gates cross-checked, got {checked} — "
+        "the gate↔flag name mapping may have broken."
+    )
