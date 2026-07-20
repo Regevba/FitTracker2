@@ -1,16 +1,16 @@
-"""F16 try-repo integration test for T12 SCHEMA_DIFF (advisory gate).
+"""F16 try-repo integration test for T12 SCHEMA_DIFF (ENFORCED 2026-07-20, cadence B17).
 
-SCHEMA_DIFF ships ADVISORY, so the real pre-commit hook exits 0 even when the
-gate fires (the finding prints to stderr, does not block). The standard
-rc-based fixture harness (positive → rc != 0) therefore doesn't apply — like
-the sibling advisory gate CSV_TAXONOMY_DRIFT. Instead this asserts on the
-hook's STDERR, which still exercises the full integration surface the unit +
-function tests can't: hook composition, REPO_ROOT_OVERRIDE resolution, real
+SCHEMA_DIFF was promoted advisory→enforced on 2026-07-20 (all 4 §2.2 criteria
+met; 1 genuine field firing 2026-07-16). The real pre-commit hook now BLOCKS
+(exits non-zero) when the gate fires, so the standard rc-based fixture harness
+convention applies (positive → rc != 0). This asserts on rc AND the hook's
+STDERR, exercising the full integration surface the unit + function tests
+can't: hook composition, REPO_ROOT_OVERRIDE resolution, real
 `git status --porcelain`, HOME scrub.
 
 Positive: a migration that drops `week_start` while the sync code still
-references it → SCHEMA_DIFF advisory in stderr.
-Negative: aligned schema → no SCHEMA_DIFF advisory.
+references it → SCHEMA_DIFF blocks the commit (rc != 0) + names the column.
+Negative: aligned schema → no SCHEMA_DIFF finding, commit passes.
 """
 from __future__ import annotations
 
@@ -75,17 +75,17 @@ def _run(tmp_path, sql):
     return run_precommit(repo, env_overrides=env)
 
 
-def test_dropped_column_surfaces_advisory(tmp_path):
+def test_dropped_column_blocks(tmp_path):
     result = _run(tmp_path, _SQL_NO_WEEK_START)
     combined = result.stdout + result.stderr
     assert "SCHEMA_DIFF" in combined, (
-        f"expected SCHEMA_DIFF advisory in hook output.\n"
+        f"expected SCHEMA_DIFF finding in hook output.\n"
         f"  rc={result.returncode}\n  stdout={result.stdout!r}\n  stderr={result.stderr!r}"
     )
     assert "week_start" in combined
-    # Advisory: the commit is NOT blocked.
-    assert result.returncode == 0, (
-        f"SCHEMA_DIFF is advisory and must not block; rc={result.returncode}, "
+    # Enforced (2026-07-20, B17): the commit IS blocked.
+    assert result.returncode != 0, (
+        f"SCHEMA_DIFF is enforced and must block on drift; rc={result.returncode}, "
         f"stderr={result.stderr!r}"
     )
 
