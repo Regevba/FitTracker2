@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-07-20T06:06:01Z",
+  "updated": "2026-07-20T15:31:28Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -35,13 +35,13 @@
       "post_v6_derived": 0
     },
     "cache_hits": {
-      "overall_present": 35,
-      "overall_percent": 26.5,
-      "post_v6_present": 34,
-      "post_v6_percent": 34.7,
-      "overall_instrumented": 35,
+      "overall_present": 36,
+      "overall_percent": 27.3,
+      "post_v6_present": 35,
+      "post_v6_percent": 35.7,
+      "overall_instrumented": 36,
       "overall_derived": 0,
-      "post_v6_instrumented": 34,
+      "post_v6_instrumented": 35,
       "post_v6_derived": 0
     },
     "cu_v2": {
@@ -585,7 +585,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": false
       }
     },
@@ -2834,13 +2834,13 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": false
       },
       "provenance": {
         "timing_wall_time": null,
         "per_phase_timing": "instrumented",
-        "cache_hits": null,
+        "cache_hits": "instrumented",
         "cu_v2": null
       },
       "fully_adopted": false,
