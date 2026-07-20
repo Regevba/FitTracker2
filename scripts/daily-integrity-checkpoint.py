@@ -1081,6 +1081,22 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
     log("[1/5] Running all 6 make targets...")
     make_outputs = capture_make_outputs()
 
+    # R9 coverage telemetry (Follow-up #1) — best-effort durable coverage row.
+    # Appends to .claude/shared/coverage-telemetry.jsonl, which rides the digest
+    # commit that persists .claude/shared/*, so the 30-day GATE_TEST_MISSING
+    # calibration window accumulates. `make coverage-py` skips gracefully if
+    # pytest/ai-engine deps are absent; the append is fail-soft (exit 0). Never
+    # blocks the checkpoint.
+    log("      · coverage-telemetry (best-effort)...")
+    try:
+        subprocess.run(["make", "coverage-py"], cwd=REPO_ROOT,
+                       capture_output=True, text=True, timeout=300)
+        subprocess.run(["python3", "scripts/append-coverage-telemetry.py",
+                        "--provenance", "checkpoint"], cwd=REPO_ROOT,
+                       capture_output=True, text=True, timeout=60)
+    except Exception:  # noqa: BLE001 — fail-soft by contract
+        pass
+
     log("[2/5] Collecting metrics + git + hardware context...")
     metrics = collect_metrics(make_outputs)
     ft2_git = git_context(REPO_ROOT)

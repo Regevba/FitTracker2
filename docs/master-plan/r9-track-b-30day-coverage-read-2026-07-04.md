@@ -73,11 +73,17 @@ with a paired `test_*` dispatch test). That baseline **is** readable from the re
 
 ## Follow-ups (before 2026-08-22 GATE_TEST_MISSING calibration)
 
-1. **Close the coverage-persistence gap (load-bearing).** Extend `coverage.yml` to append a numeric row
-   (`{date, surface, line_rate, branch_rate, per_module[]}`) to a git-committed append-only ledger
-   (e.g. `.claude/shared/coverage-telemetry.jsonl`) on push-to-main, so a real 30-day window accumulates
-   before the calibration. Without this, the 2026-08-22 calibration reruns today's manual reconstruction.
-   *Infra-path change (`.github/workflows/*`) -> BRANCH_ISOLATION_VIOLATION Mode B; ship on an isolated branch.*
+1. ✅ **ADDRESSED 2026-07-20** (surfaced by the calibration-window audit). **Close the coverage-persistence
+   gap (load-bearing).** Shipped: `scripts/append-coverage-telemetry.py` parses the Cobertura `coverage.xml`
+   → appends a dated `{date, surface, line_rate, branch_rate, per_module[], provenance, ts}` row (dedup by
+   date+surface, fail-soft) to the git-committed append-only ledger
+   [`.claude/shared/coverage-telemetry.jsonl`](../../.claude/shared/coverage-telemetry.jsonl); seeded with
+   the 2026-07-04 R9 baseline. Wired best-effort into `daily-integrity-checkpoint.py` so each row **rides the
+   daily digest commit** (no new CI-commit-to-protected-main plumbing). `coverage.yml` artifact retention
+   raised **14 → 90 days** so a 30-day window is also queryable via `gh run download` at the 2026-08-22 gate.
+   5 unit tests. **The 30-day clock starts now** — every day the checkpoint has ai-engine coverage available,
+   a row accumulates. iOS Slather remains stdout-only (a simulator run per day is out of scope); the
+   Python per-module targets (`jwt_validator` 35%, `cohort_service` 30%) are the readable calibration inputs.
 2. **Add try-repo fixtures** for `CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`, `PLATFORMS_TESTED` (Layer-3 parity).
 3. **Raise `jwt_validator.py` coverage (35%)** — auth is a declared high-risk area; lowest-covered module in the AI layer.
 
