@@ -34,7 +34,7 @@ jobs:
           fetch-depth: 0  # full history so range-lint can walk from base
 
       - name: Set up Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
 

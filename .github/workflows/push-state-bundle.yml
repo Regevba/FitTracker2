@@ -42,7 +42,7 @@ jobs:
       - name: Assemble bundle
         run: python3 scripts/push-state-bundle.py --out .build/ft2-state-bundle.json --summary
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: '20'
 
