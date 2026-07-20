@@ -218,6 +218,15 @@ final class V2ComponentSnapshotTests: XCTestCase {
 
     @MainActor
     func testWelcomeAuthView() throws {
+        // T3: WelcomeView renders BLANK in the CI recorder (verified 2026-07-20 —
+        // the ios-snapshot-record artifact PNG was the bare gradient, no logo/buttons),
+        // unlike SignInView which renders correctly wrapped in a NavigationStack. The
+        // local "wrote a PNG" check did not catch this (a blank PNG is still a PNG).
+        // Likely an onAppear-driven reveal animation or missing navigation context that
+        // collapses the layout at capture time. Kept hard-skipped so the blank frame is
+        // never committed as a baseline; fixing the recipe (add NavigationStack / settle
+        // the animation) is the remaining T3 piece for this surface.
+        try XCTSkipIf(true, "WelcomeView renders blank in CI record — recipe needs a fix; see 2026-07-20 record run.")
         try requireSnapshotMode()
         try skipVerifyUntilBaselineRecorded()
         assertScreen(
