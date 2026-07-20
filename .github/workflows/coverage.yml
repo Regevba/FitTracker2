@@ -104,4 +104,6 @@ jobs:
           name: ai-engine-coverage-xml
           path: ai-engine/coverage.xml
           if-no-files-found: ignore
-          retention-days: 14
+          # 90d (was 14d) so a 30-day GATE_TEST_MISSING calibration window is
+          # queryable via `gh run download` at 2026-08-22 (R9 Follow-up #1).
+          retention-days: 90
