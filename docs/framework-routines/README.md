@@ -33,7 +33,10 @@
 ```bash
 make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]
 make integrity-check
+make integrity-sweep
 make integrity-diff
+make integrity-multi-anchor
+make integrity-data-lake
 make documentation-debt
 make measurement-adoption
 make membrane-status
@@ -65,7 +68,9 @@ Full list with descriptions: see backup [MANUAL.md §11](../../../../../Users/re
 | Membrane status (Mechanism F) | [scripts/membrane-status.py](../../scripts/membrane-status.py) |
 | Branch isolation audit | [scripts/verify-isolation.py](../../scripts/verify-isolation.py) |
 | Feature closure completeness | [scripts/feature-completeness-audit.py](../../scripts/feature-completeness-audit.py) |
-| Diff vs baseline | [scripts/integrity-diff.py](../../scripts/integrity-diff.py) |
+| Diff vs baseline (raw-%) | [scripts/integrity-diff.py](../../scripts/integrity-diff.py) |
+| Dilution normalization (multi-anchor) | [scripts/integrity-multi-anchor.py](../../scripts/integrity-multi-anchor.py) |
+| Telemetry data-lake | [scripts/integrity-data-lake.py](../../scripts/integrity-data-lake.py) |
 | Unified preflight (v7.8.6) | [scripts/preflight.py](../../scripts/preflight.py) |
 | Mechanism C session capture | [scripts/observe-cache-hit.py](../../scripts/observe-cache-hit.py) |
 | Mechanism E merge driver | [scripts/merge-driver-dedup.py](../../scripts/merge-driver-dedup.py) |
