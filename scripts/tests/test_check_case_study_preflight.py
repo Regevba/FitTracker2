@@ -188,3 +188,43 @@ title: Fake feature
         "Either the gate has regressed OR the recipe no longer matches the "
         "REQUIRED_FRONTMATTER_FIELDS list."
     )
+
+
+# ---------------------------------------------------------------------------
+# Mechanism A coverage instrumentation (2026-07-21 — closes the telemetry
+# blind spot: CASE_STUDY_MISSING_FIELDS was the last live gate not emitting
+# gate-coverage.jsonl rows, so it was invisible to the F17 index +
+# GATE_COVERAGE_ZERO).
+# ---------------------------------------------------------------------------
+
+def test_missing_fields_emits_gate_coverage(tmp_path):
+    """The gate records candidate/checked/skip on the shared GateCoverage
+    tracker: 1 post-cutoff-missing file → checked; 1 pre-cutoff + 1
+    no-frontmatter → skipped with distinct reasons."""
+    checked_file = tmp_path / "checked.md"
+    checked_file.write_text("---\ndate_written: 2026-04-29\ntitle: T\n---\n")
+    pre_cutoff = tmp_path / "old.md"
+    pre_cutoff.write_text("---\ndate_written: 2026-04-15\ntitle: Old\n---\n")
+    no_fm = tmp_path / "plain.md"
+    no_fm.write_text("# Just a markdown body, no frontmatter\n")
+
+    cov = _mod.GateCoverage(mode="explicit")
+    for f in (checked_file, pre_cutoff, no_fm):
+        _mod.check_case_study_missing_fields(f, coverage=cov)
+
+    ledger = tmp_path / "gc.jsonl"
+    cov.write_jsonl(ledger)
+    import json
+    row = json.loads(ledger.read_text().splitlines()[0])
+    assert row["gate"] == "CASE_STUDY_MISSING_FIELDS"
+    assert row["candidates"] == 3
+    assert row["checked"] == 1
+    assert row["skipped"] == 2
+    assert row["skip_reasons"] == {"no_frontmatter": 1, "pre_cutoff": 1}
+
+
+def test_missing_fields_coverage_optional_no_behavior_change(tmp_path):
+    """Passing no coverage tracker must not change findings (back-compat)."""
+    cs = tmp_path / "cs.md"
+    cs.write_text("---\ndate_written: 2026-04-29\ntitle: T\n---\n")
+    assert _finding_code(check_case_study_missing_fields(cs)[0]) == "CASE_STUDY_MISSING_FIELDS"
