@@ -71,7 +71,7 @@ Or via the Makefile:
 ```bash
 make integrity-check       # findings-only, non-strict
 make integrity-snapshot    # full snapshot + diff + commit (locally)
-make schema-check          # state.json schema validator (all 40 files)
+make schema-check          # state.json schema validator (all state.json files)
 ```
 
 ---
@@ -89,7 +89,7 @@ make install-hooks
 This sets `git config core.hooksPath .githooks` — idempotent. The hook then runs on every `git commit` automatically. The script has three invocation modes:
 
 ```bash
-python3 scripts/check-state-schema.py              # scan all 40 files
+python3 scripts/check-state-schema.py              # scan all state.json files
 python3 scripts/check-state-schema.py <path>...    # validate specific paths
 python3 scripts/check-state-schema.py --staged     # git-staged files only (what the hook uses)
 ```

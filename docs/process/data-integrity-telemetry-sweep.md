@@ -31,24 +31,25 @@ crash).
 | # | Layer | Producer | PASS means | Fails on |
 |---|---|---|---|---|
 | 1 | Framework integrity | `integrity-check.py` | 0 findings | any finding → **FAIL** |
-| 2 | Regression vs anchor | `integrity-diff.py` | no regression vs the 2026-05-14 anchor | `REAL_REGRESSION` → **FAIL**; baseline missing → WARN |
-| 3 | Adoption telemetry | `refresh-gate-last-fired.py` + `measurement-adoption-report.py` | gate index has 0 malformed rows | malformed rows / empty index → WARN |
-| 4 | Gate calibration | `gate-last-fired.json` | no gate with 0 candidates (the `GATE_COVERAGE_ZERO` 0-candidate mis-wire class) | a registered gate that never reaches a candidate → WARN |
-| 5 | Documentation debt | `documentation-debt-report.py` | open items ≤ baseline (1) | above baseline → WARN |
-| 6 | Cross-repo sync | R17 state-sync-health endpoint | deployed fitme-story mirror fresh (<6h) + state count matches | stale / unreachable → WARN |
-| 7 | CI automation (bot PRs) | `check-bot-pr-health.py` | no deadlocked automated PRs | a deadlocked snapshot PR → **FAIL** |
-| 8 | Analytics / GA4 | — | (INFO) | needs the GA4 MCP — run the B3 check separately |
-| 9 | Backup checkpoint | `integrity-checkpoint-ledger.jsonl` | (INFO) reports the last daily-checkpoint date | — |
-| 10 | Upcoming cadence | `must-have-cadence-followups.md` | (INFO) calendar items ≤14 days | — |
+| 2 | Regression vs anchor | `integrity-diff.py` | no regression vs the 2026-05-14 anchor (raw-%, dilution-sensitive) | `REAL_REGRESSION` → **FAIL**; baseline missing → WARN |
+| 3 | Dilution normalization | `integrity-multi-anchor.py` | no cohort/numerator regression vs the 2026-05-14 canonical (dilution-immune; raw-% drops from corpus growth classify as dilution, not regression) | cohort/numerator `REAL_REGRESSION` → **FAIL**; <2 anchors loadable (registry path drift) → WARN |
+| 4 | Adoption telemetry | `refresh-gate-last-fired.py` + `measurement-adoption-report.py` | gate index has 0 malformed rows | malformed rows / empty index → WARN |
+| 5 | Gate calibration | `gate-last-fired.json` | no gate with 0 candidates (the `GATE_COVERAGE_ZERO` 0-candidate mis-wire class) | a registered gate that never reaches a candidate → WARN |
+| 6 | Documentation debt | `documentation-debt-report.py` | open items ≤ baseline (1) | above baseline → WARN |
+| 7 | Cross-repo sync | R17 state-sync-health endpoint | deployed fitme-story mirror fresh (<6h) + state count matches | stale / unreachable → WARN |
+| 8 | CI automation (bot PRs) | `check-bot-pr-health.py` | no deadlocked automated PRs | a deadlocked snapshot PR → **FAIL** |
+| 9 | Analytics / GA4 | — | (INFO) | needs the GA4 MCP — run the B3 check separately |
+| 10 | Backup checkpoint | `integrity-checkpoint-ledger.jsonl` | (INFO) reports the last daily-checkpoint date | — |
+| 11 | Upcoming cadence | `must-have-cadence-followups.md` | (INFO) calendar items ≤14 days | — |
 
 ### Notes on the INFO layers
 
-- **Analytics / GA4 (layer 8)** cannot run in a plain script — it needs the GA4
+- **Analytics / GA4 (layer 9)** cannot run in a plain script — it needs the GA4
   MCP (an agent/interactive context). The sweep prints a pointer; run the anomaly
   check per [`docs/setup/ga4-funnels-and-conversions-runbook.md`](../setup/ga4-funnels-and-conversions-runbook.md)
   (cadence **B3**). Look for: events flowing through today, the onboarding + auth
   funnels intact, screen-prefix convention held, no >30% day-over-day anomaly.
-- **Upcoming cadence (layer 10)** reuses the daily checkpoint's
+- **Upcoming cadence (layer 11)** reuses the daily checkpoint's
   `upcoming_followups()` parser. **Known limitation:** that parser matches
   `**YYYY-MM-DD**` dates but not `~`-prefixed *approximate* dates
   (e.g. `**~2026-07-23**`), so an approximate-dated follow-up may not surface here
