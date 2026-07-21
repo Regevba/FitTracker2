@@ -53,7 +53,16 @@ HOME = Path.home()
 SHARED = REPO_ROOT / ".claude" / "shared"
 LOGS = REPO_ROOT / ".claude" / "logs"
 FEATURES = REPO_ROOT / ".claude" / "features"
-BACKUPS = HOME / "Documents" / "FitTracker2-backups"
+# Backups moved during the 2026-07-07 ~/Developer/FitMe consolidation; keep the legacy
+# ~/Documents path as a fallback. First existing root wins (mirrors integrity-diff.py +
+# integrity-multi-anchor.py). Anchor loading itself defers to the multi-anchor registry
+# (which resolves each anchor across both roots); this constant is only the daily-snapshot
+# inventory root below.
+_BACKUP_ROOTS = (
+    HOME / "Developer" / "FitMe" / "backups" / "FitTracker2-backups",
+    HOME / "Documents" / "FitTracker2-backups",
+)
+BACKUPS = next((r for r in _BACKUP_ROOTS if r.exists()), _BACKUP_ROOTS[0])
 SSD_SNAPSHOTS = Path("/Volumes/DevSSD/FitTracker2-snapshots")
 DIMENSIONS = ["timing_wall_time", "per_phase_timing", "cache_hits", "cu_v2"]
 V6_SHIP_DATE = "2026-04-16"
@@ -252,6 +261,20 @@ def reconcile(tables: dict) -> list[dict]:
         if chk_debt is not None and chk_debt != debt:
             f.append({"id": "R6-debt-drift", "severity": "LOW",
                       "message": f"doc-debt open={debt} but latest checkpoint row={chk_debt} (stale checkpoint)."})
+
+    # R7 — canonical anchor resolvability (path-drift guard). If the canonical anchor
+    # does not resolve, the dilution-normalized adoption section is UNVERIFIED — surface
+    # it as HIGH so --exit-on-anomaly trips instead of silently reporting "none".
+    mod = _multi_anchor()
+    canonical_ok = any(
+        label == mod.CANONICAL_ANCHOR and any(c.is_file() for c in cands)
+        for label, cands in mod.ANCHOR_REGISTRY
+    )
+    if not canonical_ok:
+        f.append({"id": "R7-canonical-anchor-unresolved", "severity": "HIGH",
+                  "message": f"canonical anchor {mod.CANONICAL_ANCHOR} did not resolve under any "
+                             "backup root — dilution vs regression NOT checked (path drift). "
+                             "Fix _BACKUP_ROOTS in integrity-multi-anchor.py."})
     return f
 
 
@@ -262,13 +285,18 @@ def adoption_normalized(tables: dict) -> dict:
     for label, cands in mod.ANCHOR_REGISTRY:
         if label == mod.CANONICAL_ANCHOR:
             canonical_path = next((c for c in cands if c.is_file()), None)
-    out = {"canonical_anchor": mod.CANONICAL_ANCHOR, "dimensions": {}, "real_regressions": []}
+    out = {"canonical_anchor": mod.CANONICAL_ANCHOR, "dimensions": {},
+           "real_regressions": [], "anchor_available": False}
     if not canonical_path:
+        # The canonical anchor did not resolve (path drift / missing backup). This is
+        # NOT "no regressions" — it is "not checked". anchor_available stays False so the
+        # printer + callers surface UNVERIFIED instead of a vacuous clean bill of health.
         return out
     anc = mod.load_adoption_features(canonical_path)
     live = mod.load_adoption_features(SHARED / "measurement-adoption.json")
     if not anc or not live:
         return out
+    out["anchor_available"] = True
     for dim in DIMENSIONS:
         c = mod.classify_delta(anc, live, dim)
         out["dimensions"][dim] = c
@@ -326,11 +354,15 @@ def print_report(report: dict, tables: dict, section: str | None):
     if section in (None, "adoption"):
         an = report["adoption_normalized"]
         print(f"=== Dilution-normalized adoption vs canonical anchor {an['canonical_anchor']} ===")
-        for dim, c in an["dimensions"].items():
-            print(f"  {dim:22s} raw {c['raw_anchor']:.1f}%→{c['raw_latest']:.1f}%  "
-                  f"cohort {c['cohort_anchor']:.1f}%→{c['cohort_latest']:.1f}% ({c['cohort_delta']:+.1f})  "
-                  f"num {c['num_anchor']}→{c['num_latest']}  [{c['verdict']}]")
-        print(f"  REAL regressions: {an['real_regressions'] or 'none'}")
+        if not an.get("anchor_available"):
+            print("  ⚠ canonical anchor UNAVAILABLE — dilution vs regression NOT checked "
+                  "(path drift / missing backup). This is NOT a clean bill of health.")
+        else:
+            for dim, c in an["dimensions"].items():
+                print(f"  {dim:22s} raw {c['raw_anchor']:.1f}%→{c['raw_latest']:.1f}%  "
+                      f"cohort {c['cohort_anchor']:.1f}%→{c['cohort_latest']:.1f}% ({c['cohort_delta']:+.1f})  "
+                      f"num {c['num_anchor']}→{c['num_latest']}  [{c['verdict']}]")
+            print(f"  REAL regressions: {an['real_regressions'] or 'none'}")
         print()
     if section in (None, "forward"):
         fd = report["forward_digest"]
