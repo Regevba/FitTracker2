@@ -29,7 +29,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
@@ -102,6 +104,41 @@ def build_row(xml_path: Path, surface: str, date: str, provenance: str,
     }
 
 
+def fetch_latest_ci_coverage_xml(dest_dir: Path) -> Path | None:
+    """Best-effort: download the most recent successful `coverage.yml` artifact
+    (`ai-engine-coverage-xml`, 90d retention) via `gh` and return the extracted
+    coverage.xml path, or None. Never raises.
+
+    Why this exists: the daily checkpoint runs on a host where ai-engine deps
+    are usually absent, so `make coverage-py` produces no local coverage.xml.
+    CI *does* measure it on every push-to-main, so we pull that artifact instead
+    of relying on a local pytest run — decoupling the durable ledger from local
+    deps (the reason the ledger sat at only its seed row on 2026-07-21)."""
+    try:
+        res = subprocess.run(
+            ["gh", "run", "list", "--workflow", "coverage.yml", "--branch", "main",
+             "--status", "success", "--limit", "10", "--json", "databaseId"],
+            capture_output=True, text=True, timeout=30,
+        )
+        if res.returncode != 0:
+            return None
+        run_ids = [r["databaseId"] for r in json.loads(res.stdout or "[]")]
+        for rid in run_ids:
+            dl = subprocess.run(
+                ["gh", "run", "download", str(rid), "-n", "ai-engine-coverage-xml",
+                 "-D", str(dest_dir)],
+                capture_output=True, text=True, timeout=60,
+            )
+            if dl.returncode == 0:
+                # the artifact may unpack the xml at the root or nested
+                for cand in (dest_dir / "coverage.xml", *dest_dir.rglob("coverage.xml")):
+                    if cand.exists():
+                        return cand
+        return None
+    except Exception:  # noqa: BLE001 — fail-soft by contract
+        return None
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--xml", default=str(DEFAULT_XML))
@@ -110,17 +147,29 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--ledger", default=str(DEFAULT_LEDGER))
     ap.add_argument("--provenance", default="checkpoint")
     ap.add_argument("--low-threshold", type=float, default=0.60)
+    ap.add_argument("--fetch-ci", action="store_true",
+                    help="if no local coverage.xml, download the latest CI "
+                         "coverage.yml artifact via gh (used by the checkpoint, "
+                         "where ai-engine deps are absent).")
     args = ap.parse_args(argv)
 
     try:
         xml_path = Path(args.xml)
+        provenance = args.provenance
+        if not xml_path.exists() and args.fetch_ci:
+            fetched = fetch_latest_ci_coverage_xml(Path(tempfile.mkdtemp()))
+            if fetched is not None:
+                xml_path = fetched
+                provenance = f"{args.provenance}-ci-fetch"
         if not xml_path.exists():
-            _warn(f"no coverage.xml at {xml_path} — skipping (run `make coverage-py` first).")
+            _warn(f"no coverage.xml at {xml_path}"
+                  f"{' and CI fetch found none' if args.fetch_ci else ''}"
+                  f" — skipping (run `make coverage-py` first, or use --fetch-ci).")
             return 0
         now = datetime.now(timezone.utc)
         date = args.date or now.strftime("%Y-%m-%d")
         ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-        row = build_row(xml_path, args.surface, date, args.provenance,
+        row = build_row(xml_path, args.surface, date, provenance,
                         args.low_threshold, ts)
         wrote = append_row(Path(args.ledger), row)
         if wrote:
