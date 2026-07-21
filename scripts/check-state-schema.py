@@ -53,7 +53,7 @@ from pathlib import Path
 # absent), and `validate_file` instantiates a tracker that persists across
 # all the per-file calls within one validation run.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from gate_coverage import GateCoverage  # noqa: E402
+from gate_coverage import GateCoverage, canonical_ledger_path  # noqa: E402
 
 
 # `REPO_ROOT_OVERRIDE` env var redirects all repo-relative path resolution
@@ -69,7 +69,11 @@ else:
     REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 LOGS_DIR = REPO_ROOT / ".claude" / "logs"
-GATE_COVERAGE_LEDGER = LOGS_DIR / "gate-coverage.jsonl"
+# Telemetry sink resolves to the git COMMON worktree so firings in a linked
+# worktree reach the shared main ledger (the F17 index reads it) instead of a
+# worktree-local copy discarded on `git worktree remove`. REPO_ROOT stays
+# worktree-local for reading staged files / features. Env overrides win (F16).
+GATE_COVERAGE_LEDGER = canonical_ledger_path(REPO_ROOT)
 
 # Path to the T6 cu_v2 validator (hyphen prevents a direct import; we use
 # importlib.util — same pattern used in test_check_state_schema.py to load

@@ -73,7 +73,14 @@ if _REPO_ROOT_OVERRIDE:
 else:
     REPO_ROOT = Path(__file__).resolve().parent.parent
 
-LEDGER_PATH = REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
+# Read the SHARED ledger (git common worktree) so the index aggregates firings
+# from every worktree, not just whichever checkout this runs in. Env overrides win.
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from gate_coverage import canonical_ledger_path
+    LEDGER_PATH = canonical_ledger_path(REPO_ROOT)
+except Exception:
+    LEDGER_PATH = REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
 INDEX_PATH = REPO_ROOT / ".claude" / "shared" / "gate-last-fired.json"
 SNAPSHOTS_DIR = REPO_ROOT / ".claude" / "integrity" / "snapshots"
 # v2 (T13): each gate gains `last_failed_at` / `total_failure_snapshots` /

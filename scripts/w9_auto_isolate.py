@@ -65,10 +65,18 @@ def _lock_file() -> Path:
 
 
 def _ledger_path() -> Path:
-    return Path(
-        os.environ.get("GATE_COVERAGE_LEDGER")
-        or str(_repo_root() / ".claude" / "logs" / "gate-coverage.jsonl")
-    )
+    # Resolve to the git COMMON worktree so W9 firings/offers in a linked
+    # worktree reach the shared main ledger instead of a worktree-local copy
+    # discarded on teardown (this was the exact cause of the undercounted
+    # w9.concurrency offers found 2026-07-21). Env overrides win (F16 try-repo).
+    try:
+        from gate_coverage import canonical_ledger_path
+        return canonical_ledger_path(_repo_root())
+    except Exception:
+        return Path(
+            os.environ.get("GATE_COVERAGE_LEDGER")
+            or str(_repo_root() / ".claude" / "logs" / "gate-coverage.jsonl")
+        )
 
 
 def _create_worktree_script() -> Path:
