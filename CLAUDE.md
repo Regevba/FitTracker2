@@ -110,7 +110,7 @@ Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.
 - **Full docs:** [`.claude/integrity/README.md`](.claude/integrity/README.md).
 
 **Readout-time dashboards (any time):**
-- `make integrity-sweep` — **codified cross-layer data-integrity + telemetry check** (10 layers → one PASS/WARN/FAIL verdict; exit 1 on any FAIL). The one-command "is every layer healthy right now?" readout. Producer: [`scripts/integrity-telemetry-sweep.py`](scripts/integrity-telemetry-sweep.py); docs: [`docs/process/data-integrity-telemetry-sweep.md`](docs/process/data-integrity-telemetry-sweep.md).
+- `make integrity-sweep` — **codified cross-layer data-integrity + telemetry check** (11 layers → one PASS/WARN/FAIL verdict; exit 1 on any FAIL). The one-command "is every layer healthy right now?" readout. Layer 3 (Dilution normalization) added 2026-07-21 — the cohort/numerator-normalized, dilution-immune companion to the raw-% Regression-vs-anchor layer, via the revived `make integrity-multi-anchor`. Producer: [`scripts/integrity-telemetry-sweep.py`](scripts/integrity-telemetry-sweep.py); docs: [`docs/process/data-integrity-telemetry-sweep.md`](docs/process/data-integrity-telemetry-sweep.md).
 - `make documentation-debt` — Tier 3.2 baseline ledger (7 open items); trend mode unlocks after 3 scheduled cycle snapshots.
 - `make measurement-adoption` — Tier 1.1 ledger; surfaces `cache_hits 0/40` known delta tracked at [issue #140](https://github.com/Regevba/FitTracker2/issues/140).
 - `make runtime-smoke PROFILE=<id> MODE=<local|staging>` — Tier 2.1 smoke-gate runner; 5 profiles incl. `sign_in_surface`.
