@@ -81,9 +81,19 @@ with a paired `test_*` dispatch test). That baseline **is** readable from the re
    the 2026-07-04 R9 baseline. Wired best-effort into `daily-integrity-checkpoint.py` so each row **rides the
    daily digest commit** (no new CI-commit-to-protected-main plumbing). `coverage.yml` artifact retention
    raised **14 → 90 days** so a 30-day window is also queryable via `gh run download` at the 2026-08-22 gate.
-   5 unit tests. **The 30-day clock starts now** — every day the checkpoint has ai-engine coverage available,
-   a row accumulates. iOS Slather remains stdout-only (a simulator run per day is out of scope); the
+   5 unit tests. iOS Slather remains stdout-only (a simulator run per day is out of scope); the
    Python per-module targets (`jwt_validator` 35%, `cohort_service` 30%) are the readable calibration inputs.
+
+   **↳ 2026-07-21 follow-through (two root causes the 07-20 fix alone didn't cover):** the ledger sat at
+   only its seed row on 07-21 because **(a)** the checkpoint host lacks ai-engine deps, so its `make
+   coverage-py` produced no local `coverage.xml`; and **(b)** — the deeper one — **CI itself never produced
+   the artifact**: `coverage.yml` installed only `pytest pytest-cov`, not ai-engine's runtime deps, so
+   `pytest --cov` failed on imports → no `coverage.xml` → the `ai-engine-coverage-xml` artifact was empty on
+   every run (the 07-04 read's "not emitted on recent runs" note, now root-caused). Fixed both:
+   `coverage.yml` now installs `-e '.[dev]'` (produces the artifact), and `append-coverage-telemetry.py`
+   gained a `--fetch-ci` mode (used by the checkpoint) that pulls the latest CI artifact via `gh` when no
+   local xml exists — decoupling the durable ledger from local deps. 7 unit tests. **Now the clock actually
+   starts** once the fixed `coverage.yml` runs on main.
 2. **Add try-repo fixtures** for `CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`, `PLATFORMS_TESTED` (Layer-3 parity).
 3. **Raise `jwt_validator.py` coverage (35%)** — auth is a declared high-risk area; lowest-covered module in the AI layer.
 

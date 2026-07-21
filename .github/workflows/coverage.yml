@@ -89,9 +89,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install ai-engine deps + pytest-cov
+      - name: Install ai-engine (+ test deps) so coverage.xml is actually produced
         working-directory: ai-engine
-        run: pip install --quiet pytest pytest-cov
+        # `-e '.[dev]'` pulls ai-engine's runtime deps (fastapi, pydantic, ...) +
+        # the dev extra (pytest, pytest-cov, pytest-asyncio). Installing only
+        # pytest/pytest-cov made `pytest --cov` fail on imports → no coverage.xml
+        # → the ai-engine-coverage-xml artifact was never uploaded (R9 root cause,
+        # found 2026-07-21). Injection-safe: no github.event.* interpolation.
+        run: pip install --quiet -e '.[dev]' || pip install --quiet pytest pytest-cov
 
       - name: Run pytest --cov
         continue-on-error: true

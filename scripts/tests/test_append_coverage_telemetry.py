@@ -81,6 +81,35 @@ def test_missing_xml_is_fail_soft(tmp_path):
     assert not ledger.exists()
 
 
+def test_fetch_ci_fail_soft_when_gh_unavailable(tmp_path, monkeypatch):
+    # With no local xml and --fetch-ci, a failing/absent gh must still exit 0
+    # and write nothing (never breaks the checkpoint).
+    def _boom(*a, **k):
+        raise FileNotFoundError("gh not found")
+    monkeypatch.setattr(act.subprocess, "run", _boom)
+    ledger = tmp_path / "ledger.jsonl"
+    rc = act.main(["--xml", str(tmp_path / "nope.xml"), "--ledger", str(ledger),
+                   "--fetch-ci"])
+    assert rc == 0
+    assert not ledger.exists()
+
+
+def test_fetch_ci_uses_downloaded_xml_and_labels_provenance(tmp_path, monkeypatch):
+    # Simulate a successful gh fetch by having fetch_latest_ci_coverage_xml
+    # return a real coverage.xml; the row must be written with a '-ci-fetch'
+    # provenance suffix.
+    xml = _write_xml(tmp_path)
+    monkeypatch.setattr(act, "fetch_latest_ci_coverage_xml", lambda d: xml)
+    ledger = tmp_path / "ledger.jsonl"
+    rc = act.main(["--xml", str(tmp_path / "absent.xml"), "--ledger", str(ledger),
+                   "--fetch-ci", "--date", "2026-07-21", "--provenance", "checkpoint"])
+    assert rc == 0
+    rows = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
+    assert len(rows) == 1
+    assert rows[0]["provenance"] == "checkpoint-ci-fetch"
+    assert rows[0]["line_rate"] == 0.84
+
+
 def test_corrupt_ledger_line_tolerated(tmp_path):
     ledger = tmp_path / "ledger.jsonl"
     ledger.write_text("{not valid json\n", encoding="utf-8")

@@ -1084,16 +1084,18 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
     # R9 coverage telemetry (Follow-up #1) — best-effort durable coverage row.
     # Appends to .claude/shared/coverage-telemetry.jsonl, which rides the digest
     # commit that persists .claude/shared/*, so the 30-day GATE_TEST_MISSING
-    # calibration window accumulates. `make coverage-py` skips gracefully if
-    # pytest/ai-engine deps are absent; the append is fail-soft (exit 0). Never
-    # blocks the checkpoint.
+    # calibration window accumulates. `make coverage-py` produces a local
+    # coverage.xml when ai-engine deps are present; `--fetch-ci` falls back to
+    # the latest CI coverage.yml artifact via gh when they are NOT (the common
+    # checkpoint-host case — this is why the ledger sat at its seed row until the
+    # 2026-07-21 fix). Both the make run and the append are fail-soft (exit 0).
     log("      · coverage-telemetry (best-effort)...")
     try:
         subprocess.run(["make", "coverage-py"], cwd=REPO_ROOT,
                        capture_output=True, text=True, timeout=300)
         subprocess.run(["python3", "scripts/append-coverage-telemetry.py",
-                        "--provenance", "checkpoint"], cwd=REPO_ROOT,
-                       capture_output=True, text=True, timeout=60)
+                        "--fetch-ci", "--provenance", "checkpoint"], cwd=REPO_ROOT,
+                       capture_output=True, text=True, timeout=120)
     except Exception:  # noqa: BLE001 — fail-soft by contract
         pass
 
