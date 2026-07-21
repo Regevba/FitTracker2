@@ -8,15 +8,16 @@ verdict + exit code — so a human, a cron, or an agent gets the same answer.
 
 Layers:
   1. Framework integrity      — integrity-check.py (0 findings)
-  2. Regression vs anchor      — integrity-diff.py (no regression vs 2026-05-14)
-  3. Adoption telemetry        — gate-last-fired index (0 malformed) + adoption
-  4. Gate calibration          — enforced gates must have candidates (no mis-wire)
-  5. Documentation debt        — open items <= baseline
-  6. Cross-repo sync           — R17 state-sync-health endpoint (mirror fresh)
-  7. CI automation (bot PRs)    — check-bot-pr-health.py (no deadlocks)
-  8. Analytics / GA4           — INFO: needs GA4 MCP; run the B3 runbook separately
-  9. Backup checkpoint         — last daily-checkpoint ledger row is recent
- 10. Upcoming cadence          — INFO: calendar-anchored follow-ups <= 14 days
+  2. Regression vs anchor      — integrity-diff.py (raw-%, no regression vs 2026-05-14)
+  3. Dilution normalization    — integrity-multi-anchor.py (cohort/numerator; dilution-immune)
+  4. Adoption telemetry        — gate-last-fired index (0 malformed) + adoption
+  5. Gate calibration          — enforced gates must have candidates (no mis-wire)
+  6. Documentation debt        — open items <= baseline
+  7. Cross-repo sync           — R17 state-sync-health endpoint (mirror fresh)
+  8. CI automation (bot PRs)    — check-bot-pr-health.py (no deadlocks)
+  9. Analytics / GA4           — INFO: needs GA4 MCP; run the B3 runbook separately
+ 10. Backup checkpoint         — last daily-checkpoint ledger row is recent
+ 11. Upcoming cadence          — INFO: calendar-anchored follow-ups <= 14 days
 
 Exit code: 0 if no layer FAILs (WARN/INFO don't fail), 1 if any layer FAILs.
 Everything degrades gracefully — a missing `gh`, an unreachable endpoint, or an
@@ -98,6 +99,24 @@ def layer_regression_anchor() -> tuple[str, str]:
     if "REAL_REGRESSION" in out or "regression" in out.lower():
         return FAIL, "regression detected vs anchor — see `make integrity-diff`"
     return WARN, "integrity-diff produced no clear verdict"
+
+
+def layer_dilution_normalization() -> tuple[str, str]:
+    """Cohort/numerator-normalized view across all anchors (dilution-immune). The
+    integrity-diff layer above is raw-% and dilution-SENSITIVE; this layer is the
+    apples-to-apples check that separates a real cohort regression from denominator
+    dilution. Uses the multi-anchor tool's distinct exit codes: 0 ran / 2 real cohort
+    regression vs canonical / 3 registry paths unresolved (config drift, NOT clean)."""
+    r = _run(["python3", str(REPO / "scripts" / "integrity-multi-anchor.py"),
+              "--canonical-only", "--exit-on-regression"])
+    if r.returncode == 3:
+        return WARN, "multi-anchor unavailable — anchor registry path drift (NOT a clean result)"
+    if r.returncode == 2:
+        return FAIL, "REAL cohort regression vs 2026-05-14 canonical — see `make integrity-multi-anchor`"
+    out = r.stdout + r.stderr
+    if "No REAL regressions" in out:
+        return PASS, "no cohort/numerator regression vs 2026-05-14 canonical (raw drops = dilution)"
+    return WARN, "multi-anchor produced no clear verdict"
 
 
 def layer_adoption_telemetry(refresh: bool) -> tuple[str, str]:
@@ -220,6 +239,7 @@ def main() -> int:
     layers = [
         ("Framework integrity", layer_framework_integrity()),
         ("Regression vs anchor", layer_regression_anchor()),
+        ("Dilution normalization", layer_dilution_normalization()),
         ("Adoption telemetry", layer_adoption_telemetry(refresh)),
         ("Gate calibration", layer_gate_calibration()),
         ("Documentation debt", layer_documentation_debt(refresh)),

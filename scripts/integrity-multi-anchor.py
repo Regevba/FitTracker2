@@ -37,35 +37,63 @@ Usage:
 Exit codes:
     0  ran (regression or not)
     2  a COHORT-normalized regression was detected AND --exit-on-regression set
+    3  fewer than 2 anchors loaded — registry paths did not resolve (config/path
+       error); a LOUD stderr warning is emitted. This is NOT "no regression".
 """
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 HOME = Path.home()
-BACKUPS = HOME / "Documents" / "FitTracker2-backups"
+# Anchor backups moved during the 2026-07-07 ~/Developer/FitMe consolidation
+# (backups now live under ~/Developer/FitMe/backups/FitTracker2-backups/). The legacy
+# ~/Documents/FitTracker2-backups path is kept as a fallback so pre-consolidation
+# checkouts still resolve. Each anchor lists BOTH roots as candidates and load_anchor()
+# takes the first that exists — mirroring scripts/integrity-diff.py's dual-path resolver.
+# (History: integrity-diff got this fix at consolidation; this tool + integrity-data-lake
+# were missed and silently loaded 0 registry anchors until 2026-07-21 — the reader/path
+# drift class the framework polices as W24/W40.)
+_BACKUP_ROOTS = (
+    HOME / "Developer" / "FitMe" / "backups" / "FitTracker2-backups",
+    HOME / "Documents" / "FitTracker2-backups",
+)
+
+
+def _anchor_candidates(*leaf_parts: str) -> list[Path]:
+    """Candidate paths for one anchor's measurement-adoption.json, one per backup root."""
+    return [root.joinpath(*leaf_parts) for root in _BACKUP_ROOTS]
+
+
 DIMENSIONS = ["timing_wall_time", "per_phase_timing", "cache_hits", "cu_v2"]
 
 # CANONICAL regression anchor — must match scripts/integrity-diff.py DEFAULT_BASELINE
 # and data-integrity-and-rollback sub-plan §2.3/§2.5. The cohort-normalized regression
 # verdict is computed against THIS anchor specifically; other anchors are trend context.
+#
+# INVARIANT (FT2-FH-004 lesson — enforced by test_multi_anchor_canonical_invariance.py):
+# adding anchors to the registry must NEVER change which anchor gates the verdict. The
+# canonical anchor is selected by LABEL (== CANONICAL_ANCHOR), never by order/position,
+# and only the canonical anchor's REAL_REGRESSIONs gate (see `and is_canonical` below).
+# 2026-05-14 stays canonical, non-superseding: newer anchors are advisory trend context
+# ONLY. Do NOT change this label or point integrity-diff.DEFAULT_BASELINE at a newer dir.
 CANONICAL_ANCHOR = "2026-05-14-platform"
 
 # Built-in anchor registry: (label, candidate paths to measurement-adoption.json).
-# First existing candidate wins. Order = chronological.
-# NOTE: the 2026-06-10-telemetry-backfill snapshot is EVIDENCE-ONLY (referenced by
-# honesty ledger FT2-FH-004), deliberately NOT registered here — it must not act as a
-# regression anchor (operator decision 2026-06-10: keep 2026-05-14 canonical, no supersede).
+# First existing candidate wins. Order = chronological (display only; NOT gating).
+# The 2026-06-10-telemetry-backfill snapshot is registered as TREND CONTEXT ONLY
+# (advisory; never gates) so the dilution trend has a mid-window point between the
+# canonical 2026-05-14 anchor and live. It does NOT supersede canonical (FT2-FH-004).
 ANCHOR_REGISTRY = [
-    ("2026-05-12-pre-v7.9", [
-        BACKUPS / "2026-05-12-framework-v7-8-branch-isolation-pre-v7-9-baseline" / "measurement-adoption.json",
-    ]),
-    ("2026-05-14-platform", [
-        BACKUPS / "2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14" / "platform-baseline" / "measurement-adoption.json",
-    ]),
+    ("2026-05-12-pre-v7.9", _anchor_candidates(
+        "2026-05-12-framework-v7-8-branch-isolation-pre-v7-9-baseline", "measurement-adoption.json")),
+    ("2026-05-14-platform", _anchor_candidates(
+        "2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14", "platform-baseline", "measurement-adoption.json")),
+    ("2026-06-10-telemetry-backfill", _anchor_candidates(
+        "2026-06-10-telemetry-backfill-anchor", "platform-baseline", "measurement-adoption.json")),
 ]
 LIVE = ("live", [REPO_ROOT / ".claude" / "shared" / "measurement-adoption.json"])
 
@@ -192,8 +220,17 @@ def main() -> int:
         (loaded.append if r else skipped.append)(r if r else label)
 
     if len(loaded) < 2:
-        print("need >=2 loadable anchors; found", len(loaded))
-        return 0
+        # LOUD + non-zero: too few anchors means the registry paths did not resolve
+        # (config/path drift), NOT "no regression". Returning 0 here would be a
+        # silent-pass — the exact failure that stranded this tool 2026-07-07 → -21.
+        roots = ", ".join(str(r).replace(str(HOME), "~") for r in _BACKUP_ROOTS)
+        print(
+            f"⚠ MULTI-ANCHOR UNAVAILABLE: loaded {len(loaded)} anchor(s), need >=2. "
+            f"Registry anchors did not resolve under any backup root ({roots}). "
+            "This is a config/path error — dilution vs regression was NOT checked.",
+            file=sys.stderr,
+        )
+        return 3
 
     latest_label, latest_adopt, latest_src = loaded[-1]
     latest_names = set(latest_adopt)
