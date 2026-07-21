@@ -66,9 +66,10 @@ CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
 # it was invisible to the F17 gate-last-fired index + GATE_COVERAGE_ZERO.
 # Instrumented 2026-07-21 to close that telemetry blind spot.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from gate_coverage import GateCoverage  # noqa: E402
+from gate_coverage import GateCoverage, canonical_ledger_path  # noqa: E402
 
-GATE_COVERAGE_LEDGER = REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
+# Shared telemetry sink (git common worktree) — see gate_coverage.canonical_ledger_path.
+GATE_COVERAGE_LEDGER = canonical_ledger_path(REPO_ROOT)
 
 EXEMPT_NAMES = {
     "README.md",

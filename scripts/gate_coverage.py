@@ -40,8 +40,58 @@ JSONL ledger is the data source for the v7.9 enforcement flip.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
+
+
+def canonical_ledger_path(repo_root: Path) -> Path:
+    """Resolve the gate-coverage ledger to the git COMMON worktree.
+
+    `gate-coverage.jsonl` is gitignored and, historically, resolved
+    ``__file__``-relative — so a gate firing inside a *linked worktree*
+    (the branch-isolation-mandated norm) was appended to that worktree's
+    local copy and **discarded when the worktree was removed**, never
+    reaching the main checkout that the committed F17 index reads. Result:
+    the index undercounts every gate that fired during worktree-isolated
+    work (found 2026-07-21: 44 W9 concurrency-check sessions, only 37 rows
+    on main — a 7-session loss, and a real `w9.concurrency` `concurrency_offer`
+    among the survivors). This resolver sends the telemetry SINK to the
+    shared main checkout so all worktrees accumulate into one ledger, while
+    every gate's `REPO_ROOT` stays worktree-local (a gate must read the
+    worktree's own staged files / features).
+
+    Resolution order (env overrides win, preserving F16 try-repo isolation):
+      1. ``GATE_COVERAGE_LEDGER``  — explicit ledger path (try-repo harness)
+      2. ``REPO_ROOT_OVERRIDE``    — explicit repo root → ``<root>/.claude/logs/…``
+      3. git common worktree       — the fix: ``git rev-parse --git-common-dir``
+                                     for a linked worktree points at ``<main>/.git``,
+                                     whose parent is the main worktree root
+      4. fallback                  — ``repo_root``-relative (git unavailable)
+    """
+    env_ledger = os.environ.get("GATE_COVERAGE_LEDGER")
+    if env_ledger:
+        return Path(env_ledger)
+    override = os.environ.get("REPO_ROOT_OVERRIDE")
+    if override:
+        return Path(override) / ".claude" / "logs" / "gate-coverage.jsonl"
+    try:
+        res = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"],
+            cwd=str(repo_root), text=True, capture_output=True, timeout=5,
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            common = Path(res.stdout.strip())
+            if not common.is_absolute():
+                common = (Path(repo_root) / common).resolve()
+            # The common dir is ``<main-worktree>/.git`` for both the main
+            # checkout and any linked worktree → its parent is the main root.
+            if common.name == ".git":
+                return common.parent / ".claude" / "logs" / "gate-coverage.jsonl"
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return Path(repo_root) / ".claude" / "logs" / "gate-coverage.jsonl"
 
 
 class GateCoverage:
