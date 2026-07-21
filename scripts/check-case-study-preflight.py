@@ -60,6 +60,16 @@ else:
     REPO_ROOT = Path(__file__).resolve().parent.parent
 CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
 
+# Mechanism A (v7.8 §4.1): per-gate coverage tracking. This is the SECOND
+# pre-commit gate host (distinct from check-state-schema.py); its lone gate
+# CASE_STUDY_MISSING_FIELDS was the last live gate not emitting coverage — so
+# it was invisible to the F17 gate-last-fired index + GATE_COVERAGE_ZERO.
+# Instrumented 2026-07-21 to close that telemetry blind spot.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gate_coverage import GateCoverage  # noqa: E402
+
+GATE_COVERAGE_LEDGER = REPO_ROOT / ".claude" / "logs" / "gate-coverage.jsonl"
+
 EXEMPT_NAMES = {
     "README.md",
     "case-study-template.md",
@@ -173,7 +183,9 @@ def parse_frontmatter(path: Path) -> dict | None:
     return result
 
 
-def check_case_study_missing_fields(path: Path) -> list[dict]:
+def check_case_study_missing_fields(
+    path: Path, *, coverage: "GateCoverage | None" = None
+) -> list[dict]:
     """Reject case studies using YAML frontmatter dated >= 2026-04-28 that
     are missing required frontmatter fields.
 
@@ -183,15 +195,25 @@ def check_case_study_missing_fields(path: Path) -> list[dict]:
 
     Code: CASE_STUDY_MISSING_FIELDS
     """
+    GATE = "CASE_STUDY_MISSING_FIELDS"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
     fm = parse_frontmatter(path)
     if fm is None:
         # No YAML frontmatter — exempt from this check
+        if coverage is not None:
+            coverage.skip(GATE, "no_frontmatter")
         return []
 
     date_written = str(fm.get("date_written", "")).strip()
     if not date_written or date_written < FIELDS_CUTOFF_DATE:
+        if coverage is not None:
+            coverage.skip(GATE, "pre_cutoff")
         return []  # Forward-only: pre-cutoff files are exempt
 
+    if coverage is not None:
+        coverage.checked(GATE)
     missing = [f for f in REQUIRED_FRONTMATTER_FIELDS if f not in fm or fm[f] is None]
     if not missing:
         return []
@@ -327,7 +349,7 @@ def _is_exempt(path: Path) -> bool:
     return False
 
 
-def validate_file(path: Path) -> list[str]:
+def validate_file(path: Path, *, coverage: "GateCoverage | None" = None) -> list[str]:
     """Return human-readable violation messages for one case study file."""
     errors: list[str] = []
     if not path.exists():
@@ -364,7 +386,7 @@ def validate_file(path: Path) -> list[str]:
                 )
 
     # Check 1e: CASE_STUDY_MISSING_FIELDS at write-time (v7.7, forward-only >= 2026-04-28)
-    for finding in check_case_study_missing_fields(path):
+    for finding in check_case_study_missing_fields(path, coverage=coverage):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )
@@ -417,9 +439,20 @@ def main() -> int:
         print(f"No eligible case study .md files to validate (mode={mode}).")
         return 0
 
+    coverage = GateCoverage(mode=mode)
     all_errors: list[str] = []
     for p in eligible:
-        all_errors.extend(validate_file(p))
+        all_errors.extend(validate_file(p, coverage=coverage))
+
+    # Mechanism A: flush per-gate coverage so CASE_STUDY_MISSING_FIELDS is
+    # visible to the F17 gate-last-fired index + GATE_COVERAGE_ZERO (closes the
+    # 2026-07-21 telemetry blind spot). Fires on both success and failure paths
+    # below. Tests opt out via GATE_COVERAGE_LEDGER_DISABLED=1. Fail-soft on IO.
+    if os.environ.get("GATE_COVERAGE_LEDGER_DISABLED") != "1":
+        try:
+            coverage.write_jsonl(GATE_COVERAGE_LEDGER)
+        except OSError:
+            pass
 
     if all_errors:
         print(f"✗ CASE_STUDY: {len(all_errors)} violation(s) "
