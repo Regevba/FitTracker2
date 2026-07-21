@@ -95,3 +95,47 @@ operational cost. **`CLAUDE_W9_CONCURRENCY_ENFORCE` stays default-off (advisory)
 `concurrency_offer` row is observed in `gate-coverage.jsonl` (i.e. the trigger
 has actually fired on a live sibling session), so criterion 2 can be assessed
 on real data rather than vacuously.
+
+## 2026-07-21 — Re-eval triggered (first `concurrency_offer` observed) + telemetry-loss correction
+
+**The re-eval trigger fired and was previously missed.** A forensic audit found a
+genuine `w9.concurrency` `concurrency_offer` in main's `gate-coverage.jsonl`:
+
+```json
+{"gate":"w9.concurrency","ts":"2026-07-02T18:26:52Z","candidates":1,"checked":0,
+ "skipped":1,"skip_reasons":["advisory_concurrency"],"outcome":"concurrency_offer"}
+```
+
+This post-dates the 2026-06-28 window (06-14 → 06-26), so the "0 offers / criterion 2
+vacuous" basis for the HOLD is **stale**. The offer was emitted only because
+`another_session_live()` returned True under the 3600 s TTL at emit time (07-02 also
+shows ≥5 concurrent sessions on `chore/w40-reconcile-2026-07-01`), so it is a
+plausible true positive — but the leases are ephemeral (reaped), so the criterion-2
+lease-freshness audit cannot be reconstructed retroactively for this single event.
+
+**Telemetry-loss correction (why the count was unreliable).** `gate-coverage.jsonl`
+is gitignored and was resolved `__file__`-relative, so W9 firings/offers inside
+linked worktrees were discarded on `git worktree remove`. Evidence: **44** sessions
+ran the concurrency check (`.claude/_session-state/*-w9-concurrency.done`) but only
+**37** `w9.concurrency` rows reached main — a 7-session loss; any offer among them is
+gone. So the true offer count is **≥1 and undercounted**. Fixed in the companion
+commit (`gate_coverage.canonical_ledger_path` → git common worktree) so every
+worktree now accumulates into the shared main ledger. See honesty-adjacent memory
+`gate-coverage-worktree-telemetry-loss`.
+
+**Verdict: HOLD at advisory — corrected basis, not vacuous.**
+
+| # | Criterion | Verdict (2026-07-21) |
+|---|---|---|
+| 1 | ≥7d `w9.concurrency` coverage | ✅ met (9 emission days at 06-28 + more since) |
+| 2 | No false positives — offers map to a genuinely-live sibling | ⚠️ **n=1** — 1 confirmed offer (07-02), emitted under the live-sibling predicate; lease audit not reconstructable; sample too small for a KC2 false-trigger-rate assessment |
+| 3 | No silent skips | ✅ `no_concurrency` / `already_isolated` track real states |
+| 4 | Reversibility | ✅ single env flag |
+
+The HOLD continues **not because the detector is vacuous** (it has now fired in the
+field) but because **n=1** is insufficient to assess the KC2 false-trigger rate, and
+because reliable counting only began with the telemetry-loss fix. **New re-eval
+condition:** accumulate ≥5 `concurrency_offer` rows post-fix (reliable count) and
+audit their lease-freshness before considering the `CLAUDE_W9_CONCURRENCY_ENFORCE`
+default flip. `checked=1` (the acted-isolation firing) remains unreachable in
+advisory by design — the calibration signal is the `concurrency_offer` skip-row.

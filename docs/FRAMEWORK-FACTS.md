@@ -25,7 +25,7 @@
 **Standalone advisory (not via `integrity-check.py`):** `FIGMA_MIRROR_STALENESS` — `make figma-mirror-staleness` (`scripts/figma-mirror-staleness.py`), shipped 2026-06-18 (`figma-design-architecture`, Gap D). Advisory-permanent; emits `mode=cycle` Mechanism A coverage; checks code-token (`tokens.json`) ↔ Figma-mirror-snapshot drift. Counted separately from the 9 integrity-check cycle-time codes because it runs on its own target.
 
 ### W9 real-time hooks (2)
-`w9.auto_isolate` · `w9.concurrency` (PostToolUse drift detection). **Calibration RESOLVED 2026-06-28: HOLD at advisory** — `CLAUDE_W9_CONCURRENCY_ENFORCE` stays default-off (criterion 2 vacuous: 0 `concurrency_offer` events in the window). Re-eval now event-gated (first real offer).
+`w9.auto_isolate` · `w9.concurrency` (PostToolUse drift detection). **HOLD at advisory (basis corrected 2026-07-21)** — `CLAUDE_W9_CONCURRENCY_ENFORCE` stays default-off. The event-gate ("re-open on first real `concurrency_offer`") **fired 2026-07-02** (1 genuine `w9.concurrency` `concurrency_offer`), so the prior "criterion 2 vacuous / 0 offers" basis is superseded. HOLD continues on n=1 (too thin for a KC2 false-trigger-rate assessment) + the fact that reliable offer counting only began with the 2026-07-21 gate-coverage telemetry-loss fix (worktree firings were discarded — 44 concurrency-check sessions but only 37 rows on main). New re-eval condition: ≥5 offers post-fix + lease-freshness audit. `checked=1` is unreachable in advisory by design; the signal is the `concurrency_offer` skip-row. See `.claude/features/w9-drift-triggered-auto-isolation/calibration.md` §2026-07-21.
 
 ### Gate catalog (T16 / TC-T16, machine-derived)
 
