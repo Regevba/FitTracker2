@@ -620,6 +620,10 @@
       "fixture_path": null,
       "test_files": [
         {
+          "file": "scripts/tests/test_gate_coverage_canonical_ledger.py",
+          "layer": "unit"
+        },
+        {
           "file": "scripts/tests/test_w9_auto_isolate.py",
           "layer": "unit"
         }
