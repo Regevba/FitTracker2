@@ -40,7 +40,7 @@ are no longer valid identifiers anywhere.
 |---|---|---|---|
 | **`FW-`** | Framework infrastructure & gates | infra-master-plan F-candidates | `FW-F4`, `FW-F16`, `FW-F22` |
 | **`TC-`** | Test coverage (Theme H) | test-coverage-master-plan | `TC-T14`, `TC-T3`, `TC-T1` |
-| **`DE-`** | Dev-env upgrade plan | 2026-05-19 dev-env audit (R1–R24) | `DE-R14`, `DE-R18` |
+| **`DE-`** | Dev-env upgrade plan | **Linear epic FIT-166** R1–R24 (FIT-167…FIT-190) | `DE-R14`, `DE-R18` |
 | **`HADF-`** | HADF program | HADF plans (B14.x/B15.x/C16.x/Phase-3a) | `HADF-B15.22a`, `HADF-3A-T4` |
 | **`AN-`** | Analytics-observability | analytics sub-plan (Phase 1.B.x) | `AN-1B.1`, `AN-1B.2` |
 | **`PROD-`** | Product features (app/site) | product backlog | `PROD-app-store-assets` |
@@ -53,6 +53,33 @@ are no longer valid identifiers anywhere.
 > the SBOM item is **not** `DE-R14` — the 05-24 plan items are a *separate*
 > shipped batch and keep their own historical labels; the live `DE-` scheme is
 > the Linear R1–R24 plan only. New work never reuses a number across schemes.
+
+### 2.1 The two R-series, explicitly (clarified 2026-07-23)
+
+The `DE-` source line above previously read "2026-05-19 dev-env audit (R1–R24)",
+which is **wrong and was itself a source of confusion** — the Linear series does
+not follow the audit's numbering. They are two different recommendation sets that
+both happen to run R1–R24, and they diverge from **R3 onward**:
+
+| # | `DE-R##` — Linear FIT-166 series (**live scheme**) | `DEV-AUDIT-R##` — 2026-05-19 audit + 2026-05-24 plan (**historical, shipped**) |
+|---|---|---|
+| R3 | Hardware-attribute snapshot in daily checkpoint | 2nd SSH signing key (YubiKey) |
+| R7 | Auto-rotate `gh-pr-cache.json` | SwiftLint via SPM plugin |
+| R9 | Mechanism C session-ledger compaction | Coverage instrumentation (Slather / coverage.py) |
+| R10 | Make `verify-local` idempotent | launchd → GitHub Actions cron migration |
+| R14 | `make integrity-check` parallelization | SBOM generation (`syft`) |
+| R15 | Pre-commit P95 latency profiling | Playwright smoke specs for fitme-story |
+| R17 | Cross-repo state-sync health endpoint | commitlint |
+| R18 | `state.json schema_version` + migrator | shellcheck |
+| R21 | Containerized dev-env (Docker image) | iOS App Thinning report |
+| R22 | Multi-machine encrypted state sync | OpenTelemetry iOS ↔ ai-engine |
+| R24 | Telemetry ingest endpoint | Distributed-tracing-aware Sentry config |
+
+**Rule:** an unqualified `R##` in *live* tracking means the Linear series
+(`DE-R##`). When citing the audit/plan series, write **`DEV-AUDIT-R##`** — the
+[`dev-env-master-plan`](../master-plan/dev-env-master-plan-2026-05-24.md) Tier
+tables are that series, and its rows are historical records of shipped work, not
+live `DE-` items. Do not renumber either series; qualify instead.
 
 **Forward-only.** Existing shipped case studies / dated plans keep their bare
 historical codes (point-in-time records). New rows + reconciled live rows use
@@ -102,6 +129,7 @@ which reads every `.claude/features/<slug>/state.json` and emits
 {
   "schema_version": 1,
   "generated_note": "derived from .claude/features/*/state.json — do not hand-edit",
+  "source_fingerprint": "sha256 over the canonicalized items list",
   "items": [
     {
       "slug": "f4-framework-version-stale",
@@ -113,12 +141,38 @@ which reads every `.claude/features/<slug>/state.json` and emits
       "prs": [740]
     }
   ],
-  "coverage": { "total": 118, "with_linear_id": 71, "missing_linear_id": 47 }
+  "coverage": { "total": 132, "with_linear_id": 66, "missing_linear_id": 66 }
 }
 ```
 
 Notion, backlog, and the plans cite items **by slug + `FIT-NNN`**; the registry
 is the authority that ties them together. Regenerate after any reconcile.
+
+### 5.1 Freshness (W44, added 2026-07-23)
+
+The registry is a **derived** index, and until 2026-07-23 its only producer was
+a manual `make crosswalk` with no freshness signal in the file. It drifted to
+**118 items against a 132-feature corpus** — missing the two in-flight features
+outright — and nothing surfaced it, because a stale index looks exactly like a
+fresh one. See observed pattern **W44**.
+
+Two mechanisms close that:
+
+- **`source_fingerprint`** — sha256 over the canonicalized `items` list. It is
+  deliberately *not* a wall-clock `generated_at`: a timestamp would churn the
+  file on every regeneration and still would not prove the content matches the
+  corpus. The fingerprint makes regeneration **idempotent** (same corpus →
+  byte-identical file) and makes staleness **exactly** decidable.
+- **`make crosswalk CHECK=1`** — recomputes from the live corpus and compares.
+  Prints a FRESH/STALE verdict (`--json` for machines) and exits **3** when
+  stale, so callers can gate on it. A registry with no `source_fingerprint`
+  (the pre-2026-07-23 format) is reported stale: it cannot prove otherwise.
+
+The verdict is surfaced **daily** as advisory **N5** in
+[`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py),
+so the join table can no longer rot unnoticed between reconcile passes. The
+advisory is fail-silent: any tooling error yields no output rather than a false
+staleness claim.
 
 ---
 

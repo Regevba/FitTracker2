@@ -11,6 +11,13 @@
 
 > **Status:** CURRENT · Opened 2026-05-24 as a sub-doc of [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md)
 > **Source audit:** [`docs/research/2026-05-19-dev-env-audit-stability-and-scale.md`](../research/2026-05-19-dev-env-audit-stability-and-scale.md) (655 lines, 24 ranked recommendations, 4 tiers)
+> **⚠ R-numbering (clarified 2026-07-23):** the R1–R24 in THIS plan are the
+> **`DEV-AUDIT-R##`** series (faithful to the 2026-05-19 audit). They are a
+> *different* set from Linear epic FIT-166's R1–R24, which is the live
+> **`DE-R##`** scheme — the two diverge from R3 onward (this plan's `R15` is
+> Playwright; `DE-R15` is pre-commit latency profiling). Cite this plan's rows as
+> `DEV-AUDIT-R##`. Full crosswalk:
+> [`cross-layer-item-naming-convention.md` §2.1](../process/cross-layer-item-naming-convention.md).
 > **Scope:** The development environment for both repos (FT2 iOS + ai-engine + dashboard + website; fitme-story Next.js + control room), plus the v7.8.6 framework substrate, multi-agent harness, and supporting CI/observability infra. Drives lint/test/coverage/security/backup hardening across 24 R-items grouped in 4 tiers.
 > **Purpose:** Codify the 2026-05-19 dev-env audit as a tracked, in-spec master plan so that (a) every R-item is mirrored as a backlog row, (b) status is visible on disk via this sub-plan (not memory-only), (c) the calibration calendar respects v7.9 Phase E + branch-isolation infra-globs, and (d) shipped vs open status is greppable.
 > **Why a sub-plan, not a section in the infra plan:** Same pattern as [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md) + [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) — dev-env work has its own R-series candidates, its own shipping calendar, and its own per-item calibration. Folding 24 items into infra plan §3 would crowd out v7.9.1 → v8.x F-series planning.
