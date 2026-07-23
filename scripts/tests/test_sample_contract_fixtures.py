@@ -102,3 +102,38 @@ def test_check_flags_missing_required_key(tmp_path, monkeypatch):
     manifest = {"sample_dir": "fix", "max_age_days": 7,
                 "contracts": [{"name": "c", "producer_repo": "FitTracker2", "required_keys": ["k"]}]}
     assert scf.check(manifest, now=datetime.now(timezone.utc)) == 1
+
+
+# --- gate-coverage ledger resolution (worktree telemetry-loss reader half) ---
+# Regression guard for the 2026-07-23 fix: #934 redirected the gate-coverage
+# ledger WRITER to the git common worktree, but this sampler (a READER) still
+# resolved REPO_ROOT-relative, so every worktree-isolated run reported
+# "source unavailable" and failed the contract re-sample. Same reader/writer
+# mismatch class as observed-pattern #24.
+
+def test_gate_coverage_source_resolves_to_common_worktree(monkeypatch, tmp_path):
+    main_root = tmp_path / "main"
+    (main_root / ".claude" / "logs").mkdir(parents=True)
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(main_root))
+
+    contract = {"producer_repo": "FitTracker2",
+                "producer_path": ".claude/logs/gate-coverage.jsonl"}
+    src, provenance = scf._sample_source(contract)
+
+    assert provenance == "canonical"
+    # Resolved against the override (common worktree), NOT the linked worktree.
+    assert src == main_root / ".claude" / "logs" / "gate-coverage.jsonl"
+
+
+def test_non_ledger_local_producer_stays_repo_root_relative(monkeypatch, tmp_path):
+    # Only the gitignored ledger is redirected; ordinary tracked producers must
+    # still resolve against the worktree's own REPO_ROOT.
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(tmp_path / "elsewhere"))
+    monkeypatch.setattr(scf, "REPO_ROOT", tmp_path / "wt")
+
+    contract = {"producer_repo": "FitTracker2",
+                "producer_path": ".claude/shared/contract-manifest.json"}
+    src, provenance = scf._sample_source(contract)
+
+    assert provenance == "canonical"
+    assert src == tmp_path / "wt" / ".claude" / "shared" / "contract-manifest.json"

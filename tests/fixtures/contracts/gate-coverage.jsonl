@@ -1,10 +1,10 @@
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "PHASE_TRANSITION_NO_TIMING", "candidates": 1, "checked": 0, "skipped": 1, "skip_reasons": {"no_phase_change": 1}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "PLATFORMS_TESTED", "candidates": 1, "checked": 0, "skipped": 1, "skip_reasons": {"no_phase_change": 1}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "PR_NUMBER_UNRESOLVED", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "SCHEMA_DRIFT_LEGACY_CREATED", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "SCHEMA_DRIFT_LEGACY_PHASE", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "STATE_NO_CASE_STUDY_LINK", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "STATE_OWNER_INVALID", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "STATE_OWNER_LOCATION_MISMATCH", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
-{"timestamp": "2026-06-22T05:40:41+00:00", "mode": "staged", "gate": "STATE_OWNER_MISSING", "candidates": 1, "checked": 0, "skipped": 1, "skip_reasons": {"state_owner_present": 1}}
-{"timestamp": "2026-06-22T05:59:06+00:00", "mode": "staged", "gate": "BRANCH_ISOLATION_VIOLATION", "candidates": 1, "checked": 0, "skipped": 1, "skip_reasons": {"not_infra_commit_level": 1}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "BRANCH_ISOLATION_HISTORICAL", "candidates": 132, "checked": 8, "skipped": 124, "skip_reasons": {"isolation_opt_out": 26, "pre_ship_date": 54, "has_merge_pr": 36, "exempt_no_case_study_required": 8}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "BROKEN_PR_CITATION", "candidates": 140, "checked": 121, "skipped": 19, "skip_reasons": {"skip_listed_file": 3, "meta_analysis_prose": 16}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE", "candidates": 11, "checked": 10, "skipped": 1, "skip_reasons": {"no_state": 1}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "CASE_STUDY_MISSING_TIER_TAGS", "candidates": 140, "checked": 5, "skipped": 135, "skip_reasons": {"skip_listed_file": 4, "no_date_header": 76, "pre_convention_date": 39, "meta_analysis_prose": 16}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "DEPENDENCY_GRAPH_CYCLE", "candidates": 31, "checked": 31, "skipped": 0, "skip_reasons": {}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "PATTERN_SKILL_UNMAPPED", "candidates": 69, "checked": 69, "skipped": 0, "skip_reasons": {}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "PHASE_LIE", "candidates": 132, "checked": 111, "skipped": 21, "skip_reasons": {"not_terminal": 5, "exempt_pre_pm_workflow_backfill": 12, "exempt_framework_meta_retroactive": 4}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "STATE_TASKS_FILESYSTEM_DRIFT", "candidates": 36, "checked": 0, "skipped": 36, "skip_reasons": {"pre_task_discipline": 30, "exempt_framework_meta": 5, "no_shipped_artifact": 1}}
+{"timestamp": "2026-07-23T15:48:25+00:00", "mode": "cycle", "gate": "TIER_TAG_LIKELY_INCORRECT", "candidates": 1, "checked": 1, "skipped": 0, "skip_reasons": {}}
+{"gate": "w9.concurrency", "ts": "2026-07-23T15:51:48Z", "candidates": 1, "checked": 0, "skipped": 1, "skip_reasons": ["no_concurrency"], "outcome": "no_concurrency"}

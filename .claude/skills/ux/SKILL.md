@@ -14,13 +14,14 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 ## Observed patterns preflight
 
 <!-- BEGIN pattern-preflight (generated) -->
-The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **69 work-blocking patterns** (25 gate-firing patterns + 44 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/ux` work — probe the mechanized ones, checklist the rest:
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **71 work-blocking patterns** (25 gate-firing patterns + 46 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/ux` work — probe the mechanized ones, checklist the rest:
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
 | `#6` | FEATURE_CLOSURE_COMPLETENESS — missing frontmatter on current_phase=complete *(probed)* | yes | Populate the 7 required case-study frontmatter fields + kill_criteria_resolution before the complete-transition commit. |
 | `#16` | CASE_STUDY_MISSING_FIELDS — required frontmatter validation *(probed)* | yes | Fill the required frontmatter fields, or apply the appropriate case_study_type exemption. |
 | `W16` | Contract-boundary tests must sample from the canonical producer | no | Sample cross-repo test fixtures from the canonical producer; normalize at parse with a nullish fallback. |
+| `W46` | A screen that renders is not yet snapshotable — wall-clock content + onAppear-gated reveals | no | Never commit a snapshot baseline you have not viewed. Confirm the PNG shows the screen with no date/time/random content in frame; a blank or stale-dated PNG is still a PNG. Wall-clock content needs an injectable clock on the view; onAppear-gated reveals are not fixed by .wait or drawHierarchyInKeyWindow (both ruled out 2026-07-23). |
 
 At activation run `make skill-preflight SKILL=ux` — probes the 2 mechanized blockers for this work type; clear any before proceeding.
 
