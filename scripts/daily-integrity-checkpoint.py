@@ -706,6 +706,28 @@ def stale_branches() -> tuple[list[str], list[str]]:
     return gone, worktrees
 
 
+def item_registry_freshness() -> dict:
+    """N5 — is the FIT-200 crosswalk index still describing the live corpus?
+
+    `.claude/shared/item-registry.json` is a DERIVED index whose only producer
+    is the manual `make crosswalk`. Nothing scheduled regenerated it, so it
+    silently drifted to 118 items against a 132-feature corpus (2026-07-23
+    W40 sweep) — a stale derived index is indistinguishable from a fresh one
+    unless something checks. This surfaces the drift daily.
+
+    Advisory only: returns {} on any tooling failure so a broken checker can
+    never block the checkpoint.
+    """
+    rc, out = run([sys.executable, "scripts/build-item-registry.py", "--check", "--json"],
+                  timeout=60)
+    if rc not in (0, 3):
+        return {}
+    try:
+        return json.loads(out.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return {}
+
+
 def pr_babysit(repos: tuple[str, ...] = ("Regevba/FitTracker2", "Regevba/fitme-story")) -> dict:
     """N3 — list open PRs idle >24h, oldest first.
 
@@ -1222,6 +1244,13 @@ def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None
                 log(f"    - {w}")
             if len(worktrees) > 5:
                 log(f"    ... +{len(worktrees) - 5} more")
+
+    # N5 — FIT-200 item-registry freshness (added 2026-07-23)
+    reg = item_registry_freshness()
+    if reg.get("stale"):
+        log(f"\n🗂  ITEM-REGISTRY STALE: reason={reg.get('reason')} — "
+            f"index has {reg.get('registry_items')} item(s), corpus has {reg.get('live_items')}. "
+            f"The FIT-200 slug↔linear_id join is out of date; run `make crosswalk`.")
 
     # N3 — PR babysit sweep (open PRs idle >24h)
     idle = pr_babysit()

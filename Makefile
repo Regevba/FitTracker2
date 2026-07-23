@@ -1020,8 +1020,11 @@ refresh-pr-cache:
 # FIT-200: cross-layer item crosswalk registry (slug <-> linear_id <-> thematic codes).
 # Builds .claude/shared/item-registry.json + prints an advisory for features
 # missing their linear_id join. Spec: docs/process/cross-layer-item-naming-convention.md
-#   make crosswalk          # build + report
-#   make crosswalk CHECK=1  # report only, no write
+#   make crosswalk          # build + report (idempotent — no clock in the payload)
+#   make crosswalk CHECK=1  # freshness verdict only, no write; exit 3 if STALE
+# Freshness (W44, 2026-07-23): the registry carries a `source_fingerprint` over
+# its derived items, so CHECK=1 proves whether it still describes the corpus.
+# Surfaced daily as advisory N5 by scripts/daily-integrity-checkpoint.py.
 crosswalk:
 	@python3 scripts/build-item-registry.py $(if $(CHECK),--check,)
 

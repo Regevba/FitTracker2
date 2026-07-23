@@ -1,7 +1,7 @@
 [
   {
     "id": "#1",
-    "title": "BRANCH_ISOLATION_HISTORICAL — squash-merge + branch-cleanup artifact",
+    "title": "BRANCH_ISOLATION_HISTORICAL \u2014 squash-merge + branch-cleanup artifact",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -13,7 +13,7 @@
   },
   {
     "id": "#2",
-    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE — Mechanism C captured, writer-path manual",
+    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE \u2014 Mechanism C captured, writer-path manual",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -26,7 +26,7 @@
   },
   {
     "id": "#3",
-    "title": "BRANCH_ISOLATION_VIOLATION Mode B — infra-only commit on non-feature branch",
+    "title": "BRANCH_ISOLATION_VIOLATION Mode B \u2014 infra-only commit on non-feature branch",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -38,7 +38,7 @@
   },
   {
     "id": "#4",
-    "title": "BRANCH_ISOLATION_VIOLATION Mode C — state.json current_phase mutation off-branch",
+    "title": "BRANCH_ISOLATION_VIOLATION Mode C \u2014 state.json current_phase mutation off-branch",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -50,7 +50,7 @@
   },
   {
     "id": "#5",
-    "title": "ISOLATION_OPT_OUT_REASON_MISSING — opt-out without justification",
+    "title": "ISOLATION_OPT_OUT_REASON_MISSING \u2014 opt-out without justification",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -62,7 +62,7 @@
   },
   {
     "id": "#6",
-    "title": "FEATURE_CLOSURE_COMPLETENESS — missing frontmatter on current_phase=complete",
+    "title": "FEATURE_CLOSURE_COMPLETENESS \u2014 missing frontmatter on current_phase=complete",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -76,7 +76,7 @@
   },
   {
     "id": "#7",
-    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT — empty cache_hits[] post-v6",
+    "title": "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT \u2014 empty cache_hits[] post-v6",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -89,7 +89,7 @@
   },
   {
     "id": "#8",
-    "title": "TIER_TAG_LIKELY_INCORRECT — heuristic T1/T2/T3 mismatch (advisory permanent)",
+    "title": "TIER_TAG_LIKELY_INCORRECT \u2014 heuristic T1/T2/T3 mismatch (advisory permanent)",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -102,7 +102,7 @@
   },
   {
     "id": "#9",
-    "title": "SCHEMA_DRIFT_LEGACY_CREATED — legacy `created` key",
+    "title": "SCHEMA_DRIFT_LEGACY_CREATED \u2014 legacy `created` key",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -114,7 +114,7 @@
   },
   {
     "id": "#10",
-    "title": "FRAMEWORK_VERSION_FORMAT — unprefixed numeric values",
+    "title": "FRAMEWORK_VERSION_FORMAT \u2014 unprefixed numeric values",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -126,7 +126,7 @@
   },
   {
     "id": "#11",
-    "title": "STATE_OWNER_* (MISSING / INVALID / LOCATION_MISMATCH) — cross-repo schema",
+    "title": "STATE_OWNER_* (MISSING / INVALID / LOCATION_MISMATCH) \u2014 cross-repo schema",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -138,7 +138,7 @@
   },
   {
     "id": "#12",
-    "title": "PR_CACHE_STALE — empty/stale cache → cascading false positives",
+    "title": "PR_CACHE_STALE \u2014 empty/stale cache \u2192 cascading false positives",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/ensure-pr-cache-fresh.py",
@@ -151,7 +151,7 @@
   },
   {
     "id": "#13",
-    "title": "BROKEN_PR_CITATION — unresolved PR cite (graceful fallback when gh unavailable)",
+    "title": "BROKEN_PR_CITATION \u2014 unresolved PR cite (graceful fallback when gh unavailable)",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -164,7 +164,7 @@
   },
   {
     "id": "#14",
-    "title": "CASE_STUDY_MISSING_TIER_TAGS — forward-only on case studies dated >=2026-04-21",
+    "title": "CASE_STUDY_MISSING_TIER_TAGS \u2014 forward-only on case studies dated >=2026-04-21",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -176,7 +176,7 @@
   },
   {
     "id": "#15",
-    "title": "PARTIAL_SHIP_TERMINAL — decision fork on completion",
+    "title": "PARTIAL_SHIP_TERMINAL \u2014 decision fork on completion",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -188,7 +188,7 @@
   },
   {
     "id": "#16",
-    "title": "CASE_STUDY_MISSING_FIELDS — required frontmatter validation",
+    "title": "CASE_STUDY_MISSING_FIELDS \u2014 required frontmatter validation",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -201,7 +201,7 @@
   },
   {
     "id": "#17",
-    "title": "CU_V2_INVALID — schema-only check (presence, not magnitude)",
+    "title": "CU_V2_INVALID \u2014 schema-only check (presence, not magnitude)",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -214,7 +214,7 @@
   },
   {
     "id": "#18",
-    "title": "STATE_NO_CASE_STUDY_LINK — terminal phase requires case_study or exemption",
+    "title": "STATE_NO_CASE_STUDY_LINK \u2014 terminal phase requires case_study or exemption",
     "section": "gate",
     "blocker": true,
     "detector": "scripts/integrity-check.py",
@@ -234,11 +234,11 @@
     "skills": [
       "pm-workflow"
     ],
-    "remediation": "No action — gates auto-exempt features with created_at < 2026-05-02."
+    "remediation": "No action \u2014 gates auto-exempt features with created_at < 2026-05-02."
   },
   {
     "id": "#20",
-    "title": "GATE_COVERAGE_ZERO — meta-check for silent-pass detection",
+    "title": "GATE_COVERAGE_ZERO \u2014 meta-check for silent-pass detection",
     "section": "gate",
     "blocker": false,
     "detector": "scripts/integrity-check.py",
@@ -250,7 +250,7 @@
   },
   {
     "id": "#21",
-    "title": "case_study_type exemption tags — bypass scope",
+    "title": "case_study_type exemption tags \u2014 bypass scope",
     "section": "gate",
     "blocker": false,
     "detector": "manual",
@@ -262,7 +262,7 @@
   },
   {
     "id": "#22",
-    "title": "v7.5 pipeline regression test decay — fixture rot",
+    "title": "v7.5 pipeline regression test decay \u2014 fixture rot",
     "section": "gate",
     "blocker": false,
     "detector": "manual",
@@ -287,10 +287,10 @@
   },
   {
     "id": "#24",
-    "title": "Field-rename silent-pass in a READER/INDEX (measurement layer) — generalization of #7/#9",
+    "title": "Field-rename silent-pass in a READER/INDEX (measurement layer) \u2014 generalization of #7/#9",
     "section": "gate",
     "blocker": false,
-    "detector": "manual (audit) — no gate; surfaced by adoption/coverage cross-count",
+    "detector": "manual (audit) \u2014 no gate; surfaced by adoption/coverage cross-count",
     "autoheal": false,
     "skills": [
       "pm-workflow",
@@ -300,10 +300,10 @@
   },
   {
     "id": "#25",
-    "title": "Derived index from gitignored session-local source regresses on overwrite — union-merge, don't overwrite",
+    "title": "Derived index from gitignored session-local source regresses on overwrite \u2014 union-merge, don't overwrite",
     "section": "gate",
     "blocker": false,
-    "detector": "manual (audit) — no gate; committed index entry-count drop vs prior commit",
+    "detector": "manual (audit) \u2014 no gate; committed index entry-count drop vs prior commit",
     "autoheal": false,
     "skills": [
       "pm-workflow",
@@ -334,7 +334,7 @@
       "pm-workflow",
       "brainstorm-pm"
     ],
-    "remediation": "Never silently rewrite published artifacts; add a Correction Note / §99 addendum instead."
+    "remediation": "Never silently rewrite published artifacts; add a Correction Note / \u00a799 addendum instead."
   },
   {
     "id": "W3",
@@ -510,7 +510,7 @@
   },
   {
     "id": "W17",
-    "title": "Stale-base branches — cherry-pick onto fresh main is ground truth",
+    "title": "Stale-base branches \u2014 cherry-pick onto fresh main is ground truth",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -563,7 +563,7 @@
   },
   {
     "id": "W21",
-    "title": "Swift String.contains(\"\\n\") misses CRLF graphemes — scan unicodeScalars",
+    "title": "Swift String.contains(\"\\n\") misses CRLF graphemes \u2014 scan unicodeScalars",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -589,7 +589,7 @@
   },
   {
     "id": "W23",
-    "title": "AnalyticsService.logEvent is private — callers must use a log* method",
+    "title": "AnalyticsService.logEvent is private \u2014 callers must use a log* method",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -598,7 +598,7 @@
       "dev",
       "qa"
     ],
-    "remediation": "logEvent is private — add a named log* method, or use #if DEBUG print for can't-happen paths."
+    "remediation": "logEvent is private \u2014 add a named log* method, or use #if DEBUG print for can't-happen paths."
   },
   {
     "id": "W24",
@@ -610,11 +610,11 @@
     "skills": [
       "dev"
     ],
-    "remediation": "Resolve pbxproj merge conflicts additively — keep all branches' distinct PBXBuildFile/FileReference entries."
+    "remediation": "Resolve pbxproj merge conflicts additively \u2014 keep all branches' distinct PBXBuildFile/FileReference entries."
   },
   {
     "id": "W25",
-    "title": "@MainActor propagates to statics — test class must be @MainActor",
+    "title": "@MainActor propagates to statics \u2014 test class must be @MainActor",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -706,7 +706,7 @@
   },
   {
     "id": "W32",
-    "title": "scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation → complete directly, no testing phase)",
+    "title": "scripts/close-feature.py requires --force-incomplete when merged PR was the only phase (implementation \u2192 complete directly, no testing phase)",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -728,11 +728,11 @@
       "dev",
       "ops"
     ],
-    "remediation": "Verify the cache window covers the historically-cited PR range: `python3 -c \"import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))\"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 — covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set)."
+    "remediation": "Verify the cache window covers the historically-cited PR range: `python3 -c \"import json; v=json.load(open('.cache/gh-pr-cache.json'))['repos']['Regevba/FitTracker2']; ns=sorted({x['number'] for b in('open','merged','closed') for x in v[b]}); print('floor',ns[0],'ceil',ns[-1],'count',len(ns))\"`. If the floor is far above 1 while citations reference numbers below it, the `gh pr list --limit N` window is truncated. Fix: raise `--limit` in `scripts/refresh-pr-cache.py` (shipped 2026-06-05 PR #631 raised it to 2000 \u2014 covers FT2's 571 PRs + headroom). Sibling patterns: #12 PR_CACHE_STALE (empty cache), W11 (incomplete repo set)."
   },
   {
     "id": "W35",
-    "title": "Hook session-id keyed on never-set CLAUDE_SESSION_ID env → constant \"default\" → cross-session marker suppresses the gate forever",
+    "title": "Hook session-id keyed on never-set CLAUDE_SESSION_ID env \u2192 constant \"default\" \u2192 cross-session marker suppresses the gate forever",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -755,11 +755,11 @@
       "dev",
       "ops"
     ],
-    "remediation": "Treat a plan/seat-gated capability as an external dependency and verify it end-to-end: check the workflow run history (not existence) for successes. Scaffolding present ≠ pipeline working. Detection: `gh run list --workflow=<name>.yml --limit 20 | grep -c success` (scaffold-only runs?); for Figma Code Connect: MCP get_code_connect_map returns plan-gate error on Pro. Remediation: (1) disable the scaffold CI if the plan is not available; (2) reconcile all docs to reflect the actual state; (3) add a honesty-ledger entry; (4) write a rebuild plan that uses capabilities actually available on the current plan. See observed-patterns.md W36, FT2-FH-005."
+    "remediation": "Treat a plan/seat-gated capability as an external dependency and verify it end-to-end: check the workflow run history (not existence) for successes. Scaffolding present \u2260 pipeline working. Detection: `gh run list --workflow=<name>.yml --limit 20 | grep -c success` (scaffold-only runs?); for Figma Code Connect: MCP get_code_connect_map returns plan-gate error on Pro. Remediation: (1) disable the scaffold CI if the plan is not available; (2) reconcile all docs to reflect the actual state; (3) add a honesty-ledger entry; (4) write a rebuild plan that uses capabilities actually available on the current plan. See observed-patterns.md W36, FT2-FH-005."
   },
   {
     "id": "W37",
-    "title": "Bot-authored (GITHUB_TOKEN) PR can never satisfy required checks under strict branch protection → permanent 'expected' deadlock",
+    "title": "Bot-authored (GITHUB_TOKEN) PR can never satisfy required checks under strict branch protection \u2192 permanent 'expected' deadlock",
     "section": "workflow",
     "blocker": true,
     "detector": "manual",
@@ -772,7 +772,7 @@
   },
   {
     "id": "W38",
-    "title": "Figma read tools (get_metadata/get_screenshot/get_design_context) reflect the DESKTOP-APP context, not the fileKey → false 'empty file' reads",
+    "title": "Figma read tools (get_metadata/get_screenshot/get_design_context) reflect the DESKTOP-APP context, not the fileKey \u2192 false 'empty file' reads",
     "section": "workflow",
     "blocker": false,
     "detector": "manual",
@@ -845,5 +845,18 @@
       "qa"
     ],
     "remediation": "Env vars set on the xcodebuild process or via SIMCTL_CHILD_* do not deterministically reach the app/test process inside the simulator under a normal test action. Add <EnvironmentVariable key=SNAPSHOT_MODE value=$(SNAPSHOT_MODE)> to the scheme LaunchAction (TestAction inherits via shouldUseLaunchSchemeArgsEnv=YES) AND pass SNAPSHOT_MODE=record as an xcodebuild build-setting so $(SNAPSHOT_MODE) expands. Symptom: record/verify job is green but 0 baselines committed / all snapshot tests XCTSkip (a ci-green-masks-a-noop no-op). See observed-patterns.md W43."
+  },
+  {
+    "id": "W44",
+    "title": "A derived index with no scheduled producer rots silently; a stale index is indistinguishable from a fresh one",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "scripts/build-item-registry.py",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "dev"
+    ],
+    "remediation": "Any derived artifact (index, cache, aggregate) that is regenerated only by hand AND exposes no way to compare itself against its source will drift without announcing it \u2014 .claude/shared/item-registry.json sat at 118 items against a 132-feature corpus, missing both in-flight features. Give the artifact a content fingerprint (sha256 over its canonicalized derived payload, NOT a wall-clock generated_at \u2014 a timestamp churns the file and still doesn't prove the content matches), expose a --check verdict that exits non-zero when stale, and put the producer in a scheduled check. Here: `make crosswalk CHECK=1` (exit 3 = stale) + daily advisory N5 in scripts/daily-integrity-checkpoint.py. Symptom: a confidently-formatted derived JSON whose item count doesn't match a glob of its source. See observed-patterns.md W44."
   }
 ]

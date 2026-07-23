@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "generated_note": "derived from .claude/features/*/state.json \u2014 do not hand-edit; run `make crosswalk`",
+  "source_fingerprint": "82abce8e882deba3cb4032e10e21d8ef328d07cf2719008e9832bc78182148c6",
   "items": [
     {
       "slug": "3d-interactive-framework-flow-diagram",
       "linear_id": "FIT-138",
       "thematic_codes": [],
-      "status": "In Progress",
+      "status": "Won't-Do",
       "current_phase": "tasks_phase",
       "work_type": "Feature",
       "case_study": null,
@@ -48,7 +49,7 @@
     },
     {
       "slug": "ai-engine-architecture-adaptation",
-      "linear_id": null,
+      "linear_id": "FIT-25",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -70,7 +71,7 @@
     },
     {
       "slug": "ai-golden-set-evals",
-      "linear_id": null,
+      "linear_id": "FIT-158",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -80,7 +81,7 @@
     },
     {
       "slug": "ai-recommendation-ui",
-      "linear_id": null,
+      "linear_id": "FIT-35",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -100,6 +101,34 @@
       "case_study": "docs/case-studies/ai-user-feedback-loop-case-study.md",
       "prs": [
         572
+      ]
+    },
+    {
+      "slug": "an-1b1-csv-taxonomy-drift",
+      "linear_id": "FIT-145",
+      "thematic_codes": [
+        "AN-1B.1"
+      ],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": null,
+      "prs": [
+        822
+      ]
+    },
+    {
+      "slug": "an-1b2-ga4-mcp-disconnected",
+      "linear_id": "FIT-146",
+      "thematic_codes": [
+        "AN-1B.2"
+      ],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "Feature",
+      "case_study": null,
+      "prs": [
+        825
       ]
     },
     {
@@ -166,7 +195,7 @@
     },
     {
       "slug": "authentication",
-      "linear_id": null,
+      "linear_id": "FIT-6",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -238,7 +267,7 @@
     },
     {
       "slug": "data-integrity-framework-v7-6",
-      "linear_id": null,
+      "linear_id": "FIT-45",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -255,6 +284,20 @@
       "work_type": "feature",
       "case_study": null,
       "prs": []
+    },
+    {
+      "slug": "de-r14-integrity-parallel",
+      "linear_id": "FIT-180",
+      "thematic_codes": [
+        "DE-R14"
+      ],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": [
+        824
+      ]
     },
     {
       "slug": "design-system-v2",
@@ -595,7 +638,7 @@
     },
     {
       "slug": "framework-f14-f15-dispatch-test-coverage",
-      "linear_id": null,
+      "linear_id": "FIT-94",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -639,7 +682,7 @@
     },
     {
       "slug": "framework-v5-0-soc",
-      "linear_id": null,
+      "linear_id": "FIT-26",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -659,7 +702,7 @@
     },
     {
       "slug": "framework-v7-5-data-integrity",
-      "linear_id": null,
+      "linear_id": "FIT-44",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -669,7 +712,7 @@
     },
     {
       "slug": "framework-v7-7-validity-closure",
-      "linear_id": null,
+      "linear_id": "FIT-49",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -681,7 +724,7 @@
     },
     {
       "slug": "framework-v7-8-branch-isolation",
-      "linear_id": null,
+      "linear_id": "FIT-62",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -703,7 +746,7 @@
     },
     {
       "slug": "framework-v7-9-1-promotion",
-      "linear_id": null,
+      "linear_id": "FIT-194",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -716,7 +759,7 @@
     },
     {
       "slug": "framework-v7-9-promotion",
-      "linear_id": null,
+      "linear_id": "FIT-72",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -755,7 +798,7 @@
     },
     {
       "slug": "garmin-health-connection",
-      "linear_id": null,
+      "linear_id": "FIT-199",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -777,7 +820,7 @@
     },
     {
       "slug": "google-analytics",
-      "linear_id": null,
+      "linear_id": "FIT-7",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -861,7 +904,7 @@
     },
     {
       "slug": "home-status-goal-card",
-      "linear_id": null,
+      "linear_id": "FIT-31",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -873,7 +916,7 @@
     },
     {
       "slug": "home-today-screen",
-      "linear_id": null,
+      "linear_id": "FIT-27",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -963,7 +1006,7 @@
     },
     {
       "slug": "metric-tile-deep-linking",
-      "linear_id": null,
+      "linear_id": "FIT-32",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -972,6 +1015,16 @@
       "prs": [
         67
       ]
+    },
+    {
+      "slug": "n6-data-freshness-audit",
+      "linear_id": "FIT-101",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
     },
     {
       "slug": "nutrition-logging",
@@ -985,7 +1038,7 @@
     },
     {
       "slug": "nutrition-v2",
-      "linear_id": null,
+      "linear_id": "FIT-29",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -995,7 +1048,7 @@
     },
     {
       "slug": "onboarding",
-      "linear_id": null,
+      "linear_id": "FIT-5",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1007,7 +1060,7 @@
     },
     {
       "slug": "onboarding-v2-auth-flow",
-      "linear_id": null,
+      "linear_id": "FIT-36",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1025,6 +1078,18 @@
       "case_study": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
       "prs": [
         63
+      ]
+    },
+    {
+      "slug": "ops-digest-skill",
+      "linear_id": "FIT-205",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "feature",
+      "case_study": null,
+      "prs": [
+        916
       ]
     },
     {
@@ -1054,6 +1119,18 @@
       "prs": []
     },
     {
+      "slug": "precommit-hook-latency-profiling",
+      "linear_id": "FIT-181",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": [
+        836
+      ]
+    },
+    {
       "slug": "push-notifications",
       "linear_id": "FIT-23",
       "thematic_codes": [],
@@ -1064,6 +1141,16 @@
       "prs": [
         239
       ]
+    },
+    {
+      "slug": "r17-state-sync-health-endpoint",
+      "linear_id": "FIT-183",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
     },
     {
       "slug": "r9-track-b-coverage-aggregator",
@@ -1091,7 +1178,7 @@
     },
     {
       "slug": "readiness-score-v2",
-      "linear_id": null,
+      "linear_id": "FIT-34",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1123,7 +1210,7 @@
     },
     {
       "slug": "settings",
-      "linear_id": null,
+      "linear_id": "FIT-13",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1133,7 +1220,7 @@
     },
     {
       "slug": "settings-v2",
-      "linear_id": null,
+      "linear_id": "FIT-30",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1143,7 +1230,7 @@
     },
     {
       "slug": "smart-reminders",
-      "linear_id": null,
+      "linear_id": "FIT-42",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1155,7 +1242,7 @@
     },
     {
       "slug": "smart-reminders-behavioral-learning",
-      "linear_id": null,
+      "linear_id": "FIT-61",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1177,7 +1264,7 @@
     },
     {
       "slug": "stats-v2",
-      "linear_id": null,
+      "linear_id": "FIT-33",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1215,6 +1302,28 @@
       ]
     },
     {
+      "slug": "t15-orphan-test-weekly-cron",
+      "linear_id": "FIT-163",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "t16-gate-test-tier-annotation",
+      "linear_id": "FIT-164",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": [
+        835
+      ]
+    },
+    {
       "slug": "t3-signinservice-passkey-tests",
       "linear_id": "FIT-151",
       "thematic_codes": [
@@ -1224,6 +1333,16 @@
       "current_phase": "complete",
       "work_type": "Feature",
       "case_study": "docs/case-studies/t3-signinservice-passkey-tests-case-study.md",
+      "prs": []
+    },
+    {
+      "slug": "t4-ios-snapshot-testing",
+      "linear_id": "FIT-152",
+      "thematic_codes": [],
+      "status": "In Progress",
+      "current_phase": "implement",
+      "work_type": "chore",
+      "case_study": null,
       "prs": []
     },
     {
@@ -1239,8 +1358,38 @@
       "prs": []
     },
     {
+      "slug": "t7-web-critical-route-smoke-tests",
+      "linear_id": "FIT-155",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "t8-web-webauthn-route-handler-tests",
+      "linear_id": "FIT-156",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
+      "slug": "t9-backend-chaos-tests",
+      "linear_id": "FIT-157",
+      "thematic_codes": [],
+      "status": "In Progress",
+      "current_phase": "implement",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": []
+    },
+    {
       "slug": "training-plan-v2",
-      "linear_id": null,
+      "linear_id": "FIT-28",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1286,7 +1435,7 @@
     },
     {
       "slug": "ucc-passkey-auth",
-      "linear_id": null,
+      "linear_id": "FIT-63",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1376,7 +1525,7 @@
     },
     {
       "slug": "user-profile-settings",
-      "linear_id": null,
+      "linear_id": "FIT-41",
       "thematic_codes": [],
       "status": "Done",
       "current_phase": "complete",
@@ -1411,12 +1560,24 @@
         648,
         649
       ]
+    },
+    {
+      "slug": "weekly-digest-silent-gate-enrichment",
+      "linear_id": "FIT-185",
+      "thematic_codes": [],
+      "status": "Done",
+      "current_phase": "complete",
+      "work_type": "chore",
+      "case_study": null,
+      "prs": [
+        837
+      ]
     }
   ],
   "coverage": {
-    "total": 118,
-    "with_linear_id": 23,
-    "missing_linear_id": 95,
-    "with_thematic_codes": 14
+    "total": 132,
+    "with_linear_id": 66,
+    "missing_linear_id": 66,
+    "with_thematic_codes": 17
   }
 }

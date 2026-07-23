@@ -848,6 +848,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W41 Runner `git commit` unsigned → rejected by `required_signatures`; GraphQL `createCommitOnBranch` auto-signs (bot-PR signature half of W37) | W41 | 2026-07-13 |
 | W42 launchd doesn't reliably export `LAUNCHD_LABEL` → cron-context finding-suppression no-ops unless the plist sets `CRON_CONTEXT=1` | W42 | 2026-07-14 |
 | W43 iOS `SNAPSHOT_MODE` must reach the simulator via the scheme's TestAction env (build-setting expansion), not a runner env var / `SIMCTL_CHILD_` | W43 | 2026-07-13 |
+| W44 Derived index with no scheduled producer rots silently — a stale index is indistinguishable from a fresh one unless it carries a content fingerprint | W44 | 2026-07-23 |
 
 ---
 
@@ -1817,3 +1818,23 @@ gh api repos/<owner>/<repo>/commits/<sha> --jq '.commit.verification.verified'  
 **Silence path (fixed this session):** (1) scheme TestAction env `SNAPSHOT_MODE=$(SNAPSHOT_MODE)` in [`FitTracker.xcscheme`](../../FitTracker.xcodeproj/xcshareddata/xcschemes/FitTracker.xcscheme); (2) pass `SNAPSHOT_MODE=record` as an xcodebuild build-setting arg; (3) the recorder also needed `GoogleService-Info.plist` decoded first or the build failed before any test ran (a third stacked bug). Fixed across `ios-snapshot-record.yml` + the scheme; 4 CI-recorded baselines committed (#843-era work → 10c9878e).
 
 **First observed:** 2026-07-13. **Sibling patterns:** W28 (local `xcodebuild` sim out-of-date), `ci-green-can-mask-noop` memory (green run ≠ produced artifact).
+### W44 — A derived index with no scheduled producer rots silently; a stale index is indistinguishable from a fresh one (2026-07-23)
+
+**Surfaced by:** the 2026-07-23 W40 cross-plan sweep. `.claude/shared/item-registry.json` — the FIT-200 crosswalk that joins feature slug ↔ `linear_id` ↔ thematic codes — held **118 items against a 132-feature corpus**, and was missing `t4-ios-snapshot-testing` + `t9-backend-chaos-tests` **entirely**: the two features most likely to be looked up, because they are the only ones still in flight.
+
+**The pattern:** the registry's only producer was the **manual** `make crosswalk`. No cron, no checkpoint, no CI job regenerated it, and the file carried **no freshness signal of any kind** — no timestamp, no fingerprint, no count assertion. So every consumer (including the W40 verify-first discipline that is supposed to catch stale trackers) read a confidently-formatted JSON index and had no way to know it described a corpus from ~3 weeks earlier. This is W40's failure mode turned inward: the mechanism built to detect tracker lag had tracker lag.
+
+Generalizes beyond this file. Any **derived artifact** — index, cache, snapshot, aggregate — that (a) is regenerated only by hand and (b) exposes no way to compare itself against its source, will drift and will not announce it. The absence of a timestamp is not neutral; it actively hides the drift.
+
+**Distinguishing real signal:** if a derived index's item count doesn't match a `ls`/`glob` of its source corpus, it is stale — but count agreement does **not** prove freshness (a phase advance changes content, not count). Only a content comparison is conclusive.
+
+**Silence path (fixed this session):**
+
+1. **`source_fingerprint`** on the registry — sha256 over the canonicalized derived items list, in [`scripts/build-item-registry.py`](../../scripts/build-item-registry.py). Deliberately **not** a wall-clock `generated_at`: a timestamp churns the file on every regeneration *and still doesn't prove the content matches*. The fingerprint is idempotent (same corpus → byte-identical file) and answers the actual question.
+2. **`--check` freshness verdict** (`--json` for machines) returning **exit 3** when stale, so any caller can gate on it. A legacy registry with no fingerprint is reported stale — that format is exactly what hid this drift.
+3. **N5 daily advisory** in [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py) — surfaces the drift every day instead of at the next manual sweep. Fail-silent by design: any tooling error returns `{}` so a broken checker never blocks the checkpoint or raises a false alarm.
+4. Tests: 13 in [`test_build_item_registry.py`](../../scripts/tests/test_build_item_registry.py) (incl. a regression-proof for the corpus-grew-index-didn't case and for the same-count-but-stale case) + 6 in [`test_daily_checkpoint_item_registry_n5.py`](../../scripts/tests/test_daily_checkpoint_item_registry_n5.py).
+
+**Prevention for new derived artifacts:** if you generate a file from other files, give it a way to prove it still matches its source, and put its producer on a schedule or in a check. "Run `make X` when you remember" is not a producer.
+
+**First observed:** 2026-07-23. **Sibling patterns:** W40 (cross-layer tracker lag — this is its inward-facing twin), #7/#9/#24 (field-rename readers that silently halve a measurement), `ci-green-can-mask-noop` memory.
