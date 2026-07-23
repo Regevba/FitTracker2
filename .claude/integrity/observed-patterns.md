@@ -849,6 +849,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W42 launchd doesn't reliably export `LAUNCHD_LABEL` → cron-context finding-suppression no-ops unless the plist sets `CRON_CONTEXT=1` | W42 | 2026-07-14 |
 | W43 iOS `SNAPSHOT_MODE` must reach the simulator via the scheme's TestAction env (build-setting expansion), not a runner env var / `SIMCTL_CHILD_` | W43 | 2026-07-13 |
 | W44 Derived index with no scheduled producer rots silently — a stale index is indistinguishable from a fresh one unless it carries a content fingerprint | W44 | 2026-07-23 |
+| W45 Signing-capable ≠ auth-capable: SSH auth to GitHub dies while the Mac sleeps (locked keychain holds the sole auth key's passphrase); W1 stays green | W45 | 2026-07-23 |
 
 ---
 
@@ -1838,3 +1839,43 @@ Generalizes beyond this file. Any **derived artifact** — index, cache, snapsho
 **Prevention for new derived artifacts:** if you generate a file from other files, give it a way to prove it still matches its source, and put its producer on a schedule or in a check. "Run `make X` when you remember" is not a producer.
 
 **First observed:** 2026-07-23. **Sibling patterns:** W40 (cross-layer tracker lag — this is its inward-facing twin), #7/#9/#24 (field-rename readers that silently halve a measurement), `ci-green-can-mask-noop` memory.
+### W45 — Signing-capable ≠ auth-capable: SSH auth to GitHub fails while the Mac is asleep, and W1 stays green (2026-07-23)
+
+**Surfaced by:** a `git pull` immediately after merging #951 failed with `git@github.com: Permission denied (publickey)`. The same command succeeded minutes later, and `ssh -T git@github.com` authenticated non-interactively in `BatchMode`. Nothing was misconfigured — the machine was asleep.
+
+**Evidence.** The failure landed at 17:47:5x local; `pmset -g log` for that window:
+
+```
+17:41:52  Sleep      Entering Sleep state ('Sleep Service Back to Sleep')
+17:47:24  DarkWake   DarkWake from Deep Idle … 45 secs      ← the pull ran here
+17:48:09  Sleep      Entering Sleep state ('Maintenance Sleep')
+```
+
+**The pattern:** this machine's GitHub auth has **exactly one** usable path and **no fallback**:
+
+| Fact | Probe |
+|---|---|
+| One registered auth key: `id_ed25519` | `gh api user/keys` |
+| It is passphrase-protected | `ssh-keygen -y -P ""` rejects it |
+| Passphrase comes from the login keychain | `~/.ssh/config` → `UseKeychain yes` |
+| Both hardware keys are **signing-only** | `gh api user/ssh_signing_keys` → YubiKey FIDO2 + Secretive Touch-ID |
+| The agent is bypassed for github.com | `IdentityAgent none` + `IdentitiesOnly yes` |
+
+During DarkWake the keychain is locked, so the passphrase is unreachable; `IdentitiesOnly yes` forbids falling back to anything else, and the only agent-held key cannot authenticate anyway. GitHub rejects instantly. Generalizes to: **a signing key is not an auth key**, and any auth chain with a single credential source fails closed the moment that source is unavailable — asleep, headless, sandboxed, or in cron.
+
+Registering the Touch-ID or FIDO2 key *for auth* does not fix it: both need a physical touch, which is equally impossible in DarkWake.
+
+**Why W1 didn't catch it:** [`check-ssh-agent.sh`](../../scripts/check-ssh-agent.sh) asserted only "≥1 key loaded in the agent". That is correct for its stated purpose (signing — the Secretive key genuinely does sign), but it proves nothing about auth. Green W1 + impossible fetch is a coherent state.
+
+**Distinguishing real signal:** `Permission denied (publickey)` that **reproduces only sometimes**, and where HTTPS to the same repo works at the same instant. Public-repo HTTPS fetch needs no credential at all, so it is immune — that asymmetry is the tell. Check `pmset -g log` for a Sleep/DarkWake window around the failure before suspecting key or config rot.
+
+**Silence path (fixed this session):**
+
+1. **Route GitHub git traffic over HTTPS** — `git config --global url."https://github.com/".insteadOf "git@github.com:"`. Both repos are public, so fetch carries no credential and survives sleep; push keeps using the `gh` token as it already did. Verified: both FT2 and fitme-story fetch clean.
+2. **W45 probe** appended to `check-ssh-agent.sh` — runs `ssh -T -o BatchMode=yes` **only when `git ls-remote --get-url origin` still resolves to SSH**, so it is silent under the HTTPS fix and re-arms automatically if the transport flips back. Never blocks. Kill switch: `CLAUDE_W45_DISABLE_AUTH_PROBE=1`.
+3. Control-flow bug caught while writing the tests: W1's success branch used to `exit 0`, which made the first version of the probe **dead code**. The success path is now a guarded block, not an exit — a reminder that appending to a script that early-exits is a silent no-op (the ci-green-masks-a-noop family).
+4. Tests: 7 in [`test_check_ssh_agent_w45.py`](../../scripts/tests/test_check_ssh_agent_w45.py), including one asserting that an `insteadOf` rewrite counts as HTTPS (probing the raw remote string would false-alarm) and one pinning never-blocks.
+
+**Alternative if SSH must stay the transport:** drop `IdentityAgent none` for github.com and hold the decrypted key in an agent (`ssh-add --apple-use-keychain ~/.ssh/id_ed25519`) — an agent keeps the key in memory across sleep, so a locked keychain stops mattering.
+
+**First observed:** 2026-07-23. **Sibling patterns:** W1 (agent has no identities → signing hangs), W42 / F-LAUNCHD-DRIFT (cron context is a different execution environment than interactive), `git-ssh-homebrew-keychain-fix` memory (the earlier `core.sshCommand=/usr/bin/ssh` fix for the same key).

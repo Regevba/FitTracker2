@@ -16,7 +16,7 @@ This skill is **PM-flavored**: every output should be reducible to a PRD section
 ## Observed patterns preflight
 
 <!-- BEGIN pattern-preflight (generated) -->
-The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **68 work-blocking patterns** (25 gate-firing patterns + 43 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/brainstorm-pm` work — probe the mechanized ones, checklist the rest:
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **69 work-blocking patterns** (25 gate-firing patterns + 44 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/brainstorm-pm` work — probe the mechanized ones, checklist the rest:
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
