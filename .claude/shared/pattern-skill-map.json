@@ -858,5 +858,18 @@
       "dev"
     ],
     "remediation": "Any derived artifact (index, cache, aggregate) that is regenerated only by hand AND exposes no way to compare itself against its source will drift without announcing it \u2014 .claude/shared/item-registry.json sat at 118 items against a 132-feature corpus, missing both in-flight features. Give the artifact a content fingerprint (sha256 over its canonicalized derived payload, NOT a wall-clock generated_at \u2014 a timestamp churns the file and still doesn't prove the content matches), expose a --check verdict that exits non-zero when stale, and put the producer in a scheduled check. Here: `make crosswalk CHECK=1` (exit 3 = stale) + daily advisory N5 in scripts/daily-integrity-checkpoint.py. Symptom: a confidently-formatted derived JSON whose item count doesn't match a glob of its source. See observed-patterns.md W44."
+  },
+  {
+    "id": "W45",
+    "title": "Signing-capable != auth-capable: SSH auth to GitHub fails while the Mac sleeps (locked keychain holds the sole auth key's passphrase); W1 stays green",
+    "section": "workflow",
+    "blocker": false,
+    "detector": "scripts/check-ssh-agent.sh",
+    "autoheal": false,
+    "skills": [
+      "ops",
+      "dev"
+    ],
+    "remediation": "Intermittent `git@github.com: Permission denied (publickey)` that reproduces only sometimes, while HTTPS to the same repo works at the same instant. Cause: the sole GitHub AUTH key is passphrase-protected and its passphrase lives in the login keychain, which is locked during macOS sleep/DarkWake; IdentitiesOnly yes + IdentityAgent none leave no fallback, and the agent's keys are signing-only (gh api user/ssh_signing_keys vs gh api user/keys). Hardware keys don't help \u2014 they need a touch. Check `pmset -g log` for a Sleep/DarkWake window at the failure time before suspecting config rot. Fix: `git config --global url.\"https://github.com/\".insteadOf \"git@github.com:\"` (public-repo fetch needs no credential, survives sleep), or hold the decrypted key in an agent via `ssh-add --apple-use-keychain`. W1 does NOT cover this: it proves signing only. See observed-patterns.md W45."
   }
 ]

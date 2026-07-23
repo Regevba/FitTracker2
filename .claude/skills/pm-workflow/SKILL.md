@@ -14,7 +14,7 @@ You are orchestrating the feature **"$ARGUMENTS"** through the complete product 
 ## Preflight: Observed Patterns Catalog (v7.8.5+ — added 2026-05-13)
 
 <!-- BEGIN pattern-preflight (generated) -->
-The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **68 work-blocking patterns** (25 gate-firing patterns + 43 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/pm-workflow` work — probe the mechanized ones, checklist the rest:
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **69 work-blocking patterns** (25 gate-firing patterns + 44 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/pm-workflow` work — probe the mechanized ones, checklist the rest:
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
