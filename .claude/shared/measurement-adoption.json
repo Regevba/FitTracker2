@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-07-20T15:31:28Z",
+  "updated": "2026-07-23T15:56:25Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -8,8 +8,8 @@
     "features_post_v6": 98,
     "features_pre_v6": 34,
     "fully_adopted": 9,
-    "partial_adopted": 85,
-    "zero_adopted": 38,
+    "partial_adopted": 86,
+    "zero_adopted": 37,
     "fully_adopted_post_v6": 9,
     "tier_1_1_status": "partial"
   },
@@ -25,13 +25,13 @@
       "post_v6_derived": 19
     },
     "per_phase_timing": {
-      "overall_present": 94,
-      "overall_percent": 71.2,
-      "post_v6_present": 91,
-      "post_v6_percent": 92.9,
-      "overall_instrumented": 94,
+      "overall_present": 95,
+      "overall_percent": 72.0,
+      "post_v6_present": 92,
+      "post_v6_percent": 93.9,
+      "overall_instrumented": 95,
       "overall_derived": 0,
-      "post_v6_instrumented": 91,
+      "post_v6_instrumented": 92,
       "post_v6_derived": 0
     },
     "cache_hits": {
@@ -725,6 +725,15 @@
       }
     },
     {
+      "feature": "t9-backend-chaos-tests",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
       "feature": "training-program-customization",
       "adoption": {
         "timing_wall_time": false,
@@ -1002,11 +1011,6 @@
     {
       "feature": "t4-ios-snapshot-testing",
       "created": "2026-07-03",
-      "post_v6": true
-    },
-    {
-      "feature": "t9-backend-chaos-tests",
-      "created": "2026-07-04",
       "post_v6": true
     },
     {
@@ -3350,21 +3354,21 @@
       "feature": "t9-backend-chaos-tests",
       "created": "2026-07-04",
       "post_v6": true,
-      "current_phase": "implement",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "provenance": {
         "timing_wall_time": null,
-        "per_phase_timing": null,
+        "per_phase_timing": "instrumented",
         "cache_hits": null,
         "cu_v2": null
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "training-plan-v2",

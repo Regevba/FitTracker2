@@ -1,50 +1,50 @@
 {
   "version": "1.0",
-  "updated": "2026-07-20T15:31:28Z",
+  "updated": "2026-07-23T15:56:25Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 116,
+    "case_studies_scanned": 117,
     "features_scanned": 132,
-    "integrity_snapshot_files": 27,
-    "integrity_cycle_snapshots": 23,
+    "integrity_snapshot_files": 28,
+    "integrity_cycle_snapshots": 24,
     "trend_ready": true,
     "open_debt_items": 1
   },
   "coverage": {
     "date_written": {
-      "present": 116,
+      "present": 117,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 116,
+      "present": 117,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 116,
+      "present": 117,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 116,
+      "present": 117,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 116,
+      "present": 117,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 62,
+      "present": 63,
       "missing": 54,
-      "percent": 53.4,
+      "percent": 53.8,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -55,8 +55,8 @@
     },
     "pr_citation_exempt": {
       "present": 28,
-      "missing": 88,
-      "percent": 24.1,
+      "missing": 89,
+      "percent": 23.9,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/ai-golden-set-evals-case-study.md",
@@ -73,8 +73,8 @@
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 27,
-    "snapshots_available": 23,
+    "snapshot_files_available": 28,
+    "snapshots_available": 24,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": true,
     "status": "trend_ready",
