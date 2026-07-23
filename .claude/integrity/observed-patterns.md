@@ -1879,3 +1879,45 @@ Registering the Touch-ID or FIDO2 key *for auth* does not fix it: both need a ph
 **Alternative if SSH must stay the transport:** drop `IdentityAgent none` for github.com and hold the decrypted key in an agent (`ssh-add --apple-use-keychain ~/.ssh/id_ed25519`) — an agent keeps the key in memory across sleep, so a locked keychain stops mattering.
 
 **First observed:** 2026-07-23. **Sibling patterns:** W1 (agent has no identities → signing hangs), W42 / F-LAUNCHD-DRIFT (cron context is a different execution environment than interactive), `git-ssh-homebrew-keychain-fix` memory (the earlier `core.sshCommand=/usr/bin/ssh` fix for the same key).
+
+### W46 — A screen that *renders* is not yet *snapshotable*: wall-clock content and onAppear-gated reveals both produce a confidently-wrong baseline (2026-07-23)
+
+**Surfaced by:** the FIT-152 / T4 iOS snapshot pass. Two of the ten screen recipes were hard-skipped with recorded reasons; both reasons turned out to be wrong, and the real blockers were only visible by *looking at the recorded PNG*.
+
+**The pattern:** getting a screen to render is the *first* of three requirements for a snapshot baseline. The other two are silent:
+
+1. **Renders at all** — the env-object graph is complete. This is the one that fails loudly (crash, 0.000s test).
+2. **Renders deterministically** — the frame is a pure function of the code. Home v2 passed (1) after its `AIOrchestrator` stub landed, then failed (2): the frame read `"Good evening,"` and `"Thursday, 23 July 2026"` because `MainScreenView` calls `Date()` in four places. That baseline would have gone red the next calendar day, and three times a day as the greeting rolls over — presenting as a flaky test, not as a design property of the view.
+3. **Renders completely** — no content is gated behind a callback the snapshot host never delivers. `WelcomeView` starts every element at `opacity 0` and reveals them from `.onAppear`; the recorder captured the honest pre-reveal state, i.e. a bare gradient.
+
+**Why it survives the obvious checks:** a blank or stale-dated PNG *is* a PNG. "The recorder wrote a file", "the test passed", and "the artifact uploaded" are all TRUE for a baseline that is worthless. This is [`ci-green-can-mask-noop`](../../CLAUDE.md) in image form — the verification has to be **a human or model looking at the actual pixels**, which is exactly how both blockers here were found after two earlier record runs had missed them.
+
+**Remediation:**
+- **Never commit a baseline you have not viewed.** Record → open the PNG → confirm it shows the screen you meant, with no date/time/random content in frame.
+- For (2), the fix is an **injectable clock** on the view, not a snapshot-side hack. Treat it as a production change with its own task.
+- For (3), waiting does **not** help — `.wait(for:on:)` cannot advance an animation that was never scheduled, and `drawHierarchyInKeyWindow: true` changed the render without completing the reveal (both ruled out empirically 2026-07-23). The tractable fix is to let the view render its settled state directly when snapshotting.
+- Record a **precise** skip reason. A wrong reason ("needs a NavigationStack") costs the next session a full record cycle to disprove; list what you ruled out.
+
+**First observed:** 2026-07-23. **Sibling patterns:** W44 (a stale artifact is indistinguishable from a fresh one), W43 (`SNAPSHOT_MODE` plumbing), `ios-snapshot-baselines` memory (visually verify every PNG), `ci-green-can-mask-noop` memory.
+
+### W47 — Two vocabularies for one event: the gate's accepted set and the log writer's known set can drift apart, so a "correct" log entry still fails the gate (2026-07-23)
+
+**Surfaced by:** closing `t9-backend-chaos-tests` (GH #922). The issue body's own remediation snippet said to run `append-feature-log.py --event-type phase_transition`. Doing exactly that produced a warning — `phase_transition` is outside the writer's `KNOWN_EVENT_TYPES`. Switching to the writer-approved `phase_completed` then failed the **`PHASE_TRANSITION_NO_LOG` pre-commit gate**, because that gate's `PHASE_TRANSITION_EVENT_TYPES` set does not contain `phase_completed`.
+
+**The pattern:** the same conceptual event ("this feature changed phase") is validated against **two independently-maintained vocabularies**:
+
+| Vocabulary | Lives in | Contains `phase_transition`? | Contains `phase_completed`? |
+|---|---|---|---|
+| Writer `KNOWN_EVENT_TYPES` | `scripts/append-feature-log.py` | ✗ (warns) | ✓ |
+| Gate `PHASE_TRANSITION_EVENT_TYPES` | `scripts/check-state-schema.py` | ✓ | ✗ |
+
+Neither is wrong in isolation, and neither validates against the other — so the sets are free to drift, and a value can be simultaneously "unknown" to the writer and "required" by the gate. `phase_started` happens to satisfy both, which is why the mismatch has stayed invisible: the common path works.
+
+**Cost:** the operator follows documented remediation, gets a warning, "corrects" it toward the vocabulary the warning names, and lands *further* from the gate. Two commit-reject cycles to discover the overlap.
+
+**Remediation:**
+- When a phase transition needs a log event, use **`phase_started`** — the value in both sets.
+- The durable fix is to derive one vocabulary from the other (or assert the intersection is non-empty in a test) so the drift is mechanically detected rather than discovered at commit time.
+- GH #922's issue-body template still names `phase_transition`; the sweep that generates it should emit `phase_started`.
+
+**First observed:** 2026-07-23. **Sibling patterns:** #24 / #7 / #9 (a reader and a writer disagreeing about a name — this is the same class at the *vocabulary* layer rather than the field layer), W40.
