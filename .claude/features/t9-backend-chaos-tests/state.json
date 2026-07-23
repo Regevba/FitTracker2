@@ -41,17 +41,20 @@
       "skip_reason": "work_type:chore"
     },
     "implementation": {
-      "status": "in_progress",
-      "commits": []
+      "status": "approved",
+      "commits": [],
+      "notes": "T1/T3/T4 shipped via #846/#873/#908. T2 deferred (biometry-gated CI sim)."
     },
     "testing": {
-      "status": "pending"
+      "status": "approved",
+      "notes": "The deliverable IS the tests: 10 chaos tests across EncryptionService (3) + AccountDeletionService (7); full FitTrackerTests suite green on each of the 3 merges."
     },
     "review": {
-      "status": "pending"
+      "status": "approved",
+      "notes": "Reviewed per-PR on #846, #873, #908."
     },
     "merge": {
-      "status": "pending",
+      "status": "approved",
       "pr_number": 908,
       "related_prs": [
         846,
@@ -60,7 +63,8 @@
       ]
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "notes": "Case study docs/case-studies/t9-backend-chaos-tests-case-study.md (2026-07-23)."
     }
   },
   "timing": {

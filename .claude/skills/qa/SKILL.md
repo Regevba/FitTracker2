@@ -14,7 +14,7 @@ You are the QA specialist for FitMe. You create test plans, run test suites, mea
 ## Preflight — Observed Patterns Catalog (v7.8.5+)
 
 <!-- BEGIN pattern-preflight (generated) -->
-The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **69 work-blocking patterns** (25 gate-firing patterns + 44 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/qa` work — probe the mechanized ones, checklist the rest:
+The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **71 work-blocking patterns** (25 gate-firing patterns + 46 workflow patterns) drawn from the [Observed Patterns Catalog](../../integrity/observed-patterns.md) (`make observed-patterns`). The patterns below are the ones mapped to `/qa` work — probe the mechanized ones, checklist the rest:
 
 | ID | Pattern | Blocker | Remediation |
 |---|---|---|---|
@@ -26,6 +26,7 @@ The [pattern↔skill map](../../shared/pattern-skill-map.json) tracks **69 work-
 | `W28` | Local xcodebuild blocked by CoreSimulator out-of-date (Mac restart required) | no | Local xcodebuild CoreSimulator-out-of-date needs a Mac restart; fall back to swiftc -parse + CI. |
 | `W30` | Q6 PR-list parity gate's minimal YAML parser silently strips list items lacking # | yes | In case-study related_prs frontmatter, use either string form (- "PR #623") OR inline bracket form (related_prs: [621, 623]). Bare YAML integers under dashed lists get silently dropped by _parse_case_study_frontmatter at scripts/check-state-schema.py:1149. Durable parser patch queued in backlog Framework hygiene. |
 | `W43` | iOS SNAPSHOT_MODE must reach the simulator via the scheme's TestAction env (build-setting expansion), not a runner env var / SIMCTL_CHILD_ *(probed)* | no | Env vars set on the xcodebuild process or via SIMCTL_CHILD_* do not deterministically reach the app/test process inside the simulator under a normal test action. Add <EnvironmentVariable key=SNAPSHOT_MODE value=$(SNAPSHOT_MODE)> to the scheme LaunchAction (TestAction inherits via shouldUseLaunchSchemeArgsEnv=YES) AND pass SNAPSHOT_MODE=record as an xcodebuild build-setting so $(SNAPSHOT_MODE) expands. Symptom: record/verify job is green but 0 baselines committed / all snapshot tests XCTSkip (a ci-green-masks-a-noop no-op). See observed-patterns.md W43. |
+| `W46` | A screen that renders is not yet snapshotable — wall-clock content + onAppear-gated reveals | no | Never commit a snapshot baseline you have not viewed. Confirm the PNG shows the screen with no date/time/random content in frame; a blank or stale-dated PNG is still a PNG. Wall-clock content needs an injectable clock on the view; onAppear-gated reveals are not fixed by .wait or drawHierarchyInKeyWindow (both ruled out 2026-07-23). |
 
 At activation run `make skill-preflight SKILL=qa` — probes the 1 mechanized blockers for this work type; clear any before proceeding.
 
