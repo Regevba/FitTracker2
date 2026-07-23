@@ -32,6 +32,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = REPO_ROOT / ".claude" / "shared" / "contract-manifest.json"
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gate_coverage import canonical_ledger_path  # noqa: E402
+
 
 def _load_manifest() -> dict:
     return json.loads(MANIFEST.read_text())
@@ -72,7 +75,16 @@ def _sample_source(contract: dict) -> tuple[Path | None, str]:
     """Resolve the readable source for a contract → (path, provenance)."""
     is_local = contract.get("producer_repo") == "FitTracker2"
     if is_local:
-        return REPO_ROOT / contract["producer_path"], "canonical"
+        producer = contract["producer_path"]
+        # Gitignored append-only ledgers live in the git COMMON worktree, not
+        # the linked worktree we may be running from (see gate_coverage.
+        # canonical_ledger_path — the 2026-07-21 #934 telemetry-loss fix).
+        # #934 redirected the ledger WRITER; this is the matching READER, which
+        # otherwise reports "source unavailable" for every worktree-isolated
+        # run — the same field-rename/reader-mismatch class as pattern #24.
+        if producer.endswith(".claude/logs/gate-coverage.jsonl"):
+            return canonical_ledger_path(REPO_ROOT), "canonical"
+        return REPO_ROOT / producer, "canonical"
     mirror = contract.get("local_mirror")
     if mirror:
         return REPO_ROOT / mirror, "mirror"
