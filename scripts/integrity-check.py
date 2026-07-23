@@ -628,6 +628,18 @@ def check_cache_hits_auto_instrumentation_inactive(coverage: "GateCoverage | Non
                 continue
             reads_by_feature[feature] = reads_by_feature.get(feature, 0) + 1
 
+    if not reads_by_feature:
+        # No session Read events attributed to any feature — e.g. a fresh clone
+        # or CI where the gitignored `_session-*.events.jsonl` ledgers are
+        # absent. Emit one balanced no-candidate skip so the gate stays visible
+        # to the F17 index + GATE_COVERAGE_ZERO (alive, not mis-wired) instead of
+        # silently emitting nothing. In real local runs reads_by_feature is
+        # non-empty, so this branch never fires there.
+        if coverage is not None:
+            coverage.candidate(GATE)
+            coverage.skip(GATE, "no_session_read_events")
+        return findings
+
     for feature, count in sorted(reads_by_feature.items()):
         if coverage is not None:
             coverage.candidate(GATE)
