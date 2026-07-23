@@ -31,7 +31,7 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | T10 | AI golden-set evals | v7.10 | #691 |
 | T14 | `platforms_tested` field + gate (**enforced 2026-06-21**) | 2026-06-07 | #662 · advisory→enforced flip B15 2026-06-21 (PR #781, `6ac372b`) |
 | V8-I | Style-Dictionary v3→v5 migration | 2026-06-10 | #677 (was icebox L417/L435) |
-| F-DEPLOYED-URL-PROBE | FT2 substrate (`scripts/probe-deployed-url.sh`) | v7.9.1 | fitme-story integration still open |
+| F-DEPLOYED-URL-PROBE | FT2 substrate (`scripts/probe-deployed-url.sh`) + fitme-story integration | v7.9.1 / integration since | ✅ **both halves shipped** — `fitme-story/.github/workflows/post-deploy-url-probe.yml` calls the FT2 substrate on each successful prod deploy (verified 2026-07-23 W40 sweep; the "integration still open" note was stale) |
 | F-CONTRACT-FIXTURE-SAMPLING | FT2 substrate + producer sampling | 2026-06-07 | #664 · consumer adoption still open |
 | F-LAUNCHD-DRIFT-EXTENSION | all 3 sub-fixes | v7.9.1 | #621–#624 |
 
@@ -51,15 +51,17 @@ Cross-referenced to merged PRs + session memory. Framework is at **v7.10** (ship
 | ~~F-CONTRACT (consumer)~~ ✅ | fitme-story consumer adoption + sampling | Cross-repo | — | **SHIPPED 2026-06-22** (feature `contract-fixture-consumer-adoption`, PR #790) |
 | ~~F18~~ ✅ | Mutation testing on dispatcher files (mutmut, warn-only weekly CI, 1,857-mutant baseline) | Test infra | 13.7 | **SHIPPED 2026-06-26** (feature `f18-mutation-testing`, PR #809) |
 | T1 | `GATE_TEST_MISSING` meta-gate | Test discipline | 53.3 | F14 Phase E **2026-08-22** (fed by F18 mutation-survivor data) |
-| F23 | `/ops digest` skill | Skill extension | M | F22 ✓ + Sentry resume (launch-gated, §C) |
-| F19/F20 | Analytics Phase 1.B GA4 conversions + gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | D-2 operator (GA4) + post-launch signal |
-| T4 | Swift snapshot testing | iOS test infra | — | Phase A scaffold shipped (#700); build pending |
+| ~~F23~~ ✅ | `/ops digest` skill | Skill extension | M | **SHIPPED 2026-07-19** (#916) — landed ahead of the Sentry-resume gate |
+| ~~F19/F20~~ ✅ | Analytics Phase 1.B gates (`CSV_TAXONOMY_DRIFT`, `GA4_MCP_DISCONNECTED`) | Telemetry/gates | M / L | **SHIPPED 2026-06-29**; F19 advisory→**enforced 2026-07-13** (B16). F20 advisory-permanent by design (§8.3). *Operator half only — GA4 conversion-marking (FIT-203/D-2) — remains, tracked in §C* |
+| T4 | Swift snapshot testing | iOS test infra | — | **In Progress** — 11 canonical CI baselines committed 2026-07-20 (#927); `testHomeScreenV2` (AIOrchestrator stub) + `testWelcomeAuthView` (NavigationStack) recipes pending |
 
 **C. Paused / launch-gated:** F21 Sentry (pre-launch trigger; PR #418) · F-AUTH-LATENCY-SERVER-METRIC shipped FT2-side (fitme-story #208).
 
 **D. Operator decision open:** W-MISTRAL-VERCEL-FREE-TIER-BURST (API-tier choice for multi-provider HADF experiments).
 
-**Roll-up:** of the original 18 F-candidates, **17 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + F3 shipped 2026-06-17 + **F18 shipped 2026-06-26 via PR #809**) + 2 resolved-by-exemption (F7, F8) → **all ready-now F-items shipped; remaining open** = F19/F20 (operator-gated, GA4 register A1) + F23 (Sentry-resume-gated, §C). **F22 shipped 2026-06-24 (#799); F-CONTRACT-consumer shipped 2026-06-22 (#790); F18 shipped 2026-06-26 (#809)** — reconciled 2026-06-26. Theme H (T1–T16): T3/T5/T10/T13/T14 shipped, T4 in flight, T1 gated to 2026-08-22. **F16 enforce flip DONE 2026-06-17** (try-repo-harness now a main required check) → **v8.0 build kickoff gate cleared**; ship target 2026-07-31.
+**Roll-up:** of the original 18 F-candidates, **17 shipped** (F2, F6, F9, F14, F15, F16, F17, GATE_COVERAGE_ZERO + F5, F10, F11, F12, F13 merged 2026-06-15 via PRs #719/#720/#721/#722 + F4 shipped 2026-06-16 via PR #740 + F1 + F3 shipped 2026-06-17 + **F18 shipped 2026-06-26 via PR #809**) + 2 resolved-by-exemption (F7, F8) → **all 18 F-candidates shipped.** **F22** 2026-06-24 (#799) · **F-CONTRACT-consumer** 2026-06-22 (#790) · **F18** 2026-06-26 (#809) · **F19/F20** 2026-06-29 (F19 enforced 2026-07-13, B16) · **F23** 2026-07-19 (#916). Theme H (T1–T16): T3/T5/T7/T8/T10/T12/T13/T14/T15/T16 shipped, **T4 + T9 in flight**, **T1 gated to 2026-08-22**. **F16 enforce flip DONE 2026-06-17**. The only F-side remainder is the **operator half of F19** (GA4 conversion-marking, FIT-203/D-2).
+
+> **Reconciled 2026-07-23 (W40 sweep).** The 2026-06-26 roll-up above was written before F19/F20 (06-29) and F23 (07-19) shipped; those rows are now struck in §0.B. **Ship target 2026-07-31 is superseded** — v8.0 is paced by the T1 `GATE_TEST_MISSING` gate at **2026-08-22**, and the framework version correctly stays **v7.10** until it lands. Live cross-plan view: [`v8-x-overlay-2026-07-20.md`](v8-x-overlay-2026-07-20.md).
 
 ---
 
