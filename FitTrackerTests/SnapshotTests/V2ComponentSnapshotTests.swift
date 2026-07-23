@@ -122,6 +122,55 @@ final class V2ComponentSnapshotTests: XCTestCase {
         )
     }
 
+    /// Screen recipe for surfaces whose content is revealed by an `.onAppear`
+    /// entry animation.
+    ///
+    /// The default `assertScreen` captures the first frame, which for such a
+    /// screen is whatever the initial `@State` says — for WelcomeView, every
+    /// element at `opacity 0`, i.e. a bare gradient. That is how the 2026-07-20
+    /// record run produced a blank baseline: a blank PNG is still a PNG, so
+    /// "the recorder wrote a file" never caught it.
+    ///
+    /// Waiting alone is NOT sufficient, and that is the whole subtlety here: the
+    /// default render path hosts the view off-screen, where UIKit never delivers
+    /// appearance callbacks, so `.onAppear` never fires and the reveal never
+    /// starts — waiting just waits on an animation that was never scheduled
+    /// (empirically confirmed 2026-07-23: a 1.5s wait alone still recorded a
+    /// blank frame). `drawHierarchyInKeyWindow` renders through the simulator's
+    /// real key window, which DOES fire `onAppear`; the wait then lets the
+    /// resulting animation settle. Both are required.
+    ///
+    /// The captured frame is deterministic because the animation has finished —
+    /// every animated property is parked at its final value, so there is no
+    /// in-flight interpolation left to vary between runs.
+    private func assertScreenAfterEntryAnimation(
+        _ view: some View,
+        settleSeconds: TimeInterval = 1.5,
+        width: CGFloat = 393,
+        height: CGFloat = 852,
+        file: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line
+    ) {
+        assertSnapshot(
+            of: view.frame(width: width, height: height),
+            as: .wait(
+                for: settleSeconds,
+                on: .image(
+                    drawHierarchyInKeyWindow: true,
+                    precision: 0.98,
+                    perceptualPrecision: 0.98,
+                    layout: .fixed(width: width, height: height),
+                    traits: .init(userInterfaceStyle: .light)
+                )
+            ),
+            record: SnapshotMode.isRecording,
+            file: file,
+            testName: testName,
+            line: line
+        )
+    }
+
     // T3: each screen recipe now injects the full env-object closure via
     // `.snapshotEnvironment()` (SnapshotFixtures.swift), so a subview's
     // dependency (e.g. Home's ReadinessAwareAlertStore) no longer crashes the
@@ -133,15 +182,27 @@ final class V2ComponentSnapshotTests: XCTestCase {
 
     @MainActor
     func testHomeScreenV2() throws {
-        // T3: Home still fails to render even with the full `.snapshotEnvironment()`
-        // graph — verified 2026-07-18 via local SNAPSHOT_MODE=record (failed at
-        // 0.000s while Stats/Nutrition/Training/Settings all recorded PNGs). Home's
-        // AIInsightCard subtree needs a constructed AIOrchestrator, which has no
-        // factory (init takes engineClient + foundationModel + pcc + snapshot/goalMode
-        // closures — a stub AIEngineClient + FallbackFoundationModel is required).
-        // Building that stub is the remaining T3 piece; kept hard-skipped so the
-        // ios-snapshot-record job never crashes. Recipe preserved for that pass.
-        try XCTSkipIf(true, "Home v2 needs a stubbed AIOrchestrator (no factory) — remaining T3 piece; see SnapshotFixtures.")
+        // T3 (2026-07-23): the ORIGINAL blocker is FIXED. Home's AIInsightCard
+        // subtree declares `@EnvironmentObject var orchestrator: AIOrchestrator`,
+        // which has no no-arg factory, so the 07-18 and 07-20 record runs died at
+        // 0.000s. The inert AI stubs now injected via `.snapshotEnvironment()`
+        // (SnapshotFixtures) resolve that: Home renders fully — verified by
+        // recording it locally and LOOKING at the PNG (readiness card, insight
+        // card in its no-recommendation state, body composition, actions).
+        //
+        // Recording it surfaced a SECOND, previously-unknown blocker that keeps
+        // this test skipped: Home is WALL-CLOCK DEPENDENT. The captured frame
+        // read "Good evening," and "Thursday, 23 July 2026" — MainScreenView
+        // calls `Date()` directly in four places (greeting hour :525, today's
+        // date string :541, readiness date :65, days-since-onboarding :593).
+        // A committed baseline would therefore fail the next calendar day, and
+        // three times a day as the greeting rolls over.
+        //
+        // Fixing that needs an injectable clock on MainScreenView — a production
+        // change to a high-traffic view, correctly its own task, not a snapshot
+        // recipe tweak. Skipped on the accurate reason; the stub work above is
+        // what unblocks it the moment the clock seam exists.
+        try XCTSkipIf(true, "Home v2 is wall-clock dependent (greeting + today's date) — needs an injectable clock on MainScreenView; the AIOrchestrator blocker is fixed.")
         try requireSnapshotMode()
         try skipVerifyUntilBaselineRecorded()
         assertScreen(
@@ -218,18 +279,33 @@ final class V2ComponentSnapshotTests: XCTestCase {
 
     @MainActor
     func testWelcomeAuthView() throws {
-        // T3: WelcomeView renders BLANK in the CI recorder (verified 2026-07-20 —
-        // the ios-snapshot-record artifact PNG was the bare gradient, no logo/buttons),
-        // unlike SignInView which renders correctly wrapped in a NavigationStack. The
-        // local "wrote a PNG" check did not catch this (a blank PNG is still a PNG).
-        // Likely an onAppear-driven reveal animation or missing navigation context that
-        // collapses the layout at capture time. Kept hard-skipped so the blank frame is
-        // never committed as a baseline; fixing the recipe (add NavigationStack / settle
-        // the animation) is the remaining T3 piece for this surface.
-        try XCTSkipIf(true, "WelcomeView renders blank in CI record — recipe needs a fix; see 2026-07-20 record run.")
+        // T3: WelcomeView records BLANK (the PNG is the bare gradient — no logo,
+        // no buttons). 2026-07-23 narrowed the mechanism but did NOT fix it, so
+        // this stays skipped rather than committing a blank baseline.
+        //
+        // Mechanism: the view initialises logo/text/buttons at `opacity 0` and
+        // reveals them from `.onAppear` with delays up to 0.7s (WelcomeView:136).
+        // The capture is a faithful snapshot of the pre-reveal state. It is NOT
+        // the missing-NavigationStack theory the 07-20 note guessed at — the
+        // ZStack itself renders fine (the gradient and the Canvas grid both
+        // appear); only the opacity-gated VStack is absent.
+        //
+        // Ruled out empirically, so the next attempt does not repeat them:
+        //   1. `.wait(for: 1.5, on: .image(...))` alone -> still blank. Waiting
+        //      cannot help if the animation was never scheduled.
+        //   2. `.wait` + `drawHierarchyInKeyWindow: true` -> still blank, though
+        //      the render does change (grid lines resolve, runtime 1.7s -> 3.1s),
+        //      so the key window is doing something but `.onAppear` still is not
+        //      driving the reveal to completion under the snapshot render.
+        //
+        // Likely next step: give the reveal an injectable initial state (render
+        // the settled values directly when snapshotting) rather than trying to
+        // drive SwiftUI's animation clock from a test. That is a view change, so
+        // it is its own task.
+        try XCTSkipIf(true, "WelcomeView records blank: onAppear-gated opacity reveal never completes under snapshot render. `.wait` and drawHierarchyInKeyWindow both ruled out 2026-07-23.")
         try requireSnapshotMode()
         try skipVerifyUntilBaselineRecorded()
-        assertScreen(
+        assertScreenAfterEntryAnimation(
             WelcomeView()
                 .environmentObject(SignInService())
         )
