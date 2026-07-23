@@ -143,44 +143,35 @@
 
 > `ucc-sign-in-figma-mapping` removed from this table — it's a cross-repo (Figma-side) item primarily tracked in §3.3 Website.
 
-### 2.5 Open iOS UI/UX backlog ([`docs/product/backlog.md`](../product/backlog.md))
+### 2.5 Open iOS UI/UX backlog → **see [`docs/product/backlog.md`](../product/backlog.md)**
 
-**§ Medium Priority — UX Improvements** (lines 280–292):
+> **Rewritten 2026-07-23 (W40 system reconcile).** This section used to be a
+> hand-copied *mirror* of the backlog's Medium / Low / Design-System-Residual
+> lists. It was copied on 2026-05-24 and never re-synced, so by 2026-07-23 it
+> carried **9 items the backlog had already marked shipped** — chart goal
+> target-lines, chart tap-tooltip, trend alerts (HRV), exercise search/filter,
+> training-program customization, notification-settings screen, CSV data
+> export, the AI feedback loop, and 3 of the 4 design-system-residual rows.
+>
+> The backlog was **right the whole time**; every one of those rows carries a
+> dated reconciliation note there. The mirror was the only thing that was
+> wrong. Re-syncing it would just restart the same clock, so the mirror is
+> **deleted** rather than refreshed — a second copy of a list is a second
+> thing that can go stale, and this is exactly the W40 failure mode
+> (tracker lag against repo truth) reproduced *inside* the docs.
+>
+> **`docs/product/backlog.md` is the single source for open iOS UI/UX work.**
+> Read it there:
+> [Medium Priority](../product/backlog.md) · [Low Priority](../product/backlog.md) · [Design System Residual](../product/backlog.md)
+>
+> Genuinely open as of the 2026-07-23 sweep (verified against code, not copied):
+> **Notification-store-consolidation** (v1 `NotificationPreferencesStore` still
+> gates `NotificationService` while the user edits the v2 store),
+> **Dark-Mode end-to-end testing**, **Dynamic Type full compliance**
+> (`@ScaledMetric` appears in 0 files), **Figma old-frame cleanup**, and the
+> 13 Low-Priority nice-to-haves. **Code Connect** is *not* open — it is
+> **blocked-by-plan-tier** and disabled since 2026-06-15 (see backlog).
 
-- [ ] Chart goal target lines — weight/BF goals not overlaid on stats charts
-- [ ] Chart tap-to-tooltip interaction — mentioned in v2 spec, unclear status
-- [ ] Trend alerts — no notification when HRV drops below threshold for 3+ days
-- [ ] Exercise search/filter — 87 exercises in fixed order, no search
-- [ ] Training program customization — fixed 6-day PPL split (partially addressed by Import Training Plan)
-- [ ] Notification settings screen — backend `NotificationPreferencesStore` exists but no user-facing UI
-- [ ] Data export from Settings — JSON export UI exists; CSV format not yet implemented
-- [ ] User feedback loop for AI — can't rate recommendation quality
-- [ ] Dark Mode end-to-end testing — asset catalog has values but not verified
-- [ ] Dynamic Type full compliance — `@ScaledMetric` not on all text tokens
-- [x] ~~Code Connect (Figma ↔ code mapping)~~ — SHIPPED via `ios-code-connect`
-
-**§ Low Priority — Nice-to-Have** (lines 294–307):
-
-- [ ] Rep max calculator (1RM estimation UI)
-- [ ] Supersets / circuits logging
-- [ ] Custom exercise creation
-- [ ] Meal timing analysis
-- [ ] Photo-based food logging (Vision/ML)
-- [ ] AI meal suggestions based on remaining macros
-- [ ] Chart export/share (screenshot or CSV)
-- [ ] Chart comparison mode (overlay two metrics)
-- [ ] Apple Watch complication
-- [ ] iOS home screen / lock screen widgets
-- [ ] iPad / macOS optimized layouts
-- [ ] No passcode fallback for biometric lock
-- [ ] Phone OTP registration (deferred per `docs/design-system/deferred-phone-otp-task.md`)
-
-**§ Design System Residual** (lines 309–313):
-
-- [x] ~~9 raw literals remaining across views (responsive micro-adjustments)~~ — **CLOSED 2026-05-26** per [`docs/design-system/ui-audit-p1-residual-2026-05-26.md`](../design-system/ui-audit-p1-residual-2026-05-26.md). Live `make ui-audit` reports P0=0 + P1=0; the "9 remaining" was a stale snapshot from the May 11 burndown window — subsequent `ios-ui-audit-p1-drift-cleanup` closed them. Separate baseline-doc regeneration PR queued
-- [x] ~~Android token output for Style Dictionary (now tracked as AND-1 in §4.4)~~ — **SHIPPED 2026-06-17.** `sd.config.android.mjs` (custom-transforms path) generates committed `android/FitMeDesignTokens.kt` + `android/res/values/{colors,dimens}.xml`; `npm run tokens:android:check` drift gate is green (artifacts in sync with `tokens.json`, verified 2026-07-01)
-- [x] ~~VoiceOver labels comprehensive audit~~ — **DONE 2026-05-26** per [`docs/design-system/voiceover-audit-2026-05-26.md`](../design-system/voiceover-audit-2026-05-26.md). 21 v2 files scanned; 7 files flagged P1 (zero or low label/tap ratio); 19 interactive elements need labels (~10 hr total fix-as-you-touch). Audit doc identifies file:line per finding
-- [ ] Figma old frame cleanup
 
 **Implicit:** ~~`make ui-audit` P1 drift +5 (baseline 103 → current 108)~~ — **STALE; CORRECTED 2026-05-26.** Live `make ui-audit` reports P1 = 0 (0 files-with-findings out of 101 scanned). `ios-ui-audit-p1-drift-cleanup` (active feature, `phase=complete`) closed the residual after the May 11 burndown. Baseline doc still reads P1=44 — pending regeneration PR. See [`ui-audit-p1-residual-2026-05-26.md`](../design-system/ui-audit-p1-residual-2026-05-26.md). Fix-as-you-touch policy remains active per [CLAUDE.md "CI Pipeline"](../../CLAUDE.md)
 
@@ -246,10 +237,10 @@
 **§ High Priority — Architecture & Framework rows** (UI/UX-relevant):
 
 - [x] ~~**Apply fitme-story web design system to `/control-room/*`**~~ — **SUBSTANTIALLY SATISFIED (verified 2026-05-29).** Bulk hex→token migration shipped; control-room components on `var(--color-neutral-*)`. Residual standard-Tailwind is §3-policy-permitted (no semantic tokens to migrate to). FIT-135 narrowed to optional marginal polish, stays Low. Figma-stub path remains blocked by FIT-132.
-- [ ] **Complete Figma design + architecture for both surfaces (iOS + website)** (line 204) — 2-3 week Feature; (A) fitme-story Figma new build + (B) iOS coverage audit + (C) architecture doc per surface
+- [ ] **Complete Figma design + architecture for both surfaces (iOS + website)** (line 204) — 2-3 week Feature; (A) fitme-story Figma new build + (B) iOS coverage audit + (C) architecture doc per surface. *(2026-07-23: (C) is **done** — [`ios-design-system-architecture.md`](../design-system/ios-design-system-architecture.md) + [`fitme-story-design-architecture.md`](../design-system/fitme-story-design-architecture.md), both mirror-verified 2026-06-18. (A)+(B) remain, and are constrained by the same Pro-plan limit that disabled Code Connect: **code is canonical, Figma is a manually-maintained mirror** governed by [`figma-mirror-maintenance-protocol.md`](../design-system/figma-mirror-maintenance-protocol.md) + `make figma-mirror-staleness`.)*
 - [x] ~~**Site-wide search on fitme-story public site**~~ — **SHIPPED (verified 2026-05-29).** `/search` route with faceted filters (category/version/tier/glossary) + ⌘K header `SearchInput` + custom scored index (`src/lib/search.ts`); not Pagefind but functionally complete.
-- [ ] **PERF — Lighthouse-CI / web-vitals baseline** (NEW 2026-05-29) — only genuine open item from the PERF bucket. `.lighthouserc.json` + `.github/workflows/lighthouse-ci.yml` + optional `web-vitals` reporting. Infra-glob → ship via isolated worktree (not Phase-E-safe on main).
-- [ ] **fitme-story website DS — ongoing build-out** (line 191) — showcase route + drift detection + dark-mode parity audit + token additions + contribution guidelines
+- [x] ~~**PERF — Lighthouse-CI / web-vitals baseline** (NEW 2026-05-29)~~ — ✅ **SHIPPED, confirmed 2026-07-23 (W40 sweep).** Landed as Linear **FIT-193**: `fitme-story/.github/workflows/lighthouse-ci.yml` + `.lighthouserc.cjs`, driven by Vercel `deployment_status` events (probes the real preview deploy rather than building Next.js in the runner) with a `workflow_dispatch` production path for the true SEO score. All assertions are `warn`, so it surfaces perf/a11y/best-practices/SEO regressions without blocking a merge. The row was stale-open for ~7 weeks.
+- [ ] **fitme-story website DS — ongoing build-out** (line 191) — showcase route + drift detection + dark-mode parity audit + token additions + contribution guidelines. *(2026-07-23: drift detection ships as `design-system-audit.yml` + `figma-drift-weekly.yml`; **FIT-135** extends the DS to `/control-room/*` — first slice shipped via fitme-story #270, which added the `--color-phase-*` lifecycle tokens and converted `board/page.tsx`; 23 `slate-*` remain across 4 control-room files.)*
 
 ### 3.5 Drift / reconciliation items
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_note": "derived from .claude/features/*/state.json \u2014 do not hand-edit; run `make crosswalk`",
-  "source_fingerprint": "82abce8e882deba3cb4032e10e21d8ef328d07cf2719008e9832bc78182148c6",
+  "source_fingerprint": "af5de94e8b306849edd69e52ee6106711d11d42408949617ed8cb3a3a0f06ba3",
   "items": [
     {
       "slug": "3d-interactive-framework-flow-diagram",
@@ -1381,11 +1381,15 @@
       "slug": "t9-backend-chaos-tests",
       "linear_id": "FIT-157",
       "thematic_codes": [],
-      "status": "In Progress",
-      "current_phase": "implement",
+      "status": "Done",
+      "current_phase": "complete",
       "work_type": "chore",
-      "case_study": null,
-      "prs": []
+      "case_study": "docs/case-studies/t9-backend-chaos-tests-case-study.md",
+      "prs": [
+        846,
+        873,
+        908
+      ]
     },
     {
       "slug": "training-plan-v2",

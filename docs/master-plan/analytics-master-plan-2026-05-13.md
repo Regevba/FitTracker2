@@ -431,12 +431,48 @@ Phase 3 close trigger: green scaffold merged + (after 2026-06-04) yellow live-wi
 
 For both gates, before merging Phase 1.B PR:
 
-- [ ] Gate spec section in this doc (§8.2 + §8.3) — ✅ written
-- [ ] 1 positive fixture per gate (`tests/fixtures/gate-fixtures/CSV_TAXONOMY_DRIFT/positive/`)
-- [ ] 1 negative fixture per gate (`tests/fixtures/gate-fixtures/CSV_TAXONOMY_DRIFT/negative/`)
-- [ ] Dispatch regression test: asserts `coverage.candidate(GATE)` fires under expected input partition
+- [x] Gate spec section in this doc (§8.2 + §8.3) — ✅ written
+- [ ] **1 positive fixture per gate** (`tests/fixtures/CSV_TAXONOMY_DRIFT/positive/`) — ❌ **NOT MET**
+- [ ] **1 negative fixture per gate** (`tests/fixtures/CSV_TAXONOMY_DRIFT/negative/`) — ❌ **NOT MET**
+- [x] Dispatch regression test — ✅ `scripts/tests/test_csv_taxonomy_drift.py`
 
-These ride on F16 try-repo harness when it ships v7.9.1 (~2026-06-11). Phase 1.B fixture authoring CAN start before F16 ships; harness integration finalizes after.
+> ⚠️ **Requirement not met — recorded 2026-07-23 (W40 system reconcile).**
+>
+> These were **pre-merge** requirements per §3.5.1. Both gates merged anyway,
+> and `CSV_TAXONOMY_DRIFT` was subsequently promoted advisory→**enforced** on
+> 2026-07-13 (cadence B16) — so a gate that now **blocks commits** never got
+> the try-repo fixture pair this section made a condition of merging.
+>
+> This is not a documentation slip; it is **discipline drift on the
+> enforcement layer itself**. CLAUDE.md (v7.9.1 F16) states the rule
+> unambiguously: *"every gate added going forward MUST ship with a try-repo
+> fixture pair under `tests/fixtures/<GATE_ID>/{positive,negative}/` PLUS a
+> per-gate test."* Since F16 shipped, **5 write-time gates** have accumulated
+> without that fixture pair — machine-confirmed, not estimated, by
+> `.claude/shared/gate-catalog.json::summary.write_time_without_try_repo`:
+>
+> | Gate | Enforced? | Has a test? |
+> |---|---|---|
+> | `CSV_TAXONOMY_DRIFT` | **yes** (2026-07-13) | unit/dispatch only |
+> | `PLATFORMS_TESTED` | **yes** (2026-06-21) | unit only |
+> | `SCHEMA_DIFF` | **yes** (2026-07-20) | has `test_try_repo_schema_diff.py` but **no fixture dir**, so the catalog cannot derive try-repo tier |
+> | `GA4_MCP_DISCONNECTED` | no (advisory by design) | unit only |
+> | `PR_NUMBER_UNRESOLVED` | yes (pre-dates F16) | unit only |
+>
+> Note the path drift too: this section wrote `tests/fixtures/gate-fixtures/…`;
+> the actual F16 convention is `tests/fixtures/<GATE_ID>/…`.
+>
+> **Why it matters:** try-repo is the only tier that exercises the *real*
+> `.githooks/pre-commit` end-to-end. F16 exists because that tier caught two
+> architectural bugs the monkey-patched dispatch tier structurally could not
+> see. Three enforced gates currently rest on tiers that cannot see that class.
+>
+> **Disposition:** not fixed in this reconcile (authoring 3–5 fixture pairs is
+> its own task, not a doc sweep). Filed in
+> [`backlog.md`](../product/backlog.md) under *High Priority (Architecture &
+> Framework)*. The planned **T1 `GATE_TEST_MISSING`** meta-gate (FIT-149,
+> date-gated 2026-08-22) consumes exactly this machine signal — it would fire
+> on all 5 today, which is the strongest argument for building it on schedule.
 
 ---
 
