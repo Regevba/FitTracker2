@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "v7.10",
   "started_at": "2026-07-04T05:47:33Z",
-  "updated_at": "2026-07-04T05:47:33Z",
+  "updated_at": "2026-07-23T15:55:43Z",
   "events": [
     {
       "timestamp": "2026-07-04T05:47:33Z",
@@ -17,6 +17,17 @@
       "metrics": {},
       "actor": "human_or_agent",
       "status": "success",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-07-23T15:55:43Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "implement -> complete. T1/T3/T4 shipped via #846/#873/#908 (10 chaos tests + injectable deletion seam over Supabase/CloudKit). T2 formally DEFERRED: rotateKeys needs a biometry-enrolled CI simulator (LAError -7); named blocker recorded rather than silent coverage. Case study authored; closes GH #922.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
       "recording_mode": "contemporaneous"
     }
   ]
