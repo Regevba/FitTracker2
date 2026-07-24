@@ -51,16 +51,22 @@ def test_every_gate_has_required_fields():
 
 def test_fixture_is_the_only_try_repo_signal():
     """A gate with its own fixture dir is try-repo; a gate merely *mentioned*
-    inside another gate's try_repo test file (no fixture) must NOT be
-    over-credited to try-repo."""
+    inside a try_repo test file (no fixture) must NOT be over-credited to
+    try-repo."""
     cat = gc.build_catalog()["gates"]
     # FEATURE_CLOSURE_COMPLETENESS has a fixture dir -> try-repo.
     assert cat["FEATURE_CLOSURE_COMPLETENESS"]["tier"] == "try-repo"
     assert cat["FEATURE_CLOSURE_COMPLETENESS"]["fixture_path"] is not None
-    # PLATFORMS_TESTED has NO fixture dir; it appears in another gate's
-    # try_repo test via shared baseline state -> must be unit, not try-repo.
-    assert cat["PLATFORMS_TESTED"]["fixture_path"] is None
-    assert cat["PLATFORMS_TESTED"]["tier"] == "unit"
+    # PLATFORMS_TESTED now ships its own tests/fixtures/PLATFORMS_TESTED/ dir
+    # (state.overrides.json positive/negative pair) -> try-repo.
+    assert cat["PLATFORMS_TESTED"]["fixture_path"] is not None
+    assert cat["PLATFORMS_TESTED"]["tier"] == "try-repo"
+    # CSV_TAXONOMY_DRIFT is a staged-file gate: it ships a bespoke rc/stderr-
+    # asserting try_repo test file (test_try_repo_csv_taxonomy_drift.py) but NO
+    # tests/fixtures/ dir, so the fixture-authority tier derivation must keep it
+    # below try-repo (not over-credited from the mention in that test file).
+    assert cat["CSV_TAXONOMY_DRIFT"]["fixture_path"] is None
+    assert cat["CSV_TAXONOMY_DRIFT"]["tier"] != "try-repo"
 
 
 def test_case_study_missing_fields_is_cataloged():
@@ -78,15 +84,21 @@ def test_write_time_gap_signal():
     fixture are surfaced explicitly."""
     cat = gc.build_catalog()
     gap = cat["summary"]["write_time_without_try_repo"]
+    # PLATFORMS_TESTED left this gap on 2026-07-24 when it gained a
+    # tests/fixtures/PLATFORMS_TESTED/ state.overrides.json fixture pair.
+    # The remaining four are all STAGED-FILE (or gh-dependent) gates that the
+    # state.overrides.json fixture harness structurally cannot drive, so they
+    # ship bespoke try_repo test files instead of a tests/fixtures/<GATE>/ dir:
+    #   - SCHEMA_DIFF            → test_try_repo_schema_diff.py (rc-asserting)
+    #   - CSV_TAXONOMY_DRIFT     → test_try_repo_csv_taxonomy_drift.py (rc-asserting)
+    #   - GA4_MCP_DISCONNECTED   → test_try_repo_ga4_mcp_disconnected.py (advisory-only, stderr-asserting)
+    #   - PR_NUMBER_UNRESOLVED   → test_try_repo_pr_number_unresolved.py (documented gh_unavailable skip)
+    # Because the tier derivation credits try-repo ONLY from a fixture dir, all
+    # four remain listed here even though three now have real integration tests.
     assert set(gap) == {
         "CSV_TAXONOMY_DRIFT",
         "GA4_MCP_DISCONNECTED",
-        "PLATFORMS_TESTED",
         "PR_NUMBER_UNRESOLVED",
-        # SCHEMA_DIFF (T12) is advisory: it ships a stderr-asserting try-repo
-        # test (test_try_repo_schema_diff.py) rather than an rc-based
-        # tests/fixtures/SCHEMA_DIFF/ dir, so the fixture-based tier derivation
-        # lists it here alongside the other advisory gates.
         "SCHEMA_DIFF",
     }, gap
     # every listed gap gate really is write-time and really lacks a fixture
