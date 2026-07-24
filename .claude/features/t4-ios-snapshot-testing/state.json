@@ -17,12 +17,12 @@
   "case_study_exempt_reason": "iOS test/CI-infrastructure foundation (TC-T4): adds the swift-snapshot-testing SPM dep + harness + record-in-CI workflow. Snapshot baselines + screen coverage are follow-up tasks; PR body + this state.json are the provenance record.",
   "isolation_opt_out": false,
   "platforms_tested": {
-    "ios": false,
+    "ios": true,
     "web": false,
     "backend": false,
     "ai": false
   },
-  "platforms_tested_provenance": "exempt:framework_meta",
+  "platforms_tested_provenance": "authored",
   "summary": "T4 (test-coverage plan \u00a74) FOUNDATION \u2014 pointfreeco/swift-snapshot-testing SPM dep wired into FitTrackerTests + a snapshot harness (SnapshotTestSupport SNAPSHOT_MODE gate: tests SKIP by default so the required Build+Test never reddens pre-baseline) + starter design-system-component snapshots + an operator-triggered ios-snapshot-record.yml that records CI-environment baselines and uploads them as an artifact. Baselines can't be recorded locally (Xcode 26/iPhone 17 Pro local vs iPhone 15/16 CI). Verified locally: SnapshotTesting package resolves + test target compiles.",
   "phases": {
     "research": {
@@ -97,14 +97,14 @@
       "title": "Expand snapshot coverage to the 6 v2 screens (Home/Stats/Settings/Nutrition/Training/Readiness) + 4 auth views with mock view-model/store injection",
       "type": "test",
       "skill": "qa",
-      "status": "in_progress",
+      "status": "complete",
       "priority": "medium",
       "effort_days": 0.8,
       "depends_on": [
         "T2"
       ],
-      "completed_at": null,
-      "notes": "2026-07-23: AIOrchestrator stub landed \u2014 Home renders in full (PNG visually verified). Two blockers remain, both newly identified: (a) Home is wall-clock dependent (Date() x4 in MainScreenView) and needs an injectable clock before a baseline can be committed; (b) WelcomeView's blank frame is an onAppear-gated opacity reveal, NOT a missing NavigationStack \u2014 .wait and drawHierarchyInKeyWindow both ruled out. See observed-patterns W46."
+      "completed_at": "2026-07-24",
+      "notes": "2026-07-24: BOTH remaining blockers fixed via production-view seams (W46), not snapshot hacks. Home: MainScreenView gained an injectable `now: () -> Date` clock (default { Date() }); recipe pins 2026-01-15 09:41 UTC so greeting + today's date are deterministic. Welcome: WelcomeView gained `init(snapshotSettled: Bool=false)` seeding the reveal @State at final values + skipping the .onAppear animation; renders the full screen instead of a bare gradient. Both baselines recorded via ios-snapshot-record run 30070486541 and VISUALLY VERIFIED (Home: full card stack + 'Good morning'/'Thursday, 15 January 2026'; Welcome: logo+FitMe+fact rows+Continue). All 10 screen recipes + 4 DS components now have committed CI-recorded baselines. Remaining (separate closure): flip the suite to SNAPSHOT_MODE=verify gating (remove skipVerifyUntilBaselineRecorded guards) + case study."
     }
   ],
   "transitions": [],
