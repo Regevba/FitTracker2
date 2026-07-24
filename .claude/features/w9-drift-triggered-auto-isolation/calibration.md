@@ -139,3 +139,52 @@ condition:** accumulate ≥5 `concurrency_offer` rows post-fix (reliable count) 
 audit their lease-freshness before considering the `CLAUDE_W9_CONCURRENCY_ENFORCE`
 default flip. `checked=1` (the acted-isolation firing) remains unreachable in
 advisory by design — the calibration signal is the `concurrency_offer` skip-row.
+
+## 2026-07-24 — Organics fix (heartbeat + per-session lease + cooldown); window RESET
+
+The 2026-07-21 re-eval left the HOLD blocked on an *instrumentation* problem, not a
+detector problem: `concurrency_offer` could only fire in the rare window where BOTH
+sessions had run `create-isolated-worktree.py` within the 1h heartbeat TTL, because
+that script was the **only** writer of `agent-leases.json` and nothing ever
+refreshed `last_heartbeat`. A session on the shared main checkout (the common case)
+advertised nothing, so it could never be the "other session" a sibling detects.
+That is why n=1 accumulated in ~6 weeks — the KC2 bar was structurally unreachable
+by waiting.
+
+Three cooperating fixes make ordinary shared-checkout concurrency detectable:
+
+1. **Heartbeat refresh (#1)** — `w9_auto_isolate.touch_own_lease()` upserts THIS
+   session's lease with a fresh `last_heartbeat` on every Bash call (wired into the
+   existing `check-branch-drift.py` PostToolUse:Bash hook — no new process). A live
+   session now stays live for `another_session_live()` as long as it is working,
+   instead of decaying 1h after worktree creation.
+2. **Per-session lease registration (#2)** — new `w9_session_lease.py` SessionStart
+   hook registers a lightweight lease keyed by the real session id, so a session on
+   the shared checkout advertises liveness even without an isolated worktree.
+   `another_session_live()` gains `self_session`: exclusion is by `session_id` when
+   both sides carry one (so a DIFFERENT session on the SAME feature now counts —
+   the legacy feature-only comparison missed it), falling back to feature-name for
+   pre-fix leases. `concurrency_isolation_decision(session_id=…)` self-excludes this
+   session's own lease so fix #2 doesn't make every session offer against itself.
+3. **Cooldown marker (#3)** — the once-per-session `*-w9-concurrency.done` latch is
+   now a `CLAUDE_W9_CONCURRENCY_COOLDOWN_SECONDS` cooldown (default 45 min), so a
+   long session re-samples concurrency that arises *after* its first edit instead of
+   sampling one instant per session.
+
+End-to-end proven (two-session subprocess harness): session B registers a lease →
+session A's first-edit check emits `concurrency_offer` against B on the **same**
+active feature — the exact case the pre-fix code could not see.
+
+**Window RESET.** These changes alter the emission rate and the "another session"
+predicate, so the pre-fix `concurrency_offer` count (n=1, 2026-07-02) does NOT carry
+forward. The ≥5-offer re-eval basis restarts from this fix landing on main. **New
+re-eval condition (unchanged bar, reset clock):** accumulate ≥5 `concurrency_offer`
+rows AFTER this fix (now reliably countable via the canonical-ledger path + the new
+writers), audit their lease-freshness against `agent-leases.json` for KC2
+false-trigger rate, THEN consider the `CLAUDE_W9_CONCURRENCY_ENFORCE` default flip.
+Until then: **HOLD at advisory.**
+
+**Reversibility (unchanged):** the acting path is still gated on
+`CLAUDE_W9_AUTO_ISOLATE=1` + `CLAUDE_W9_CONCURRENCY_ENFORCE=1`; these fixes only
+populate the advisory telemetry. Disable the new writers via
+`CLAUDE_W9_DISABLE_SESSION_LEASE=1` (and the existing `CLAUDE_W9_DISABLE_*` flags).

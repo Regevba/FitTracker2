@@ -318,14 +318,24 @@ def _parse_iso(ts: str) -> float | None:
 
 
 def another_session_live(ttl_seconds: int = 3600, *, self_feature: str | None = None,
+                         self_session: str | None = None,
                          now_epoch: float | None = None) -> bool:
     """T6 — is another session holding a FRESH lease on this checkout?
 
-    Reads agent-leases.json. Returns True iff some lease (a) is for a feature
-    other than `self_feature` (defaults to the active feature), (b) has
-    status == active, and (c) has a `last_heartbeat` within `ttl_seconds`.
-    Stale leases (heartbeat older than TTL) are treated as ABSENT — this is the
-    safety valve against a crashed session's lingering lease forcing isolation.
+    Reads agent-leases.json. Returns True iff some lease is (a) NOT this
+    session's own, (b) `status == active`, and (c) has a `last_heartbeat`
+    within `ttl_seconds`. Stale leases (heartbeat older than TTL) are treated
+    as ABSENT — the safety valve against a crashed session's lingering lease
+    forcing isolation.
+
+    "This session's own" is resolved with a preference for `session_id`:
+      - if BOTH this call's `self_session` and the lease carry a `session_id`,
+        exclusion is by session id — so a DIFFERENT session on the SAME feature
+        (the shared-checkout concurrency case fix #2 makes detectable) counts
+        as live;
+      - otherwise fall back to the legacy feature-name comparison so leases
+        written before per-session registration (no `session_id`) still
+        self-exclude correctly.
     """
     self_feature = self_feature if self_feature is not None else active_feature()
     leases = _load_leases()
@@ -334,16 +344,110 @@ def another_session_live(ttl_seconds: int = 3600, *, self_feature: str | None = 
     if now_epoch is None:
         now_epoch = _now_epoch()
     for lease in leases:
-        if lease.get("feature") == self_feature:
-            continue
         if lease.get("status") != "active":
             continue
         hb = _parse_iso(lease.get("last_heartbeat", ""))
-        if hb is None:
+        if hb is None or (now_epoch - hb) > ttl_seconds:
             continue
-        if (now_epoch - hb) <= ttl_seconds:
-            return True
+        lease_sid = lease.get("session_id")
+        if self_session and lease_sid:
+            if lease_sid == self_session:
+                continue  # this session's own lease
+        elif lease.get("feature") == self_feature:
+            continue  # legacy self-exclusion (lease predates session_id keying)
+        return True
     return False
+
+
+def touch_own_lease(*, session_id: str, feature: str | None = None,
+                    worktree_path: str | None = None,
+                    now_iso: str | None = None, reap_ttl_seconds: int = 86400) -> bool:
+    """Upsert THIS session's lease with a fresh heartbeat (fixes #1 + #2).
+
+    Fix #1 (heartbeat): a live session re-stamps `last_heartbeat` on a cheap
+    cadence (every Bash call) so its lease stays fresh for `another_session_live`
+    as long as it is actually working — instead of decaying 1h after the
+    worktree was created (nothing else refreshed it before).
+
+    Fix #2 (per-session registration): a session keyed by `session_id` advertises
+    its liveness on the shared checkout even without an isolated worktree, so a
+    concurrent session can detect it. Legacy worktree leases (keyed by feature,
+    no session_id) are left untouched.
+
+    Best-effort + fail-safe: never raises. Reaps definitively-dead leases
+    (>`reap_ttl_seconds`) while it holds the lock so the file self-cleans.
+    Returns True on a successful write, False on any degraded path.
+    """
+    if not session_id:
+        return False
+    now_iso = now_iso or _now_iso()
+    now_ep = _parse_iso(now_iso)
+    path = _agent_leases_path()
+
+    def _apply(data: dict) -> dict:
+        leases = data.get("leases")
+        if not isinstance(leases, list):
+            leases = []
+        # Reap definitively-dead leases first (keeps the file bounded).
+        if now_ep is not None:
+            kept, _removed = reap_stale_leases(leases, now_epoch=now_ep,
+                                               ttl_seconds=reap_ttl_seconds)
+            leases = kept
+        # Upsert THIS session's lease (keyed by session_id).
+        for lease in leases:
+            if lease.get("session_id") == session_id:
+                lease["last_heartbeat"] = now_iso
+                lease["status"] = "active"
+                if feature is not None:
+                    lease["feature"] = feature
+                if worktree_path is not None:
+                    lease["worktree_path"] = worktree_path
+                break
+        else:
+            leases.append({
+                "session_id": session_id,
+                "feature": feature,
+                "worktree_path": worktree_path,
+                "leased_paths": [],
+                "started_at": now_iso,
+                "last_heartbeat": now_iso,
+                "status": "active",
+            })
+        data["leases"] = leases
+        data.setdefault("version", "1.0")
+        return data
+
+    try:
+        if str(Path(__file__).resolve().parent) not in sys.path:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from flock_writer import flocked
+        with flocked(path):
+            try:
+                data = json.loads(path.read_text())
+                if not isinstance(data, dict):
+                    data = {"version": "1.0", "leases": []}
+            except (OSError, ValueError):
+                data = {"version": "1.0", "leases": []}
+            data = _apply(data)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(data, indent=2) + "\n")
+        return True
+    except Exception:
+        # Degrade to an unlocked read-modify-write. Concurrency loss here is
+        # acceptable for advisory telemetry — never break the caller.
+        try:
+            try:
+                data = json.loads(path.read_text())
+                if not isinstance(data, dict):
+                    data = {"version": "1.0", "leases": []}
+            except (OSError, ValueError):
+                data = {"version": "1.0", "leases": []}
+            data = _apply(data)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(data, indent=2) + "\n")
+            return True
+        except Exception:
+            return False
 
 
 def _load_leases() -> list[dict]:
@@ -366,7 +470,8 @@ def _now_epoch() -> float:
     return _dt.datetime.now(_dt.timezone.utc).timestamp()
 
 
-def concurrency_isolation_decision(ttl_seconds: int = 3600) -> IsolationResult:
+def concurrency_isolation_decision(ttl_seconds: int = 3600, *,
+                                   session_id: str | None = None) -> IsolationResult:
     """T7 — proactive concurrency-gated isolation decision (ADVISORY).
 
     If another session is live AND the current session is NOT already in an
@@ -379,7 +484,8 @@ def concurrency_isolation_decision(ttl_seconds: int = 3600) -> IsolationResult:
     if not feature:
         return IsolationResult(result="skipped", reason="no_active_feature")
 
-    if not another_session_live(ttl_seconds, self_feature=feature):
+    if not another_session_live(ttl_seconds, self_feature=feature,
+                                self_session=session_id):
         emit_telemetry(candidates=1, checked=0, skipped=1,
                        skip_reasons=["no_concurrency"], outcome="no_concurrency",
                        gate="w9.concurrency")
