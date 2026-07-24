@@ -8,13 +8,33 @@ struct WelcomeView: View {
 
     @EnvironmentObject var signIn: SignInService
 
-    @State private var showSignIn       = false
-    @State private var logoScale: CGFloat = 0.6
-    @State private var logoOpacity: CGFloat = 0
-    @State private var textOffset: CGFloat = 30
-    @State private var textOpacity: CGFloat = 0
-    @State private var buttonsOffset: CGFloat = 40
-    @State private var buttonsOpacity: CGFloat = 0
+    /// When true, the view seeds every animated element at its post-entry
+    /// settled value and skips the `.onAppear` reveal. The entry animation is
+    /// gated behind `.onAppear`, which never fires (or never completes) under
+    /// the off-screen snapshot host, so the default render captures the
+    /// pre-reveal state — a bare gradient. Rendering the settled state directly
+    /// is the tractable fix (waiting / drawHierarchyInKeyWindow were ruled out).
+    /// See observed-patterns W46. Production default (`false`) is unchanged.
+    private let snapshotSettled: Bool
+
+    @State private var showSignIn: Bool
+    @State private var logoScale: CGFloat
+    @State private var logoOpacity: CGFloat
+    @State private var textOffset: CGFloat
+    @State private var textOpacity: CGFloat
+    @State private var buttonsOffset: CGFloat
+    @State private var buttonsOpacity: CGFloat
+
+    init(snapshotSettled: Bool = false) {
+        self.snapshotSettled = snapshotSettled
+        _showSignIn = State(initialValue: false)
+        _logoScale = State(initialValue: snapshotSettled ? 1.0 : 0.6)
+        _logoOpacity = State(initialValue: snapshotSettled ? 1.0 : 0)
+        _textOffset = State(initialValue: snapshotSettled ? 0 : 30)
+        _textOpacity = State(initialValue: snapshotSettled ? 1.0 : 0)
+        _buttonsOffset = State(initialValue: snapshotSettled ? 0 : 40)
+        _buttonsOpacity = State(initialValue: snapshotSettled ? 1.0 : 0)
+    }
 
     var body: some View {
         ZStack {
@@ -134,6 +154,9 @@ struct WelcomeView: View {
         }
         // ── Entry animations ──────────────────────────────
         .onAppear {
+            // Snapshot renders the settled state directly (elements already at
+            // their revealed values); no animation to schedule. See W46.
+            guard !snapshotSettled else { return }
             withAnimation(AppSpring.hero.delay(0.1)) {
                 logoScale = 1.0; logoOpacity = 1.0
             }
