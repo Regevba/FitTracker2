@@ -163,8 +163,10 @@ docs does not reconcile anything.
 
 **Dev, no external dependency**
 - Try-repo fixture backfill for 5 gates (§2) — do before 2026-08-22
-- **T4/FIT-152** — needs an injectable clock on `MainScreenView` (Home) and a
-  settled-state render path for `WelcomeView`; see catalog **W46**
+- **T4/FIT-152** — Home + Welcome snapshot recipes DONE 2026-07-24 (PR #961):
+  injectable `now` clock on `MainScreenView` + `WelcomeView(snapshotSettled:)`;
+  baselines recorded/committed (13 total), T3 complete. Remaining: flip suite to
+  `SNAPSHOT_MODE=verify` gating + a case study. See catalog **W46**
 - **FIT-135** — 23 `slate-*` across 4 control-room files after the #270 slice
 - Notification-store-consolidation; Dark-Mode e2e; Dynamic Type (`@ScaledMetric`
   appears in **0** files); Figma old-frame cleanup
