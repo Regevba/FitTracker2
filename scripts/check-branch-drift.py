@@ -217,6 +217,21 @@ def main(payload: dict | None = None) -> int:
         # Detached HEAD or not in a repo — nothing useful to compare
         return 0
 
+    # Fix #1 (heartbeat): keep THIS session's lease fresh on every Bash call so
+    # `another_session_live()` sees it for as long as the session is actually
+    # working — instead of the lease decaying 1h after worktree creation
+    # (nothing else refreshed it). Best-effort; never affects drift detection.
+    if sid and sid != "default":
+        try:
+            import w9_auto_isolate as _wai
+            _wai.touch_own_lease(
+                session_id=sid,
+                feature=_active_feature(),
+                worktree_path=str(REPO_ROOT),
+            )
+        except Exception:
+            pass
+
     state_dir = _session_state_dir()
     state_dir.mkdir(parents=True, exist_ok=True)
     state_file = state_dir / f"{sid}-branch.txt"

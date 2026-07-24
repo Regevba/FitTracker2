@@ -44,15 +44,59 @@ except Exception:  # pragma: no cover - degrade gracefully if helper absent
     SESSION_ID = os.environ.get("CLAUDE_SESSION_ID", "default")
 MARKER = REPO_ROOT / ".claude" / "_session-state" / f"{SESSION_ID}-w9-concurrency.done"
 
+# Fix #3: re-arm the once-per-session marker as a COOLDOWN instead of a
+# permanent latch. The check samples one instant per session; concurrency that
+# arises LATER in a long session was never observed. A cooldown re-samples every
+# COOLDOWN_SECONDS, multiplying observation opportunities while bounding noise.
+COOLDOWN_SECONDS = 2700  # 45 min default
+
+
+def _cooldown_seconds() -> int:
+    override = os.environ.get("CLAUDE_W9_CONCURRENCY_COOLDOWN_SECONDS")
+    if override:
+        try:
+            return max(0, int(override))
+        except ValueError:
+            pass
+    return COOLDOWN_SECONDS
+
+
+def _now_epoch() -> float:
+    override = os.environ.get("W9_FAKE_NOW_EPOCH")
+    if override:
+        try:
+            return float(override)
+        except ValueError:
+            pass
+    import datetime as _dt
+    return _dt.datetime.now(_dt.timezone.utc).timestamp()
+
 
 def _already_fired() -> bool:
-    return MARKER.exists()
+    """True iff the marker exists AND its timestamp is within the cooldown.
+
+    A stale marker (older than the cooldown) is treated as absent, so the check
+    re-fires. The pre-cooldown latch wrote "1\\n"; that parses as epoch 1.0
+    (ancient) → stale → re-fires exactly once on upgrade, then `_mark_fired`
+    rewrites it with a real timestamp. Genuinely non-numeric content is honored
+    as "fired" (fail-safe: don't spuriously re-sample on a corrupt marker).
+    """
+    try:
+        raw = MARKER.read_text().strip()
+    except OSError:
+        return False
+    try:
+        fired_at = float(raw)
+    except ValueError:
+        # Non-numeric/corrupt content — honor as "fired" for this window.
+        return True
+    return (_now_epoch() - fired_at) < _cooldown_seconds()
 
 
 def _mark_fired() -> None:
     try:
         MARKER.parent.mkdir(parents=True, exist_ok=True)
-        MARKER.write_text("1\n")
+        MARKER.write_text(f"{_now_epoch()}\n")
     except OSError:
         pass
 
@@ -70,7 +114,9 @@ def main() -> int:
         return 0  # primitive unavailable — no-op
 
     try:
-        res = wai.concurrency_isolation_decision()
+        # Pass the real session id so the decision self-excludes THIS session's
+        # own lease (fix #2 now registers one) while still detecting siblings.
+        res = wai.concurrency_isolation_decision(session_id=SESSION_ID)
     except Exception:
         return 0  # fail-safe: never break an edit
 

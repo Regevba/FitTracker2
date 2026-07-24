@@ -45,6 +45,12 @@ Carthage/Build/
 .claude/logs/gate-coverage.jsonl
 .claude/logs/devssd-uuid-watcher.log
 .claude/shared/preflight-cache.json
+# Ephemeral lease registry: written at runtime by w9_auto_isolate.touch_own_lease
+# (heartbeat on every Bash) + create-isolated-worktree.py. A lease is live-session
+# state, not source — tracking it made the file perpetually dirty once the
+# per-Bash heartbeat landed (2026-07-24). All readers tolerate its absence
+# (membrane-status/another_session_live default to empty; writers self-create).
+.claude/shared/agent-leases.json
 .claude/shared/integrity-checkpoint-regression.flag
 .claude/shared/backup-verify-result.json
 .claude/shared/backup-verify-failed.flag

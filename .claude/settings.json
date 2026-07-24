@@ -202,6 +202,11 @@
             "type": "command",
             "_comment": "C8 stale .vercel/project.json check (added 2026-05-23). Closes ucc-passkey-auth-case-study §99 quirk #4: operator's local Vercel project link pointed at the deprecated 'fit-tracker2' project during the 2026-05-16 UCC cutover, causing the first Upstash install to misroute. Loudly warns when the link points at a deprecated name or mismatches the working directory. Always exit 0 (informational). Disable: CLAUDE_DISABLE_VERCEL_LINK_CHECK=1. Cross-repo guard: silent no-op when script absent.",
             "command": "[ -f scripts/check-vercel-project-link.sh ] && bash scripts/check-vercel-project-link.sh || true"
+          },
+          {
+            "type": "command",
+            "_comment": "W9 Phase 2 per-session lease registration (added 2026-07-24, feature w9-drift-triggered-auto-isolation, calibration-organics fix #2). Registers a lightweight lease keyed by the real session id so a session on the shared checkout advertises its liveness even without an isolated worktree — making ordinary shared-checkout concurrency detectable by `another_session_live()` (the signal the advisory→enforced calibration needs; see calibration.md 2026-07-24). ADVISORY substrate: writes a lease row only; never acts/blocks/isolates. Reads session_id from hook stdin. Silent no-op when script absent (cross-repo guard) or session id unresolvable. Disable: CLAUDE_W9_DISABLE_SESSION_LEASE=1.",
+            "command": "[ -f scripts/w9_session_lease.py ] && python3 scripts/w9_session_lease.py || true"
           }
         ]
       }

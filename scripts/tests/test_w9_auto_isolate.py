@@ -500,3 +500,167 @@ def test_concurrency_check_wires_w9_session_helper(repo, monkeypatch):
     assert getattr(mod, "w9s", None) is not None, "w9_concurrency_check must import w9_session"
     # And the marker is keyed on the resolved id, not the constant 'default'.
     assert mod.MARKER.name == "sess-REAL-w9-concurrency.done"
+
+
+# ── calibration-organics 2026-07-24: heartbeat (#1) + per-session lease (#2) + cooldown (#3) ──
+
+def _read_leases(repo):
+    p = repo["root"] / ".claude" / "shared" / "agent-leases.json"
+    return json.loads(p.read_text())["leases"] if p.exists() else []
+
+
+def test_touch_own_lease_registers_new_session(repo):
+    """#2 — a session with no prior lease gets a fresh active lease keyed by session_id."""
+    wai = _wai(repo)
+    assert wai.touch_own_lease(session_id="sess-NEW", feature="demo-feat",
+                               worktree_path="/tmp/x", now_iso="2026-07-24T10:00:00Z") is True
+    leases = _read_leases(repo)
+    mine = [l for l in leases if l.get("session_id") == "sess-NEW"]
+    assert len(mine) == 1
+    assert mine[0]["status"] == "active"
+    assert mine[0]["last_heartbeat"] == "2026-07-24T10:00:00Z"
+    assert mine[0]["feature"] == "demo-feat"
+
+
+def test_touch_own_lease_upserts_heartbeat_no_duplicate(repo):
+    """#1 — re-touching the SAME session updates the heartbeat in place, no dup row."""
+    wai = _wai(repo)
+    wai.touch_own_lease(session_id="sess-HB", now_iso="2026-07-24T10:00:00Z")
+    wai.touch_own_lease(session_id="sess-HB", now_iso="2026-07-24T10:30:00Z")
+    mine = [l for l in _read_leases(repo) if l.get("session_id") == "sess-HB"]
+    assert len(mine) == 1, "heartbeat must upsert, not append"
+    assert mine[0]["last_heartbeat"] == "2026-07-24T10:30:00Z"
+
+
+def test_touch_own_lease_reaps_stale(repo):
+    """touch reaps definitively-dead (>24h) leases while it holds the lock."""
+    wai = _wai(repo)
+    _write_leases(repo, [{"session_id": "dead", "feature": "old", "status": "active",
+                          "last_heartbeat": "2026-07-20T10:00:00Z"}])  # ~4 days old
+    wai.touch_own_lease(session_id="sess-LIVE", now_iso="2026-07-24T10:00:00Z")
+    ids = {l.get("session_id") for l in _read_leases(repo)}
+    assert "dead" not in ids, "stale lease should be reaped"
+    assert "sess-LIVE" in ids
+
+
+def test_another_session_live_different_session_same_feature(repo):
+    """#2 payoff — a DIFFERENT session on the SAME feature now counts as live
+    (session-id exclusion), which the legacy feature-only comparison missed."""
+    wai = _wai(repo)
+    _write_leases(repo, [{"session_id": "sess-OTHER", "feature": repo["slug"],
+                          "status": "active", "last_heartbeat": "2026-06-06T05:39:40Z"}])
+    now = wai._parse_iso("2026-06-06T05:40:00Z")
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    self_session="sess-ME", now_epoch=now) is True
+
+
+def test_another_session_live_excludes_own_session_id(repo):
+    """A session never trips on its OWN lease even when a lease exists for it."""
+    wai = _wai(repo)
+    _write_leases(repo, [{"session_id": "sess-ME", "feature": repo["slug"],
+                          "status": "active", "last_heartbeat": "2026-06-06T05:39:40Z"}])
+    now = wai._parse_iso("2026-06-06T05:40:00Z")
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    self_session="sess-ME", now_epoch=now) is False
+
+
+def test_another_session_live_legacy_feature_exclusion_still_works(repo):
+    """Back-compat — leases without session_id still self-exclude by feature."""
+    wai = _wai(repo)
+    _write_leases(repo, [{"feature": repo["slug"], "status": "active",
+                          "last_heartbeat": "2026-06-06T05:39:40Z"}])
+    now = wai._parse_iso("2026-06-06T05:40:00Z")
+    assert wai.another_session_live(3600, self_feature=repo["slug"],
+                                    self_session="sess-ME", now_epoch=now) is False
+
+
+def test_decision_self_excludes_own_registered_lease(repo, monkeypatch):
+    """#2 integration — after this session registers its own lease, the decision
+    must NOT read it as concurrency (else fix #2 would make every session offer)."""
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", str(__import__("calendar").timegm(
+        __import__("time").strptime("2026-06-06T05:40:00Z", "%Y-%m-%dT%H:%M:%SZ"))))
+    wai = _wai(repo)
+    _git("checkout", "-q", "main", cwd=repo["root"])
+    # Only this session's own lease is present.
+    wai.touch_own_lease(session_id="sess-SELF", feature=repo["slug"],
+                        now_iso="2026-06-06T05:39:55Z")
+    res = wai.concurrency_isolation_decision(session_id="sess-SELF")
+    assert res.reason == "no_concurrency", "own lease must not count as another session"
+
+
+def test_decision_detects_sibling_with_session_id(repo, monkeypatch):
+    """#2 payoff at the decision layer — a sibling session's lease triggers the offer."""
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", str(__import__("calendar").timegm(
+        __import__("time").strptime("2026-06-06T05:40:00Z", "%Y-%m-%dT%H:%M:%SZ"))))
+    monkeypatch.delenv("CLAUDE_W9_CONCURRENCY_ENFORCE", raising=False)
+    wai = _wai(repo)
+    _git("checkout", "-q", "main", cwd=repo["root"])
+    _write_leases(repo, [{"session_id": "sess-SIBLING", "feature": repo["slug"],
+                          "status": "active", "last_heartbeat": "2026-06-06T05:39:55Z"}])
+    res = wai.concurrency_isolation_decision(session_id="sess-ME")
+    assert res.reason == "advisory_concurrency"
+    rows = [json.loads(l) for l in repo["ledger"].read_text().splitlines() if l.strip()]
+    assert rows[-1]["outcome"] == "concurrency_offer"
+
+
+# ── #3 cooldown marker ──
+
+def _load_w9cc(repo, monkeypatch, session_id="sess-CD"):
+    monkeypatch.setenv("REPO_ROOT_OVERRIDE", str(repo["root"]))
+    monkeypatch.setenv("CLAUDE_SESSION_ID", session_id)
+    monkeypatch.setenv("GATE_COVERAGE_LEDGER", str(repo["ledger"]))
+    import importlib.util, sys
+    spec = importlib.util.spec_from_file_location(f"w9cc_{session_id}", SCRIPTS / "w9_concurrency_check.py")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[f"w9cc_{session_id}"] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_cooldown_fresh_marker_suppresses(repo, monkeypatch):
+    mod = _load_w9cc(repo, monkeypatch, "sess-CD1")
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", "1000000")
+    mod.MARKER.parent.mkdir(parents=True, exist_ok=True)
+    mod.MARKER.write_text("999900\n")  # 100s ago, cooldown default 2700 -> within
+    assert mod._already_fired() is True
+
+
+def test_cooldown_stale_marker_refires(repo, monkeypatch):
+    mod = _load_w9cc(repo, monkeypatch, "sess-CD2")
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", "1000000")
+    mod.MARKER.parent.mkdir(parents=True, exist_ok=True)
+    mod.MARKER.write_text("996000\n")  # 4000s ago > 2700 cooldown -> re-fire
+    assert mod._already_fired() is False
+
+
+def test_cooldown_env_override(repo, monkeypatch):
+    mod = _load_w9cc(repo, monkeypatch, "sess-CD3")
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", "1000000")
+    monkeypatch.setenv("CLAUDE_W9_CONCURRENCY_COOLDOWN_SECONDS", "60")
+    mod.MARKER.parent.mkdir(parents=True, exist_ok=True)
+    mod.MARKER.write_text("999900\n")  # 100s ago, cooldown now 60 -> stale -> re-fire
+    assert mod._already_fired() is False
+
+
+def test_cooldown_legacy_latch_refires_once(repo, monkeypatch):
+    """Pre-cooldown marker content ('1') parses as ancient epoch -> re-fires once."""
+    mod = _load_w9cc(repo, monkeypatch, "sess-CD4")
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", "1000000")
+    mod.MARKER.parent.mkdir(parents=True, exist_ok=True)
+    mod.MARKER.write_text("1\n")
+    assert mod._already_fired() is False
+
+
+def test_cooldown_corrupt_content_honored(repo, monkeypatch):
+    """Non-numeric/corrupt marker content is honored as fired (fail-safe)."""
+    mod = _load_w9cc(repo, monkeypatch, "sess-CD4b")
+    mod.MARKER.parent.mkdir(parents=True, exist_ok=True)
+    mod.MARKER.write_text("garbage\n")
+    assert mod._already_fired() is True
+
+
+def test_mark_fired_writes_timestamp(repo, monkeypatch):
+    mod = _load_w9cc(repo, monkeypatch, "sess-CD5")
+    monkeypatch.setenv("W9_FAKE_NOW_EPOCH", "1234567")
+    mod._mark_fired()
+    assert mod.MARKER.read_text().strip() == "1234567.0"
