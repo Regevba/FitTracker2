@@ -58,7 +58,7 @@ TIER_RANK = {"none": 0, "unit": 1, "dispatch": 2, "try-repo": 3}
 # --------------------------------------------------------------------------
 # AUTHORED gate metadata — the canonical 32-gate set.
 # Source of truth for the enumeration: docs/FRAMEWORK-FACTS.md (reconciled
-# 2026-06-29): 20 write-time + 9 cycle-time + 2 W9 hooks + 1 standalone.
+# 2026-06-29): 20 write-time + 10 cycle-time + 2 W9 hooks + 1 standalone.
 #
 # `fixture_key` overrides the try-repo fixture directory name when it differs
 # from the gate id (e.g. the Mode B gate's fixture is suffixed).
@@ -176,7 +176,7 @@ GATES: dict[str, dict] = {
         "description": "Post-cutoff (>= 2026-04-21) scoped case study missing required frontmatter fields. "
                        "Lives in check-case-study-preflight.py (a 2nd pre-commit gate host), NOT check-state-schema.py.",
     },
-    # ---- Cycle-time (9) — scripts/integrity-check.py ----
+    # ---- Cycle-time (10) — scripts/integrity-check.py ----
     "BROKEN_PR_CITATION": {
         "stage": "cycle-time", "source": "scripts/integrity-check.py",
         "enforcement": "finding",
@@ -221,6 +221,11 @@ GATES: dict[str, dict] = {
         "stage": "cycle-time", "source": "scripts/integrity-check.py",
         "enforcement": "advisory-permanent",
         "description": "f3 — Phase 2 task dependency graph contains a cycle/mismatch (shipped 2026-06-17 #753).",
+    },
+    "DEV_GUIDE_VERSION_DRIFT": {
+        "stage": "cycle-time", "source": "scripts/integrity-check.py",
+        "enforcement": "advisory",
+        "description": "dev-guide H1 version diverges from FRAMEWORK-FACTS canonical (in-repo canonical guide + best-effort fitme-story mirror; shipped advisory 2026-07-24).",
     },
     # ---- W9 real-time hooks (2) — PostToolUse ----
     "w9.auto_isolate": {
