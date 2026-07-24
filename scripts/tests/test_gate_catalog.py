@@ -30,14 +30,15 @@ def test_enumeration_counts():
     cat = gc.build_catalog()
     by_stage = cat["summary"]["by_stage"]
     # 22 write-time (incl. CASE_STUDY_MISSING_FIELDS in check-case-study-preflight.py
-    # + SCHEMA_DIFF T12/FIT-160) + 9 cycle-time + 2 W9 hooks + 1 standalone = 34.
+    # + SCHEMA_DIFF T12/FIT-160) + 10 cycle-time (incl. DEV_GUIDE_VERSION_DRIFT,
+    # shipped advisory 2026-07-24) + 2 W9 hooks + 1 standalone = 35.
     assert by_stage == {
-        "cycle-time": 9,
+        "cycle-time": 10,
         "hook": 2,
         "standalone": 1,
         "write-time": 22,
     }, by_stage
-    assert cat["gate_count"] == 34
+    assert cat["gate_count"] == 35
 
 
 def test_every_gate_has_required_fields():

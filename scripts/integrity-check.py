@@ -1328,6 +1328,131 @@ def check_dependency_graph_cycles(coverage: "GateCoverage | None" = None) -> lis
     return findings
 
 
+# ── DEV_GUIDE_VERSION_DRIFT (backlog 2026-05-24) ────────────────────────────
+_FRAMEWORK_FACTS_VERSION_RE = re.compile(
+    r"\|\s*\*\*Framework version\*\*\s*\|\s*\*\*((?:pre-)?v\d+\.\d+(?:\.\d+)?)\*\*"
+)
+_VERSION_TOKEN_RE = re.compile(r"(?:pre-)?v\d+\.\d+(?:\.\d+)?")
+
+DEV_GUIDE_PATH = REPO_ROOT / "docs" / "architecture" / "dev-guide-v1-to-v7-7.md"
+# Best-effort cross-repo mirror. The FT2 repo lives at ~/Developer/FitMe/FitTracker2
+# (or the ~/FitTracker2 symlink); fitme-story is its sibling. Skipped gracefully
+# when absent (cross-repo asymmetry per v7.8.2 disposition — the kill-criterion
+# fallback for this gate is exactly "scope to the in-repo check if cross-repo
+# path resolution is too brittle").
+_FITME_STORY_DEV_GUIDE = (
+    REPO_ROOT.parent / "fitme-story" / "content" / "framework" / "dev-guide.md"
+)
+
+
+def _canonical_framework_version_local() -> str | None:
+    """Canonical current version: FRAMEWORK_VERSION_CANONICAL_OVERRIDE env, else
+    the `Framework version` row of docs/FRAMEWORK-FACTS.md. None → caller skips
+    (fail-open; advisory never blocks). Mirrors check-state-schema.py's helper."""
+    override = os.environ.get("FRAMEWORK_VERSION_CANONICAL_OVERRIDE")
+    if override:
+        return override.strip()
+    try:
+        text = (REPO_ROOT / "docs" / "FRAMEWORK-FACTS.md").read_text(encoding="utf-8")
+    except OSError:
+        return None
+    m = _FRAMEWORK_FACTS_VERSION_RE.search(text)
+    return m.group(1) if m else None
+
+
+def _dev_guide_h1_version(path: Path) -> str | None:
+    """Return the LAST version token in the file's H1 line, e.g. `v7.10` from
+    `# PM Framework — Developer Guide (v1.0 → v7.10)`. None if unreadable/absent."""
+    try:
+        with path.open(encoding="utf-8") as f:
+            first = f.readline()
+    except OSError:
+        return None
+    toks = _VERSION_TOKEN_RE.findall(first)
+    return toks[-1] if toks else None
+
+
+def check_dev_guide_version_drift(coverage: "GateCoverage | None" = None) -> list[dict]:
+    """DEV_GUIDE_VERSION_DRIFT — cycle-time advisory (backlog 2026-05-24).
+
+    Trigger incident: the v7.9 promotion (FT2 PR #417) bumped CLAUDE.md +
+    framework-manifest.json + the fitme-story dev-guide, but missed the FT2
+    CANONICAL guide docs/architecture/dev-guide-v1-to-v7-7.md — three days of
+    drift where operators reading the canonical guide saw a stale version.
+
+    Fires (ADVISORY) when the LAST version token in a dev-guide's H1 title
+    diverges from the canonical framework version (FRAMEWORK-FACTS.md). Two
+    surfaces:
+      1. In-repo (always runs): docs/architecture/dev-guide-v1-to-v7-7.md — the
+         CANONICAL guide per CLAUDE.md. Fully local, never brittle.
+      2. Cross-repo (best-effort): the fitme-story mirror, checked only when the
+         sibling checkout is present. Skipped gracefully otherwise (the backlog
+         kill-criterion: scope to the in-repo check if cross-repo resolution is
+         brittle).
+
+    Ships advisory; +14d Mechanism A telemetry then a promotion decision per the
+    v7.8 pattern. Emits coverage (candidate/checked/skip) so the F17 index +
+    GATE_COVERAGE_ZERO observe it. Fail-open: an unresolvable canonical version
+    skips rather than firing."""
+    GATE = "DEV_GUIDE_VERSION_DRIFT"
+    findings: list[dict] = []
+
+    canonical = _canonical_framework_version_local()
+    if canonical is None:
+        if coverage is not None:
+            coverage.skip(GATE, "no_canonical_version")
+        return findings
+
+    # 1. In-repo canonical dev-guide H1 vs FRAMEWORK-FACTS.
+    if coverage is not None:
+        coverage.candidate(GATE)
+    ft2_version = _dev_guide_h1_version(DEV_GUIDE_PATH)
+    if ft2_version is None:
+        if coverage is not None:
+            coverage.skip(GATE, "dev_guide_h1_unparseable")
+    else:
+        if coverage is not None:
+            coverage.checked(GATE)
+        if ft2_version != canonical:
+            findings.append({
+                "feature": "docs/architecture/dev-guide-v1-to-v7-7.md",
+                "severity": "ADVISORY",
+                "code": GATE,
+                "message": (
+                    f"dev-guide H1 version {ft2_version} != canonical "
+                    f"{canonical} (FRAMEWORK-FACTS.md). Bump the dev-guide H1 "
+                    f"title so operators reading the canonical guide don't see a "
+                    f"stale framework version."
+                ),
+            })
+
+    # 2. Best-effort cross-repo fitme-story mirror (skip when absent).
+    if _FITME_STORY_DEV_GUIDE.is_file():
+        web_version = _dev_guide_h1_version(_FITME_STORY_DEV_GUIDE)
+        if web_version is None:
+            if coverage is not None:
+                coverage.skip(GATE, "fitme_story_h1_unparseable")
+        else:
+            if coverage is not None:
+                coverage.candidate(GATE)
+                coverage.checked(GATE)
+            if web_version != canonical:
+                findings.append({
+                    "feature": str(_FITME_STORY_DEV_GUIDE),
+                    "severity": "ADVISORY",
+                    "code": GATE,
+                    "message": (
+                        f"fitme-story dev-guide H1 version {web_version} != "
+                        f"canonical {canonical}. Cross-repo mirror drift."
+                    ),
+                })
+    else:
+        if coverage is not None:
+            coverage.skip(GATE, "fitme_story_absent")
+
+    return findings
+
+
 def check_gate_coverage_zero() -> list[dict]:
     """GATE_COVERAGE_ZERO (advisory, v7.10 candidate — built 2026-06-08).
 
@@ -1725,6 +1850,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         + check_gate_coverage_zero()  # v7.10 candidate (built 2026-06-08, advisory)
         + check_state_tasks_filesystem_drift(coverage=cycle_coverage)  # F1 (v8.x Theme A)
         + check_dependency_graph_cycles(coverage=cycle_coverage)  # F3 (v8.x Theme A)
+        + check_dev_guide_version_drift(coverage=cycle_coverage)  # DEV_GUIDE_VERSION_DRIFT (backlog 2026-05-24)
     )
     all_findings = findings + advisory_findings
 
