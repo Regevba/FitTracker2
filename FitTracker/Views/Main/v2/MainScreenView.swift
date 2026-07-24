@@ -11,6 +11,14 @@ struct MainScreenView: View {
     @Binding var selectedTab: AppTab
     @Binding var statsMetric: StatsFocusMetric?
 
+    /// Injectable "current time" seam for deterministic rendering. Production
+    /// uses the live clock; snapshot tests pass a fixed date so the greeting
+    /// and today's-date string don't vary by wall-clock (see observed-patterns
+    /// W46). Only the frame-visible time reads route through this; real-time
+    /// side effects (reminder scheduling, day-change haptics) intentionally
+    /// keep the live `Date()`.
+    var now: () -> Date = { Date() }
+
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var programStore:  TrainingProgramStore
@@ -62,7 +70,7 @@ struct MainScreenView: View {
     }
 
     private var readinessScore: Int? {
-        dataStore.readinessScore(for: Date(), fallbackMetrics: metrics)
+        dataStore.readinessScore(for: now(), fallbackMetrics: metrics)
     }
 
     private var streakMilestone: Int? {
@@ -522,7 +530,7 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var greeting: String {
-        let h = Calendar.current.component(.hour, from: Date())
+        let h = Calendar.current.component(.hour, from: now())
         switch h {
         case 5..<12:  return "Good morning, \(profile.name)"
         case 12..<17: return "Good afternoon, \(profile.name)"
@@ -538,7 +546,7 @@ struct MainScreenView: View {
     }()
 
     private var todayFormatted: String {
-        Self.todayDateFormatter.string(from: Date())
+        Self.todayDateFormatter.string(from: now())
     }
 
     // ─────────────────────────────────────────────────────
