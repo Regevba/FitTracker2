@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "gate_count": 34,
+  "gate_count": 35,
   "summary": {
     "by_stage": {
-      "cycle-time": 9,
+      "cycle-time": 10,
       "hook": 2,
       "standalone": 1,
       "write-time": 22
@@ -11,7 +11,7 @@
     "by_tier": {
       "dispatch": 1,
       "try-repo": 18,
-      "unit": 15
+      "unit": 16
     },
     "untested_gates": [],
     "write_time_without_try_repo": [
@@ -620,6 +620,20 @@
       "test_files": [
         {
           "file": "scripts/tests/test_dependency_graph_cycle.py",
+          "layer": "unit"
+        }
+      ]
+    },
+    "DEV_GUIDE_VERSION_DRIFT": {
+      "stage": "cycle-time",
+      "source": "scripts/integrity-check.py",
+      "enforcement": "advisory",
+      "description": "dev-guide H1 version diverges from FRAMEWORK-FACTS canonical (in-repo canonical guide + best-effort fitme-story mirror; shipped advisory 2026-07-24).",
+      "tier": "unit",
+      "fixture_path": null,
+      "test_files": [
+        {
+          "file": "scripts/tests/test_dev_guide_version_drift.py",
           "layer": "unit"
         }
       ]
