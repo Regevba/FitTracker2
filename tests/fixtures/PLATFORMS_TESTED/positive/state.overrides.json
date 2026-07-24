@@ -1,0 +1,18 @@
+{
+  "_comment": "T14 PLATFORMS_TESTED positive fixture. Transition current_phase implementation→complete with a fully-populated case study (companion case-study.md has all 7 closure fields) so the sibling closure/tier gates stay quiet. work_subtype is deleted (null sentinel) to defeat the framework_feature exemption, and platforms_tested is left ABSENT — so at the complete transition ≥1 platform is required but none is named, and PLATFORMS_TESTED must fire (rc != 0).",
+  "current_phase": "complete",
+  "work_subtype": null,
+  "case_study": "docs/case-studies/_test-fixture-case-study.md",
+  "kill_criteria_resolution": "all_not_fired_2026-07-24",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-07-24T00:00:03Z",
+        "ended_at": "2026-07-24T00:00:04Z"
+      },
+      "complete": {
+        "started_at": "2026-07-24T00:00:05Z"
+      }
+    }
+  }
+}
