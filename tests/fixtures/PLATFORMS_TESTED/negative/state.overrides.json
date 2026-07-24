@@ -1,0 +1,25 @@
+{
+  "_comment": "T14 PLATFORMS_TESTED negative fixture. Same complete transition as the positive, work_subtype deleted (so the gate is NOT exempt and actually runs the non-empty check), but platforms_tested names ≥1 platform (ios=true) with a valid provenance string. The gate reaches checked() and passes — pre-commit must accept (rc == 0).",
+  "current_phase": "complete",
+  "work_subtype": null,
+  "case_study": "docs/case-studies/_test-fixture-case-study.md",
+  "kill_criteria_resolution": "all_not_fired_2026-07-24",
+  "platforms_tested": {
+    "ios": true,
+    "web": false,
+    "backend": false,
+    "ai": false
+  },
+  "platforms_tested_provenance": "authored",
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-07-24T00:00:03Z",
+        "ended_at": "2026-07-24T00:00:04Z"
+      },
+      "complete": {
+        "started_at": "2026-07-24T00:00:05Z"
+      }
+    }
+  }
+}

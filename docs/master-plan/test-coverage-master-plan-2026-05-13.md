@@ -146,7 +146,7 @@ T-candidates compete with F-candidates at the 2026-05-21 ranking pass (Phase 9 o
 | 3-way merge (Supabase) | SupabaseTests/SyncMergeTests | 5 | Some edge cases |
 | OAuth/session | SupabaseTests/UserSessionMappingTests | — | Some coverage |
 | **DataExportService, ConsentManager, FoodSearchService** | — | **0** | **ZERO COVERAGE** |
-| **Supabase Edge Functions (if any)** | not audited | — | Out-of-scope this pass |
+| **Supabase Edge Functions (if any)** | **CONFIRMED NONE EXIST 2026-07-24** | — | `backend/` is SQL only (migrations + seed; no `functions/`). Real backend test gap re-scoped to SQL/RLS pgTAP harness — see [`2026-07-24-backend-sql-rls-test-harness-scope.md`](../superpowers/specs/2026-07-24-backend-sql-rls-test-harness-scope.md) |
 
 **Judgment:** happy-path coverage on sync/auth/encryption is reasonable. **SignInService zero-tested** despite high-risk classification. No chaos/adversarial tests. Multi-device reconciliation untested. Encryption-key rotation untested. Edge Functions (if present) need a separate audit.
 
