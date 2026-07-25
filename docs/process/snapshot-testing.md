@@ -59,20 +59,30 @@ discipline the framework applies to every new gate.
 
 ## Coverage
 
-**Baselined (as of 2026-07-20 — 11 canonical CI baselines):** the 4 shared
+**Baselined (as of 2026-07-24 — 13 canonical CI baselines):** the 4 shared
 design-system components (`AppProgressRing`, `AppPickerChip`,
-`AppSegmentedControl`, `AppMetricColumn`) + 4 v2 screens (Stats / Nutrition /
-Training / Settings) + 3 auth views (SignIn / BiometricUnlock /
-OnboardingWelcome). Every recorded PNG is **visually inspected before commit** —
-a blank or crashed render is still a PNG, so "the recorder wrote a file" is not
-proof the surface rendered (this caught the blank `WelcomeView` below).
+`AppSegmentedControl`, `AppMetricColumn`) + 5 v2 screens (Home / Stats /
+Nutrition / Training / Settings) + 4 auth views (Welcome / SignIn /
+BiometricUnlock / OnboardingWelcome). Every recorded PNG is **visually inspected
+before commit** — a blank or crashed render is still a PNG, so "the recorder
+wrote a file" is not proof the surface rendered (this caught the blank
+`WelcomeView` before its fix).
 
-**Pending recipe fixes (hard-skipped so no blank baseline is ever committed):**
-- `testHomeScreenV2` — needs a stubbed `AIOrchestrator` (no factory: init takes
-  engineClient + foundationModel + pcc + snapshot/goalMode closures).
-- `testWelcomeAuthView` — renders **BLANK** in CI; `WelcomeView` needs a
-  `NavigationStack` wrapper / animation-settle (SignInView renders correctly
-  *because* it is NavigationStack-wrapped).
+**Home + Welcome (added 2026-07-24, PR #961)** were the last two hard-skipped
+surfaces. Both were blocked by production-view properties, not test recipes, and
+both fixes are view seams (see observed-patterns **W46**):
+- `testHomeScreenV2` — Home was **wall-clock dependent** (`MainScreenView` read
+  `Date()` for the greeting hour + today's-date string, so a baseline would rot
+  the next calendar day). Fixed with an injectable `now: () -> Date = { Date() }`
+  seam (production default unchanged); the recipe pins a fixed instant. (The
+  earlier `AIOrchestrator` env-graph crash was already resolved via
+  `.snapshotEnvironment()`.)
+- `testWelcomeAuthView` — recorded **BLANK** because `WelcomeView` reveals content
+  from `.onAppear` opacity animations that never complete under the off-screen
+  snapshot host (NOT a missing `NavigationStack`; `.wait` +
+  `drawHierarchyInKeyWindow` both ruled out empirically). Fixed with
+  `WelcomeView(snapshotSettled: Bool = false)`, which seeds the reveal `@State`
+  at final values and skips the animation.
 
 When a screen changes intentionally, re-record (step 1) and commit the new
 baseline in the same PR.
