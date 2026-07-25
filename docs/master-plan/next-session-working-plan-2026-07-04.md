@@ -36,7 +36,7 @@ State-of-play: this week's merges (#835-#849) shipped FIT-152/155/156/157/163/16
 | 5 | Small integrity/backup crons — DI-Q2 (auto 2nd snapshot on regression), DI-Q3 / FIT-206 (off-SSD shasum -c weekly cron), FIT-207 (cross-repo baseline capture in daily checkpoint) | Small, self-contained hardening. | S each | data-integrity sec 5 |
 | 6 | 3D diagram (FIT-138) — advance tasks_phase | Confirmed tasks_phase, 0 tasks. NOTE: now that F4 is enforced, bump its framework_version to v7.10 when advancing. | S (PM phase) | post-v7.9 F-5 |
 | 7 | E-1 / E-3 durable fixes — preflight parent_feature resolution; elevate auth_lockout_blocked_attempt to weekly digest. | S each | post-v7.9 sec 5 |
-| 8 | iOS product micro-features — FIT-208 (chart goal target lines), FIT-209 (chart tap-tooltip), FIT-210 (notif settings screen), FIT-211 (CSV export). | S-M | Linear (filed 07-02) |
+| 8 | ~~iOS product micro-features — FIT-208 (chart goal target lines), FIT-209 (chart tap-tooltip), FIT-210 (notif settings screen), FIT-211 (CSV export)~~ **✅ ALL SHIPPED 2026-07-09** (Linear Done). | S-M | Linear (filed 07-02) |
 
 ---
 

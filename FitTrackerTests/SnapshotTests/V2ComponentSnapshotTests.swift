@@ -122,54 +122,11 @@ final class V2ComponentSnapshotTests: XCTestCase {
         )
     }
 
-    /// Screen recipe for surfaces whose content is revealed by an `.onAppear`
-    /// entry animation.
-    ///
-    /// The default `assertScreen` captures the first frame, which for such a
-    /// screen is whatever the initial `@State` says — for WelcomeView, every
-    /// element at `opacity 0`, i.e. a bare gradient. That is how the 2026-07-20
-    /// record run produced a blank baseline: a blank PNG is still a PNG, so
-    /// "the recorder wrote a file" never caught it.
-    ///
-    /// Waiting alone is NOT sufficient, and that is the whole subtlety here: the
-    /// default render path hosts the view off-screen, where UIKit never delivers
-    /// appearance callbacks, so `.onAppear` never fires and the reveal never
-    /// starts — waiting just waits on an animation that was never scheduled
-    /// (empirically confirmed 2026-07-23: a 1.5s wait alone still recorded a
-    /// blank frame). `drawHierarchyInKeyWindow` renders through the simulator's
-    /// real key window, which DOES fire `onAppear`; the wait then lets the
-    /// resulting animation settle. Both are required.
-    ///
-    /// The captured frame is deterministic because the animation has finished —
-    /// every animated property is parked at its final value, so there is no
-    /// in-flight interpolation left to vary between runs.
-    private func assertScreenAfterEntryAnimation(
-        _ view: some View,
-        settleSeconds: TimeInterval = 1.5,
-        width: CGFloat = 393,
-        height: CGFloat = 852,
-        file: StaticString = #filePath,
-        testName: String = #function,
-        line: UInt = #line
-    ) {
-        assertSnapshot(
-            of: view.frame(width: width, height: height),
-            as: .wait(
-                for: settleSeconds,
-                on: .image(
-                    drawHierarchyInKeyWindow: true,
-                    precision: 0.98,
-                    perceptualPrecision: 0.98,
-                    layout: .fixed(width: width, height: height),
-                    traits: .init(userInterfaceStyle: .light)
-                )
-            ),
-            record: SnapshotMode.isRecording,
-            file: file,
-            testName: testName,
-            line: line
-        )
-    }
+    // Note: WelcomeView's `.onAppear` opacity reveal was previously handled by a
+    // `.wait` + drawHierarchyInKeyWindow recipe. That was ruled out empirically
+    // (2026-07-23, W46) and replaced by rendering the view's settled state
+    // directly via `WelcomeView(snapshotSettled:)`, so a plain `assertScreen`
+    // now covers it and the animation-waiting helper is no longer needed.
 
     // T3: each screen recipe now injects the full env-object closure via
     // `.snapshotEnvironment()` (SnapshotFixtures.swift), so a subview's
@@ -198,21 +155,37 @@ final class V2ComponentSnapshotTests: XCTestCase {
         // A committed baseline would therefore fail the next calendar day, and
         // three times a day as the greeting rolls over.
         //
-        // Fixing that needs an injectable clock on MainScreenView — a production
-        // change to a high-traffic view, correctly its own task, not a snapshot
-        // recipe tweak. Skipped on the accurate reason; the stub work above is
-        // what unblocks it the moment the clock seam exists.
-        try XCTSkipIf(true, "Home v2 is wall-clock dependent (greeting + today's date) — needs an injectable clock on MainScreenView; the AIOrchestrator blocker is fixed.")
+        // FIXED (T3): MainScreenView now has an injectable `now` clock seam
+        // (default `{ Date() }` in production). This recipe pins it to a fixed
+        // instant so the greeting ("Good evening,") and today's-date string are
+        // a pure function of the code, not the wall-clock — the baseline no
+        // longer rots at the next calendar day / greeting rollover.
         try requireSnapshotMode()
         try skipVerifyUntilBaselineRecorded()
         assertScreen(
             NavigationStack {
-                MainScreenView(selectedTab: .constant(.main), statsMetric: .constant(nil))
+                MainScreenView(
+                    selectedTab: .constant(.main),
+                    statsMetric: .constant(nil),
+                    now: { Self.fixedSnapshotDate }
+                )
             }
             .snapshotEnvironment()
             .background(AppGradient.screenBackground)
         )
     }
+
+    /// Fixed instant for wall-clock-dependent screen snapshots: 2026-01-15
+    /// 09:41:00 UTC. 09:41 keeps the greeting in the "Good morning," branch
+    /// (the classic Apple keynote time); a fixed calendar date keeps the
+    /// "Thursday, 15 January 2026" string stable across record runs.
+    private static let fixedSnapshotDate: Date = {
+        var c = DateComponents()
+        c.year = 2026; c.month = 1; c.day = 15
+        c.hour = 9; c.minute = 41; c.second = 0
+        c.timeZone = TimeZone(identifier: "UTC")
+        return Calendar(identifier: .gregorian).date(from: c)!
+    }()
 
     @MainActor
     func testStatsScreenV2() throws {
@@ -298,15 +271,18 @@ final class V2ComponentSnapshotTests: XCTestCase {
         //      so the key window is doing something but `.onAppear` still is not
         //      driving the reveal to completion under the snapshot render.
         //
-        // Likely next step: give the reveal an injectable initial state (render
-        // the settled values directly when snapshotting) rather than trying to
-        // drive SwiftUI's animation clock from a test. That is a view change, so
-        // it is its own task.
-        try XCTSkipIf(true, "WelcomeView records blank: onAppear-gated opacity reveal never completes under snapshot render. `.wait` and drawHierarchyInKeyWindow both ruled out 2026-07-23.")
+        // FIXED (T3): WelcomeView now takes `snapshotSettled: Bool` (default
+        // false). When true it seeds every animated element at its post-entry
+        // value and skips the `.onAppear` reveal, so the recorded frame shows
+        // the full screen (logo, copy, fact rows, Continue button) instead of a
+        // bare gradient. This renders the settled state directly rather than
+        // trying to drive SwiftUI's animation clock from a test — `.wait` and
+        // drawHierarchyInKeyWindow were both ruled out (see W46). A plain
+        // `assertScreen` suffices now that there is no animation to settle.
         try requireSnapshotMode()
         try skipVerifyUntilBaselineRecorded()
-        assertScreenAfterEntryAnimation(
-            WelcomeView()
+        assertScreen(
+            WelcomeView(snapshotSettled: true)
                 .environmentObject(SignInService())
         )
     }
