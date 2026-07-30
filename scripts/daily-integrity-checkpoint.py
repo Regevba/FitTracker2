@@ -35,6 +35,7 @@ import datetime as dt
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -112,17 +113,22 @@ def capture_make_outputs() -> dict:
 
 
 def parse_integrity_findings(text: str) -> tuple[int, int]:
-    """Parse 'Findings: N + M advisory ()' line. Returns (findings, advisory)."""
+    """Parse the integrity-check 'Findings:' line. Returns (findings, advisory).
+
+    Two emitted forms must both parse:
+      - "Findings: 0 ()"                    → (0, 0)   [no advisories]
+      - "Findings: 3 + 2 advisory (CODE)"   → (3, 2)
+
+    The pre-2026-07-30 split("+") parse raised ValueError on the FIRST form
+    (`int("0 ()")`), so every clean day silently recorded (-1, -1) in the daily
+    ledger — a healthy state indistinguishable from an unparseable run. That is
+    the same reader/format mismatch class as observed-patterns #24; the regex
+    below is the one already proven in `integrity-telemetry-sweep.py`.
+    """
     for line in text.splitlines():
-        if line.startswith("Findings:"):
-            try:
-                _, rhs = line.split(":", 1)
-                left = rhs.strip().split("+")[0].strip()
-                advisory_part = rhs.split("+", 1)[1] if "+" in rhs else "0"
-                adv_n = "".join(c for c in advisory_part if c.isdigit())
-                return int(left), int(adv_n or "0")
-            except (ValueError, IndexError):
-                continue
+        m = re.search(r"Findings:\s*(\d+)(?:\s*\+\s*(\d+)\s*advisor)?", line)
+        if m:
+            return int(m.group(1)), int(m.group(2)) if m.group(2) else 0
     return -1, -1
 
 
@@ -819,10 +825,26 @@ def run_integrity_sweep() -> dict:
             capture_output=True, text=True, timeout=180, check=False,
         )
         data = json.loads(p.stdout or "{}")
-        return {
+        rows = data.get("layers", [])
+        out = {
             "overall": data.get("overall", "UNKNOWN"),
-            "layers": {row["layer"]: row["status"] for row in data.get("layers", [])},
+            "layers": {row["layer"]: row["status"] for row in rows},
         }
+        # Record the DETAIL of any non-green layer. Without this the ledger row
+        # reads `{"Framework integrity": "FAIL"}` with no number and no code —
+        # and because cron FAILs are typically not reproducible interactively
+        # (observed 2026-07-25 / -27 / -30: all three FAILed under launchd while
+        # `make integrity-sweep` reported 0 findings the same morning), the bare
+        # status is undiagnosable after the fact. Green layers stay omitted so
+        # the append-only ledger does not bloat on the common all-PASS day.
+        problems = {
+            row["layer"]: row.get("detail", "")
+            for row in rows
+            if row.get("status") not in ("PASS", "INFO")
+        }
+        if problems:
+            out["layer_details"] = problems
+        return out
     except Exception as e:  # noqa: BLE001 — best-effort; never crash the checkpoint
         return {"overall": "SKIPPED", "reason": f"{type(e).__name__}: {e}"}
 
