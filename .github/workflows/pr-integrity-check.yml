@@ -152,7 +152,7 @@ jobs:
           delimiter="$(openssl rand -hex 16)"
           {
             echo "INTEGRITY_OUT<<${delimiter}"
-            head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
+            head -n 80 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
             echo "${delimiter}"
           } >> "$GITHUB_ENV"
 
