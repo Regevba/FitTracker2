@@ -149,10 +149,11 @@ jobs:
       - name: Read script outputs into env
         id: outputs
         run: |
+          delimiter="$(openssl rand -hex 16)"
           {
-            echo 'INTEGRITY_OUT<<INTEGRITY_EOF'
+            echo "INTEGRITY_OUT<<${delimiter}"
             head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
-            echo INTEGRITY_EOF
+            echo "${delimiter}"
           } >> "$GITHUB_ENV"
 
       - name: Sticky-comment on PR
