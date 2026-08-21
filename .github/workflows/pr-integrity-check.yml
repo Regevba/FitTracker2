@@ -150,9 +150,9 @@ jobs:
         id: outputs
         run: |
           {
-            echo 'INTEGRITY_OUT<<INTEGRITY_EOF'
+            echo 'INTEGRITY_OUT<<INTEGRITY_HEREDOC_EOF_SENTINEL'
             head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
-            echo INTEGRITY_EOF
+            echo INTEGRITY_HEREDOC_EOF_SENTINEL
           } >> "$GITHUB_ENV"
 
       - name: Sticky-comment on PR
