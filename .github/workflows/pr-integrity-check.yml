@@ -149,10 +149,16 @@ jobs:
       - name: Read script outputs into env
         id: outputs
         run: |
+          # Use a randomized delimiter so the integrity check output can never
+          # contain the delimiter string and break the heredoc capture.
+          # Fixed bug: hardcoded INTEGRITY_EOF appeared in script output
+          # (e.g. GATE_COVERAGE_ZERO advisory text), causing:
+          #   ##[error]Invalid value. Matching delimiter not found 'INTEGRITY_EOF'
+          delimiter="INTEGRITY_EOF_$(openssl rand -hex 8)"
           {
-            echo 'INTEGRITY_OUT<<INTEGRITY_EOF'
+            echo "INTEGRITY_OUT<<${delimiter}"
             head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
-            echo INTEGRITY_EOF
+            echo "${delimiter}"
           } >> "$GITHUB_ENV"
 
       - name: Sticky-comment on PR
