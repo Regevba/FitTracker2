@@ -149,10 +149,16 @@ jobs:
       - name: Read script outputs into env
         id: outputs
         run: |
+          # Capture content into a variable first: shell $() strips trailing
+          # newlines, then printf '%s\n' re-adds exactly one — so the closing
+          # delimiter always lands on its own line in $GITHUB_ENV regardless
+          # of whether the script output ends with a newline byte.
+          delimiter="INTEGRITY_EOF_$(openssl rand -hex 8)"
+          content=$(head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)")
           {
-            echo 'INTEGRITY_OUT<<INTEGRITY_EOF'
-            head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
-            echo INTEGRITY_EOF
+            printf 'INTEGRITY_OUT<<%s\n' "${delimiter}"
+            printf '%s\n' "${content}"
+            printf '%s\n' "${delimiter}"
           } >> "$GITHUB_ENV"
 
       - name: Sticky-comment on PR
