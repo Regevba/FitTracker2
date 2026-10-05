@@ -1,0 +1,94 @@
+{
+  "version": "1.0",
+  "note": "Append-only ledger. Created 2026-09-28 from reconstructed history (prior sessions committed locally but pushes did not reach main). Entries 0-2 are bootstrapped from GitHub issue #976 body; entry 3 onward are from live runs.",
+  "entries": [
+    {
+      "run_at": "2026-06-01T00:00:00Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "orchid-v1-5",
+          "branch": "unknown-reconstructed",
+          "merge_commit": "unknown-reconstructed",
+          "merged_at": "unknown-reconstructed",
+          "days_stale": null,
+          "last_log_event": null
+        }
+      ],
+      "indeterminate": [],
+      "action": "issue_opened",
+      "issue_number": 569,
+      "note": "bootstrapped-from-issue-976"
+    },
+    {
+      "run_at": "2026-07-20T00:00:00Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t9-backend-chaos-tests",
+          "branch": "unknown-reconstructed",
+          "merge_commit": "unknown-reconstructed",
+          "merged_at": "unknown-reconstructed",
+          "days_stale": null,
+          "last_log_event": null
+        }
+      ],
+      "indeterminate": [],
+      "action": "issue_opened",
+      "issue_number": 922,
+      "note": "bootstrapped-from-issue-976"
+    },
+    {
+      "run_at": "2026-07-27T09:08:39Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "27efaaa3",
+          "merged_at": "2026-07-04",
+          "days_stale": 23,
+          "last_log_event": "2026-07-18T09:57:23Z"
+        }
+      ],
+      "indeterminate": [],
+      "action": "issue_opened",
+      "issue_number": 976,
+      "note": "bootstrapped-from-issue-976"
+    },
+    {
+      "run_at": "2026-09-28T09:14:42Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "6ea80bb4",
+          "merged_at": "2026-07-23",
+          "days_stale": 67,
+          "last_log_event": "2026-07-18T09:57:23Z"
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    },
+    {
+      "run_at": "2026-10-05T09:14:04Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "27efaaa3",
+          "merged_at": "2026-07-04",
+          "days_stale": 92,
+          "last_log_event": "2026-07-18T09:57:23Z"
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    }
+  ]
+}
