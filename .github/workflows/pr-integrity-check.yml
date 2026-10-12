@@ -152,6 +152,7 @@ jobs:
           {
             echo 'INTEGRITY_OUT<<INTEGRITY_EOF'
             head -c 4000 /tmp/pr-integrity.txt 2>/dev/null || echo "(no output)"
+            echo  # ensure newline before closing delimiter when head truncates mid-line
             echo INTEGRITY_EOF
           } >> "$GITHUB_ENV"
 
