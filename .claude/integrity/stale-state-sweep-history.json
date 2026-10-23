@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "note": "Append-only ledger. Entries 0-2 bootstrapped from GitHub issue bodies. Entry 3 onward from live runs. Prior push attempts (2026-09-28, 2026-10-05, 2026-10-12) landed on separate chore branches instead of main due to branch-push restrictions; this run attempts main directly.",
+  "entries": [
+    {
+      "run_at": "2026-06-01T00:00:00Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "orchid-v1-5",
+          "branch": "unknown-reconstructed",
+          "merge_commit": "unknown-reconstructed",
+          "merged_at": "unknown-reconstructed",
+          "days_stale": null,
+          "last_log_event": null
+        }
+      ],
+      "indeterminate": [],
+      "action": "issue_opened",
+      "issue_number": 569,
+      "note": "bootstrapped-from-issue-569"
+    },
+    {
+      "run_at": "2026-07-20T00:00:00Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t9-backend-chaos-tests",
+          "branch": "unknown-reconstructed",
+          "merge_commit": "unknown-reconstructed",
+          "merged_at": "unknown-reconstructed",
+          "days_stale": null,
+          "last_log_event": null
+        }
+      ],
+      "indeterminate": [],
+      "action": "issue_opened",
+      "issue_number": 922,
+      "note": "bootstrapped-from-issue-922"
+    },
+    {
+      "run_at": "2026-07-27T09:08:39Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "27efaaa3",
+          "merged_at": "2026-07-04",
+          "days_stale": 23,
+          "last_log_event": "2026-07-18T09:57:23Z"
+        }
+      ],
+      "indeterminate": [],
+      "action": "issue_opened",
+      "issue_number": 976,
+      "note": "bootstrapped-from-issue-976"
+    },
+    {
+      "run_at": "2026-09-28T09:14:42Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "6ea80bb4",
+          "merged_at": "2026-07-23",
+          "days_stale": 67,
+          "last_log_event": "2026-07-18T09:57:23Z"
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    },
+    {
+      "run_at": "2026-10-05T09:14:04Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "27efaaa3",
+          "merged_at": "2026-07-04",
+          "days_stale": 92,
+          "last_log_event": "2026-07-18T09:57:23Z"
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    },
+    {
+      "run_at": "2026-10-12T09:13:12Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "41e30628",
+          "merged_at": "2026-07-24",
+          "days_stale": 79,
+          "last_log_event": "2026-07-18T09:57:23Z",
+          "note": "Run committed to origin/chore/stale-state-sweep-2026-10-12 (not main). Merged here for continuity."
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    },
+    {
+      "run_at": "2026-10-19T00:00:00Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "41e30628",
+          "merged_at": "2026-07-24",
+          "days_stale": 87,
+          "last_log_event": "2026-07-18T09:57:23Z",
+          "note": "All 3 tasks complete in state.json. Most recent FIT-152 commit PR #961 (41e30628) merged 2026-07-24. No recent log events. Issue #976 remains open since 2026-07-27 (12+ weeks)."
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    }
+  ]
+}
