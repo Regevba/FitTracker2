@@ -158,6 +158,7 @@ jobs:
           {
             echo "REPORT<<INTEGRITY_EOF"
             cat /tmp/integrity-report-trim.txt
+            echo
             echo "INTEGRITY_EOF"
           } >> "$GITHUB_ENV"
 
