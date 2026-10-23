@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "note": "Append-only history ledger for the weekly stale-state-sweep agent. Previous runs (2026-06-01, 2026-07-20, 2026-07-27) referenced this file but never successfully committed it — this is entry index 0 in the committed ledger, corresponding to the 2026-10-12 run.",
+  "entries": [
+    {
+      "run_at": "2026-10-12T09:13:12Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "41e30628",
+          "merged_at": "2026-07-24",
+          "days_stale": 79,
+          "last_log_event": "2026-07-18T09:57:23Z",
+          "note": "All 3 tasks complete. Most recent PR #961 merged 2026-07-24. Branch no longer on remote. Open issue #976 filed 2026-07-27 (23 days stale then); now 79 days stale."
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
+    }
+  ]
+}
