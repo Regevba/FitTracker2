@@ -8,7 +8,7 @@ name: UCC audit log sync
 #
 # Security review: this workflow does NOT consume any user-controlled
 # untrusted input (issue titles, PR descriptions, commit messages, etc.).
-# All inputs are repo variables and the built-in GITHUB_TOKEN. No
+# All inputs are repo variables, GITHUB_TOKEN, and WORKFLOW_PR_TOKEN (PAT). No
 # command-injection surface.
 
 on:
@@ -80,30 +80,41 @@ jobs:
       # main's bypass_pull_request_allowances; until configured the push is
       # rejected and we fall back to the legacy branch+PR (no regression).
       # See .claude/integrity/observed-patterns.md W37.
-      - name: Commit audit-log to main (direct push; PR fallback)
+      #
+      # 2026-10-23: the W37 fallback still deadlocked — 85 sync PRs piled up
+      # (#984 → #1191) because (1) GITHUB_TOKEN PRs never trigger CI and (2) the
+      # runner `git commit` is unsigned while main has required_signatures. Now
+      # lands the same way as integrity-cycle.yml (Option B): a signed commit via
+      # createCommitOnBranch, opened with WORKFLOW_PR_TOKEN so CI fires, squash
+      # auto-merge. The file is cumulative, so older open sync PRs are closed as
+      # superseded — at most one is ever open.
+      - name: Land audit-log on main (signed PR + auto-merge)
         if: steps.diff.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.WORKFLOW_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          HAVE_PAT: ${{ secrets.WORKFLOW_PR_TOKEN != '' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
+          if [ "${HAVE_PAT}" != "true" ]; then
+            echo "::warning title=Option B not configured::WORKFLOW_PR_TOKEN unset — the PR runs as GITHUB_TOKEN, will NOT trigger required checks, and will deadlock. Provision the PAT. See docs/setup/bot-pr-ci-trigger-setup.md."
+          fi
           DATE_STAMP=$(date -u +%Y%m%d)
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$TARGET_PATH"
-          git commit -m "chore(ucc-auth): daily sync of audit log (${DATE_STAMP})"
-          if git push origin "HEAD:main"; then
-            echo "✓ Audit log pushed directly to main (${DATE_STAMP})."
-            exit 0
-          fi
-          echo "::warning title=W37 fallback::Direct push to main rejected (bypass not configured?) — opening a PR instead."
           BRANCH="chore/ucc-audit-log-sync-${DATE_STAMP}"
-          if git ls-remote --exit-code origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
-            git push origin "HEAD:${BRANCH}" --force-with-lease
-          else
-            git push -u origin "HEAD:${BRANCH}"
-            gh pr create \
-              --base main \
-              --head "${BRANCH}" \
-              --title "chore(ucc-auth): daily sync of audit log (${DATE_STAMP})" \
-              --body "Daily UCC audit log sync from fitme-story Vercel Blob → \`.claude/logs/ucc-auth-events.jsonl\`. W37 fallback — direct push to main was rejected (configure bypass_pull_request_allowances to skip the PR). Cumulative; merge the latest." || echo "PR likely already exists; skipping creation"
-          fi
+          gh pr list --repo "${REPO}" --state open --search "chore(ucc-auth): daily sync of audit log in:title" \
+            --json number,headRefName -q '.[]|select(.headRefName|startswith("chore/ucc-audit-log-sync-"))|.number' \
+            | while read -r OLD; do
+                gh pr close "$OLD" --repo "${REPO}" --delete-branch \
+                  --comment "Superseded by the ${DATE_STAMP} sync (the audit log is cumulative)." || true
+              done
+          git add "$TARGET_PATH"
+          python3 scripts/create-signed-snapshot-pr.py \
+            --repo "${REPO}" \
+            --branch "${BRANCH}" \
+            --base main \
+            --message "chore(ucc-auth): daily sync of audit log (${DATE_STAMP})" \
+            --message-body "Automated daily UCC audit-log sync. Run: ${RUN_URL}" \
+            --pr-title "chore(ucc-auth): daily sync of audit log (${DATE_STAMP})" \
+            --pr-body "Daily UCC audit log sync from fitme-story Vercel Blob → \`.claude/logs/ucc-auth-events.jsonl\`. Cumulative; older sync PRs are closed as superseded. Run: ${RUN_URL}. (Signed commit via createCommitOnBranch; auto-merge enabled.)" \
+            --label automated
