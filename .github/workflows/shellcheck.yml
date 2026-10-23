@@ -40,7 +40,7 @@ jobs:
 
       - name: Run shellcheck
         continue-on-error: true
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca # master @ 2024-06-20 (SHA-pinned: supply-chain hardening)
         env:
           SHELLCHECK_OPTS: "-x -S warning"
         with:
