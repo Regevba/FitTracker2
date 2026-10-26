@@ -78,3 +78,41 @@ updates:
     labels:
       - "dependencies"
       - "python"
+
+  # ─────────────────────────────────────────────────────────────
+  # /website + /dashboard (Astro sites) — security updates only
+  # ─────────────────────────────────────────────────────────────
+  # limit 0 = no routine version-update PRs; Dependabot *security* updates
+  # still open for these dirs and DO honor the ignore list below.
+  # astro 6→7 (+ @astrojs/vercel 10→11) is a known-broken upgrade here
+  # (rolldown × tailwind-v4, observed pattern W29) and no CI builds these
+  # sites, so a green check doesn't validate it. Dependabot re-opened it 5×
+  # (#1097 #1105 #1198 #1199 #1215). The critical astro advisories stay open in
+  # the Security tab until a dedicated astro-7 migration removes this ignore.
+  - package-ecosystem: "npm"
+    directory: "/website"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: "astro"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@astrojs/*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "npm"
+    directory: "/dashboard"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: "astro"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@astrojs/*"
+        update-types: ["version-update:semver-major"]
