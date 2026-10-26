@@ -125,6 +125,24 @@
       "indeterminate": [],
       "action": "noop_existing_issue_unchanged",
       "issue_number": 976
+    },
+    {
+      "run_at": "2026-10-26T09:00:00Z",
+      "candidates_count": 1,
+      "candidates": [
+        {
+          "feature": "t4-ios-snapshot-testing",
+          "branch": "chore/fit152-snapshot-testing",
+          "merge_commit": "41e30628",
+          "merged_at": "2026-07-24",
+          "days_stale": 94,
+          "last_log_event": "2026-07-18T09:57:23Z",
+          "note": "All 3 tasks complete in state.json. Most recent FIT-152 commit PR #961 (41e30628) merged 2026-07-24T20:42:59Z. No log events since 2026-07-18. Issue #976 open since 2026-07-27 (13+ weeks). Candidate list unchanged from prior run."
+        }
+      ],
+      "indeterminate": [],
+      "action": "noop_existing_issue_unchanged",
+      "issue_number": 976
     }
   ]
 }
