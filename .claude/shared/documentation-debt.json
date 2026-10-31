@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "updated": "2026-10-29T12:55:57Z",
+  "updated": "2026-10-31T06:11:40Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 117,
     "features_scanned": 132,
-    "integrity_snapshot_files": 57,
-    "integrity_cycle_snapshots": 52,
+    "integrity_snapshot_files": 58,
+    "integrity_cycle_snapshots": 53,
     "trend_ready": true,
     "open_debt_items": 1
   },
@@ -73,8 +73,8 @@
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 57,
-    "snapshots_available": 52,
+    "snapshot_files_available": 58,
+    "snapshots_available": 53,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": true,
     "status": "trend_ready",
