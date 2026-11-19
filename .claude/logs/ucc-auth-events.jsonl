@@ -1,3 +1,4 @@
+{"event_type":"auth_passkey_authenticate_started","outcome":"success","mediation":"conditional","timestamp":"2026-11-17T08:58:16.799Z","schema_version":1,"rp_id":"fitme-story.vercel.app","operator_label_hash":"sha256:6929adae851d8522fccccc1c"}
 {"event_type":"auth_passkey_authenticate_started","outcome":"success","mediation":"conditional","timestamp":"2026-11-15T11:12:33.888Z","schema_version":1,"rp_id":"fitme-story.vercel.app","operator_label_hash":"sha256:6929adae851d8522fccccc1c"}
 {"event_type":"auth_passkey_authenticate_started","outcome":"success","mediation":"conditional","timestamp":"2026-11-12T13:45:20.032Z","schema_version":1,"rp_id":"fitme-story.vercel.app","operator_label_hash":"sha256:6929adae851d8522fccccc1c"}
 {"event_type":"auth_passkey_authenticate_started","outcome":"success","mediation":"conditional","timestamp":"2026-11-12T10:36:08.065Z","schema_version":1,"rp_id":"fitme-story.vercel.app","operator_label_hash":"sha256:6929adae851d8522fccccc1c"}
